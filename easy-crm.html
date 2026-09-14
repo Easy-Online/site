@@ -52,10 +52,15 @@
     .modal-backdrop{background: rgba(2,6,23,.65);}
     .toast{position:fixed; right:16px; bottom:16px; z-index:9999;}
     .toast > div{background:rgba(2,6,23,.92); color:#fff; border-radius:12px; padding:12px 14px; max-width:380px; box-shadow:0 14px 35px rgba(2,6,23,.25);}
+    .crm-focus.is-active{background:#1d4ed8!important; border-color:#1d4ed8!important; color:#fff!important;}
+    .crm-queue-item{border:1px solid #e2e8f0; border-radius:12px; padding:12px; background:#fff;}
+    .crm-stage-button{width:100%; text-align:left; border:1px solid #e2e8f0; border-radius:10px; padding:10px 12px; background:#fff; transition:transform .15s ease, border-color .15s ease;}
+    .crm-stage-button:hover,.crm-stage-button:focus{border-color:#2563eb; transform:translateY(-1px);}
     .kbd{border:1px solid var(--border); border-bottom-width:2px; border-radius:8px; padding:1px 6px; font-weight:900; font-size:12px; background:#fff;}
     .dark body, body.dark{background:#0b1220; color:#e5e7eb;}
     body.dark .card{background:#0f172a; border-color:#1f2937; box-shadow:none;}
     body.dark .btn-outline{background:#0b1220; border-color:#1f2937; color:#e5e7eb;}
+    body.dark .crm-queue-item,body.dark .crm-stage-button{background:#0b1220!important; border-color:#1f2937!important;}
     body.dark input, body.dark select, body.dark textarea{background:#0b1220 !important; color:#e5e7eb !important; border-color:#1f2937 !important;}
     body.dark thead{background:#0b1220 !important;}
     body.dark .text-slate-600, body.dark .text-gray-600, body.dark .text-gray-500{color:#9ca3af !important;}
@@ -115,7 +120,7 @@
       <div>
         <h1 class="text-3xl font-extrabold text-slate-900">Easy CRM</h1>
         <p class="text-sm text-slate-600 mt-1">
-          Contacts + pipeline + follow-ups + activity log. Works offline (LocalStorage).
+          Contacts + opportunity stages + weighted forecast + follow-ups + activity log. Works offline (LocalStorage).
           <span class="hidden md:inline">Tips: <span class="kbd">Ctrl</span>+<span class="kbd">K</span> focuses search.</span>
         </p>
       </div>
@@ -134,7 +139,7 @@
     </div>
 
     <!-- KPIs -->
-    <section class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+    <section class="grid grid-cols-1 md:grid-cols-6 gap-4 mb-6">
       <div class="card p-5">
         <div class="text-xs text-slate-500 font-black">CONTACTS</div>
         <div id="kpiContacts" class="text-2xl font-black text-blue-700 mt-1">0</div>
@@ -155,11 +160,41 @@
         <div class="text-xs text-slate-500 font-black">NEXT 7 DAYS</div>
         <div id="kpiUpcoming" class="text-2xl font-black text-amber-700 mt-1">0</div>
       </div>
+      <div class="card p-5">
+        <div class="text-xs text-slate-500 font-black">WEIGHTED FORECAST</div>
+        <div id="kpiForecast" class="text-2xl font-black text-violet-700 mt-1">R0.00</div>
+      </div>
+    </section>
+
+    <!-- WORKSPACE -->
+    <section class="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-6">
+      <article class="card p-5 lg:col-span-3">
+        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-3">
+          <div>
+            <h2 class="text-lg font-black text-slate-900">Follow-up command centre</h2>
+            <p class="text-xs text-slate-500">Prioritise calls, emails and next steps without leaving the CRM.</p>
+          </div>
+          <div class="flex flex-wrap gap-2 no-print" role="group" aria-label="Follow-up queue filter">
+            <button class="btn btn-outline crm-focus is-active" data-focus="all" type="button">All due</button>
+            <button class="btn btn-outline crm-focus" data-focus="overdue" type="button">Overdue</button>
+            <button class="btn btn-outline crm-focus" data-focus="today" type="button">Today</button>
+            <button class="btn btn-outline crm-focus" data-focus="week" type="button">Next 7 days</button>
+          </div>
+        </div>
+        <div id="followupQueue" class="space-y-2"></div>
+      </article>
+      <article class="card p-5 lg:col-span-2">
+        <div class="mb-3">
+          <h2 class="text-lg font-black text-slate-900">Pipeline forecast</h2>
+          <p class="text-xs text-slate-500">Click a stage to focus the contact list.</p>
+        </div>
+        <div id="pipelineBoard" class="space-y-2"></div>
+      </article>
     </section>
 
     <!-- FILTERS -->
     <section class="card p-4 mb-6 no-print">
-      <div class="grid grid-cols-1 md:grid-cols-6 gap-3">
+      <div class="grid grid-cols-1 md:grid-cols-8 gap-3">
         <div class="md:col-span-2">
           <label class="text-xs font-black text-slate-600">Search</label>
           <input id="q" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Name, company, email, phone, tag..." />
@@ -173,6 +208,30 @@
             <option value="Prospect">Prospect</option>
             <option value="Client">Client</option>
             <option value="Inactive">Inactive</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-xs font-black text-slate-600">Opportunity stage</label>
+          <select id="stageFilter" class="w-full border border-gray-200 rounded-lg px-3 py-2">
+            <option value="">All stages</option>
+            <option value="New lead">New lead</option>
+            <option value="Qualified">Qualified</option>
+            <option value="Proposal">Proposal</option>
+            <option value="Negotiation">Negotiation</option>
+            <option value="Won">Won</option>
+            <option value="Lost">Lost</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-xs font-black text-slate-600">Attention</label>
+          <select id="attentionFilter" class="w-full border border-gray-200 rounded-lg px-3 py-2">
+            <option value="">All contacts</option>
+            <option value="overdue">Overdue follow-up</option>
+            <option value="today">Due today</option>
+            <option value="week">Next 7 days</option>
+            <option value="missing">No follow-up date</option>
           </select>
         </div>
 
@@ -212,6 +271,7 @@
               <th class="p-3 text-left">Name</th>
               <th class="p-3 text-left">Company</th>
               <th class="p-3 text-left">Status</th>
+              <th class="p-3 text-left">Stage</th>
               <th class="p-3 text-right">Pipeline (R)</th>
               <th class="p-3 text-left">Follow-up</th>
               <th class="p-3 text-left">Tags</th>
@@ -301,6 +361,17 @@
           </select>
         </div>
         <div>
+          <label class="text-xs font-black text-slate-600">Opportunity Stage</label>
+          <select id="fStage" class="w-full border border-gray-200 rounded-lg px-3 py-2">
+            <option>New lead</option>
+            <option>Qualified</option>
+            <option>Proposal</option>
+            <option>Negotiation</option>
+            <option>Won</option>
+            <option>Lost</option>
+          </select>
+        </div>
+        <div>
           <label class="text-xs font-black text-slate-600">Follow-up Date</label>
           <input id="fFollowup" type="date" class="w-full border border-gray-200 rounded-lg px-3 py-2" />
         </div>
@@ -308,6 +379,10 @@
         <div>
           <label class="text-xs font-black text-slate-600">Pipeline Value (ZAR)</label>
           <input id="fRevenue" type="number" min="0" step="0.01" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="0.00" />
+        </div>
+        <div>
+          <label class="text-xs font-black text-slate-600">Win Probability (%)</label>
+          <input id="fProbability" type="number" min="0" max="100" step="1" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="0" />
         </div>
         <div>
           <label class="text-xs font-black text-slate-600">Tags (comma separated)</label>
@@ -365,6 +440,8 @@
 const STORE_KEY = "easy.crm.v2";
 const ACT_KEY   = "easy.crm.activity.v1";
 const PREF_KEY  = "easy.crm.prefs.v1";
+const STAGES = ["New lead","Qualified","Proposal","Negotiation","Won","Lost"];
+const STAGE_PROBABILITY = {"New lead":10,"Qualified":30,"Proposal":50,"Negotiation":75,"Won":100,"Lost":0};
 
 const $ = (id) => document.getElementById(id);
 
@@ -372,7 +449,8 @@ let state = {
   contacts: [],
   activity: [],
   prefs: { dark:false },
-  page: 1
+  page: 1,
+  followupFocus: "all"
 };
 
 function nowISO(){ return new Date().toISOString(); }
@@ -432,6 +510,29 @@ function statusPill(status){
   return `<span class="pill pill-inactive">INACTIVE</span>`;
 }
 
+function stageFor(contact){
+  if(STAGES.includes(contact.stage)) return contact.stage;
+  if(contact.status === "Client") return "Won";
+  if(contact.status === "Inactive") return "Lost";
+  if(contact.status === "Prospect") return "Qualified";
+  return "New lead";
+}
+
+function probabilityFor(contact){
+  const value = Number(contact.probability);
+  return Number.isFinite(value) ? Math.max(0, Math.min(100, value)) : STAGE_PROBABILITY[stageFor(contact)];
+}
+
+function stagePill(stage){
+  const tone = stage === "Won" ? "pill-client" : stage === "Lost" ? "pill-inactive" : stage === "Negotiation" ? "pill-prospect" : "pill-lead";
+  return `<span class="pill ${tone}">${escapeHtml(stage)}</span>`;
+}
+
+function todayISO(){
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+
 function isOverdueDate(iso){
   if(!iso) return false;
   const d = new Date(iso + "T00:00:00");
@@ -472,8 +573,10 @@ function openModal(mode, id){
   $("fEmail").value = contact ? contact.email : "";
   $("fPhone").value = contact ? contact.phone : "";
   $("fStatus").value = contact ? contact.status : "Lead";
+  $("fStage").value = contact ? stageFor(contact) : "New lead";
   $("fFollowup").value = contact ? (contact.followup || "") : "";
   $("fRevenue").value = contact ? String(Number(contact.revenue||0)) : "0";
+  $("fProbability").value = contact ? String(probabilityFor(contact)) : String(STAGE_PROBABILITY["New lead"]);
   $("fTags").value = contact ? (contact.tags || []).join(", ") : "";
   $("fNotes").value = contact ? (contact.notes || "") : "";
 
@@ -501,8 +604,10 @@ function saveContact(){
     email: $("fEmail").value.trim(),
     phone: $("fPhone").value.trim(),
     status: $("fStatus").value,
+    stage: STAGES.includes($("fStage").value) ? $("fStage").value : "New lead",
     followup: $("fFollowup").value,
     revenue: Number($("fRevenue").value || 0),
+    probability: Math.max(0, Math.min(100, Number($("fProbability").value || 0))),
     tags: normalizeTags($("fTags").value),
     notes: $("fNotes").value.trim(),
     updatedAt: nowISO(),
@@ -565,8 +670,16 @@ function openView(id){
           <span>${statusPill(c.status)}</span>
         </div>
         <div class="text-sm flex items-center justify-between mt-2">
+          <span class="font-black">Stage</span>
+          <span>${stagePill(stageFor(c))} <span class="mono text-xs">${probabilityFor(c)}%</span></span>
+        </div>
+        <div class="text-sm flex items-center justify-between mt-2">
           <span class="font-black">Value</span>
           <span class="mono font-black">${money(c.revenue||0)}</span>
+        </div>
+        <div class="text-sm flex items-center justify-between mt-2">
+          <span class="font-black">Weighted forecast</span>
+          <span class="mono font-black">${money(Number(c.revenue||0) * probabilityFor(c) / 100)}</span>
         </div>
         <div class="text-sm flex items-center justify-between mt-2">
           <span class="font-black">Follow-up</span>
@@ -613,8 +726,11 @@ function computeKPIs(list){
   const contacts = state.contacts.length;
   const clients = state.contacts.filter(c => c.status === "Client").length;
   const pipeline = state.contacts
-    .filter(c => c.status !== "Inactive")
+    .filter(c => !["Inactive","Lost"].includes(c.status) && stageFor(c) !== "Lost")
     .reduce((a,c)=> a + Number(c.revenue||0), 0);
+  const forecast = state.contacts
+    .filter(c => stageFor(c) !== "Lost")
+    .reduce((a,c)=> a + Number(c.revenue||0) * probabilityFor(c) / 100, 0);
 
   const overdue = state.contacts.filter(c => isOverdueDate(c.followup)).length;
   const upcoming = state.contacts.filter(c => isWithinNextDays(c.followup, 7)).length;
@@ -624,16 +740,79 @@ function computeKPIs(list){
   $("kpiPipeline").textContent = money(pipeline);
   $("kpiOverdue").textContent = String(overdue);
   $("kpiUpcoming").textContent = String(upcoming);
+  $("kpiForecast").textContent = money(forecast);
+}
+
+function followupMatches(contact, focus){
+  if(focus === "overdue") return isOverdueDate(contact.followup);
+  if(focus === "today") return contact.followup === todayISO();
+  if(focus === "week") return isWithinNextDays(contact.followup, 7);
+  return Boolean(contact.followup);
+}
+
+function renderWorkspace(){
+  const queue = state.contacts
+    .filter(c => followupMatches(c, state.followupFocus))
+    .sort((a,b) => new Date(a.followup || "2999-12-31") - new Date(b.followup || "2999-12-31"))
+    .slice(0,8);
+  const queueNode = $("followupQueue");
+  queueNode.innerHTML = queue.length ? queue.map(c => {
+    const overdue = isOverdueDate(c.followup);
+    const label = overdue ? "OVERDUE" : c.followup === todayISO() ? "TODAY" : escapeHtml(c.followup);
+    return `<div class="crm-queue-item flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div><button class="font-black text-left hover:text-blue-700" data-queue-view="${c.id}" type="button">${escapeHtml(c.name)}</button><div class="text-xs text-slate-500">${escapeHtml(c.company || "No company")} · ${stagePill(stageFor(c))}</div></div>
+      <div class="flex flex-wrap items-center gap-2"><span class="pill ${overdue ? "pill-overdue" : "pill-prospect"}">${label}</span><button class="btn btn-outline" data-queue-action="call" data-id="${c.id}" type="button">Log call</button><button class="btn btn-outline" data-queue-action="email" data-id="${c.id}" type="button">Log email</button><button class="btn btn-primary" data-queue-action="complete" data-id="${c.id}" type="button">Complete</button></div>
+    </div>`;
+  }).join("") : `<p class="text-sm text-slate-500 py-3">No follow-ups in this view. Add a follow-up date to keep your next action visible here.</p>`;
+  queueNode.querySelectorAll("[data-queue-view]").forEach(button => button.addEventListener("click", () => openView(Number(button.dataset.queueView))));
+  queueNode.querySelectorAll("[data-queue-action]").forEach(button => button.addEventListener("click", () => runQueueAction(Number(button.dataset.id), button.dataset.queueAction)));
+
+  const board = STAGES.map(stage => {
+    const contacts = state.contacts.filter(c => stageFor(c) === stage);
+    const value = contacts.reduce((sum,c) => sum + Number(c.revenue || 0), 0);
+    const forecast = contacts.reduce((sum,c) => sum + Number(c.revenue || 0) * probabilityFor(c) / 100, 0);
+    return `<button class="crm-stage-button" data-stage-board="${escapeHtml(stage)}" type="button"><span class="flex items-center justify-between gap-2"><span>${stagePill(stage)} <span class="text-xs text-slate-500">${contacts.length} contact${contacts.length === 1 ? "" : "s"}</span></span><span class="mono text-xs font-black">${money(value)}</span></span><span class="block text-xs text-slate-500 mt-1">Weighted: ${money(forecast)}</span></button>`;
+  }).join("");
+  $("pipelineBoard").innerHTML = board;
+  $("pipelineBoard").querySelectorAll("[data-stage-board]").forEach(button => button.addEventListener("click", () => {
+    $("stageFilter").value = button.dataset.stageBoard;
+    state.page = 1;
+    render();
+  }));
+}
+
+function runQueueAction(id, action){
+  const contact = state.contacts.find(c => c.id === id);
+  if(!contact) return;
+  if(action === "complete"){
+    contact.followup = "";
+    contact.updatedAt = nowISO();
+    logActivity(contact.id, contact.name, "Follow-up completed", "Completed from command centre");
+    toast("Follow-up completed.");
+  }else{
+    const event = action === "call" ? "Call logged" : "Email logged";
+    logActivity(contact.id, contact.name, event, "Logged from command centre");
+    toast(`${event}.`);
+  }
+  persist();
+  render();
 }
 
 function applyFilters(){
   const q = ($("q").value || "").trim().toLowerCase();
   const sf = ($("statusFilter").value || "").trim();
+  const stage = ($("stageFilter").value || "").trim();
+  const attention = ($("attentionFilter").value || "").trim();
   let list = [...state.contacts];
 
   if(sf){
     list = list.filter(c => c.status === sf);
   }
+  if(stage) list = list.filter(c => stageFor(c) === stage);
+  if(attention === "overdue") list = list.filter(c => isOverdueDate(c.followup));
+  if(attention === "today") list = list.filter(c => c.followup === todayISO());
+  if(attention === "week") list = list.filter(c => isWithinNextDays(c.followup, 7));
+  if(attention === "missing") list = list.filter(c => !c.followup);
 
   if(q){
     list = list.filter(c => {
@@ -661,6 +840,7 @@ function applyFilters(){
 function render(){
   const list = applyFilters();
   computeKPIs(list);
+  renderWorkspace();
 
   const pageSize = Number($("pageSize").value || 50);
   const totalPages = Math.max(1, Math.ceil(list.length / pageSize));
@@ -676,7 +856,7 @@ function render(){
   rows.innerHTML = "";
 
   if(!slice.length){
-    rows.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-500">No contacts found.</td></tr>`;
+    rows.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-slate-500">No contacts found.</td></tr>`;
     return;
   }
 
@@ -691,6 +871,7 @@ function render(){
       <td class="p-3 font-black">${escapeHtml(c.name)}</td>
       <td class="p-3">${escapeHtml(c.company || "")}</td>
       <td class="p-3">${statusPill(c.status)}</td>
+      <td class="p-3">${stagePill(stageFor(c))}<div class="mono text-xs text-slate-500 mt-1">${probabilityFor(c)}%</div></td>
       <td class="p-3 text-right mono font-black">${money(c.revenue||0)}</td>
       <td class="p-3 ${overdue ? "text-rose-700 font-black" : ""}">
         ${follow} ${overdue ? `<span class="pill pill-overdue ml-2">OVERDUE</span>` : ""}
@@ -741,12 +922,12 @@ function renderActivity(){
    ============================ */
 
 function exportCSV(){
-  const header = ["Name","Company","Email","Phone","Status","PipelineValue","Followup","Tags","Notes","CreatedAt","UpdatedAt"];
+  const header = ["Name","Company","Email","Phone","Status","Stage","Probability","PipelineValue","Followup","Tags","Notes","CreatedAt","UpdatedAt"];
   const lines = [header.join(",")];
 
   state.contacts.forEach(c => {
     const row = [
-      c.name, c.company, c.email, c.phone, c.status,
+      c.name, c.company, c.email, c.phone, c.status, stageFor(c), String(probabilityFor(c)),
       String(Number(c.revenue||0)),
       c.followup || "",
       (c.tags||[]).join("|"),
@@ -808,7 +989,7 @@ function importCSVFile(file){
       const header = rows[0].map(h => String(h||"").trim().toLowerCase());
       const idx = (name) => header.indexOf(name.toLowerCase());
 
-      // Expected columns (flexible): name, company, email, phone, status, pipelinevalue/revenue, followup, tags, notes
+      // Expected columns (flexible): name, company, email, phone, status, stage, probability, pipelinevalue/revenue, followup, tags, notes
       const iName = idx("name");
       if(iName < 0){ alert("CSV must include a 'Name' column."); return; }
 
@@ -822,6 +1003,9 @@ function importCSVFile(file){
         const email   = idx("email") >= 0 ? String(cols[idx("email")]||"").trim() : "";
         const phone   = idx("phone") >= 0 ? String(cols[idx("phone")]||"").trim() : "";
         const status  = idx("status")>= 0 ? String(cols[idx("status")]||"Lead").trim() : "Lead";
+        const stageRaw = idx("stage") >= 0 ? String(cols[idx("stage")]||"").trim() : "";
+        const stage = STAGES.includes(stageRaw) ? stageRaw : "";
+        const probabilityRaw = idx("probability") >= 0 ? Number(cols[idx("probability")]||"") : NaN;
         const revCol  = idx("pipelinevalue") >= 0 ? idx("pipelinevalue") : (idx("revenue") >= 0 ? idx("revenue") : -1);
         const revenue = revCol >= 0 ? Number(cols[revCol]||0) : 0;
         const follow  = idx("followup")>=0 ? String(cols[idx("followup")]||"").trim() : "";
@@ -832,6 +1016,8 @@ function importCSVFile(file){
           id: Date.now() + r,
           name, company, email, phone,
           status: ["Lead","Prospect","Client","Inactive"].includes(status) ? status : "Lead",
+          stage,
+          probability: Number.isFinite(probabilityRaw) ? Math.max(0, Math.min(100, probabilityRaw)) : null,
           followup: follow,
           revenue: Number.isFinite(revenue) ? revenue : 0,
           tags: tagsRaw ? tagsRaw.split(/[|,]/).map(x=>x.trim()).filter(Boolean) : [],
@@ -878,7 +1064,7 @@ function importCSVFile(file){
 function backupJSON(){
   const payload = {
     exportedAt: nowISO(),
-    version: 2,
+    version: 3,
     contacts: state.contacts,
     activity: state.activity
   };
@@ -911,6 +1097,8 @@ function restoreJSONFile(file){
         email: String(c.email||"").trim(),
         phone: String(c.phone||"").trim(),
         status: ["Lead","Prospect","Client","Inactive"].includes(c.status) ? c.status : "Lead",
+        stage: STAGES.includes(c.stage) ? c.stage : "",
+        probability: Number.isFinite(Number(c.probability)) ? Math.max(0, Math.min(100, Number(c.probability))) : null,
         followup: String(c.followup||"").trim(),
         revenue: Number(c.revenue||0),
         tags: Array.isArray(c.tags) ? c.tags.map(x=>String(x).trim()).filter(Boolean) : normalizeTags(c.tags),
@@ -946,10 +1134,10 @@ function seedDemo(){
   if(state.contacts.length && !confirm("Seed demo data will ADD into your existing contacts. Continue?")) return;
 
   const demo = [
-    {name:"A. Ndlovu", company:"Ndlovu Engineering", email:"andile@ndlovu.co.za", phone:"+27 11 000 0001", status:"Prospect", followup: daysFromNow(2), revenue: 85000, tags:["Renewal","Quote"], notes:"Requested proposal for annual support."},
-    {name:"L. Mokoena", company:"Mokoena Holdings", email:"lindi@mokoena.africa", phone:"+27 11 000 0002", status:"Lead", followup: daysFromNow(-3), revenue: 120000, tags:["Hot","Onsite"], notes:"Overdue follow-up. Needs call-back."},
-    {name:"R. Naidoo", company:"Naidoo Logistics", email:"raj@naidoo.co.za", phone:"+27 11 000 0003", status:"Client", followup: daysFromNow(10), revenue: 45000, tags:["Client","Invoice"], notes:"Client: monthly billing cycle."},
-    {name:"S. Dlamini", company:"Dlamini Retail", email:"sindi@dlamini.co.za", phone:"+27 11 000 0004", status:"Inactive", followup:"", revenue: 0, tags:["Dormant"], notes:"No response after 6 attempts."}
+    {name:"A. Ndlovu", company:"Ndlovu Engineering", email:"andile@ndlovu.co.za", phone:"+27 11 000 0001", status:"Prospect", stage:"Proposal", probability:50, followup: daysFromNow(2), revenue: 85000, tags:["Renewal","Quote"], notes:"Requested proposal for annual support."},
+    {name:"L. Mokoena", company:"Mokoena Holdings", email:"lindi@mokoena.africa", phone:"+27 11 000 0002", status:"Lead", stage:"Qualified", probability:30, followup: daysFromNow(-3), revenue: 120000, tags:["Hot","Onsite"], notes:"Overdue follow-up. Needs call-back."},
+    {name:"R. Naidoo", company:"Naidoo Logistics", email:"raj@naidoo.co.za", phone:"+27 11 000 0003", status:"Client", stage:"Won", probability:100, followup: daysFromNow(10), revenue: 45000, tags:["Client","Invoice"], notes:"Client: monthly billing cycle."},
+    {name:"S. Dlamini", company:"Dlamini Retail", email:"sindi@dlamini.co.za", phone:"+27 11 000 0004", status:"Inactive", stage:"Lost", probability:0, followup:"", revenue: 0, tags:["Dormant"], notes:"No response after 6 attempts."}
   ].map((c,i)=>({
     id: Date.now() + i,
     ...c,
@@ -1022,7 +1210,7 @@ function init(){
     render();
   });
 
-  ["q","statusFilter","sort","pageSize"].forEach(id=>{
+  ["q","statusFilter","stageFilter","attentionFilter","sort","pageSize"].forEach(id=>{
     $(id).addEventListener("input", ()=> { state.page = 1; render(); });
     $(id).addEventListener("change", ()=> { state.page = 1; render(); });
   });
@@ -1030,12 +1218,20 @@ function init(){
   $("btnClearFilters").addEventListener("click", ()=>{
     $("q").value = "";
     $("statusFilter").value = "";
+    $("stageFilter").value = "";
+    $("attentionFilter").value = "";
     $("sort").value = "name";
     $("pageSize").value = "50";
     state.page = 1;
     render();
     toast("Filters cleared.");
   });
+
+  document.querySelectorAll(".crm-focus").forEach(button => button.addEventListener("click", () => {
+    state.followupFocus = button.dataset.focus || "all";
+    document.querySelectorAll(".crm-focus").forEach(item => item.classList.toggle("is-active", item === button));
+    renderWorkspace();
+  }));
 
   $("btnExportCSV").addEventListener("click", exportCSV);
   $("btnImportCSV").addEventListener("click", ()=> $("csvFile").click());
@@ -1102,6 +1298,7 @@ init();
 <script defer src="scripts/sync-nav.js"></script>
 </body>
 </html>
+
 
 
 
