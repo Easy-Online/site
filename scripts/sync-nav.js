@@ -4,7 +4,7 @@
 
   const BRAND = Object.freeze({
     name: "EasyFile",
-    subtitle: "Business workspace",
+    subtitle: "SME finance workspace",
     logoOnDark: "logo-w.png",
     logoOnLight: "logo-b.png"
   });
@@ -24,7 +24,7 @@
     { name: "CRM", href: "easy-crm.html", icon: "fa-users", group: "Operations", description: "Manage customer relationships" },
     { name: "Assets", href: "easy-asset-management.html", icon: "fa-screwdriver-wrench", group: "Operations", description: "Maintain the asset register" },
     { name: "Inspections", href: "easy-site-inspection.html", icon: "fa-clipboard-check", group: "Operations", description: "Capture site inspection records" },
-    { name: "Referrals", href: "referrals.html", icon: "fa-user-group", group: "General", description: "Check referral progress and access" }
+    { name: "Rewards", href: "referrals.html", icon: "fa-gift", group: "General", description: "View legacy referral rewards" }
   ]);
 
   const MODULE_FILES = new Set(MODULES.filter((item) => !["index.html", "referrals.html"].includes(item.href)).map((item) => item.href));
@@ -37,8 +37,7 @@
   ]);
 
   const current = (location.pathname.split("/").pop() || "index.html").toLowerCase();
-  const referralEntry = new URLSearchParams(location.search).has("ref");
-  const referralEnabledPage = MODULE_FILES.has(current) || current === "referrals.html" || referralEntry;
+  const referralEnabledPage = current === "referrals.html";
   const THEME_KEY = "easyfile:theme";
 
   function ensureSharedStyles() {
@@ -98,7 +97,7 @@
           <a class="easyfile-nav-link" href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i>Home</a>
           <a class="easyfile-nav-link" href="index.html#modules"><i class="fa-solid fa-table-cells-large" aria-hidden="true"></i>Modules</a>
           <a class="easyfile-nav-link" href="easy-bank-statement-converter.html"><i class="fa-solid fa-building-columns" aria-hidden="true"></i>Bank converter</a>
-          <a class="easyfile-nav-link" href="referrals.html"><i class="fa-solid fa-user-group" aria-hidden="true"></i>Referrals</a>
+          <a class="easyfile-nav-link" href="about.html"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>About</a>
         </div>
         <div class="easyfile-nav-tools">
           <div class="easyfile-nav-search-wrap" data-search-wrap>

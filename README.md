@@ -5,12 +5,12 @@
 
   **Simple. Fast. Professional business paperwork and operational tools.**
 
-  [Open EasyFile](https://www.easyfile.co.za/) · [Bank Statement Converter](https://www.easyfile.co.za/easy-bank-statement-converter.html) · [Referral Access](https://www.easyfile.co.za/referrals.html) · [Report an Issue](https://github.com/Easy-Online-Office/site/issues)
+  [Open EasyFile](https://www.easyfile.co.za/) · [Bank Statement Converter](https://www.easyfile.co.za/easy-bank-statement-converter.html) · [Report an Issue](https://github.com/Easy-Online-Office/site/issues)
 </div>
 
 ## Overview
 
-EasyFile is a responsive, local-first suite of browser-based tools for creating business documents and managing everyday operational records. The main landing page provides module search, direct launch controls, a responsive global navigation bar, dark/light themes and access to the referral dashboard.
+EasyFile is a responsive, local-first workspace that turns bank activity into reviewed, business-ready records for South African small businesses and bookkeepers. The bank statement converter is the lead workflow, supported by tools for invoices, expenses, cash flow, VAT, customers and operational records.
 
 The product is designed for small businesses, independent professionals and operational teams that need practical tools without a heavyweight ERP deployment.
 
@@ -44,16 +44,11 @@ The converter:
 
 Supported parsing profiles include FNB/RMB, Absa, Standard Bank, Nedbank, Capitec, TymeBank, Investec and a generic statement profile. Bank layouts change over time, so users must review every extracted row against the source statement before importing it into accounting software.
 
-## Referral access model
+## Referral programme
 
-EasyFile uses a referral-based access mechanism:
+Referral access is no longer required for the core local-first tools. The existing referral dashboard remains available for historical accounts while the programme is transitioned into an optional rewards mechanism.
 
-1. A verified user receives one qualifying use across the EasyFile module suite.
-2. After the free use is consumed, the user shares a unique referral link.
-3. Three different verified referred users must enter through that link and complete a qualifying action such as Save, Preview, Print or Export.
-4. The original user receives continued EasyFile access after all three referrals qualify.
-
-Referral identity, status and entitlement checks are handled by the EasyFile referral service. The browser caches status for display purposes, but production access fails closed unless the API verifies the entitlement. Offline unlocked access remains disabled unless the service issues a signed, unexpired entitlement token.
+Referral identity and historical progress are handled by the existing referral service. Referral scripts are intentionally no longer loaded on product modules and cannot block document creation, conversion or export.
 
 See [`docs/referral-api-production-contract.md`](docs/referral-api-production-contract.md) for the server contract, security controls and deployment acceptance tests.
 

@@ -45,20 +45,16 @@
 <div class="easyfile-nav no-print">
   <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
 </div>
-<div class="easyfile-nav no-print">
-    <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
-  </div>
-
   <a class="skip-link" href="#converterWorkspace">Skip to converter</a>
 
   <header class="bank-hero">
     <div class="bank-shell bank-hero-grid">
       <div>
-        <p class="bank-eyebrow"><i class="fa-solid fa-building-columns" aria-hidden="true"></i> EasyFile finance utility</p>
+        <p class="bank-eyebrow"><i class="fa-solid fa-building-columns" aria-hidden="true"></i> Start free - no account required</p>
         <h1>PDF Bank Statement to <span>Sage-ready CSV</span></h1>
         <p class="bank-hero-copy">Extract transactions from a text-based PDF bank statement, review every row, correct any uncertain entries and export a clean Sage Accounting bank-import file or Excel workbook.</p>
         <div class="bank-hero-actions">
-          <a class="bank-button bank-button-primary" href="#converterWorkspace"><i class="fa-solid fa-file-arrow-up" aria-hidden="true"></i>Convert a statement</a>
+          <a class="bank-button bank-button-primary" href="#converterWorkspace"><i class="fa-solid fa-file-arrow-up" aria-hidden="true"></i>Choose a PDF</a>
           <a class="bank-button bank-button-secondary" href="#formatGuide"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>Review Sage format</a>
         </div>
         <div class="bank-trust-row" aria-label="Converter privacy and compatibility">
@@ -271,23 +267,16 @@
     </div>
   </footer>
 
-  <section id="accessModal" class="bank-modal no-print" hidden aria-modal="true" role="dialog" aria-labelledby="accessModalTitle">
-    <div class="bank-modal-panel">
-      <button id="accessModalClose" class="bank-modal-close" type="button" aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
-      <div class="bank-modal-icon"><i class="fa-solid fa-user-shield" aria-hidden="true"></i></div>
-      <h2 id="accessModalTitle">Confirm EasyFile access</h2>
-      <p id="accessModalCopy">Enter the email linked to your EasyFile referral account.</p>
-      <form id="accessForm">
-        <label class="bank-field"><span>Email address</span><input id="accessEmail" type="email" autocomplete="email" required placeholder="you@example.com"></label>
-        <p id="accessMessage" class="bank-modal-message" aria-live="polite"></p>
-        <button class="bank-button bank-button-primary bank-button-wide" type="submit">Continue</button>
-      </form>
-      <a href="referrals.html" class="bank-modal-link">Open referral dashboard</a>
-    </div>
-  </section>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
   <script type="module" src="assets/js/easy-bank-statement-converter.js"></script>
+  <script defer src="assets/js/easyfile-product-analytics.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (new URLSearchParams(location.search).get("sample") !== "1") return;
+      const sampleButton = document.getElementById("sampleButton");
+      if (sampleButton && !sampleButton.disabled) sampleButton.click();
+    }, { once: true });
+  </script>
 <script defer src="scripts/sync-nav.js"></script>
 </body>
 </html>
