@@ -33,7 +33,7 @@
       --warn:#f59e0b;
       --bad:#ef4444;
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      --sans: var(--easyfile-font, Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif);
     }
     html,body{font-family:var(--sans); background:var(--bg); color:var(--ink);}
     .container{max-width:1200px;}
@@ -133,7 +133,7 @@
     <div class="flex items-center gap-3">
       <div class="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black">AM</div>
       <div>
-        <h1 class="text-2xl font-extrabold text-blue-700">EasyAM</h1>
+        <h1 class="text-2xl font-extrabold text-blue-700">EasyASM</h1>
         <p class="text-sm text-gray-500">Feature-Rich Asset Management</p>
       </div>
     </div>
@@ -160,8 +160,8 @@
         <div class="flex-1">
           <h3 class="text-sm font-extrabold text-slate-900">Quick flow</h3>
           <div class="text-sm text-slate-600 mt-1">
-            1) Company + asset owner â†' 2) Add assets (category, serial, value, location) â†' 3) Assign to users/branches â†'
-            4) Track warranty/service + status â†' 5) Export/print asset register & audit list.
+            1) Company + asset owner → 2) Add assets (category, serial, value, location) → 3) Assign to users/branches →
+            4) Track warranty/service + status → 5) Export/print asset register & audit list.
           </div>
         </div>
       </div>
@@ -626,7 +626,7 @@
 
     <footer class="mt-10 mb-6 text-center text-xs text-gray-500 no-print">
       <div class="font-bold">EasyASM</div>
-      <div>Offline-first asset register â€¢ Templates â€¢ CSV/JSON import/export â€¢ Print-friendly manual mode</div>
+      <div>Offline-first asset register • Templates • CSV/JSON import/export • Print-friendly manual mode</div>
     </footer>
   </main>
 
@@ -1518,7 +1518,7 @@
             <tr>
               <td>
                 <div class="font-extrabold">${escapeHtml(t.name)}</div>
-                <div class="help">${escapeHtml(t.app||"EasyASM")} â€¢ ${escapeHtml(t.version||"")}</div>
+                <div class="help">${escapeHtml(t.app||"EasyASM")} • ${escapeHtml(t.version||"")}</div>
               </td>
               <td>${fmtShort(t.updatedAt)}</td>
               <td class="no-print">
