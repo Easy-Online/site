@@ -1,27 +1,308 @@
 <!DOCTYPE html>
-<html lang="en-ZA"><head>
+<html lang="en-ZA">
+<head>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9270041066336676" crossorigin="anonymous"></script>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Contact and Support | EasyFile</title><meta name="description" content="How to report an EasyFile problem, request a correction or get product support safely.">
-  <meta name="robots" content="index, follow"><link rel="canonical" href="https://www.easyfile.co.za/contact.html">
-  <link rel="stylesheet" href="assets/css/easyfile-brand-tokens.css"><link rel="stylesheet" href="assets/css/easyfile-site.css"><link rel="stylesheet" href="assets/css/easyfile-navigation.css">
-  <!-- EASYFILE_FAVICONS -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact and Support | EasyFile</title>
+  <meta name="description" content="Get intuitive EasyFile support, escalate a case, or request a phone or Microsoft Teams support meeting.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://www.easyfile.co.za/contact.html">
+  <link rel="stylesheet" href="assets/css/easyfile-brand-tokens.css">
+  <link rel="stylesheet" href="assets/css/easyfile-site.css">
+  <link rel="stylesheet" href="assets/css/easyfile-navigation.css">
   <link rel="icon" href="logo-b.png" type="image/png">
   <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
   <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
   <link rel="apple-touch-icon" href="logo-b.png">
-</head><body class="easyfile-app">
-<!-- NAV_SYNC -->
-<div class="easyfile-nav no-print">
-  <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
-</div>
-<div class="easyfile-nav no-print"><a class="easyfile-nav-brand" href="index.html"><strong>EasyFile</strong></a></div>
-<main class="easyfile-main" style="max-width:900px;margin:0 auto;padding:3rem 1.25rem;line-height:1.75">
-  <p><a href="index.html">Back to EasyFile</a></p><h1>Contact and Support</h1>
-  <p>For product questions, corrections and technical problems, use the <a href="https://github.com/Easy-Online-Office/site/issues">EasyFile public issue tracker</a>.</p>
-  <h2>What to include</h2><p>Tell us which module you used, what you expected, what happened, and your browser and device type. Include a screenshot only after removing confidential information.</p>
-  <h2>Protect your information</h2><p>Do not post bank statements, identity numbers, passwords, referral identifiers, customer lists, payroll information or financial account details. Use a small fictional example.</p>
-  <h2>Before reporting</h2><p>Refresh the page, confirm your browser is current, and export important local data before clearing browser storage. For conversion errors, compare the row with the source and describe the bank layout without attaching the statement.</p>
-  <h2>Independent service</h2><p>EasyFile cannot support SARS e@syFile, a bank, Sage or another third-party product. Contact that organisation directly for its service.</p>
-</main><script defer src="scripts/sync-nav.js"></script>
-</body></html>
+  <style>
+    .support-page { max-width: 70rem; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
+    .support-hero { max-width: 46rem; margin-bottom: 2rem; }
+    .support-eyebrow { margin: 0 0 .6rem; color: var(--easyfile-blue-strong); font-size: .82rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+    .support-hero h1 { margin: 0; font-size: clamp(2rem, 5vw, 3.25rem); line-height: 1.1; }
+    .support-hero p { max-width: 42rem; color: var(--easyfile-muted); font-size: 1.05rem; }
+    .support-grid { display: grid; gap: 1.25rem; grid-template-columns: minmax(0, 1.45fr) minmax(17rem, .8fr); }
+    .support-panel { border: 1px solid var(--easyfile-border); border-radius: var(--easyfile-radius); background: var(--easyfile-surface); box-shadow: var(--easyfile-shadow); }
+    .assistant-panel { display: flex; min-height: 39rem; flex-direction: column; overflow: hidden; }
+    .assistant-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; padding: 1.25rem; border-bottom: 1px solid var(--easyfile-border); }
+    .assistant-head h2, .contact-card h2, .booking-panel h2 { margin: 0; font-size: 1.2rem; }
+    .assistant-head p, .contact-card p, .booking-panel p { margin: .35rem 0 0; color: var(--easyfile-muted); }
+    .assistant-status { flex: 0 0 auto; border-radius: 999px; padding: .32rem .6rem; background: var(--easyfile-blue-soft); color: var(--easyfile-blue-strong); font-size: .75rem; font-weight: 800; }
+    .chat-log { display: flex; flex: 1; flex-direction: column; gap: .85rem; overflow: auto; padding: 1.25rem; }
+    .chat-message { width: fit-content; max-width: min(34rem, 88%); border-radius: 1rem; padding: .75rem .9rem; line-height: 1.5; }
+    .chat-message.assistant { align-self: flex-start; background: var(--easyfile-bg); color: var(--easyfile-text); }
+    .chat-message.user { align-self: flex-end; background: var(--easyfile-blue); color: #fff; }
+    .chat-message p { margin: 0; }
+    .chat-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .7rem; }
+    .support-chip { border: 1px solid var(--easyfile-border); border-radius: 999px; padding: .48rem .72rem; background: var(--easyfile-surface); color: var(--easyfile-text); font: inherit; font-size: .84rem; font-weight: 700; cursor: pointer; }
+    .support-chip:hover, .support-chip:focus-visible { border-color: var(--easyfile-blue); background: var(--easyfile-blue-soft); }
+    .chat-compose { border-top: 1px solid var(--easyfile-border); padding: 1rem; }
+    .quick-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: .75rem; }
+    .chat-form { display: flex; gap: .6rem; }
+    .chat-form input { min-width: 0; flex: 1; border: 1px solid var(--easyfile-border); border-radius: .7rem; padding: .75rem; background: var(--easyfile-surface); color: var(--easyfile-text); font: inherit; }
+    .support-button { display: inline-flex; align-items: center; justify-content: center; border: 1px solid transparent; border-radius: .7rem; padding: .7rem 1rem; background: var(--easyfile-blue); color: #fff; font: inherit; font-weight: 800; text-decoration: none; cursor: pointer; }
+    .support-button:hover, .support-button:focus-visible { background: var(--easyfile-blue-strong); color: #fff; }
+    .support-button.secondary { border-color: var(--easyfile-border); background: var(--easyfile-surface); color: var(--easyfile-text); }
+    .support-button.secondary:hover, .support-button.secondary:focus-visible { background: var(--easyfile-bg); color: var(--easyfile-text); }
+    .contact-stack { display: grid; align-content: start; gap: 1.25rem; }
+    .contact-card, .booking-panel { padding: 1.25rem; }
+    .contact-card ul { margin: .85rem 0 0; padding-left: 1.2rem; color: var(--easyfile-muted); }
+    .contact-card li + li { margin-top: .45rem; }
+    .contact-links { display: grid; gap: .65rem; margin-top: 1rem; }
+    .contact-links a { word-break: break-word; }
+    .privacy-note { margin: 0; border-radius: .75rem; padding: .8rem; background: var(--easyfile-bg); color: var(--easyfile-muted); font-size: .88rem; }
+    .booking-panel { margin-top: 1.25rem; }
+    .booking-panel[hidden] { display: none; }
+    .booking-form { display: grid; gap: .9rem; margin-top: 1rem; }
+    .booking-form label { display: grid; gap: .35rem; color: var(--easyfile-text); font-weight: 700; }
+    .booking-form input, .booking-form select, .booking-form textarea { width: 100%; border: 1px solid var(--easyfile-border); border-radius: .65rem; padding: .7rem; background: var(--easyfile-surface); color: var(--easyfile-text); font: inherit; }
+    .booking-form textarea { min-height: 5rem; resize: vertical; }
+    .booking-split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
+    .booking-actions { display: flex; flex-wrap: wrap; gap: .65rem; }
+    .support-footer { margin-top: 2rem; color: var(--easyfile-muted); font-size: .9rem; }
+    .support-footer a { color: inherit; }
+    @media (max-width: 780px) { .support-grid { grid-template-columns: 1fr; } .assistant-panel { min-height: 33rem; } }
+    @media (max-width: 460px) { .support-page { padding-inline: 1rem; } .assistant-head { align-items: flex-start; flex-direction: column; } .chat-form, .booking-split { grid-template-columns: 1fr; flex-direction: column; } .chat-form .support-button { width: 100%; } }
+  </style>
+</head>
+<body class="easyfile-app">
+  <!-- NAV_SYNC -->
+  <div class="easyfile-nav no-print">
+    <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
+  </div>
+
+  <main class="easyfile-main support-page">
+    <section class="support-hero" aria-labelledby="support-title">
+      <p class="support-eyebrow">EasyFile customer support</p>
+      <h1 id="support-title">Helpful support, when you need it.</h1>
+      <p>Start with the Support Assistant for fast guidance. If your question needs a person, it will guide you to email, WhatsApp, or a support call request.</p>
+    </section>
+
+    <section class="support-grid" aria-label="EasyFile support options">
+      <div class="support-panel assistant-panel">
+        <div class="assistant-head">
+          <div>
+            <h2>EasyFile Support Assistant</h2>
+            <p>Describe what you need in your own words.</p>
+          </div>
+          <span class="assistant-status">Private in your browser</span>
+        </div>
+
+        <div id="chatLog" class="chat-log" role="log" aria-live="polite" aria-label="Support Assistant conversation">
+          <div class="chat-message assistant">
+            <p>Hello — I can help with EasyFile modules, exports, browser issues, and next support steps. What would you like help with?</p>
+          </div>
+        </div>
+
+        <div class="chat-compose">
+          <div class="quick-actions" aria-label="Suggested support topics">
+            <button class="support-chip" type="button" data-prompt="I need help with a module">Help with a module</button>
+            <button class="support-chip" type="button" data-prompt="I cannot export my work">Export or backup help</button>
+            <button class="support-chip" type="button" data-prompt="Something is not working">Report a problem</button>
+            <button class="support-chip" type="button" data-prompt="I need to schedule a support meeting">Schedule support</button>
+          </div>
+          <form id="chatForm" class="chat-form">
+            <label class="sr-only" for="chatInput">Your support question</label>
+            <input id="chatInput" type="text" maxlength="600" autocomplete="off" placeholder="For example: I need help exporting an invoice" required>
+            <button class="support-button" type="submit">Ask</button>
+          </form>
+        </div>
+      </div>
+
+      <aside class="contact-stack" aria-label="Contact support directly">
+        <section class="support-panel contact-card">
+          <h2>Second-level support</h2>
+          <p>Use these channels when the Support Assistant has not resolved your question.</p>
+          <div class="contact-links">
+            <a class="support-button secondary" href="mailto:support@easyfile.co.za?subject=EasyFile%20support%20request">Email support@easyfile.co.za</a>
+            <a class="support-button secondary" href="https://wa.me/27686493591?text=Hello%20EasyFile%20Support%2C%20I%20need%20help%20with%3A%20" target="_blank" rel="noopener">Message support on WhatsApp</a>
+          </div>
+          <ul>
+            <li>Include the module, what you expected, and what happened.</li>
+            <li>Use a small fictional example if you need to show an error.</li>
+            <li>For reproducible public bugs, use the <a href="https://github.com/Easy-Online-Office/site/issues">issue tracker</a>.</li>
+          </ul>
+        </section>
+
+        <section class="support-panel contact-card">
+          <h2>Keep your information safe</h2>
+          <p class="privacy-note">Do not paste passwords, bank statements, identity numbers, payroll records, customer lists, financial account details, or full screenshots containing confidential data into chat, email, WhatsApp, or a public issue.</p>
+        </section>
+      </aside>
+    </section>
+
+    <section id="bookingPanel" class="support-panel booking-panel" hidden aria-labelledby="booking-title">
+      <h2 id="booking-title">Request a support call or Teams meeting</h2>
+      <p>Choose your preferred time and format. Support will confirm availability and send a Microsoft Teams link when requested.</p>
+      <form id="bookingForm" class="booking-form">
+        <div class="booking-split">
+          <label for="bookingType">Meeting type
+            <select id="bookingType" name="meetingType">
+              <option value="Phone call">Phone call</option>
+              <option value="Microsoft Teams meeting">Microsoft Teams meeting</option>
+            </select>
+          </label>
+          <label for="bookingName">Your name
+            <input id="bookingName" name="name" type="text" maxlength="120" autocomplete="name" required>
+          </label>
+        </div>
+        <div class="booking-split">
+          <label for="bookingEmail">Email for confirmation
+            <input id="bookingEmail" name="email" type="email" maxlength="160" autocomplete="email" required>
+          </label>
+          <label for="bookingPhone">Phone number (optional)
+            <input id="bookingPhone" name="phone" type="tel" maxlength="40" autocomplete="tel">
+          </label>
+        </div>
+        <div class="booking-split">
+          <label for="bookingDate">Preferred date
+            <input id="bookingDate" name="date" type="date" required>
+          </label>
+          <label for="bookingTime">Preferred time and time zone
+            <input id="bookingTime" name="time" type="text" maxlength="120" placeholder="For example: 10:00–12:00 SAST" required>
+          </label>
+        </div>
+        <label for="bookingTopic">What do you need help with?
+          <textarea id="bookingTopic" name="topic" maxlength="800" placeholder="Module, issue, and a short non-confidential description" required></textarea>
+        </label>
+        <p class="privacy-note">Submitting opens a pre-addressed email for you to review and send. EasyFile does not see these details until you choose to send the message.</p>
+        <div class="booking-actions">
+          <button class="support-button" type="submit">Prepare email request</button>
+          <button id="bookingWhatsApp" class="support-button secondary" type="button">Prepare WhatsApp request</button>
+        </div>
+      </form>
+    </section>
+
+    <p class="support-footer">Before reporting a browser problem, refresh the page, make sure your browser is current, and export important local data before clearing browser storage. EasyFile cannot support SARS e@syFile, banks, Sage, or other third-party products.</p>
+  </main>
+
+  <script>
+    (() => {
+      const chatLog = document.getElementById("chatLog");
+      const chatForm = document.getElementById("chatForm");
+      const chatInput = document.getElementById("chatInput");
+      const bookingPanel = document.getElementById("bookingPanel");
+      const bookingForm = document.getElementById("bookingForm");
+      const bookingDate = document.getElementById("bookingDate");
+      const whatsappButton = document.getElementById("bookingWhatsApp");
+
+      bookingDate.min = new Date().toISOString().slice(0, 10);
+
+      function addMessage(role, text, actionLabel) {
+        const message = document.createElement("div");
+        message.className = "chat-message " + role;
+        const paragraph = document.createElement("p");
+        paragraph.textContent = text;
+        message.appendChild(paragraph);
+        if (actionLabel) {
+          const actions = document.createElement("div");
+          actions.className = "chat-actions";
+          const button = document.createElement("button");
+          button.className = "support-chip";
+          button.type = "button";
+          button.textContent = actionLabel;
+          button.addEventListener("click", showBooking);
+          actions.appendChild(button);
+          message.appendChild(actions);
+        }
+        chatLog.appendChild(message);
+        chatLog.scrollTop = chatLog.scrollHeight;
+      }
+
+      function showBooking() {
+        bookingPanel.hidden = false;
+        bookingPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+        document.getElementById("bookingType").focus();
+      }
+
+      function answer(question) {
+        const query = question.toLowerCase();
+        if (/schedule|meeting|teams|call|speak|phone/.test(query)) {
+          return { text: "I can help you request a phone call or Microsoft Teams meeting. Choose a preferred date and time, and support will confirm availability.", action: "Request a meeting" };
+        }
+        if (/bank|statement|convert|csv|ofx|qif/.test(query)) {
+          return { text: "For bank conversion, check that the source layout is supported and compare one non-confidential row with the output. If an amount or date is wrong, report the module and a fictional example. Export your original work before retrying." };
+        }
+        if (/export|backup|download|pdf|word|excel|csv/.test(query)) {
+          return { text: "Try the page’s export action again after refreshing. Keep the downloaded file and export important browser-local records before clearing storage. If export still fails, tell support which export type and browser you used." };
+        }
+        if (/invoice|quote|receipt|customer|payroll|asset|inspection|module/.test(query)) {
+          return { text: "I can help you narrow down a module issue. Tell me the module name, the action you selected, what you expected, and what happened. Please use a fictional example rather than customer or financial data." };
+        }
+        if (/error|bug|broken|not work|issue|problem|slow/.test(query)) {
+          return { text: "Please refresh first and check that your browser is current. If the problem continues, include the module, browser/device, steps to reproduce, and the exact non-confidential error message. You can then escalate to email or WhatsApp." };
+        }
+        if (/password|login|account|security|private/.test(query)) {
+          return { text: "For your security, never send a password, bank statement, identity number, customer list, payroll record, or financial-account information. Describe the issue without confidential information, then contact second-level support if needed." };
+        }
+        return { text: "I can help with modules, exports, browser errors, safe troubleshooting, and arranging a support call. Tell me which EasyFile page you were using and what you were trying to do." };
+      }
+
+      function ask(question) {
+        const cleanQuestion = question.trim();
+        if (!cleanQuestion) return;
+        addMessage("user", cleanQuestion);
+        const response = answer(cleanQuestion);
+        addMessage("assistant", response.text, response.action);
+      }
+
+      chatForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        ask(chatInput.value);
+        chatInput.value = "";
+        chatInput.focus();
+      });
+
+      document.querySelectorAll("[data-prompt]").forEach((button) => {
+        button.addEventListener("click", () => ask(button.dataset.prompt || ""));
+      });
+
+      function requestDetails() {
+        const data = new FormData(bookingForm);
+        return {
+          type: String(data.get("meetingType") || "Support call"),
+          name: String(data.get("name") || ""),
+          email: String(data.get("email") || ""),
+          phone: String(data.get("phone") || ""),
+          date: String(data.get("date") || ""),
+          time: String(data.get("time") || ""),
+          topic: String(data.get("topic") || "")
+        };
+      }
+
+      function bookingMessage(details) {
+        return [
+          "Hello EasyFile Support,",
+          "",
+          "I would like to request a " + details.type + ".",
+          "Name: " + details.name,
+          "Email: " + details.email,
+          "Phone: " + (details.phone || "Not supplied"),
+          "Preferred date: " + details.date,
+          "Preferred time: " + details.time,
+          "Support topic: " + details.topic,
+          "",
+          "Please confirm availability" + (details.type === "Microsoft Teams meeting" ? " and send a Teams link." : ".")
+        ].join("\n");
+      }
+
+      bookingForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (!bookingForm.reportValidity()) return;
+        const details = requestDetails();
+        const subject = encodeURIComponent("EasyFile " + details.type + " request");
+        const body = encodeURIComponent(bookingMessage(details));
+        window.location.href = "mailto:support@easyfile.co.za?subject=" + subject + "&body=" + body;
+      });
+
+      whatsappButton.addEventListener("click", () => {
+        if (!bookingForm.reportValidity()) return;
+        const details = requestDetails();
+        const url = "https://wa.me/27686493591?text=" + encodeURIComponent(bookingMessage(details));
+        window.open(url, "_blank", "noopener");
+      });
+    })();
+  </script>
+  <script defer src="scripts/sync-nav.js"></script>
+</body>
+</html>
