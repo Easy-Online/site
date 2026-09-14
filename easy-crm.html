@@ -1167,7 +1167,8 @@ function applyDarkMode(on){
   state.prefs.dark = Boolean(on);
   if(state.prefs.dark) document.body.classList.add("dark");
   else document.body.classList.remove("dark");
-  $("btnDark").innerHTML = `<span class="mono">D</span> ${state.prefs.dark ? "Light" : "Dark"}`;
+  const button = $("btnDark");
+  if(button) button.innerHTML = `<span class="mono">D</span> ${state.prefs.dark ? "Light" : "Dark"}`;
   persist();
 }
 
@@ -1271,8 +1272,10 @@ function init(){
     toast("Activity added.");
   });
 
-  $("btnDark").addEventListener("click", toggleDark);
-  $("btnPrint").addEventListener("click", ()=> window.print());
+  const darkButton = $("btnDark");
+  if(darkButton) darkButton.addEventListener("click", toggleDark);
+  const printButton = $("btnPrint");
+  if(printButton) printButton.addEventListener("click", ()=> window.print());
 
   // keyboard shortcuts
   document.addEventListener("keydown", (e)=>{
