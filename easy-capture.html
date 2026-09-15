@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Easy Capture | EasyFile</title>
+  <meta name="description" content="Capture receipts and supplier invoices, extract VAT and transaction details, review confidence, detect duplicates and post approved expenses into EasyFile." />
+  <link rel="icon" href="logo-b.png" type="image/png">
+  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="logo-b.png">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{
+      --primary:#2563eb; --primary2:#1d4ed8; --bg:#f5f7fb; --card:#fff; --text:#0f172a;
+      --muted:#64748b; --border:#e2e8f0; --danger:#dc2626; --success:#16a34a; --warning:#d97706;
+    }
+    body{background:var(--bg);color:var(--text)}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 10px 28px rgba(2,6,23,.06)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.7rem 1rem;border-radius:10px;font-weight:800;border:1px solid transparent;transition:.15s;min-height:42px}
+    .btn:hover{transform:translateY(-1px)} .btn:focus-visible{outline:3px solid rgba(37,99,235,.25);outline-offset:2px}
+    .btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary2)}
+    .btn-outline{background:#fff;border-color:var(--border);color:var(--text)}.btn-outline:hover{background:#f8fafc;border-color:#cbd5e1}
+    .btn-success{background:var(--success);color:#fff}.btn-warning{background:var(--warning);color:#fff}.btn-danger{background:var(--danger);color:#fff}
+    .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+    .input{width:100%;border:1px solid var(--border);border-radius:10px;padding:.65rem .75rem;background:#fff;color:#0f172a}
+    .input:focus{outline:none;border-color:#60a5fa;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+    .label{display:block;font-size:.72rem;font-weight:900;color:#475569;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.35rem}
+    .pill{display:inline-flex;align-items:center;gap:.35rem;padding:.25rem .55rem;border-radius:999px;font-size:.7rem;font-weight:900;white-space:nowrap}
+    .pill-blue{background:#dbeafe;color:#1d4ed8}.pill-green{background:#dcfce7;color:#166534}.pill-amber{background:#fef3c7;color:#92400e}.pill-red{background:#fee2e2;color:#991b1b}.pill-gray{background:#e2e8f0;color:#334155}
+    .dropzone{border:2px dashed #93c5fd;border-radius:18px;background:#eff6ff;padding:2rem;text-align:center;transition:.15s}
+    .dropzone.drag{border-color:#2563eb;background:#dbeafe}
+    .queue-item{border:1px solid var(--border);border-radius:12px;padding:.85rem;background:#fff;cursor:pointer;transition:.15s}
+    .queue-item:hover,.queue-item.active{border-color:#60a5fa;box-shadow:0 0 0 3px rgba(37,99,235,.08)}
+    .preview-shell{min-height:420px;background:#0f172a;border-radius:14px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+    .preview-shell img{max-width:100%;max-height:70vh;object-fit:contain}.preview-shell iframe{width:100%;height:70vh;border:0;background:#fff}
+    .confidence{height:7px;border-radius:999px;background:#e2e8f0;overflow:hidden}.confidence>span{display:block;height:100%;background:#2563eb}
+    .kpi{font-size:1.65rem;font-weight:900}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+    .sticky-review{position:sticky;top:1rem}
+    .line-table{min-width:760px}.responsive-table{overflow:auto;-webkit-overflow-scrolling:touch}
+    .toast{position:fixed;right:16px;bottom:16px;z-index:9999}.toast>div{max-width:380px;background:rgba(15,23,42,.96);color:#fff;border-radius:12px;padding:12px 14px;box-shadow:0 18px 38px rgba(2,6,23,.28)}
+    @media(max-width:1024px){.sticky-review{position:static}.preview-shell{min-height:300px}.preview-shell iframe{height:55vh}}
+    @media print{.no-print,.easyfile-nav{display:none!important}body{background:#fff}.card{box-shadow:none;border-color:#d1d5db}.preview-shell{display:none}}
+  </style>
+</head>
+<body class="min-h-screen">
+  <div class="easyfile-nav no-print"></div>
+
+  <header class="bg-white border-b border-gray-200 no-print">
+    <div class="container mx-auto px-4 py-4 flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-11 w-11 rounded-xl bg-blue-600 text-white flex items-center justify-center"><i class="fa-solid fa-camera-retro"></i></div>
+        <div>
+          <h1 class="text-2xl font-extrabold text-blue-700">Easy Capture</h1>
+          <p class="text-sm text-gray-500">Receipt & supplier invoice ingestion</p>
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <button class="btn btn-outline" id="btnSeed"><i class="fa-solid fa-flask"></i> Seed Demo</button>
+        <button class="btn btn-outline" id="btnImportBackup"><i class="fa-solid fa-file-import"></i> Import Backup</button>
+        <input id="backupFile" type="file" class="hidden" accept="application/json,.json">
+        <button class="btn btn-outline" id="btnExportBackup"><i class="fa-solid fa-file-export"></i> Export Backup</button>
+        <a class="btn btn-primary" href="easy-expenses.html"><i class="fa-solid fa-receipt"></i> Easy Expenses</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container mx-auto px-4 py-6 md:py-8">
+    <section class="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-6">
+      <div class="card p-4"><div class="text-xs font-black text-slate-500">CAPTURED</div><div id="kCaptured" class="kpi text-blue-700">0</div></div>
+      <div class="card p-4"><div class="text-xs font-black text-slate-500">NEEDS REVIEW</div><div id="kReview" class="kpi text-amber-600">0</div></div>
+      <div class="card p-4"><div class="text-xs font-black text-slate-500">READY</div><div id="kReady" class="kpi text-emerald-700">0</div></div>
+      <div class="card p-4"><div class="text-xs font-black text-slate-500">DUPLICATES</div><div id="kDuplicates" class="kpi text-red-600">0</div></div>
+      <div class="card p-4 col-span-2 lg:col-span-1"><div class="text-xs font-black text-slate-500">THIS MONTH</div><div id="kSpend" class="kpi text-slate-900">R0.00</div></div>
+    </section>
+
+    <section class="card p-5 mb-6 no-print">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
+        <div>
+          <h2 class="text-xl font-black text-slate-900">Capture a receipt or invoice</h2>
+          <p class="text-sm text-slate-600 mt-1">Photos, PNG/JPEG and PDF documents are stored locally in this browser until you explicitly export or post an expense.</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button class="btn btn-primary" id="btnChoose"><i class="fa-solid fa-file-arrow-up"></i> Choose Files</button>
+          <input id="fileInput" type="file" class="hidden" multiple accept="image/*,application/pdf">
+          <button class="btn btn-outline" id="btnCamera"><i class="fa-solid fa-camera"></i> Camera</button>
+          <input id="cameraInput" type="file" class="hidden" accept="image/*" capture="environment">
+        </div>
+      </div>
+      <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Drop receipt or invoice files here">
+        <i class="fa-solid fa-cloud-arrow-up text-4xl text-blue-600"></i>
+        <p class="font-black text-slate-900 mt-3">Drop receipts and supplier invoices here</p>
+        <p class="text-sm text-slate-500 mt-1">Multiple files supported · local-first · SHA-256 duplicate detection</p>
+      </div>
+    </section>
+
+    <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+      <aside class="xl:col-span-4 no-print">
+        <section class="card p-4 mb-4">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <input id="q" class="input sm:col-span-2" placeholder="Search supplier, number, category…">
+            <select id="statusFilter" class="input">
+              <option value="">All statuses</option><option value="needs-review">Needs review</option><option value="ready">Ready</option><option value="processed">Processed</option><option value="duplicate">Duplicate</option><option value="rejected">Rejected</option>
+            </select>
+          </div>
+        </section>
+        <section class="card p-4">
+          <div class="flex items-center justify-between mb-3"><h2 class="font-black text-slate-900">Capture Inbox</h2><span id="queueCount" class="text-xs font-bold text-slate-500">0 items</span></div>
+          <div id="queue" class="space-y-2"></div>
+        </section>
+      </aside>
+
+      <section class="xl:col-span-8">
+        <div id="emptyState" class="card p-10 text-center">
+          <i class="fa-solid fa-file-circle-plus text-5xl text-blue-200"></i>
+          <h2 class="text-xl font-black text-slate-900 mt-4">Select a capture to review</h2>
+          <p class="text-slate-500 mt-2">Upload a document or select an item from the inbox.</p>
+        </div>
+
+        <div id="reviewWorkspace" class="hidden space-y-6">
+          <section class="card p-4 no-print">
+            <div class="flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
+              <div>
+                <div class="flex flex-wrap gap-2 items-center"><h2 id="docTitle" class="text-lg font-black text-slate-900">Document</h2><span id="docStatus"></span></div>
+                <p id="docMeta" class="text-xs text-slate-500 mono mt-1"></p>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <button class="btn btn-outline" id="btnExtract"><i class="fa-solid fa-wand-magic-sparkles"></i> Smart Extract</button>
+                <button class="btn btn-outline" id="btnMarkReady"><i class="fa-solid fa-circle-check"></i> Mark Ready</button>
+                <button class="btn btn-success" id="btnPostExpense"><i class="fa-solid fa-arrow-right-to-bracket"></i> Post to Expenses</button>
+              </div>
+            </div>
+          </section>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="space-y-6">
+              <section class="card p-4 sticky-review">
+                <div class="flex items-center justify-between mb-3"><h3 class="font-black">Original document</h3><button id="btnOpenOriginal" class="text-sm font-bold text-blue-600">Open</button></div>
+                <div id="preview" class="preview-shell"><span class="text-slate-300">Preview unavailable</span></div>
+              </section>
+            </div>
+
+            <div class="space-y-6">
+              <section class="card p-5">
+                <div class="flex items-center justify-between mb-4"><div><h3 class="text-lg font-black">Extracted fields</h3><p class="text-xs text-slate-500">Review before posting.</p></div><span id="overallConfidence" class="pill pill-gray">0% confidence</span></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div><label class="label">Document type</label><select id="fType" class="input"><option value="receipt">Receipt</option><option value="supplier-invoice">Supplier invoice</option><option value="credit-note">Credit note</option><option value="other">Other</option></select></div>
+                  <div><label class="label">Status</label><select id="fStatus" class="input"><option value="needs-review">Needs review</option><option value="ready">Ready</option><option value="processed">Processed</option><option value="duplicate">Duplicate</option><option value="rejected">Rejected</option></select></div>
+                  <div><label class="label">Supplier</label><input id="fSupplier" class="input" placeholder="Supplier name"></div>
+                  <div><label class="label">Supplier VAT number</label><input id="fSupplierVat" class="input" placeholder="VAT registration"></div>
+                  <div><label class="label">Receipt / invoice number</label><input id="fNumber" class="input" placeholder="INV-123"></div>
+                  <div><label class="label">Date</label><input id="fDate" type="date" class="input"></div>
+                  <div><label class="label">Currency</label><select id="fCurrency" class="input"><option value="ZAR">ZAR (R)</option><option value="USD">USD ($)</option><option value="EUR">EUR (€)</option><option value="GBP">GBP (£)</option></select></div>
+                  <div><label class="label">Category</label><input id="fCategory" class="input" list="categoryList" placeholder="Software / Travel / Office"><datalist id="categoryList"><option>Software</option><option>Office</option><option>Travel</option><option>Meals</option><option>Fuel</option><option>Telecommunications</option><option>Hardware</option><option>Professional Services</option><option>Utilities</option><option>Other</option></datalist></div>
+                  <div><label class="label">Amount excl.</label><input id="fExcl" type="number" min="0" step="0.01" class="input"></div>
+                  <div><label class="label">VAT %</label><input id="fVatPct" type="number" min="0" step="0.01" class="input" value="15"></div>
+                  <div><label class="label">VAT amount</label><input id="fVatAmt" type="number" min="0" step="0.01" class="input"></div>
+                  <div><label class="label">Amount incl.</label><input id="fIncl" type="number" min="0" step="0.01" class="input"></div>
+                  <div><label class="label">Payment method</label><select id="fPayment" class="input"><option value="">Unknown</option><option>Card</option><option>EFT</option><option>Cash</option><option>Bank Transfer</option><option>Debit Order</option></select></div>
+                  <div><label class="label">Reference</label><input id="fReference" class="input" placeholder="PO / bank / card reference"></div>
+                  <div class="md:col-span-2"><label class="label">Notes</label><textarea id="fNotes" class="input" rows="3" placeholder="Review notes"></textarea></div>
+                </div>
+                <div class="mt-4"><label class="label">Extraction confidence</label><div class="confidence"><span id="confidenceBar" style="width:0%"></span></div></div>
+              </section>
+
+              <section class="card p-5">
+                <div class="flex flex-col md:flex-row gap-3 md:items-center md:justify-between mb-3"><div><h3 class="font-black">OCR / extracted text</h3><p class="text-xs text-slate-500">Smart Extract uses this evidence. You can paste corrected text before extracting.</p></div><button class="btn btn-outline no-print" id="btnExtractText"><i class="fa-solid fa-font"></i> Extract text</button></div>
+                <textarea id="fText" class="input mono text-xs" rows="10" placeholder="OCR or PDF text will appear here…"></textarea>
+              </section>
+
+              <section class="card p-5">
+                <div class="flex flex-col md:flex-row gap-3 md:items-center md:justify-between mb-3"><div><h3 class="font-black">Line items</h3><p class="text-xs text-slate-500">Optional detailed breakdown.</p></div><button class="btn btn-outline no-print" id="btnAddLine"><i class="fa-solid fa-plus"></i> Add line</button></div>
+                <div class="responsive-table"><table class="line-table w-full text-sm"><thead class="bg-gray-50 text-slate-600"><tr><th class="p-2 text-left">Description</th><th class="p-2">Qty</th><th class="p-2">Unit</th><th class="p-2">VAT %</th><th class="p-2 text-right">Total</th><th class="p-2 no-print"></th></tr></thead><tbody id="lineRows"></tbody></table></div>
+              </section>
+
+              <section class="card p-5">
+                <div class="flex items-center justify-between mb-3"><div><h3 class="font-black">Audit trail</h3><p class="text-xs text-slate-500">Local activity history for this capture.</p></div></div>
+                <div id="audit" class="space-y-2 text-sm"></div>
+              </section>
+
+              <section class="card p-5 no-print">
+                <div class="flex flex-wrap gap-2">
+                  <button class="btn btn-primary" id="btnSave"><i class="fa-solid fa-floppy-disk"></i> Save Review</button>
+                  <button class="btn btn-outline" id="btnExportCsv"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+                  <button class="btn btn-outline" id="btnExportJson"><i class="fa-solid fa-code"></i> Export JSON</button>
+                  <button class="btn btn-outline" id="btnPrint"><i class="fa-solid fa-print"></i> Print Review</button>
+                  <button class="btn btn-warning" id="btnReject"><i class="fa-solid fa-ban"></i> Reject</button>
+                  <button class="btn btn-danger" id="btnDelete"><i class="fa-solid fa-trash"></i> Delete</button>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"><div id="toastMsg"></div></div>
+
+<script>
+"use strict";
+const META_KEY = "easy.capture.v1";
+const EXPENSE_KEY = "easy.expenses.v1";
+const DB_NAME = "easyfile.capture.blobs.v1";
+const DB_STORE = "documents";
+const $ = (id) => document.getElementById(id);
+let records = loadJson(META_KEY, []);
+let activeId = null;
+let activeObjectUrl = null;
+let dbPromise = null;
+let autosaveTimer = null;
+
+function loadJson(key, fallback){ try{ const v=JSON.parse(localStorage.getItem(key)||JSON.stringify(fallback)); return Array.isArray(v)?v:fallback; }catch{return fallback;} }
+function persist(){ localStorage.setItem(META_KEY, JSON.stringify(records)); }
+function nowISO(){ return new Date().toISOString(); }
+function makeId(prefix="CAP"){ return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2,8)}`; }
+function escapeHtml(value){ return String(value??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m])); }
+function money(value, currency="ZAR"){ const n=Number(value||0); const map={ZAR:"R",USD:"$",EUR:"€",GBP:"£"}; return `${map[currency]||currency+" "}${n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,",")}`; }
+function toast(msg){ $("toastMsg").textContent=msg; $("toast").classList.remove("hidden"); clearTimeout(toast._t); toast._t=setTimeout(()=>$("toast").classList.add("hidden"),3000); }
+function formatDateTime(iso){ try{return new Date(iso).toLocaleString("en-ZA");}catch{return iso||"";} }
+function active(){ return records.find(r=>r.id===activeId)||null; }
+function logEvent(record, action, detail=""){ record.audit=record.audit||[]; record.audit.unshift({ts:nowISO(),action,detail}); record.updatedAt=nowISO(); }
+
+function openDb(){
+  if(dbPromise) return dbPromise;
+  dbPromise=new Promise((resolve,reject)=>{
+    const req=indexedDB.open(DB_NAME,1);
+    req.onupgradeneeded=()=>{ const db=req.result; if(!db.objectStoreNames.contains(DB_STORE)) db.createObjectStore(DB_STORE,{keyPath:"id"}); };
+    req.onsuccess=()=>resolve(req.result); req.onerror=()=>reject(req.error);
+  });
+  return dbPromise;
+}
+async function putBlob(id,file){ const db=await openDb(); await new Promise((resolve,reject)=>{ const tx=db.transaction(DB_STORE,"readwrite"); tx.objectStore(DB_STORE).put({id,blob:file}); tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error); }); }
+async function getBlob(id){ const db=await openDb(); return new Promise((resolve,reject)=>{ const req=db.transaction(DB_STORE,"readonly").objectStore(DB_STORE).get(id); req.onsuccess=()=>resolve(req.result?.blob||null); req.onerror=()=>reject(req.error); }); }
+async function deleteBlob(id){ const db=await openDb(); return new Promise((resolve,reject)=>{ const tx=db.transaction(DB_STORE,"readwrite"); tx.objectStore(DB_STORE).delete(id); tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error); }); }
+
+async function sha256(file){
+  if(!crypto?.subtle) return "";
+  const hash=await crypto.subtle.digest("SHA-256",await file.arrayBuffer());
+  return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+function statusPill(status){ const map={"needs-review":["pill-amber","Needs review"],ready:["pill-green","Ready"],processed:["pill-blue","Processed"],duplicate:["pill-red","Duplicate"],rejected:["pill-gray","Rejected"]}; const v=map[status]||map["needs-review"]; return `<span class="pill ${v[0]}">${v[1]}</span>`; }
+
+async function ingestFiles(files){
+  for(const file of Array.from(files||[])){
+    if(!file.type.startsWith("image/") && file.type!=="application/pdf"){ toast(`Skipped unsupported file: ${file.name}`); continue; }
+    const hash=await sha256(file);
+    const original=hash?records.find(r=>r.source?.sha256===hash):null;
+    const id=makeId();
+    const record={
+      id,createdAt:nowISO(),updatedAt:nowISO(),status:original?"duplicate":"needs-review",confidence:0,
+      source:{name:file.name,type:file.type,size:file.size,sha256:hash,storage:"indexeddb",duplicateOf:original?.id||null},
+      fields:{type:file.type==="application/pdf"?"supplier-invoice":"receipt",supplier:"",supplierVat:"",number:"",date:"",currency:"ZAR",category:"",amountExcl:"",vatPct:"15",vatAmt:"",amountIncl:"",paymentMethod:"",reference:"",notes:""},
+      extractedText:"",lineItems:[],audit:[]
+    };
+    logEvent(record,"Captured",`${file.name} (${Math.round(file.size/1024)} KB)`);
+    if(original) logEvent(record,"Duplicate detected",`Matches ${original.id}`);
+    await putBlob(id,file); records.unshift(record);
+  }
+  persist(); renderAll();
+  if(records.length && !activeId) selectRecord(records[0].id);
+}
+
+function computeKpis(){
+  $("kCaptured").textContent=records.length;
+  $("kReview").textContent=records.filter(r=>r.status==="needs-review").length;
+  $("kReady").textContent=records.filter(r=>r.status==="ready").length;
+  $("kDuplicates").textContent=records.filter(r=>r.status==="duplicate").length;
+  const ym=new Date().toISOString().slice(0,7); const spend=records.filter(r=>(r.fields?.date||"").startsWith(ym) && r.status!=="rejected").reduce((a,r)=>a+Number(r.fields?.amountIncl||0),0);
+  $("kSpend").textContent=money(spend,"ZAR");
+}
+function renderQueue(){
+  const q=$("q").value.trim().toLowerCase(); const sf=$("statusFilter").value;
+  const filtered=records.filter(r=>{ const f=r.fields||{}; const hay=`${r.source?.name} ${f.supplier} ${f.number} ${f.category}`.toLowerCase(); return (!q||hay.includes(q))&&(!sf||r.status===sf); });
+  $("queueCount").textContent=`${filtered.length} item${filtered.length===1?"":"s"}`;
+  $("queue").innerHTML=filtered.length?filtered.map(r=>{
+    const f=r.fields||{}; const total=Number(f.amountIncl||0); return `<article class="queue-item ${r.id===activeId?"active":""}" data-id="${r.id}"><div class="flex items-start justify-between gap-2"><div class="min-w-0"><p class="font-black text-slate-900 truncate">${escapeHtml(f.supplier||r.source?.name||"Untitled capture")}</p><p class="text-xs text-slate-500 truncate mt-1">${escapeHtml(f.number||r.source?.name||"")}</p></div>${statusPill(r.status)}</div><div class="flex items-center justify-between mt-3 text-xs"><span class="text-slate-500">${escapeHtml(f.date||new Date(r.createdAt).toISOString().slice(0,10))}</span><strong class="mono">${total?money(total,f.currency||"ZAR"):"—"}</strong></div></article>`;
+  }).join(""):'<div class="text-center py-8 text-slate-500"><i class="fa-solid fa-inbox text-3xl text-slate-300"></i><p class="mt-2">No captures found.</p></div>';
+  $("queue").querySelectorAll("[data-id]").forEach(el=>el.addEventListener("click",()=>selectRecord(el.dataset.id)));
+}
+function renderAll(){ computeKpis(); renderQueue(); if(activeId) renderReview(); }
+
+async function selectRecord(id){ activeId=id; $("emptyState").classList.add("hidden"); $("reviewWorkspace").classList.remove("hidden"); renderAll(); await renderPreview(); }
+
+function renderReview(){
+  const r=active(); if(!r)return; const f=r.fields||{};
+  $("docTitle").textContent=f.supplier||r.source?.name||"Document"; $("docStatus").innerHTML=statusPill(r.status);
+  $("docMeta").textContent=`${r.id} · ${r.source?.type||""} · ${Math.round((r.source?.size||0)/1024)} KB${r.source?.duplicateOf?` · duplicate of ${r.source.duplicateOf}`:""}`;
+  $("fType").value=f.type||"other"; $("fStatus").value=r.status||"needs-review"; $("fSupplier").value=f.supplier||""; $("fSupplierVat").value=f.supplierVat||""; $("fNumber").value=f.number||""; $("fDate").value=f.date||"";
+  $("fCurrency").value=f.currency||"ZAR"; $("fCategory").value=f.category||""; $("fExcl").value=f.amountExcl??""; $("fVatPct").value=f.vatPct??"15"; $("fVatAmt").value=f.vatAmt??""; $("fIncl").value=f.amountIncl??""; $("fPayment").value=f.paymentMethod||""; $("fReference").value=f.reference||""; $("fNotes").value=f.notes||""; $("fText").value=r.extractedText||"";
+  const conf=Math.max(0,Math.min(100,Number(r.confidence||0))); $("overallConfidence").textContent=`${conf}% confidence`; $("overallConfidence").className=`pill ${conf>=85?"pill-green":conf>=60?"pill-amber":"pill-gray"}`; $("confidenceBar").style.width=`${conf}%`;
+  renderLines(); renderAudit();
+}
+
+async function renderPreview(){
+  const r=active(); if(!r)return; if(activeObjectUrl){URL.revokeObjectURL(activeObjectUrl);activeObjectUrl=null;} const blob=await getBlob(r.id); const p=$("preview");
+  if(!blob){ p.innerHTML='<span class="text-slate-300">Original document is not available in this browser.</span>'; return; }
+  activeObjectUrl=URL.createObjectURL(blob);
+  if(blob.type==="application/pdf") p.innerHTML=`<iframe title="PDF preview" src="${activeObjectUrl}#toolbar=1"></iframe>`; else p.innerHTML=`<img src="${activeObjectUrl}" alt="Captured document preview">`;
+}
+
+function readForm(){
+  const r=active(); if(!r)return; r.status=$("fStatus").value; r.fields={type:$("fType").value,supplier:$("fSupplier").value.trim(),supplierVat:$("fSupplierVat").value.trim(),number:$("fNumber").value.trim(),date:$("fDate").value,currency:$("fCurrency").value,category:$("fCategory").value.trim(),amountExcl:$("fExcl").value,vatPct:$("fVatPct").value,vatAmt:$("fVatAmt").value,amountIncl:$("fIncl").value,paymentMethod:$("fPayment").value,reference:$("fReference").value.trim(),notes:$("fNotes").value.trim()}; r.extractedText=$("fText").value; r.updatedAt=nowISO(); }
+function saveReview(action="Review saved"){ const r=active(); if(!r)return; readForm(); logEvent(r,action); persist(); renderAll(); toast(action); }
+function queueAutosave(){ clearTimeout(autosaveTimer); autosaveTimer=setTimeout(()=>{ if(!active())return; readForm(); persist(); computeKpis(); renderQueue(); },500); }
+
+function recalcAmounts(){
+  const excl=Number($("fExcl").value||0), pct=Number($("fVatPct").value||0), vat=Number($("fVatAmt").value||0), incl=Number($("fIncl").value||0);
+  if(document.activeElement===$("fExcl") || document.activeElement===$("fVatPct")){ const v=excl*(pct/100); $("fVatAmt").value=v? v.toFixed(2):""; $("fIncl").value=(excl+v)?(excl+v).toFixed(2):""; }
+  else if(document.activeElement===$("fIncl") && incl>0 && pct>=0){ const base=incl/(1+pct/100); $("fExcl").value=base.toFixed(2); $("fVatAmt").value=(incl-base).toFixed(2); }
+  else if(document.activeElement===$("fVatAmt") && vat>=0 && excl>=0){ $("fIncl").value=(excl+vat).toFixed(2); }
+  queueAutosave();
+}
+
+function classifyCategory(text){ const t=text.toLowerCase(); const rules=[[/microsoft|adobe|software|subscription|cloud|license|licence/,"Software"],[/uber|bolt|flight|airline|hotel|accommodation|travel/,"Travel"],[/fuel|petrol|diesel|shell|engen|bp\b|sasol/,"Fuel"],[/restaurant|coffee|cafe|meal|food/,"Meals"],[/telkom|vodacom|mtn|cell c|internet|fibre|mobile/,"Telecommunications"],[/laptop|computer|monitor|keyboard|mouse|printer|hardware/,"Hardware"],[/electricity|water|utility|municipal/,"Utilities"],[/consult|legal|accounting|professional fee/,"Professional Services"],[/stationery|office|paper|ink|toner/,"Office"]]; for(const [rx,c] of rules){if(rx.test(t))return c;} return "Other"; }
+function firstMoney(lines, labels){ for(const line of lines){ if(labels.some(l=>line.toLowerCase().includes(l))){ const nums=line.match(/(?:R|ZAR|\$|€|£)?\s*([\d\s,.]+\d{2})\b/g); if(nums?.length){ const raw=nums[nums.length-1].replace(/[^\d,.-]/g,"").replace(/,/g,""); const n=Number(raw); if(Number.isFinite(n))return n; } } } return null; }
+function extractFieldsFromText(text){
+  const clean=String(text||"").replace(/\r/g,""); const lines=clean.split("\n").map(x=>x.trim()).filter(Boolean); const joined=lines.join(" "); const out={confidenceParts:[]};
+  const vatReg=joined.match(/(?:VAT(?:\s*(?:NO|NUMBER|REG(?:ISTRATION)?))?[:#\s-]*)(\d{10})/i); if(vatReg){out.supplierVat=vatReg[1];out.confidenceParts.push(92);}
+  const inv=joined.match(/(?:invoice|tax invoice|receipt|document)\s*(?:no|number|#)?\s*[:#-]?\s*([A-Z0-9\/-]{3,})/i); if(inv){out.number=inv[1];out.confidenceParts.push(88);}
+  const dateMatch=joined.match(/\b(20\d{2})[-\/.](0?[1-9]|1[0-2])[-\/.]([0-2]?\d|3[01])\b/) || joined.match(/\b([0-2]?\d|3[01])[-\/.](0?[1-9]|1[0-2])[-\/.](20\d{2})\b/);
+  if(dateMatch){ let y,m,d; if(dateMatch[1].length===4){[,y,m,d]=dateMatch;}else{[,d,m,y]=dateMatch;} out.date=`${y}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`; out.confidenceParts.push(86); }
+  const incl=firstMoney(lines,["total incl","grand total","amount due","total due","total"]); const vat=firstMoney(lines,["vat amount","vat total","vat"]); const excl=firstMoney(lines,["subtotal","sub total","amount excl","total excl"]);
+  if(incl!=null){out.amountIncl=incl.toFixed(2);out.confidenceParts.push(95);} if(vat!=null){out.vatAmt=vat.toFixed(2);out.confidenceParts.push(90);} if(excl!=null){out.amountExcl=excl.toFixed(2);out.confidenceParts.push(88);}
+  if(out.amountIncl && !out.amountExcl){ const total=Number(out.amountIncl), v=out.vatAmt?Number(out.vatAmt):total*(15/115); out.vatAmt=(out.vatAmt||v.toFixed(2)); out.amountExcl=(total-Number(out.vatAmt)).toFixed(2); }
+  const supplier=lines.find(line=>line.length>=3 && line.length<=70 && !/tax invoice|invoice|receipt|vat|date|tel|www\.|email|total/i.test(line)); if(supplier){out.supplier=supplier;out.confidenceParts.push(68);}
+  out.category=classifyCategory(clean); out.confidenceParts.push(out.category==="Other"?55:78);
+  if(/\bZAR\b|\bR\s?\d/.test(joined)) out.currency="ZAR"; else if(/\$/.test(joined)) out.currency="USD"; else if(/€/.test(joined)) out.currency="EUR"; else if(/£/.test(joined)) out.currency="GBP";
+  out.type=/credit note/i.test(joined)?"credit-note":/invoice/i.test(joined)?"supplier-invoice":"receipt";
+  out.confidence=Math.round(out.confidenceParts.reduce((a,b)=>a+b,0)/Math.max(1,out.confidenceParts.length)); return out;
+}
+
+function applyExtraction(out){ const r=active(); if(!r)return; readForm(); const f=r.fields; ["supplier","supplierVat","number","date","currency","category","amountExcl","vatAmt","amountIncl","type"].forEach(k=>{ if(out[k]!=null && out[k]!=="") f[k]=out[k]; }); if(!f.vatPct)f.vatPct="15"; r.confidence=out.confidence||0; if(r.status!=="duplicate"&&r.status!=="processed") r.status=r.confidence>=85?"ready":"needs-review"; logEvent(r,"Smart extraction",`${r.confidence}% confidence`); persist(); renderAll(); toast(`Extraction complete: ${r.confidence}% confidence`); }
+function smartExtract(){ const text=$("fText").value.trim(); if(!text){toast("Extract text or paste OCR text first.");return;} applyExtraction(extractFieldsFromText(text)); }
+
+async function ensureScript(id,src){ if(document.getElementById(id))return; await new Promise((resolve,reject)=>{ const s=document.createElement("script"); s.id=id;s.src=src;s.onload=resolve;s.onerror=()=>reject(new Error(`Could not load ${src}`));document.head.appendChild(s); }); }
+async function extractText(){
+  const r=active(); if(!r)return; const blob=await getBlob(r.id); if(!blob){toast("Original file is unavailable.");return;}
+  $("btnExtractText").disabled=true; $("btnExtractText").innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Extracting…';
+  try{
+    let text="";
+    if(blob.type==="application/pdf"){
+      await ensureScript("pdfjs-lib","https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js");
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+      const pdf=await window.pdfjsLib.getDocument({data:await blob.arrayBuffer()}).promise;
+      for(let p=1;p<=pdf.numPages;p++){ const page=await pdf.getPage(p); const content=await page.getTextContent(); text+=content.items.map(i=>i.str).join(" ")+"\n"; }
+      if(!text.trim()) throw new Error("This PDF appears to be scanned and has no text layer. Capture the page as an image for browser OCR.");
+    } else {
+      await ensureScript("tesseract-lib","https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.1/tesseract.min.js");
+      const result=await window.Tesseract.recognize(blob,"eng",{logger:m=>{ if(m.status==="recognizing text") $("btnExtractText").innerHTML=`<i class="fa-solid fa-spinner fa-spin"></i> OCR ${Math.round((m.progress||0)*100)}%`; }}); text=result.data.text||"";
+    }
+    r.extractedText=text; logEvent(r,"Text extracted",blob.type==="application/pdf"?"PDF text layer":"Browser OCR"); persist(); $("fText").value=text; toast("Text extraction complete."); smartExtract();
+  }catch(err){console.error(err);toast(err.message||"Text extraction failed.");}
+  finally{$("btnExtractText").disabled=false;$("btnExtractText").innerHTML='<i class="fa-solid fa-font"></i> Extract text';}
+}
+
+function renderLines(){ const r=active(); if(!r)return; $("lineRows").innerHTML=(r.lineItems||[]).map((x,i)=>`<tr class="border-t"><td class="p-2"><input class="input line-desc" data-i="${i}" value="${escapeHtml(x.description||"")}"></td><td class="p-2"><input class="input line-qty" data-i="${i}" type="number" min="0" step="0.01" value="${Number(x.qty||1)}"></td><td class="p-2"><input class="input line-unit" data-i="${i}" type="number" min="0" step="0.01" value="${Number(x.unit||0)}"></td><td class="p-2"><input class="input line-vat" data-i="${i}" type="number" min="0" step="0.01" value="${Number(x.vatPct||15)}"></td><td class="p-2 text-right mono">${money(Number(x.qty||0)*Number(x.unit||0),r.fields?.currency||"ZAR")}</td><td class="p-2 no-print"><button class="text-red-600" data-del-line="${i}" title="Delete line"><i class="fa-solid fa-trash"></i></button></td></tr>`).join("")||'<tr><td colspan="6" class="p-5 text-center text-slate-500">No line items.</td></tr>';
+  $("lineRows").querySelectorAll("input[data-i]").forEach(inp=>inp.addEventListener("input",()=>{ const i=Number(inp.dataset.i), item=r.lineItems[i]; item.description=$(`lineRows`).querySelector(`.line-desc[data-i="${i}"]`).value; item.qty=Number($(`lineRows`).querySelector(`.line-qty[data-i="${i}"]`).value||0); item.unit=Number($(`lineRows`).querySelector(`.line-unit[data-i="${i}"]`).value||0); item.vatPct=Number($(`lineRows`).querySelector(`.line-vat[data-i="${i}"]`).value||0); persist(); renderLines(); }));
+  $("lineRows").querySelectorAll("[data-del-line]").forEach(b=>b.addEventListener("click",()=>{r.lineItems.splice(Number(b.dataset.delLine),1);logEvent(r,"Line item removed");persist();renderLines();renderAudit();}));
+}
+function addLine(){ const r=active(); if(!r)return; r.lineItems=r.lineItems||[]; r.lineItems.push({description:"",qty:1,unit:0,vatPct:Number(r.fields?.vatPct||15)}); logEvent(r,"Line item added"); persist(); renderLines(); renderAudit(); }
+function renderAudit(){ const r=active(); if(!r)return; $("audit").innerHTML=(r.audit||[]).slice(0,20).map(a=>`<div class="flex gap-3 border-b border-gray-100 pb-2"><div class="text-slate-400 w-36 shrink-0">${escapeHtml(formatDateTime(a.ts))}</div><div><strong>${escapeHtml(a.action)}</strong>${a.detail?`<div class="text-xs text-slate-500">${escapeHtml(a.detail)}</div>`:""}</div></div>`).join("")||'<p class="text-slate-500">No activity yet.</p>'; }
+
+function validateForPost(r){ const f=r.fields||{}; const missing=[]; if(!f.date)missing.push("date"); if(!f.supplier)missing.push("supplier"); if(!(Number(f.amountIncl)>0))missing.push("amount incl."); if(!f.category)missing.push("category"); return missing; }
+function postExpense(){
+  const r=active(); if(!r)return; readForm(); if(r.status==="duplicate"){toast("Resolve the duplicate before posting.");return;} const missing=validateForPost(r); if(missing.length){toast(`Complete required fields: ${missing.join(", ")}.`);return;}
+  const expenses=loadJson(EXPENSE_KEY,[]); if(expenses.some(e=>e.captureId===r.id)){toast("This capture has already been posted.");return;}
+  const f=r.fields; const exp={id:makeId("EXP"),captureId:r.id,date:f.date,supplier:f.supplier,category:f.category,amountExcl:Number(f.amountExcl||0).toFixed(2),vatPct:Number(f.vatPct||0).toFixed(2),vatAmt:Number(f.vatAmt||0).toFixed(2),amountIncl:Number(f.amountIncl||0).toFixed(2),reference:f.reference||f.number||"",notes:[f.notes,`Source: Easy Capture ${r.id}`].filter(Boolean).join(" · "),createdAt:nowISO(),updatedAt:nowISO()};
+  expenses.push(exp); localStorage.setItem(EXPENSE_KEY,JSON.stringify(expenses)); r.status="processed"; r.postedExpenseId=exp.id; logEvent(r,"Posted to Easy Expenses",exp.id); persist(); renderAll(); toast("Expense posted successfully.");
+}
+function markReady(){ const r=active(); if(!r)return; readForm(); const missing=validateForPost(r); if(missing.length){toast(`Complete required fields: ${missing.join(", ")}.`);return;} r.status="ready"; logEvent(r,"Marked ready"); persist(); renderAll(); toast("Capture marked ready."); }
+function reject(){ const r=active(); if(!r)return; r.status="rejected"; $("fStatus").value="rejected"; logEvent(r,"Rejected"); persist(); renderAll(); toast("Capture rejected."); }
+async function removeActive(){ const r=active(); if(!r||!confirm(`Delete ${r.source?.name||r.id}?`))return; records=records.filter(x=>x.id!==r.id); await deleteBlob(r.id); persist(); activeId=null; $("reviewWorkspace").classList.add("hidden"); $("emptyState").classList.remove("hidden"); renderAll(); toast("Capture deleted."); }
+
+function downloadText(text,name,type){ const blob=new Blob([text],{type}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},0); }
+function exportJson(){ const r=active(); if(!r)return; readForm(); downloadText(JSON.stringify(r,null,2),`${r.id}.json`,`application/json`); }
+function csvEscape(v){ return `"${String(v??"").replace(/"/g,'""')}"`; }
+function exportCsv(){ const r=active(); if(!r)return; readForm(); const f=r.fields; const rows=[["Capture ID","Status","Supplier","Supplier VAT","Document Number","Date","Category","Currency","Amount Excl","VAT %","VAT Amount","Amount Incl","Reference","Notes"],[r.id,r.status,f.supplier,f.supplierVat,f.number,f.date,f.category,f.currency,f.amountExcl,f.vatPct,f.vatAmt,f.amountIncl,f.reference,f.notes]]; downloadText(rows.map(x=>x.map(csvEscape).join(",")).join("\n"),`${r.id}.csv`,`text/csv;charset=utf-8`); }
+function exportBackup(){ downloadText(JSON.stringify({version:1,exportedAt:nowISO(),records},null,2),`easy-capture-backup-${new Date().toISOString().slice(0,10)}.json`,`application/json`); toast("Metadata backup exported. Original document files remain in this browser."); }
+function importBackup(file){ const reader=new FileReader(); reader.onload=()=>{ try{ const j=JSON.parse(reader.result); const incoming=Array.isArray(j)?j:j.records; if(!Array.isArray(incoming))throw new Error("Invalid backup"); const ids=new Set(records.map(r=>r.id)); incoming.forEach(r=>{if(r?.id&&!ids.has(r.id))records.push(r);}); persist();renderAll();toast("Backup metadata imported."); }catch(err){toast("Could not import backup.");} }; reader.readAsText(file); }
+
+function seedDemo(){
+  const demo={id:makeId(),createdAt:nowISO(),updatedAt:nowISO(),status:"ready",confidence:96,source:{name:"demo-office-supplies-receipt.txt",type:"text/demo",size:0,sha256:"demo",storage:"metadata-only",duplicateOf:null},fields:{type:"receipt",supplier:"Office Central",supplierVat:"4123456789",number:"REC-2026-0915",date:new Date().toISOString().slice(0,10),currency:"ZAR",category:"Office",amountExcl:"1000.00",vatPct:"15",vatAmt:"150.00",amountIncl:"1150.00",paymentMethod:"Card",reference:"Demo",notes:"Seeded demonstration record"},extractedText:"OFFICE CENTRAL\nTAX RECEIPT REC-2026-0915\nVAT 4123456789\nSubtotal R 1000.00\nVAT R 150.00\nTotal R 1150.00",lineItems:[{description:"Office supplies",qty:1,unit:1000,vatPct:15}],audit:[]}; logEvent(demo,"Demo seeded"); records.unshift(demo); persist();renderAll();selectRecord(demo.id);toast("Demo capture added."); }
+
+function bind(){
+  $("btnChoose").addEventListener("click",()=>$("fileInput").click()); $("fileInput").addEventListener("change",e=>{ingestFiles(e.target.files);e.target.value="";});
+  $("btnCamera").addEventListener("click",()=>$("cameraInput").click()); $("cameraInput").addEventListener("change",e=>{ingestFiles(e.target.files);e.target.value="";});
+  const dz=$("dropzone"); ["dragenter","dragover"].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add("drag");})); ["dragleave","drop"].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove("drag");})); dz.addEventListener("drop",e=>ingestFiles(e.dataTransfer.files)); dz.addEventListener("click",()=>$("fileInput").click()); dz.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" ")$("fileInput").click();});
+  $("q").addEventListener("input",renderQueue); $("statusFilter").addEventListener("change",renderQueue);
+  ["fType","fStatus","fSupplier","fSupplierVat","fNumber","fDate","fCurrency","fCategory","fPayment","fReference","fNotes","fText"].forEach(id=>$(id).addEventListener("input",queueAutosave));
+  ["fExcl","fVatPct","fVatAmt","fIncl"].forEach(id=>$(id).addEventListener("input",recalcAmounts));
+  $("btnSave").addEventListener("click",()=>saveReview()); $("btnExtract").addEventListener("click",smartExtract); $("btnExtractText").addEventListener("click",extractText); $("btnMarkReady").addEventListener("click",markReady); $("btnPostExpense").addEventListener("click",postExpense); $("btnReject").addEventListener("click",reject); $("btnDelete").addEventListener("click",removeActive); $("btnAddLine").addEventListener("click",addLine); $("btnExportCsv").addEventListener("click",exportCsv); $("btnExportJson").addEventListener("click",exportJson); $("btnPrint").addEventListener("click",()=>window.print());
+  $("btnOpenOriginal").addEventListener("click",async()=>{const r=active();if(!r)return;const blob=await getBlob(r.id);if(!blob){toast("Original document unavailable.");return;}const url=URL.createObjectURL(blob);window.open(url,"_blank","noopener");setTimeout(()=>URL.revokeObjectURL(url),60000);});
+  $("btnSeed").addEventListener("click",seedDemo); $("btnExportBackup").addEventListener("click",exportBackup); $("btnImportBackup").addEventListener("click",()=>$("backupFile").click()); $("backupFile").addEventListener("change",e=>{importBackup(e.target.files[0]);e.target.value="";});
+}
+
+document.addEventListener("DOMContentLoaded",()=>{bind();renderAll();if(records.length)selectRecord(records[0].id);});
+</script>
+<script defer src="scripts/sync-nav.js"></script>
+</body>
+</html>
