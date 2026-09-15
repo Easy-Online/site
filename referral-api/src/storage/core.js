@@ -2,6 +2,8 @@
 const { TableClient } = require("@azure/data-tables");
 const crypto = require("crypto");
 const path = require("path");
+const dns = require("dns").promises;
+const net = require("net");
 
 const TABLE_NAME = process.env.EASYFILE_STORAGE_TABLE || "EasyFileStorageConnections";
 const SESSION_TTL_MINUTES = Math.max(15, Number(process.env.EASYFILE_STORAGE_SESSION_TTL_MINUTES || 480));
@@ -35,6 +37,21 @@ function signState(payload){ const body=Buffer.from(JSON.stringify(payload)).toS
 function verifyState(value){ const [body,sig]=String(value||"").split("."); if(!body||!sig)throw new Error("invalid_oauth_state"); const expected=crypto.createHmac("sha256",storageSecret()).update(body).digest("base64url"),a=Buffer.from(sig),b=Buffer.from(expected); if(a.length!==b.length||!crypto.timingSafeEqual(a,b))throw new Error("invalid_oauth_state"); const payload=JSON.parse(Buffer.from(body,"base64url").toString("utf8")); if(!payload.exp||payload.exp<Date.now())throw new Error("expired_oauth_state"); return payload; }
 function validateReturnUrl(input){ const url=new URL(String(input||DEFAULT_RETURN_URL)); if(!allowedOrigins().has(url.origin))throw new Error("return_url_not_allowed"); return url.toString(); }
 function callbackUrl(request,provider){ const explicit=process.env.EASYFILE_STORAGE_CALLBACK_BASE; if(explicit)return `${explicit.replace(/\/$/,"")}/${encodeURIComponent(provider)}`; const host=request.headers.get("x-forwarded-host")||request.headers.get("host"),proto=request.headers.get("x-forwarded-proto")||"https"; if(!host)throw new Error("callback_host_unavailable"); return `${proto}://${host}/api/easy-save/oauth/callback/${encodeURIComponent(provider)}`; }
+
+function isPrivateIp(address){
+  const ip=String(address||"").toLowerCase();
+  if(net.isIP(ip)===4){const p=ip.split(".").map(Number);return p[0]===10||p[0]===127||p[0]===0||(p[0]===169&&p[1]===254)||(p[0]===172&&p[1]>=16&&p[1]<=31)||(p[0]===192&&p[1]===168)||(p[0]===100&&p[1]>=64&&p[1]<=127)||(p[0]===198&&(p[1]===18||p[1]===19))||p[0]>=224;}
+  if(net.isIP(ip)===6)return ip==="::1"||ip==="::"||ip.startsWith("fc")||ip.startsWith("fd")||/^fe[89ab]/.test(ip)||ip.startsWith("::ffff:127.")||ip.startsWith("::ffff:10.")||ip.startsWith("::ffff:192.168.");
+  return false;
+}
+async function assertPublicEndpoint(input){
+  const raw=String(input||"").trim(); if(!raw)throw new Error("storage_endpoint_required");
+  let host=raw; try{host=new URL(raw.includes("://")?raw:`https://${raw}`).hostname;}catch{throw new Error("invalid_storage_endpoint");}
+  const lower=host.toLowerCase(); if(lower==="localhost"||lower.endsWith(".localhost")||lower.endsWith(".local")||lower.endsWith(".internal"))throw new Error("private_storage_endpoint_blocked");
+  const addresses=net.isIP(host)?[{address:host}]:await dns.lookup(host,{all:true,verbatim:true});
+  if(!addresses.length||addresses.some(x=>isPrivateIp(x.address)))throw new Error("private_storage_endpoint_blocked");
+  return host;
+}
 function safeName(name){ const cleaned=path.basename(String(name||"file")).replace(/[\u0000-\u001f]/g,"").trim(); return cleaned||"file"; }
 function joinRemote(...parts){ return "/"+parts.filter(Boolean).map(v=>String(v).replace(/^\/+|\/+$/g,"")).filter(Boolean).join("/"); }
-module.exports={SESSION_TTL_MINUTES,MAX_UPLOAD_BYTES,DEFAULT_RETURN_URL,allowedOrigins,json,preflight,storageSecret,saveSession,loadSession,deleteSession,signState,verifyState,validateReturnUrl,callbackUrl,safeName,joinRemote};
+module.exports={SESSION_TTL_MINUTES,MAX_UPLOAD_BYTES,DEFAULT_RETURN_URL,allowedOrigins,json,preflight,storageSecret,saveSession,loadSession,deleteSession,signState,verifyState,validateReturnUrl,callbackUrl,assertPublicEndpoint,safeName,joinRemote};
