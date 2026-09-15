@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Easy Letterhead | EasyFile</title>
+  <meta name="description" content="Create branded business letters, correspondence and reusable document templates with professional A4 print and export layouts.">
+  <meta name="robots" content="index, follow">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    :root{--accent:#2563eb;--page:#eef3f9;--surface:#fff;--ink:#0f172a;--muted:#64748b;--border:#dbe3ef;--panel:#f8fafc}
+    html[data-theme="dark"]{--page:#07101f;--surface:#0f172a;--ink:#e5e7eb;--muted:#9fb0c8;--border:#26354c;--panel:#111c2f}
+    *{box-sizing:border-box} body{background:var(--page);color:var(--ink)}
+    .shell{width:min(100% - 2rem,112rem);margin:0 auto;padding:2rem 0 4rem}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:1rem;box-shadow:0 14px 34px rgba(15,23,42,.06)}
+    .field label{display:block;font-size:.72rem;font-weight:900;color:var(--muted);margin-bottom:.35rem;text-transform:uppercase;letter-spacing:.045em}
+    .field input,.field textarea,.field select{width:100%;border:1px solid var(--border);border-radius:.7rem;padding:.68rem .75rem;background:var(--surface);color:var(--ink)}
+    .field textarea{resize:vertical;min-height:5rem}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;border-radius:.72rem;padding:.68rem .9rem;font-weight:900;border:1px solid transparent;min-height:2.75rem}
+    .btn-primary{background:#2563eb;color:#fff}.btn-success{background:#15803d;color:#fff}.btn-danger{background:#b91c1c;color:#fff}.btn-outline{background:var(--surface);color:var(--ink);border-color:var(--border)}
+    .toolbar{display:flex;flex-wrap:wrap;gap:.35rem;border:1px solid var(--border);border-radius:.75rem;padding:.45rem;background:var(--panel)}
+    .tool{width:2.35rem;height:2.35rem;border:1px solid var(--border);border-radius:.55rem;background:var(--surface);color:var(--ink);font-weight:900}
+    .tool-wide{width:auto;padding:0 .65rem}
+    .a4-wrap{overflow:auto;padding:.4rem .25rem 2rem}
+    .a4{width:210mm;min-height:297mm;margin:0 auto;background:#fff;color:#111827;box-shadow:0 18px 52px rgba(15,23,42,.2);padding:15mm 17mm 16mm;position:relative;border-top:5px solid var(--accent)}
+    .letter-logo{max-width:52mm;max-height:22mm;object-fit:contain}.signature{max-width:52mm;max-height:22mm;object-fit:contain}
+    .letter-contact{font-size:9.5pt;color:#4b5563;line-height:1.45}.letter-meta{font-size:10pt}.letter-subject{font-weight:800;margin:7mm 0 5mm}.letter-body{font-family:Arial,Helvetica,sans-serif;font-size:11pt;line-height:1.6;min-height:95mm;outline:none}.letter-body:focus{box-shadow:inset 0 0 0 2px rgba(37,99,235,.18);border-radius:3px}
+    .letter-footer{margin-top:14mm;padding-top:3mm;border-top:1px solid #d1d5db;text-align:center;font-size:8pt;color:#6b7280;line-height:1.35}
+    .page-break{break-before:page;page-break-before:always;height:0;border-top:1px dashed #94a3b8;margin:10mm 0}
+    .status{font-size:.84rem;font-weight:800;color:var(--muted)}
+    .history-list{max-height:14rem;overflow:auto;border:1px solid var(--border);border-radius:.75rem}.history-item{display:flex;justify-content:space-between;gap:.6rem;padding:.65rem .75rem;border-bottom:1px solid var(--border);font-size:.8rem}.history-item:last-child{border-bottom:none}
+    .view-switch{display:none}
+    @media(max-width:1100px){.workspace{grid-template-columns:1fr!important}.editor-panel,.preview-panel{grid-column:auto!important}.preview-panel{position:static!important}.a4{transform-origin:top left}}
+    @media(max-width:760px){.shell{width:min(100% - .75rem,112rem);padding-top:1rem}.view-switch{display:flex}.mobile-hide{display:none!important}.a4-wrap{padding:0;overflow:auto}.a4{width:210mm;transform:scale(.43);transform-origin:top left;margin:0;min-height:297mm}.a4-wrap{height:132mm}.toolbar{position:sticky;top:0;z-index:10}.desktop-title-actions{width:100%}}
+    @media(min-width:761px){.preview-panel{position:sticky;top:5rem;align-self:start}}
+    @media print{
+      @page{size:A4;margin:0}
+      body{background:#fff!important}.no-print,.easyfile-nav,.easyfile-footer{display:none!important}.shell{width:auto;margin:0;padding:0}.workspace{display:block!important}.editor-panel{display:none!important}.preview-panel{position:static!important}.a4-wrap{overflow:visible;padding:0}.a4{width:210mm;min-height:297mm;margin:0;box-shadow:none;padding:15mm 17mm 16mm;border-top:5px solid var(--accent)}
+    }
+  </style>
+  <!-- EASYFILE_FAVICONS -->
+  <link rel="icon" href="logo-b.png" type="image/png">
+  <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
+  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="logo-b.png">
+</head>
+<body>
+<!-- NAV_SYNC -->
+<div class="easyfile-nav no-print">
+  <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
+</div>
+<main class="shell">
+    <header class="no-print mb-6 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+      <div>
+        <p class="text-xs font-black uppercase tracking-widest text-blue-600">Documents</p>
+        <h1 class="text-3xl md:text-4xl font-black mt-1">Easy Letterhead</h1>
+        <p class="mt-2" style="color:var(--muted)">Create branded business letters, correspondence and reusable templates with an A4-ready document layout.</p>
+      </div>
+      <div class="desktop-title-actions flex flex-wrap gap-2">
+        <a href="easy-company-profile.html" class="btn btn-outline"><i class="fa-solid fa-building"></i> Company Profile</a>
+        <button id="newLetter" class="btn btn-outline" type="button"><i class="fa-solid fa-file-circle-plus"></i> New</button>
+        <button id="saveLetter" class="btn btn-primary" type="button"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+      </div>
+    </header>
+
+    <div id="profileWarning" class="no-print hidden mb-5 rounded-xl border border-yellow-300 bg-yellow-50 text-yellow-900 p-4 text-sm">
+      <strong>No shared company profile is configured.</strong> <a class="underline font-black" href="easy-company-profile.html">Set up Easy Company Profile</a> so your logo and legal/contact details are automatically reused.
+    </div>
+
+    <div class="view-switch no-print gap-2 mb-4">
+      <button class="btn btn-primary flex-1" id="showEditor" type="button"><i class="fa-solid fa-pen"></i> Edit</button>
+      <button class="btn btn-outline flex-1" id="showPreview" type="button"><i class="fa-solid fa-eye"></i> Preview</button>
+    </div>
+
+    <div class="workspace grid grid-cols-1 xl:grid-cols-12 gap-6">
+      <section id="editorPanel" class="editor-panel card p-5 xl:col-span-5 no-print">
+        <div class="flex items-center justify-between gap-3 mb-5">
+          <div><h2 class="text-xl font-black">Letter details</h2><p class="text-xs mt-1" style="color:var(--muted)">Autosaves locally while you work.</p></div>
+          <span id="autosaveStatus" class="status">Ready</span>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="field md:col-span-2"><label for="templateSelect">Template</label><select id="templateSelect"></select></div>
+          <div class="field"><label for="letterNumber">Letter number</label><div class="flex gap-2"><input id="letterNumber"><button id="nextNumber" class="btn btn-outline" type="button" title="Generate next letter number"><i class="fa-solid fa-wand-magic-sparkles"></i></button></div></div>
+          <div class="field"><label for="letterDate">Date</label><input id="letterDate" type="date"></div>
+          <div class="field"><label for="ourReference">Our reference</label><input id="ourReference" placeholder="Optional"></div>
+          <div class="field"><label for="yourReference">Your reference</label><input id="yourReference" placeholder="Optional"></div>
+        </div>
+
+        <div class="mt-6">
+          <h3 class="font-black mb-3">Recipient</h3>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="field"><label for="recipientName">Name</label><input id="recipientName" placeholder="Recipient name"></div>
+            <div class="field"><label for="recipientTitle">Title</label><input id="recipientTitle" placeholder="Job title"></div>
+            <div class="field md:col-span-2"><label for="recipientCompany">Organisation</label><input id="recipientCompany" placeholder="Company / organisation"></div>
+            <div class="field md:col-span-2"><label for="recipientAddress">Address</label><textarea id="recipientAddress" placeholder="Street, suburb, city, province, postal code"></textarea></div>
+            <div class="field"><label for="recipientEmail">Email</label><input id="recipientEmail" type="email"></div>
+            <div class="field"><label for="recipientPhone">Phone</label><input id="recipientPhone" type="tel"></div>
+          </div>
+        </div>
+
+        <div class="mt-6 grid gap-4">
+          <div class="field"><label for="subject">Subject / RE</label><input id="subject" placeholder="Subject of correspondence"></div>
+          <div class="field"><label for="salutation">Salutation</label><input id="salutation" value="Dear Sir/Madam"></div>
+          <div class="field"><label for="closing">Closing</label><input id="closing" value="Yours sincerely"></div>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="field"><label for="senderName">Sender</label><input id="senderName"></div>
+            <div class="field"><label for="senderTitle">Sender title</label><input id="senderTitle"></div>
+          </div>
+        </div>
+
+        <div class="mt-6">
+          <div class="flex items-end justify-between gap-3 mb-2"><div><h3 class="font-black">Letter body</h3><p class="text-xs" style="color:var(--muted)">Format the live document body directly.</p></div></div>
+          <div class="toolbar mb-2" id="formatToolbar" aria-label="Letter formatting toolbar">
+            <button class="tool" type="button" data-cmd="bold" title="Bold"><i class="fa-solid fa-bold"></i></button>
+            <button class="tool" type="button" data-cmd="italic" title="Italic"><i class="fa-solid fa-italic"></i></button>
+            <button class="tool" type="button" data-cmd="underline" title="Underline"><i class="fa-solid fa-underline"></i></button>
+            <button class="tool" type="button" data-cmd="insertUnorderedList" title="Bullet list"><i class="fa-solid fa-list-ul"></i></button>
+            <button class="tool" type="button" data-cmd="insertOrderedList" title="Numbered list"><i class="fa-solid fa-list-ol"></i></button>
+            <button class="tool" type="button" data-cmd="justifyLeft" title="Align left"><i class="fa-solid fa-align-left"></i></button>
+            <button class="tool" type="button" data-cmd="justifyCenter" title="Align centre"><i class="fa-solid fa-align-center"></i></button>
+            <button class="tool" type="button" data-cmd="justifyRight" title="Align right"><i class="fa-solid fa-align-right"></i></button>
+            <button class="tool tool-wide" type="button" id="insertLink"><i class="fa-solid fa-link"></i> Link</button>
+            <button class="tool tool-wide" type="button" id="insertPageBreak"><i class="fa-solid fa-file"></i> Page break</button>
+          </div>
+        </div>
+
+        <div class="mt-6 border-t pt-5" style="border-color:var(--border)">
+          <div class="flex flex-wrap gap-2">
+            <button id="saveTemplate" class="btn btn-outline" type="button"><i class="fa-solid fa-bookmark"></i> Save template</button>
+            <button id="deleteTemplate" class="btn btn-outline" type="button"><i class="fa-solid fa-trash"></i> Delete custom template</button>
+          </div>
+        </div>
+
+        <div class="mt-6">
+          <div class="flex items-center justify-between mb-2"><h3 class="font-black">Saved letters</h3><button id="clearHistory" type="button" class="text-xs font-black text-red-600">Clear history</button></div>
+          <div id="historyList" class="history-list"></div>
+        </div>
+      </section>
+
+      <section id="previewPanel" class="preview-panel xl:col-span-7">
+        <div class="no-print card p-3 mb-3 flex flex-wrap gap-2 items-center justify-between">
+          <div class="status" id="documentStatus">Draft</div>
+          <div class="flex flex-wrap gap-2">
+            <button id="printPdf" class="btn btn-danger" type="button"><i class="fa-solid fa-file-pdf"></i> Print / Save PDF</button>
+            <button id="exportWord" class="btn btn-primary" type="button"><i class="fa-solid fa-file-word"></i> Word</button>
+            <button id="exportHtml" class="btn btn-outline" type="button"><i class="fa-solid fa-code"></i> HTML</button>
+          </div>
+        </div>
+        <div class="a4-wrap">
+          <article id="letterPage" class="a4" aria-label="A4 letter preview">
+            <header class="flex justify-between gap-8 items-start">
+              <div>
+                <img id="letterLogo" class="letter-logo hidden mb-3" alt="Company logo">
+                <div id="companyDisplayName" class="text-2xl font-black"></div>
+                <div id="companySlogan" class="text-sm text-gray-500 mt-1"></div>
+              </div>
+              <div class="letter-contact text-right">
+                <div id="companyLegalName"></div>
+                <div id="companyReg"></div>
+                <div id="companyVat"></div>
+                <div id="companyPhone"></div>
+                <div id="companyEmail"></div>
+                <div id="companyWebsite"></div>
+              </div>
+            </header>
+            <div id="companyAddress" class="letter-contact mt-3 whitespace-pre-line"></div>
+
+            <section class="mt-8 grid grid-cols-2 gap-8 letter-meta">
+              <div>
+                <div id="recipientBlock" class="whitespace-pre-line"></div>
+              </div>
+              <div class="text-right">
+                <div><strong>Date:</strong> <span id="pDate"></span></div>
+                <div><strong>Letter:</strong> <span id="pNumber"></span></div>
+                <div id="pOurRefRow"><strong>Our ref:</strong> <span id="pOurRef"></span></div>
+                <div id="pYourRefRow"><strong>Your ref:</strong> <span id="pYourRef"></span></div>
+              </div>
+            </section>
+
+            <div id="pSubject" class="letter-subject"></div>
+            <div id="pSalutation" class="mb-4 text-sm"></div>
+            <div id="letterBody" class="letter-body" contenteditable="true" spellcheck="true" aria-label="Editable letter body"></div>
+            <div class="mt-8 text-sm">
+              <div id="pClosing" class="mb-5"></div>
+              <img id="letterSignature" class="signature hidden mb-2" alt="Signature">
+              <div id="pSender" class="font-black"></div>
+              <div id="pSenderTitle" class="text-gray-500"></div>
+            </div>
+
+            <footer class="letter-footer">
+              <div id="pFooter"></div>
+              <div id="pDisclaimer" class="mt-1"></div>
+            </footer>
+          </article>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="assets/js/easyfile-company-profile.js"></script>
+  <script>
+  (function(){
+    "use strict";
+    const $=id=>document.getElementById(id);
+    const profileApi=window.EasyFileCompanyProfile;
+    const DRAFT_KEY="easy.letterhead.draft.v1";
+    const DOCS_KEY="easy.letterhead.documents.v1";
+    const TEMPLATES_KEY="easy.letterhead.templates.v1";
+    const SEQ_KEY="easy.letterhead.sequence.v1";
+
+    const builtIns={
+      blank:{name:"Blank Letter",body:"<p>Please enter your correspondence here.</p>"},
+      business:{name:"Standard Business Letter",body:"<p>Thank you for your correspondence.</p><p>Please accept this letter as formal confirmation of the matter referenced above.</p><p>Should you require any additional information, please contact us.</p>"},
+      confirmation:{name:"Confirmation Letter",body:"<p>We hereby confirm the following:</p><p>[Insert confirmation details]</p><p>Please retain this letter for your records.</p>"},
+      authorisation:{name:"Authorisation Letter",body:"<p>This letter serves to confirm that [Name] is authorised to [describe authorised action] on behalf of our organisation.</p><p>This authorisation is valid from [date] until [date/withdrawn].</p>"},
+      payment:{name:"Payment Reminder",body:"<p>We refer to the outstanding account referenced above.</p><p>According to our records, payment remains due. Kindly arrange settlement or contact us should you require a copy of the supporting documentation.</p><p>If payment has already been made, please disregard this reminder and send the payment reference for allocation.</p>"},
+      appointment:{name:"Appointment Letter",body:"<p>We are pleased to confirm your appointment as [position/title], effective [date].</p><p>The applicable terms and conditions are set out in the accompanying documentation.</p><p>We look forward to working with you.</p>"},
+      proposal:{name:"Proposal Cover Letter",body:"<p>Thank you for the opportunity to submit our proposal.</p><p>Our proposal has been prepared to address the requirements discussed and should be read together with the attached commercial and technical documentation.</p><p>We remain available to clarify any aspect of the submission.</p>"}
+    };
+
+    const fields=["letterNumber","letterDate","ourReference","yourReference","recipientName","recipientTitle","recipientCompany","recipientAddress","recipientEmail","recipientPhone","subject","salutation","closing","senderName","senderTitle"];
+    let profile=profileApi.load();
+    let dirty=false;
+    let saveTimer=null;
+
+    function parseStore(key,fallback){try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(fallback))}catch{return fallback}}
+    function store(key,value){localStorage.setItem(key,JSON.stringify(value))}
+    function pad(n){return String(n).padStart(4,"0")}
+    function today(){return new Date().toISOString().slice(0,10)}
+    function formatDate(iso){if(!iso)return"";const [y,m,d]=iso.split("-");return `${d}/${m}/${y}`}
+    function nextLetterNumber(){const now=new Date();const period=`${now.getFullYear()}${String(now.getMonth()+1).padStart(2,"0")}`;const saved=parseStore(SEQ_KEY,{period,count:0});const count=saved.period===period?Number(saved.count||0)+1:1;store(SEQ_KEY,{period,count});return `LET-${period}-${pad(count)}`}
+    function safeFilename(value){return String(value||"letter").replace(/[^a-z0-9-_]+/gi,"-").replace(/^-+|-+$/g,"").slice(0,80)||"letter"}
+    function sanitizeHtml(html){const doc=new DOMParser().parseFromString(`<div>${html||""}</div>`,"text/html");doc.querySelectorAll("script,style,iframe,object,embed").forEach(el=>el.remove());doc.querySelectorAll("*").forEach(el=>{[...el.attributes].forEach(attr=>{if(/^on/i.test(attr.name)||(attr.name==="href"&&/^javascript:/i.test(attr.value)))el.removeAttribute(attr.name)})});return doc.body.firstElementChild?.innerHTML||""}
+    function getCustomTemplates(){return parseStore(TEMPLATES_KEY,{})}
+    function renderTemplateOptions(selected){const custom=getCustomTemplates();$("templateSelect").innerHTML=`<optgroup label="Built-in">${Object.entries(builtIns).map(([id,t])=>`<option value="builtin:${id}">${t.name}</option>`).join("")}</optgroup>${Object.keys(custom).length?`<optgroup label="Custom">${Object.entries(custom).map(([id,t])=>`<option value="custom:${id}">${t.name}</option>`).join("")}</optgroup>`:""}`;if(selected)$("templateSelect").value=selected}
+
+    function collect(){const data={};fields.forEach(id=>data[id]=$(id).value);data.body=sanitizeHtml($("letterBody").innerHTML);data.updatedAt=new Date().toISOString();return data}
+    function apply(data){const d=data||{};fields.forEach(id=>{if(d[id]!==undefined)$(id).value=d[id]});if(d.body!==undefined)$("letterBody").innerHTML=sanitizeHtml(d.body);renderPreview();dirty=false}
+    function defaultDocument(){return{letterNumber:nextLetterNumber(),letterDate:today(),ourReference:"",yourReference:"",recipientName:"",recipientTitle:"",recipientCompany:"",recipientAddress:"",recipientEmail:"",recipientPhone:"",subject:"",salutation:"Dear Sir/Madam",closing:"Yours sincerely",senderName:profile.signatoryName||"",senderTitle:profile.signatoryTitle||"",body:builtIns.blank.body}}
+
+    function renderProfile(){profile=profileApi.load();document.documentElement.style.setProperty("--accent",profile.brandColour||"#2563eb");$("profileWarning").classList.toggle("hidden",profileApi.hasProfile());$("letterLogo").src=profile.logo||"";$("letterLogo").classList.toggle("hidden",!profile.logo);$("letterSignature").src=profile.signature||"";$("letterSignature").classList.toggle("hidden",!profile.signature);$("companyDisplayName").textContent=profile.tradingName||profile.companyName||"Your Company";$("companySlogan").textContent=profile.slogan||"";$("companyLegalName").textContent=profile.companyName&&profile.companyName!==(profile.tradingName||profile.companyName)?profile.companyName:"";$("companyReg").textContent=profile.registrationNumber?`Reg: ${profile.registrationNumber}`:"";$("companyVat").textContent=profile.vatNumber?`VAT: ${profile.vatNumber}`:"";$("companyPhone").textContent=profile.phone||"";$("companyEmail").textContent=profile.email||"";$("companyWebsite").textContent=profile.website||"";$("companyAddress").textContent=profile.address||"";$("pFooter").textContent=profile.footerText||"";$("pDisclaimer").textContent=profile.legalDisclaimer||""}
+    function renderPreview(){renderProfile();const d=collect();const recipient=[d.recipientName,d.recipientTitle,d.recipientCompany,d.recipientAddress,d.recipientEmail,d.recipientPhone].filter(Boolean).join("\n");$("recipientBlock").textContent=recipient;$("pDate").textContent=formatDate(d.letterDate);$("pNumber").textContent=d.letterNumber;$("pOurRef").textContent=d.ourReference;$("pYourRef").textContent=d.yourReference;$("pOurRefRow").style.display=d.ourReference?"block":"none";$("pYourRefRow").style.display=d.yourReference?"block":"none";$("pSubject").textContent=d.subject?`RE: ${d.subject}`:"";$("pSalutation").textContent=d.salutation;$("pClosing").textContent=d.closing;$("pSender").textContent=d.senderName||profile.signatoryName||"";$("pSenderTitle").textContent=d.senderTitle||profile.signatoryTitle||"";$("documentStatus").textContent=`Draft • ${d.letterNumber||"Unnumbered"}`}
+    function scheduleAutosave(){dirty=true;$("autosaveStatus").textContent="Saving…";clearTimeout(saveTimer);saveTimer=setTimeout(()=>{store(DRAFT_KEY,collect());dirty=false;$("autosaveStatus").textContent="Autosaved"},450)}
+    function changed(){renderPreview();scheduleAutosave()}
+
+    function saveDocument(){const d=collect();if(!d.letterNumber)d.letterNumber=nextLetterNumber();$("letterNumber").value=d.letterNumber;const docs=parseStore(DOCS_KEY,[]);const idx=docs.findIndex(x=>x.letterNumber===d.letterNumber);const saved={...d,createdAt:idx>=0?docs[idx].createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};if(idx>=0)docs[idx]=saved;else docs.unshift(saved);store(DOCS_KEY,docs.slice(0,100));store(DRAFT_KEY,saved);renderHistory();renderPreview();$("autosaveStatus").textContent="Saved"}
+    function renderHistory(){const docs=parseStore(DOCS_KEY,[]);$("historyList").innerHTML=docs.length?docs.slice(0,20).map((d,i)=>`<div class="history-item"><button type="button" class="text-left flex-1" data-load="${i}"><strong>${d.letterNumber||"Draft"}</strong><br><span>${d.recipientName||d.recipientCompany||"No recipient"} • ${d.subject||"No subject"}</span></button><button type="button" class="text-red-600 font-black" data-delete="${i}" aria-label="Delete saved letter">×</button></div>`).join(""):"<p class=\"p-3 text-sm\" style=\"color:var(--muted)\">No saved letters yet.</p>";$("historyList").querySelectorAll("[data-load]").forEach(btn=>btn.addEventListener("click",()=>{const list=parseStore(DOCS_KEY,[]);apply(list[Number(btn.dataset.load)]);store(DRAFT_KEY,collect())}));$("historyList").querySelectorAll("[data-delete]").forEach(btn=>btn.addEventListener("click",()=>{const list=parseStore(DOCS_KEY,[]);list.splice(Number(btn.dataset.delete),1);store(DOCS_KEY,list);renderHistory()}))}
+
+    function applyTemplate(value){const [kind,id]=String(value).split(":");const template=kind==="builtin"?builtIns[id]:getCustomTemplates()[id];if(!template)return;if(dirty&&!confirm("Replace the current letter body with this template?"))return;$("letterBody").innerHTML=sanitizeHtml(template.body||"");if(template.subject!==undefined)$("subject").value=template.subject||"";if(template.salutation!==undefined)$("salutation").value=template.salutation||"Dear Sir/Madam";if(template.closing!==undefined)$("closing").value=template.closing||"Yours sincerely";changed()}
+    function saveCustomTemplate(){const name=prompt("Template name:");if(!name)return;const id=`tpl-${Date.now()}`;const custom=getCustomTemplates();const d=collect();custom[id]={name:name.trim(),body:d.body,subject:d.subject,salutation:d.salutation,closing:d.closing,createdAt:new Date().toISOString()};store(TEMPLATES_KEY,custom);renderTemplateOptions(`custom:${id}`);$("autosaveStatus").textContent="Template saved"}
+    function deleteCustomTemplate(){const value=$("templateSelect").value;if(!value.startsWith("custom:")){alert("Select a custom template to delete.");return}const id=value.split(":")[1];const custom=getCustomTemplates();delete custom[id];store(TEMPLATES_KEY,custom);renderTemplateOptions("builtin:blank")}
+
+    function exportBlob(content,type,filename){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),0)}
+    function exportHtml(){renderPreview();const clone=$("letterPage").cloneNode(true);clone.querySelector("#letterBody")?.removeAttribute("contenteditable");const css=`<style>@page{size:A4;margin:0}body{margin:0;background:#fff;font-family:Arial,sans-serif}.a4{width:210mm;min-height:297mm;padding:15mm 17mm 16mm;box-sizing:border-box;border-top:5px solid ${profile.brandColour||"#2563eb"}}img{max-width:100%}.letter-logo{max-width:52mm;max-height:22mm}.signature{max-width:52mm;max-height:22mm}.letter-contact{font-size:9.5pt;color:#4b5563}.letter-body{font-size:11pt;line-height:1.6;min-height:95mm}.letter-footer{margin-top:14mm;padding-top:3mm;border-top:1px solid #d1d5db;text-align:center;font-size:8pt;color:#6b7280}</style>`;const html=`<!doctype html><html><head><meta charset="utf-8"><title>${collect().letterNumber}</title>${css}</head><body>${clone.outerHTML}</body></html>`;exportBlob(html,"text/html;charset=utf-8",`${safeFilename(collect().letterNumber)}.html`)}
+    function exportWord(){renderPreview();const clone=$("letterPage").cloneNode(true);clone.querySelector("#letterBody")?.removeAttribute("contenteditable");const html=`<!doctype html><html><head><meta charset="utf-8"><style>body{font-family:Arial,sans-serif;font-size:11pt}.a4{padding:25px}.letter-logo{max-width:190px;max-height:80px}.signature{max-width:190px;max-height:80px}.letter-footer{margin-top:45px;border-top:1px solid #ccc;padding-top:10px;text-align:center;font-size:8pt;color:#666}</style></head><body>${clone.outerHTML}</body></html>`;exportBlob("\ufeff"+html,"application/msword",`${safeFilename(collect().letterNumber)}.doc`)}
+
+    fields.forEach(id=>$(id).addEventListener("input",changed));$("letterBody").addEventListener("input",changed);
+    $("formatToolbar").querySelectorAll("[data-cmd]").forEach(btn=>btn.addEventListener("click",()=>{document.execCommand(btn.dataset.cmd,false,null);$("letterBody").focus();changed()}));
+    $("insertLink").addEventListener("click",()=>{const url=prompt("Link URL:","https://");if(url){document.execCommand("createLink",false,url);changed()}});
+    $("insertPageBreak").addEventListener("click",()=>{document.execCommand("insertHTML",false,'<div class="page-break" aria-label="Page break"></div>');changed()});
+    $("templateSelect").addEventListener("change",()=>applyTemplate($("templateSelect").value));
+    $("nextNumber").addEventListener("click",()=>{$("letterNumber").value=nextLetterNumber();changed()});
+    $("newLetter").addEventListener("click",()=>{if(dirty&&!confirm("Start a new letter and replace the current draft?"))return;apply(defaultDocument());store(DRAFT_KEY,collect());$("templateSelect").value="builtin:blank"});
+    $("saveLetter").addEventListener("click",saveDocument);$("saveTemplate").addEventListener("click",saveCustomTemplate);$("deleteTemplate").addEventListener("click",deleteCustomTemplate);
+    $("printPdf").addEventListener("click",()=>{renderPreview();window.print()});$("exportWord").addEventListener("click",exportWord);$("exportHtml").addEventListener("click",exportHtml);
+    $("clearHistory").addEventListener("click",()=>{if(confirm("Clear all saved Easy Letterhead documents from this browser?")){store(DOCS_KEY,[]);renderHistory()}});
+    $("showEditor").addEventListener("click",()=>{$("editorPanel").classList.remove("mobile-hide");$("previewPanel").classList.add("mobile-hide")});
+    $("showPreview").addEventListener("click",()=>{$("previewPanel").classList.remove("mobile-hide");$("editorPanel").classList.add("mobile-hide");renderPreview()});
+    window.addEventListener(profileApi.EVENT_NAME,()=>{profile=profileApi.load();if(!$("senderName").value)$("senderName").value=profile.signatoryName||"";if(!$("senderTitle").value)$("senderTitle").value=profile.signatoryTitle||"";renderPreview()});
+    window.addEventListener("beforeunload",()=>{if(dirty)store(DRAFT_KEY,collect())});
+
+    renderTemplateOptions("builtin:blank");renderProfile();const draft=parseStore(DRAFT_KEY,null);apply(draft||defaultDocument());renderHistory();if(!$("senderName").value)$("senderName").value=profile.signatoryName||"";if(!$("senderTitle").value)$("senderTitle").value=profile.signatoryTitle||"";renderPreview();
+  })();
+  </script>
+  <script defer src="scripts/sync-nav.js"></script>
+</body>
+</html>
