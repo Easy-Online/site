@@ -46,7 +46,6 @@ jobs:
       contents: read
     env:
       AZURE_FUNCTIONAPP_NAME: ${{ vars.AZURE_FUNCTIONAPP_NAME }}
-      AZURE_FUNCTIONAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
       AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
@@ -70,7 +69,7 @@ jobs:
           fi
 
           missing=0
-          for name in AZURE_CLIENT_ID AZURE_TENANT_ID AZURE_SUBSCRIPTION_ID; do
+          for name in AZURE_FUNCTIONAPP_NAME AZURE_CLIENT_ID AZURE_TENANT_ID AZURE_SUBSCRIPTION_ID; do
             if [ -z "${!name}" ]; then
               echo "Missing repository variable: $name"
               missing=1
@@ -99,16 +98,7 @@ jobs:
           tenant-id: ${{ env.AZURE_TENANT_ID }}
           subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Deploy Azure Function App with publish profile
-        if: ${{ env.AZURE_FUNCTIONAPP_PUBLISH_PROFILE != '' }}
-        uses: Azure/functions-action@v1
-        with:
-          app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
-          package: referral-api
-          publish-profile: ${{ env.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
-
-      - name: Deploy Azure Function App with RBAC
-        if: ${{ env.AZURE_FUNCTIONAPP_PUBLISH_PROFILE == '' }}
+      - name: Deploy Azure Function App
         uses: Azure/functions-action@v1
         with:
           app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
@@ -125,44 +115,22 @@ jobs:
 
             if [ "$status" = "200" ]; then
               node -e 'const fs=require("fs"); const h=JSON.parse(fs.readFileSync("health.json","utf8")); if(h.status!=="ok" || !Array.isArray(h.issues) || h.issues.length!==0) process.exit(1)'
-              break
+              exit 0
             fi
 
             if [ "$status" = "503" ]; then
               if node -e 'const fs=require("fs"); const h=JSON.parse(fs.readFileSync("health.json","utf8")); const i=Array.isArray(h.issues)?h.issues:[]; if(i.length===1 && i[0]==="email-verification-disabled") process.exit(0); process.exit(1)'; then
                 echo "Deployment is healthy but email verification is intentionally not active yet."
-                break
+                exit 0
               fi
             fi
 
-            if [ "$attempt" = "12" ]; then
-              echo "Referral API did not become reachable after deployment."
-              exit 1
-            fi
             echo "Health check attempt $attempt returned HTTP $status."
             sleep 10
           done
+          echo "Referral API did not become reachable after deployment."
+          exit 1
 
-      - name: Verify Easy Save connector gateway
-        shell: bash
-        run: |
-          connector_url="https://${AZURE_FUNCTIONAPP_NAME}.azurewebsites.net/api/easy-save/providers"
-          for attempt in {1..12}; do
-            status=$(curl --silent --show-error --output storage-health.json --write-out "%{http_code}" \
-              --max-time 15 "$connector_url" || true)
-            cat storage-health.json 2>/dev/null || true
-            if [ "$status" = "200" ]; then
-              node -e 'const fs=require("fs"); const h=JSON.parse(fs.readFileSync("storage-health.json","utf8")); if(h.ok!==true || !h.providers) process.exit(1)'
-              exit 0
-            fi
-            if [ "$attempt" = "12" ]; then
-              echo "Easy Save connector gateway did not become healthy after deployment (HTTP $status)."
-              exit 1
-            fi
-            echo "Easy Save connector health attempt $attempt returned HTTP $status."
-            sleep 10
-          done
-
-      - name: Warn when referral health verification is not configured
+      - name: Warn when health verification is not configured
         if: ${{ env.EASYFILE_REFERRAL_HEALTH_URL == '' }}
-        run: echo "Deployment completed without a referral health check. Set EASYFILE_REFERRAL_HEALTH_URL."
+        run: echo "Deployment completed without a health check. Set EASYFILE_REFERRAL_HEALTH_URL."
