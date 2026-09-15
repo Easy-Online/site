@@ -207,6 +207,31 @@ html[data-theme="dark"] .easyfile-search-empty { color: #94a3b8; }
   .easyfile-nav-desktop { display: none; }
   .easyfile-menu-toggle { display: inline-flex; }
   .easyfile-nav-search-wrap { width: min(25rem, 44vw); justify-self: center; }
+
+  /*
+   * Keep the module drawer within the visible viewport. The header and close
+   * button stay available while the module list scrolls independently.
+   */
+  .easyfile-mobile-menu.is-open {
+    display: block;
+    position: fixed;
+    z-index: 1;
+    inset: 4.75rem 0 0;
+    width: 100%;
+    height: calc(100vh - 4.75rem); /* fallback for older mobile browsers */
+    height: calc(100dvh - 4.75rem);
+    margin: 0;
+    padding: .75rem 1rem max(1rem, env(safe-area-inset-bottom));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+  }
+
+  .easyfile-mobile-menu-panel {
+    width: min(100%, 92rem);
+    margin: 0 auto;
+  }
 }
 
 @media (max-width: 720px) {
@@ -214,7 +239,12 @@ html[data-theme="dark"] .easyfile-search-empty { color: #94a3b8; }
   .easyfile-nav-brand-copy small { display: none; }
   .easyfile-nav-search-wrap { display: none; }
   .easyfile-nav-tools { gap: .4rem; }
-  .easyfile-mobile-menu { width: min(100% - 1rem, 92rem); }
+  .easyfile-mobile-menu.is-open {
+    top: 4.25rem;
+    height: calc(100vh - 4.25rem);
+    height: calc(100dvh - 4.25rem);
+    padding-inline: .5rem;
+  }
   .easyfile-mobile-search { display: block; }
   .easyfile-mobile-search .easyfile-nav-search-wrap { display: block; width: 100%; }
   .easyfile-mobile-groups { grid-template-columns: 1fr 1fr; }
