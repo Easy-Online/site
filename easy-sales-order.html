@@ -5,205 +5,167 @@
   <!-- NAV_SYNC: scripts/sync-nav.js -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Easy Sales Order</title>
-  
-
-  <!-- Favicon -->
-  
-  
-<meta name="description" content="Create and manage customer sales orders with Easy Sales Order.">
-  <!-- Favicon --><!-- Tailwind -->
+  <title>EasySO — Sales Order Manager | EasyFile</title>
+  <meta name="description" content="Create, manage, preview and export customer sales orders with VAT, discounts, inventory assistance, CRM lookup, autosave and local history.">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-
-  <style>
-    @media print {
-      nav, .no-print {
-        display: none !important;
-      }
-      body {
-        background: white;
-      }
-      .print-container {
-        box-shadow: none !important;
-        border: none !important;
-      }
-    }
-  </style>
-  <link rel="stylesheet" href="assets/css/easy-print.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/easy-print.css">
   <script defer src="assets/js/easy-suite-core.js"></script>
-  <!-- EASYFILE_FAVICONS -->
   <link rel="icon" href="logo-b.png" type="image/png">
   <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
   <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
   <link rel="apple-touch-icon" href="logo-b.png">
+  <style>
+    :root{--primary:#2563eb;--primary2:#1d4ed8;--bg:#f5f7fb;--card:#fff;--text:#0f172a;--muted:#64748b;--border:#e2e8f0;--danger:#dc2626;--success:#16a34a;--shadow:0 10px 25px rgba(2,6,23,.06)}
+    body{background:var(--bg);color:var(--text)}.card{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.68rem .95rem;border-radius:10px;font-weight:800;border:1px solid transparent;transition:.15s}.btn:hover{transform:translateY(-1px)}
+    .btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary2)}.btn-outline{background:var(--card);border-color:var(--border);color:var(--text)}.btn-outline:hover{background:#f8fafc}.btn-success{background:var(--success);color:#fff}.btn-danger{background:var(--danger);color:#fff}
+    .badge{display:inline-flex;align-items:center;gap:.4rem;padding:.27rem .65rem;border-radius:999px;font-weight:900;font-size:.74rem}.badge-draft{background:#eef2ff;color:#3730a3}.badge-confirmed{background:#dbeafe;color:#1d4ed8}.badge-processing{background:#fef3c7;color:#92400e}.badge-shipped{background:#e0f2fe;color:#075985}.badge-completed{background:#dcfce7;color:#166534}.badge-cancelled{background:#fee2e2;color:#991b1b}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}.responsive-table{overflow-x:auto;-webkit-overflow-scrolling:touch}.stock-ok{color:#166534;font-weight:800}.stock-low{color:#b45309;font-weight:800}.stock-none{color:#b91c1c;font-weight:800}
+    input:focus,textarea:focus,select:focus{outline:none!important;border-color:rgba(37,99,235,.8)!important;box-shadow:0 0 0 3px rgba(37,99,235,.14)!important}
+    #toast{position:fixed;right:18px;bottom:18px;z-index:9999;max-width:360px;background:rgba(15,23,42,.95);color:#fff;border-radius:12px;padding:12px 14px;display:none;box-shadow:0 14px 35px rgba(2,6,23,.28)}#toast.show{display:block}#toast.error{background:rgba(153,27,27,.97)}.modal-backdrop{background:rgba(2,6,23,.64)}
+    [data-theme="dark"]{--bg:#0b1220;--card:#0f172a;--text:#e5e7eb;--muted:#9ca3af;--border:#243041;--shadow:0 10px 25px rgba(0,0,0,.34)}[data-theme="dark"] .btn-outline{background:#0f172a;color:#e5e7eb;border-color:#334155}[data-theme="dark"] .bg-white{background:var(--card)!important}[data-theme="dark"] .bg-gray-50{background:#111827!important}[data-theme="dark"] input,[data-theme="dark"] textarea,[data-theme="dark"] select{background:#0b1220;color:#e5e7eb;border-color:#334155}
+    @media print{.no-print{display:none!important}body{background:#fff!important;color:#111827!important}.card{box-shadow:none!important;border:none!important}}
+  </style>
 </head>
-
-<body class="bg-gray-100 min-h-screen">
+<body class="min-h-screen flex flex-col" data-theme="light">
 <!-- NAV_SYNC -->
-<div class="easyfile-nav no-print">
-  <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
-</div>
-<!-- Easy Suite mounts (injected) -->
-  <header class="bg-white border-b border-gray-200 no-print">
-  <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row gap-4 sm:gap-0 items-start sm:items-center justify-between">
-    <div class="flex items-center gap-3">
-      <div class="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black">SO</div>
-      <div>
-        <h1 class="text-2xl font-extrabold text-blue-700">EasySO</h1>
-        <p class="text-sm text-gray-500">Feature-Rich Sales Order Generator</p>
-      </div>
-    </div>
+<div class="easyfile-nav no-print"><a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a></div>
 
-    <div class="flex flex-wrap items-center gap-2">
-      <a href="index.html" class="btn btn-primary" title="Back to Dashboard">
-        <i class="fa-solid fa-gauge"></i> Dashboard
-      </a>
-    </div>
+<header class="bg-white border-b border-gray-200 no-print">
+  <div class="container mx-auto px-4 py-4 flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between">
+    <div class="flex items-center gap-3"><div class="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black">SO</div><div><h1 class="text-2xl font-extrabold text-blue-700">EasySO</h1><p class="text-sm text-gray-500">Sales Order Manager</p></div></div>
+    <div class="flex flex-wrap gap-2"><button class="btn btn-outline" id="btnSaveDraft"><i class="fa-solid fa-floppy-disk"></i> Save Draft</button><button class="btn btn-outline" id="btnNewSalesOrder"><i class="fa-solid fa-file-circle-plus"></i> New Sales Order #</button><button class="btn btn-primary" id="btnMarkConfirmed"><i class="fa-solid fa-circle-check"></i> Mark Confirmed</button><a href="index.html" class="btn btn-outline"><i class="fa-solid fa-gauge"></i> Dashboard</a></div>
   </div>
-</header><!-- HEADER:START --><!-- HEADER:END --><!-- NAV -->
-<main class="container mx-auto px-4 py-8">
+</header>
 
-  <div class="print-container bg-white p-8 rounded-lg shadow-lg">
+<main class="print-container flex-grow container mx-auto px-4 py-6 md:py-8">
+  <div class="card p-4 mb-6 no-print"><div class="flex flex-col md:flex-row md:items-center gap-3"><div class="text-blue-600"><i class="fa-solid fa-circle-info"></i></div><div class="flex-1"><h2 class="text-sm font-extrabold">Quick flow</h2><p class="text-sm mt-1" style="color:var(--muted)">1) Select or enter customer → 2) Set order and delivery details → 3) Add inventory or custom items → 4) Review discounts, VAT and totals → 5) Confirm → 6) Preview, print or export.</p></div><div class="flex items-center gap-2"><span id="autosaveStatus" class="text-xs font-bold" style="color:var(--muted)">Autosave on</span><span id="statusBadge" class="badge badge-draft"><i class="fa-solid fa-pen"></i> DRAFT</span></div></div></div>
 
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-3xl font-bold text-gray-800">Sales Order</h1>
-      <div class="text-right">
-        <label class="block text-sm text-gray-600">Order No</label>
-        <input type="text" class="border px-2 py-1 rounded w-40" placeholder="SO-001">
-      </div>
-    </div>
-
-    <!-- Customer Details -->
-    <div class="grid md:grid-cols-2 gap-6 mb-8">
-      <div>
-        <h2 class="font-semibold text-gray-700 mb-2">Customer Information</h2>
-        <input type="text" placeholder="Customer Name" class="border w-full px-3 py-2 rounded mb-2">
-        <input type="text" placeholder="Address" class="border w-full px-3 py-2 rounded mb-2">
-        <input type="email" placeholder="Email" class="border w-full px-3 py-2 rounded mb-2">
-        <input type="text" placeholder="Phone" class="border w-full px-3 py-2 rounded">
-      </div>
-
-      <div>
-        <h2 class="font-semibold text-gray-700 mb-2">Order Details</h2>
-        <label class="block text-sm text-gray-600">Order Date</label>
-        <input type="date" class="border w-full px-3 py-2 rounded mb-2">
-        <label class="block text-sm text-gray-600">Delivery Date</label>
-        <input type="date" class="border w-full px-3 py-2 rounded mb-2">
-        <label class="block text-sm text-gray-600">Status</label>
-        <select class="border w-full px-3 py-2 rounded">
-          <option>Pending</option>
-          <option>Confirmed</option>
-          <option>Shipped</option>
-          <option>Completed</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Line Items -->
-    <div class="overflow-x-auto">
-      <table class="min-w-full text-sm text-left border">
-        <thead class="bg-gray-200">
-          <tr>
-            <th class="px-3 py-2 border">Description</th>
-            <th class="px-3 py-2 border">Qty</th>
-            <th class="px-3 py-2 border">Unit Price</th>
-            <th class="px-3 py-2 border">Total</th>
-            <th class="px-3 py-2 border no-print"></th>
-          </tr>
-        </thead>
-        <tbody id="items"></tbody>
-      </table>
-    </div>
-
-    <button onclick="addRow()" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded no-print">
-      + Add Item
-    </button>
-
-    <!-- Totals -->
-    <div class="mt-8 flex justify-end">
-      <div class="w-full md:w-1/3 text-sm">
-        <div class="flex justify-between py-1">
-          <span>Subtotal:</span>
-          <span id="subtotal">R0.00</span>
-        </div>
-        <div class="flex justify-between py-1">
-          <span>VAT (15%):</span>
-          <span id="vat">R0.00</span>
-        </div>
-        <div class="flex justify-between py-2 font-bold border-t mt-2">
-          <span>Total:</span>
-          <span id="grandTotal">R0.00</span>
+  <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+    <section class="xl:col-span-4 space-y-6">
+      <div class="card p-5">
+        <div class="flex items-center justify-between gap-3 mb-4"><div><h2 class="text-lg font-extrabold">Customer</h2><p class="text-xs" style="color:var(--muted)">Uses local Easy CRM data when available.</p></div><button class="btn btn-outline no-print" id="btnRefreshCRM"><i class="fa-solid fa-rotate"></i> CRM</button></div>
+        <datalist id="crmCustomers"></datalist>
+        <div class="space-y-3">
+          <div><label class="text-xs font-bold" style="color:var(--muted)">Customer / Company</label><input id="customerCompany" list="crmCustomers" class="w-full mt-1 border rounded-lg p-2" placeholder="Customer company or person"></div>
+          <div><label class="text-xs font-bold" style="color:var(--muted)">Contact Person</label><input id="customerContact" class="w-full mt-1 border rounded-lg p-2" placeholder="Contact name"></div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><div><label class="text-xs font-bold" style="color:var(--muted)">Email</label><input id="customerEmail" type="email" class="w-full mt-1 border rounded-lg p-2" placeholder="orders@customer.co.za"></div><div><label class="text-xs font-bold" style="color:var(--muted)">Phone</label><input id="customerPhone" class="w-full mt-1 border rounded-lg p-2" placeholder="+27 ..."></div></div>
+          <div><label class="text-xs font-bold" style="color:var(--muted)">Billing Address</label><textarea id="billingAddress" rows="3" class="w-full mt-1 border rounded-lg p-2" placeholder="Billing address"></textarea></div>
+          <div><label class="text-xs font-bold" style="color:var(--muted)">VAT / Registration No.</label><input id="customerVat" class="w-full mt-1 border rounded-lg p-2" placeholder="Optional"></div>
         </div>
       </div>
-    </div>
 
-    <!-- Actions -->
-    <div class="mt-8 flex gap-4 no-print">
-      <button onclick="window.print()" class="bg-green-600 text-white px-4 py-2 rounded">
-        Print / Save PDF
-      </button>
-      <button onclick="clearForm()" class="bg-gray-500 text-white px-4 py-2 rounded">
-        Clear
-      </button>
-    </div>
+      <div class="card p-5"><h2 class="text-lg font-extrabold mb-4">Delivery & Fulfilment</h2><div class="space-y-3"><div><label class="text-xs font-bold" style="color:var(--muted)">Delivery Address</label><textarea id="deliveryAddress" rows="3" class="w-full mt-1 border rounded-lg p-2" placeholder="Deliver to"></textarea></div><div class="grid grid-cols-1 sm:grid-cols-2 gap-3"><div><label class="text-xs font-bold" style="color:var(--muted)">Delivery Method</label><select id="deliveryMethod" class="w-full mt-1 border rounded-lg p-2"><option>Courier</option><option>Collection</option><option>Digital Delivery</option><option>On-site Delivery</option><option>Other</option></select></div><div><label class="text-xs font-bold" style="color:var(--muted)">Tracking / Waybill</label><input id="trackingNumber" class="w-full mt-1 border rounded-lg p-2" placeholder="Optional"></div></div><label class="inline-flex items-center gap-2 text-sm font-bold"><input id="sameAsBilling" type="checkbox" class="h-4 w-4"> Delivery address same as billing</label></div></div>
 
+      <div class="card p-5 no-print"><h2 class="text-lg font-extrabold mb-3">Saved Orders</h2><div class="flex flex-col gap-2"><select id="historySelect" class="w-full border rounded-lg p-2"><option value="">No saved orders yet</option></select><div class="grid grid-cols-2 gap-2"><button id="btnLoadHistory" class="btn btn-outline"><i class="fa-solid fa-folder-open"></i> Load</button><button id="btnDeleteHistory" class="btn btn-outline"><i class="fa-solid fa-trash"></i> Delete</button></div><button id="btnSaveHistory" class="btn btn-primary"><i class="fa-solid fa-bookmark"></i> Save to History</button></div></div>
+    </section>
+
+    <section class="xl:col-span-8 space-y-6">
+      <div class="card p-5"><div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div><label class="text-xs font-bold" style="color:var(--muted)">Sales Order #</label><input id="orderNumber" class="w-full mt-1 border rounded-lg p-2 mono" placeholder="SO0000001"></div>
+        <div><label class="text-xs font-bold" style="color:var(--muted)">Customer PO / Reference</label><input id="customerReference" class="w-full mt-1 border rounded-lg p-2 mono" placeholder="PO / RFQ / Project ref"></div>
+        <div><label class="text-xs font-bold" style="color:var(--muted)">Salesperson</label><input id="salesperson" class="w-full mt-1 border rounded-lg p-2" placeholder="Owner / account manager"></div>
+        <div><label class="text-xs font-bold" style="color:var(--muted)">Order Date</label><input id="orderDate" type="date" class="w-full mt-1 border rounded-lg p-2"></div>
+        <div><label class="text-xs font-bold" style="color:var(--muted)">Requested Delivery Date</label><input id="deliveryDate" type="date" class="w-full mt-1 border rounded-lg p-2"></div>
+        <div><label class="text-xs font-bold" style="color:var(--muted)">Status</label><select id="orderStatus" class="w-full mt-1 border rounded-lg p-2"><option>Draft</option><option>Confirmed</option><option>Processing</option><option>Partially Shipped</option><option>Shipped</option><option>Completed</option><option>Cancelled</option></select></div>
+        <div><label class="text-xs font-bold" style="color:var(--muted)">Currency</label><select id="currency" class="w-full mt-1 border rounded-lg p-2"><option value="ZAR">ZAR (R)</option><option value="USD">USD ($)</option><option value="EUR">EUR (€)</option><option value="GBP">GBP (£)</option></select></div>
+        <div><label class="text-xs font-bold" style="color:var(--muted)">Payment Terms</label><input id="paymentTerms" class="w-full mt-1 border rounded-lg p-2" placeholder="e.g. COD / Net 30"></div>
+        <div><label class="text-xs font-bold" style="color:var(--muted)">Price List / Channel</label><input id="priceList" class="w-full mt-1 border rounded-lg p-2" placeholder="Retail / Reseller / Contract"></div>
+      </div></div>
+
+      <div class="card p-5">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 mb-4"><div><h2 class="text-lg font-extrabold">Line Items</h2><p class="text-xs" style="color:var(--muted)">SKU entries auto-fill from Easy Inventory when available.</p></div><div class="flex flex-wrap gap-2 no-print"><button id="btnRefreshInventory" class="btn btn-outline"><i class="fa-solid fa-boxes-stacked"></i> Refresh Inventory</button><button id="btnImportCSV" class="btn btn-outline"><i class="fa-solid fa-file-import"></i> Import CSV</button><input id="csvFile" type="file" accept=".csv,text/csv" class="hidden"><button id="btnAddLine" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add Line</button></div></div>
+        <datalist id="inventorySkus"></datalist>
+        <div class="responsive-table"><table class="min-w-full text-sm border-collapse"><thead class="bg-gray-50 text-slate-600"><tr><th class="border p-2 text-left">SKU</th><th class="border p-2 text-left" style="min-width:220px">Description</th><th class="border p-2 text-center">Qty</th><th class="border p-2 text-center">Unit</th><th class="border p-2 text-right">Unit Price</th><th class="border p-2 text-center">Disc %</th><th class="border p-2 text-center">VAT %</th><th class="border p-2 text-right">Excl.</th><th class="border p-2 text-right">Incl.</th><th class="border p-2 text-center">Stock</th><th class="border p-2 text-center no-print">Action</th></tr></thead><tbody id="itemsBody"></tbody></table></div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6"><div class="card p-5"><h2 class="text-lg font-extrabold mb-3">Notes</h2><textarea id="notes" rows="6" class="w-full border rounded-lg p-2" placeholder="Customer instructions, fulfilment notes, internal notes..."></textarea></div><div class="card p-5"><h2 class="text-lg font-extrabold mb-3">Terms & Conditions</h2><textarea id="terms" rows="6" class="w-full border rounded-lg p-2" placeholder="Payment, lead time, delivery, cancellation and return terms..."></textarea></div></div>
+
+      <div class="card p-5"><div class="grid grid-cols-1 lg:grid-cols-5 gap-5"><div class="lg:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-3"><div><label class="text-xs font-bold" style="color:var(--muted)">Overall Discount %</label><input id="overallDiscount" type="number" min="0" max="100" step="0.01" value="0" class="w-full mt-1 border rounded-lg p-2"></div><div><label class="text-xs font-bold" style="color:var(--muted)">Shipping / Delivery</label><input id="shipping" type="number" min="0" step="0.01" value="0" class="w-full mt-1 border rounded-lg p-2"></div><div><label class="text-xs font-bold" style="color:var(--muted)">Default VAT %</label><input id="defaultVat" type="number" min="0" max="100" step="0.01" value="15" class="w-full mt-1 border rounded-lg p-2"></div><div class="sm:col-span-3 text-xs" style="color:var(--muted)">Calculation order: quantity × unit price → line discount → overall discount → VAT → shipping.</div></div><div class="lg:col-span-2 text-sm space-y-2"><div class="flex justify-between border-t pt-2"><span class="font-bold">Subtotal before discounts</span><span id="tGross" class="mono font-extrabold">R0.00</span></div><div class="flex justify-between"><span>Line discounts</span><span id="tLineDiscount" class="mono font-bold">R0.00</span></div><div class="flex justify-between"><span>Overall discount</span><span id="tOverallDiscount" class="mono font-bold">R0.00</span></div><div class="flex justify-between"><span>Subtotal excl. VAT</span><span id="tSubtotal" class="mono font-extrabold">R0.00</span></div><div class="flex justify-between"><span>VAT</span><span id="tVat" class="mono font-extrabold">R0.00</span></div><div class="flex justify-between"><span>Shipping</span><span id="tShipping" class="mono font-extrabold">R0.00</span></div><div class="flex justify-between border-t border-b py-2 text-lg"><span class="font-black">GRAND TOTAL</span><span id="tGrand" class="mono font-black">R0.00</span></div></div></div>
+        <div class="mt-6 flex flex-wrap gap-2 justify-center no-print"><button class="btn btn-outline" id="btnPreview"><i class="fa-solid fa-eye"></i> Preview</button><button class="btn btn-outline" id="btnPrint"><i class="fa-solid fa-print"></i> Print Sales Order</button><button class="btn btn-danger" id="btnPDF"><i class="fa-solid fa-file-pdf"></i> Export PDF</button><button class="btn btn-primary" id="btnWord"><i class="fa-solid fa-file-word"></i> Export Word</button><button class="btn btn-success" id="btnExcel"><i class="fa-solid fa-file-excel"></i> Export Excel</button><button class="btn btn-outline" id="btnCSV"><i class="fa-solid fa-file-csv"></i> Export CSV</button><button class="btn btn-outline" id="btnJSON"><i class="fa-solid fa-code"></i> Export JSON</button></div>
+      </div>
+    </section>
   </div>
+
+  <div id="previewModal" class="fixed inset-0 hidden items-center justify-center p-4 z-50 no-print"><div class="modal-backdrop absolute inset-0"></div><div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-5xl max-h-screen overflow-y-auto"><div class="p-4 border-b flex items-center justify-between"><div><h2 class="text-xl font-black text-slate-900">Sales Order Preview</h2><p class="text-xs text-slate-500">Print/PDF and export layout.</p></div><button id="btnClosePreview" class="text-2xl text-slate-500" aria-label="Close preview">×</button></div><div id="previewContent" class="p-6"></div><div class="p-4 border-t flex justify-end gap-2"><button id="btnClosePreviewBottom" class="btn btn-outline">Close</button><button id="btnPrintPreview" class="btn btn-primary"><i class="fa-solid fa-print"></i> Print / Save PDF</button></div></div></div>
 </main>
+<div id="toast" role="status" aria-live="polite"><strong id="toastTitle">Saved</strong><div id="toastMsg" class="text-sm mt-1"></div></div>
 
 <script>
-  function addRow() {
-    const table = document.getElementById('items');
-    const row = document.createElement('tr');
+(function(){
+  "use strict";
+  const $=id=>document.getElementById(id);
+  const DRAFT_KEY="easy.salesorder.draft.v3",HISTORY_KEY="easy.salesorder.history.v3",SEQ_KEY="easy.salesorder.sequence.v2",INVENTORY_KEY="easy.inventory.v2",CRM_KEY="crm";
+  const FIELD_IDS=["customerCompany","customerContact","customerEmail","customerPhone","billingAddress","customerVat","deliveryAddress","deliveryMethod","trackingNumber","sameAsBilling","orderNumber","customerReference","salesperson","orderDate","deliveryDate","orderStatus","currency","paymentTerms","priceList","notes","terms","overallDiscount","shipping","defaultVat"];
+  let inventory=[],crmContacts=[],lineCounter=0,autosaveTimer=null;
 
-    row.innerHTML = `
-      <td class="border px-3 py-2">
-        <input type="text" class="w-full border px-2 py-1 rounded desc">
-      </td>
-      <td class="border px-3 py-2">
-        <input type="number" value="1" class="w-full border px-2 py-1 rounded qty" oninput="calculate()">
-      </td>
-      <td class="border px-3 py-2">
-        <input type="number" value="0" class="w-full border px-2 py-1 rounded price" oninput="calculate()">
-      </td>
-      <td class="border px-3 py-2 total">R0.00</td>
-      <td class="border px-3 py-2 no-print">
-        <button onclick="this.closest('tr').remove(); calculate();" class="text-red-600">âœ*</button>
-      </td>
-    `;
+  function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]))}
+  function parse(raw,fallback){try{const v=JSON.parse(raw);return v??fallback}catch{return fallback}}
+  function toast(title,msg,error=false){const n=$("toast");$("toastTitle").textContent=title||"EasySO";$("toastMsg").textContent=msg||"";n.classList.toggle("error",error);n.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>n.classList.remove("show"),2600)}
+  function localISO(d=new Date()){const x=new Date(d.getTime()-d.getTimezoneOffset()*60000);return x.toISOString().slice(0,10)}
+  function plusDays(days){const d=new Date();d.setDate(d.getDate()+days);return localISO(d)}
+  function nextNumber(){let n=Number(localStorage.getItem(SEQ_KEY)||1);if(!Number.isFinite(n)||n<1)n=1;localStorage.setItem(SEQ_KEY,String(n+1));return "SO"+String(n).padStart(7,"0")}
+  function sym(c){return({ZAR:"R",USD:"$",EUR:"€",GBP:"£"})[c]||c+" "}
+  function money(v){const n=Number(v||0),c=$("currency").value||"ZAR";return sym(c)+n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,",")}
 
-    table.appendChild(row);
+  function badge(){const s=($("orderStatus").value||"Draft").toLowerCase(),m={draft:["badge badge-draft","fa-pen","DRAFT"],confirmed:["badge badge-confirmed","fa-circle-check","CONFIRMED"],processing:["badge badge-processing","fa-gears","PROCESSING"],"partially shipped":["badge badge-shipped","fa-truck-fast","PART SHIPPED"],shipped:["badge badge-shipped","fa-truck","SHIPPED"],completed:["badge badge-completed","fa-check-double","COMPLETED"],cancelled:["badge badge-cancelled","fa-ban","CANCELLED"]},v=m[s]||m.draft;$("statusBadge").className=v[0];$("statusBadge").innerHTML=`<i class="fa-solid ${v[1]}"></i> ${v[2]}`}
+
+  function loadInventory(notify=false){inventory=parse(localStorage.getItem(INVENTORY_KEY)||"[]",[]);if(!Array.isArray(inventory))inventory=[];$("inventorySkus").innerHTML=inventory.slice().sort((a,b)=>String(a.sku||"").localeCompare(String(b.sku||""))).map(i=>`<option value="${esc(String(i.sku||"").toUpperCase())}">${esc(i.name||"")} — R${Number(i.price||0).toFixed(2)}</option>`).join("");document.querySelectorAll(".line-item").forEach(updateStock);if(notify)toast("Inventory refreshed",inventory.length?`${inventory.length} inventory record(s) available.`:"No Easy Inventory records found.")}
+  function loadCRM(notify=false){crmContacts=parse(localStorage.getItem(CRM_KEY)||"[]",[]);if(!Array.isArray(crmContacts))crmContacts=[];const seen=new Set();$("crmCustomers").innerHTML=crmContacts.map(c=>String(c.company||c.name||"").trim()).filter(v=>v&&!seen.has(v)&&seen.add(v)).sort().map(v=>`<option value="${esc(v)}"></option>`).join("");if(notify)toast("CRM refreshed",crmContacts.length?`${crmContacts.length} contact(s) available.`:"No Easy CRM contacts found.")}
+  function crmMatch(){const v=$("customerCompany").value.trim().toLowerCase();if(!v)return;const c=crmContacts.find(x=>String(x.company||x.name||"").trim().toLowerCase()===v);if(!c)return;if(!$("customerContact").value)$("customerContact").value=c.name||"";if(!$("customerEmail").value)$("customerEmail").value=c.email||"";if(!$("customerPhone").value)$("customerPhone").value=c.phone||"";schedule()}
+  function invMatch(sku){const s=String(sku||"").trim().toUpperCase();return inventory.find(x=>String(x.sku||"").trim().toUpperCase()===s)||null}
+
+  function addLine(p={}){const tr=document.createElement("tr");tr.className="line-item";tr.dataset.lineId=String(++lineCounter);const dv=Number($("defaultVat").value||15);tr.innerHTML=`<td class="border p-2"><input list="inventorySkus" class="item-sku w-28 border rounded px-2 py-1 mono" value="${esc(p.sku||"")}" placeholder="SKU"></td><td class="border p-2"><input class="item-desc w-full border rounded px-2 py-1" value="${esc(p.desc||"")}" placeholder="Item description"></td><td class="border p-2"><input type="number" min="0" step="0.01" class="item-qty w-20 border rounded px-2 py-1 text-center" value="${esc(p.qty??1)}"></td><td class="border p-2"><input class="item-unit w-20 border rounded px-2 py-1 text-center" value="${esc(p.unit||"ea")}"></td><td class="border p-2"><input type="number" min="0" step="0.01" class="item-price w-28 border rounded px-2 py-1 text-right" value="${esc(p.price??0)}"></td><td class="border p-2"><input type="number" min="0" max="100" step="0.01" class="item-disc w-20 border rounded px-2 py-1 text-center" value="${esc(p.disc??0)}"></td><td class="border p-2"><input type="number" min="0" max="100" step="0.01" class="item-vat w-20 border rounded px-2 py-1 text-center" value="${esc(p.vat??dv)}"></td><td class="border p-2 text-right mono item-excl">${money(0)}</td><td class="border p-2 text-right mono item-incl">${money(0)}</td><td class="border p-2 text-center text-xs item-stock">—</td><td class="border p-2 text-center no-print"><button type="button" data-delete class="text-red-600" title="Delete line"><i class="fa-solid fa-trash-can"></i></button></td>`;$("itemsBody").appendChild(tr);tr.querySelectorAll("input").forEach(i=>i.addEventListener("input",()=>{calc();schedule()}));tr.querySelector(".item-sku").addEventListener("change",()=>{fillInventory(tr);calc();schedule()});tr.querySelector("[data-delete]").addEventListener("click",()=>{tr.remove();calc();schedule()});fillInventory(tr,false);calc()}
+  function fillInventory(tr,fill=true){const item=invMatch(tr.querySelector(".item-sku").value);if(item&&fill){if(!tr.querySelector(".item-desc").value)tr.querySelector(".item-desc").value=item.name||"";if(Number(tr.querySelector(".item-price").value||0)===0)tr.querySelector(".item-price").value=Number(item.price||0).toFixed(2)}updateStock(tr,item)}
+  function updateStock(tr,item=invMatch(tr.querySelector(".item-sku").value)){const e=tr.querySelector(".item-stock");e.className="border p-2 text-center text-xs item-stock";if(!item){e.textContent="—";return}const stock=Number(item.stock||0),qty=Number(tr.querySelector(".item-qty").value||0);e.textContent=String(stock);e.classList.add(stock<=0?"stock-none":(stock<qty||stock<=Number(item.reorder||0)?"stock-low":"stock-ok"))}
+  function lines(){return Array.from(document.querySelectorAll(".line-item")).map(tr=>({sku:tr.querySelector(".item-sku").value.trim(),desc:tr.querySelector(".item-desc").value.trim(),qty:Number(tr.querySelector(".item-qty").value||0),unit:tr.querySelector(".item-unit").value.trim(),price:Number(tr.querySelector(".item-price").value||0),disc:Number(tr.querySelector(".item-disc").value||0),vat:Number(tr.querySelector(".item-vat").value||0)}))}
+
+  function calc(){badge();const op=Math.min(100,Math.max(0,Number($("overallDiscount").value||0))),shipping=Math.max(0,Number($("shipping").value||0));let gross=0,lineDiscount=0,net=0,rawVat=0;document.querySelectorAll(".line-item").forEach(tr=>{const q=Math.max(0,Number(tr.querySelector(".item-qty").value||0)),p=Math.max(0,Number(tr.querySelector(".item-price").value||0)),d=Math.min(100,Math.max(0,Number(tr.querySelector(".item-disc").value||0))),v=Math.min(100,Math.max(0,Number(tr.querySelector(".item-vat").value||0))),base=q*p,disc=base*d/100,n=base-disc,vat=n*v/100;gross+=base;lineDiscount+=disc;net+=n;rawVat+=vat;tr.querySelector(".item-excl").textContent=money(n);tr.querySelector(".item-incl").textContent=money(n+vat);updateStock(tr)});const overallDiscount=net*op/100,factor=net>0?(net-overallDiscount)/net:1,subtotal=Math.max(0,net-overallDiscount),vat=rawVat*factor,grand=subtotal+vat+shipping;$("tGross").textContent=money(gross);$("tLineDiscount").textContent=money(lineDiscount);$("tOverallDiscount").textContent=money(overallDiscount);$("tSubtotal").textContent=money(subtotal);$("tVat").textContent=money(vat);$("tShipping").textContent=money(shipping);$("tGrand").textContent=money(grand);return{gross,lineDiscount,overallDiscount,subtotal,vat,shipping,grand}}
+
+  function collect(){const fields={};FIELD_IDS.forEach(id=>{const e=$(id);fields[id]=e.type==="checkbox"?e.checked:e.value});return{version:3,savedAt:new Date().toISOString(),fields,items:lines(),totals:calc()}}
+  function applyState(data){if(!data||typeof data!=="object")return;const f=data.fields||{};FIELD_IDS.forEach(id=>{if(!(id in f))return;const e=$(id);if(e.type==="checkbox")e.checked=Boolean(f[id]);else e.value=f[id]??""});$("itemsBody").innerHTML="";(Array.isArray(data.items)&&data.items.length?data.items:[{}]).forEach(addLine);calc()}
+  function saveDraft(show=true){try{localStorage.setItem(DRAFT_KEY,JSON.stringify(collect()));$("autosaveStatus").textContent="Saved "+new Date().toLocaleTimeString("en-ZA",{hour:"2-digit",minute:"2-digit"});if(show)toast("Draft saved","Sales order saved in this browser.")}catch(e){console.error(e);toast("Save failed","Browser storage is unavailable or full.",true)}}window.saveDraft=saveDraft;
+  function schedule(){$("autosaveStatus").textContent="Saving…";clearTimeout(autosaveTimer);autosaveTimer=setTimeout(()=>saveDraft(false),350)}
+  function loadDraft(){const d=parse(localStorage.getItem(DRAFT_KEY)||"null",null);if(!d)return false;applyState(d);return true}
+  function newOrder(confirmFirst=true){if(confirmFirst&&!confirm("Start a new sales order? The current draft will be replaced."))return;localStorage.removeItem(DRAFT_KEY);FIELD_IDS.forEach(id=>{const e=$(id);if(e.type==="checkbox")e.checked=false;else if(e.tagName==="SELECT")e.selectedIndex=0;else e.value=""});$("orderNumber").value=nextNumber();$("orderDate").value=localISO();$("deliveryDate").value=plusDays(7);$("currency").value="ZAR";$("orderStatus").value="Draft";$("deliveryMethod").value="Courier";$("overallDiscount").value="0";$("shipping").value="0";$("defaultVat").value="15";$("itemsBody").innerHTML="";addLine();saveDraft(false);toast("New sales order","A fresh sales order is ready.")}
+  function validate(){const e=[];if(!$("orderNumber").value.trim())e.push("Sales order number is required.");if(!$("customerCompany").value.trim())e.push("Customer / company is required.");const l=lines().filter(x=>x.desc||x.sku||x.price||x.qty);if(!l.length)e.push("Add at least one line item.");l.forEach((x,i)=>{if(x.qty<=0)e.push(`Line ${i+1}: quantity must be greater than zero.`);if(x.price<0)e.push(`Line ${i+1}: unit price cannot be negative.`)});if($("orderDate").value&&$("deliveryDate").value&&$("deliveryDate").value<$("orderDate").value)e.push("Delivery date cannot be before the order date.");return e}
+  function markConfirmed(){const e=validate();if(e.length){toast("Cannot confirm",e[0],true);return}$("orderStatus").value="Confirmed";calc();saveDraft(false);toast("Order confirmed",`${$("orderNumber").value} is marked Confirmed.`)}
+
+  function history(){const h=parse(localStorage.getItem(HISTORY_KEY)||"[]",[]);return Array.isArray(h)?h:[]}
+  function rebuildHistory(){const h=history();$("historySelect").innerHTML=h.length?'<option value="">Select a saved order…</option>'+h.map(x=>{const f=x.fields||{};return`<option value="${esc(f.orderNumber||"")}">${esc(f.orderNumber||"Untitled")} — ${esc(f.customerCompany||"No customer")} — ${esc(f.orderStatus||"Draft")}</option>`}).join(""):'<option value="">No saved orders yet</option>'}
+  function saveHistory(){const e=validate();if(e.length){toast("Cannot save order",e[0],true);return}const o=collect(),h=history(),n=o.fields.orderNumber,i=h.findIndex(x=>x?.fields?.orderNumber===n);if(i>=0)h[i]=o;else h.unshift(o);localStorage.setItem(HISTORY_KEY,JSON.stringify(h.slice(0,75)));rebuildHistory();$("historySelect").value=n;toast("Order saved",`${n} saved to local history.`)}
+  function loadHistory(){const n=$("historySelect").value;if(!n){toast("Select an order","Choose an order from history first.",true);return}const o=history().find(x=>x?.fields?.orderNumber===n);if(!o){toast("Order missing","The selected history record could not be found.",true);return}applyState(o);saveDraft(false);toast("Order loaded",`${n} loaded.`)}
+  function deleteHistory(){const n=$("historySelect").value;if(!n)return;if(!confirm(`Delete saved order ${n}?`))return;localStorage.setItem(HISTORY_KEY,JSON.stringify(history().filter(x=>x?.fields?.orderNumber!==n)));rebuildHistory();toast("Order deleted",`${n} removed from history.`)}
+
+  function csv(v){return`"${String(v??"").replace(/"/g,'""')}"`}
+  function fileName(ext){return`${($("orderNumber").value||"sales-order").replace(/[^a-z0-9_-]+/gi,"-")}.${ext}`}
+  function download(blob,name){const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=name;a.style.display="none";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(u);a.remove()},0)}
+  function exportCSV(){const d=collect(),r=[["Sales Order",d.fields.orderNumber],["Customer",d.fields.customerCompany],["Status",d.fields.orderStatus],["Currency",d.fields.currency],[],["SKU","Description","Qty","Unit","Unit Price","Discount %","VAT %","Line Excl.","Line Incl."]];d.items.forEach(i=>{const b=i.qty*i.price,n=b*(1-i.disc/100),v=n*i.vat/100;r.push([i.sku,i.desc,i.qty,i.unit,i.price,i.disc,i.vat,n,n+v])});r.push([],["Subtotal Excl.",d.totals.subtotal],["VAT",d.totals.vat],["Shipping",d.totals.shipping],["Grand Total",d.totals.grand]);download(new Blob(["\uFEFF"+r.map(x=>x.map(csv).join(",")).join("\n")],{type:"text/csv;charset=utf-8"}),fileName("csv"));toast("CSV exported","Sales order CSV created.")}window.exportCSV=exportCSV;
+  function exportJSON(){download(new Blob([JSON.stringify(collect(),null,2)],{type:"application/json;charset=utf-8"}),fileName("json"));toast("JSON exported","Structured sales order backup created.")}
+  function profileHeader(){const n=document.querySelector("[data-easyfile-profile-header]");return n?n.outerHTML:""}
+  function documentHTML(){const d=collect(),f=d.fields,rows=d.items.map(i=>{const b=i.qty*i.price,n=b*(1-i.disc/100),v=n*i.vat/100;return`<tr><td>${esc(i.sku)}</td><td>${esc(i.desc)}</td><td class="right">${i.qty}</td><td>${esc(i.unit)}</td><td class="right">${esc(money(i.price))}</td><td class="right">${i.disc.toFixed(2)}%</td><td class="right">${i.vat.toFixed(2)}%</td><td class="right">${esc(money(n))}</td><td class="right">${esc(money(n+v))}</td></tr>`}).join("");return`${profileHeader()}<section><div class="head"><div><h1>SALES ORDER</h1><div class="muted">Customer order and fulfilment document</div></div><div class="right"><div><strong>Order:</strong> ${esc(f.orderNumber)}</div><div><strong>Status:</strong> ${esc(f.orderStatus)}</div><div><strong>Order date:</strong> ${esc(f.orderDate)}</div><div><strong>Delivery:</strong> ${esc(f.deliveryDate)}</div><div><strong>Currency:</strong> ${esc(f.currency)}</div></div></div><div class="grid"><div><h3>Customer</h3><strong>${esc(f.customerCompany)}</strong><div>${esc(f.customerContact)}</div><div>${esc(f.customerEmail)}</div><div>${esc(f.customerPhone)}</div><div class="pre">${esc(f.billingAddress)}</div><div>${f.customerVat?"VAT / Reg: "+esc(f.customerVat):""}</div></div><div><h3>Delivery</h3><div class="pre">${esc(f.deliveryAddress)}</div><div><strong>Method:</strong> ${esc(f.deliveryMethod)}</div><div><strong>Tracking:</strong> ${esc(f.trackingNumber)}</div><div><strong>Reference:</strong> ${esc(f.customerReference)}</div><div><strong>Salesperson:</strong> ${esc(f.salesperson)}</div><div><strong>Payment terms:</strong> ${esc(f.paymentTerms)}</div></div></div><table><thead><tr><th>SKU</th><th>Description</th><th>Qty</th><th>Unit</th><th>Unit Price</th><th>Disc</th><th>VAT</th><th>Excl.</th><th>Incl.</th></tr></thead><tbody>${rows||'<tr><td colspan="9">No line items</td></tr>'}</tbody></table><div class="totals"><table><tbody><tr><td>Subtotal excl. VAT</td><td class="right">${esc(money(d.totals.subtotal))}</td></tr><tr><td>VAT</td><td class="right">${esc(money(d.totals.vat))}</td></tr><tr><td>Shipping</td><td class="right">${esc(money(d.totals.shipping))}</td></tr><tr><td><strong>GRAND TOTAL</strong></td><td class="right total">${esc(money(d.totals.grand))}</td></tr></tbody></table></div><div class="grid"><div><h3>Notes</h3><div class="pre">${esc(f.notes)}</div></div><div><h3>Terms & Conditions</h3><div class="pre">${esc(f.terms)}</div></div></div><div class="foot">Generated with EasyFile EasySO</div></section>`}
+  const docCSS='body{font-family:Arial,sans-serif;color:#111827;margin:30px}h1{margin:0;font-size:30px}.head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}.grid{display:flex;gap:24px;margin-top:20px}.grid>div{flex:1}.muted{color:#64748b}.right{text-align:right}.pre{white-space:pre-line}table{width:100%;border-collapse:collapse;margin:16px 0}th,td{border:1px solid #d1d5db;padding:7px;font-size:11px}th{background:#f3f4f6}.totals{max-width:380px;margin-left:auto}.total{font-size:15px;font-weight:bold}.foot{margin-top:28px;font-size:11px;color:#64748b;text-align:center}tr{page-break-inside:avoid}@media(max-width:640px){.grid,.head{display:block}}';
+  function preview(){const e=validate();if(e.length)toast("Preview warning",e[0],true);$("previewContent").innerHTML=`<style>${docCSS}</style>${documentHTML()}`;$("previewModal").classList.remove("hidden");$("previewModal").classList.add("flex")}
+  function closePreview(){$("previewModal").classList.add("hidden");$("previewModal").classList.remove("flex")}
+  function printOrder(){const w=window.open("","_blank");if(!w){toast("Print blocked","Allow pop-ups for EasyFile to print this order.",true);return}w.opener=null;w.document.open();w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${esc($("orderNumber").value)}</title><style>@page{size:A4;margin:12mm}${docCSS}</style></head><body>${documentHTML()}<script>window.onload=function(){window.print()}<\/script></body></html>`);w.document.close()}
+  function exportWord(){const h=`<!DOCTYPE html><html><head><meta charset="utf-8"><style>${docCSS}</style></head><body>${documentHTML()}</body></html>`;download(new Blob(["\uFEFF"+h],{type:"application/msword;charset=utf-8"}),fileName("doc"));toast("Word export created","Word-compatible document created.")}
+  function exportExcel(){const h=`<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>${documentHTML()}</body></html>`;download(new Blob(["\uFEFF"+h],{type:"application/vnd.ms-excel;charset=utf-8"}),fileName("xls"));toast("Excel export created","Excel-compatible document created.")}
+
+  function parseCSV(text){const rows=[];let row=[],field="",quoted=false;for(let i=0;i<text.length;i++){const c=text[i];if(quoted){if(c==='"'&&text[i+1]==='"'){field+='"';i++}else if(c==='"')quoted=false;else field+=c}else if(c==='"')quoted=true;else if(c===','){row.push(field);field=""}else if(c==='\n'){row.push(field);rows.push(row);row=[];field=""}else if(c!=='\r')field+=c}row.push(field);if(row.some(v=>String(v).trim()))rows.push(row);return rows}
+  function importCSV(file){if(!file)return;const r=new FileReader();r.onload=e=>{const rows=parseCSV(String(e.target.result||""));if(!rows.length){toast("Import failed","CSV is empty.",true);return}let start=0;if(rows[0].some(x=>/description|sku/i.test(String(x))))start=1;let count=0;for(let i=start;i<rows.length;i++){const[sku,desc,qty,unit,price,disc,vat]=rows[i];if(!String(sku||desc||"").trim())continue;addLine({sku,desc,qty:Number(qty||1),unit:unit||"ea",price:Number(price||0),disc:Number(disc||0),vat:Number(vat||$("defaultVat").value||15)});count++}calc();schedule();toast("CSV imported",`${count} line item(s) added.`)};r.readAsText(file)}
+
+  function bind(){
+    $("btnAddLine").addEventListener("click",()=>addLine());$("btnNewSalesOrder").addEventListener("click",()=>newOrder(true));$("btnMarkConfirmed").addEventListener("click",markConfirmed);$("btnSaveDraft").addEventListener("click",()=>saveDraft(true));$("btnRefreshInventory").addEventListener("click",()=>loadInventory(true));$("btnRefreshCRM").addEventListener("click",()=>loadCRM(true));$("customerCompany").addEventListener("change",crmMatch);
+    $("sameAsBilling").addEventListener("change",()=>{if($("sameAsBilling").checked)$("deliveryAddress").value=$("billingAddress").value;schedule()});$("billingAddress").addEventListener("input",()=>{if($("sameAsBilling").checked)$("deliveryAddress").value=$("billingAddress").value});
+    $("btnSaveHistory").addEventListener("click",saveHistory);$("btnLoadHistory").addEventListener("click",loadHistory);$("btnDeleteHistory").addEventListener("click",deleteHistory);$("btnPreview").addEventListener("click",preview);$("btnClosePreview").addEventListener("click",closePreview);$("btnClosePreviewBottom").addEventListener("click",closePreview);$("previewModal").addEventListener("click",e=>{if(e.target===$("previewModal")||e.target.classList.contains("modal-backdrop"))closePreview()});
+    $("btnPrint").addEventListener("click",printOrder);$("btnPrintPreview").addEventListener("click",printOrder);$("btnPDF").addEventListener("click",printOrder);$("btnWord").addEventListener("click",exportWord);$("btnExcel").addEventListener("click",exportExcel);$("btnCSV").addEventListener("click",exportCSV);$("btnJSON").addEventListener("click",exportJSON);$("btnImportCSV").addEventListener("click",()=>$("csvFile").click());$("csvFile").addEventListener("change",e=>{importCSV(e.target.files[0]);e.target.value=""});
+    FIELD_IDS.forEach(id=>{const e=$(id);["input","change"].forEach(evt=>e.addEventListener(evt,()=>{calc();schedule()}))});document.addEventListener("keydown",e=>{if(e.key==="Escape")closePreview()});
   }
-
-  function calculate() {
-    let subtotal = 0;
-    document.querySelectorAll('#items tr').forEach(row => {
-      const qty = parseFloat(row.querySelector('.qty').value) || 0;
-      const price = parseFloat(row.querySelector('.price').value) || 0;
-      const total = qty * price;
-      row.querySelector('.total').textContent = "R" + total.toFixed(2);
-      subtotal += total;
-    });
-
-    const vat = subtotal * 0.15;
-    const grandTotal = subtotal + vat;
-
-    document.getElementById('subtotal').textContent = "R" + subtotal.toFixed(2);
-    document.getElementById('vat').textContent = "R" + vat.toFixed(2);
-    document.getElementById('grandTotal').textContent = "R" + grandTotal.toFixed(2);
-  }
-
-  function clearForm() {
-    document.getElementById('items').innerHTML = '';
-    calculate();
-  }
-
-  addRow();
+  function boot(){bind();loadInventory();loadCRM();rebuildHistory();if(!loadDraft())newOrder(false);else{if(!$("orderNumber").value)$("orderNumber").value=nextNumber();calc()}}
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
+})();
 </script>
-
 <script defer src="scripts/sync-nav.js"></script>
 </body>
 </html>
-
-
-
-
