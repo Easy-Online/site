@@ -1,89 +1,181 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en-ZA">
 <head>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9270041066336676" crossorigin="anonymous"></script>
   <!-- NAV_SYNC: scripts/sync-nav.js -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Easy Converter | EasyFile</title>
-  <meta name="description" content="Convert text-based PDF content to DOCX, XLSX, CSV, TXT, JSON and XML in your browser.">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Easy Converter | OCR & Multi-format File Converter | EasyFile</title>
+  <meta name="description" content="Convert PDF, DOCX, Excel, CSV, text, JSON, XML, HTML, Markdown and image files locally in your browser with OCR and exports to PDF, DOCX, XLSX, CSV, TXT, JSON, XML, HTML and Markdown.">
   <meta name="theme-color" content="#2563eb">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.umd.js"></script>
+  <meta name="color-scheme" content="light dark">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' https: 'wasm-unsafe-eval'; worker-src 'self' blob: https:; connect-src 'self' https: blob: data:; font-src 'self' data: https:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests">
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=()">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <link rel="canonical" href="https://www.easyfile.co.za/easy-converter.html">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_ZA">
+  <meta property="og:title" content="Easy Converter | EasyFile">
+  <meta property="og:description" content="Local-first OCR and multi-format document conversion with business-ready exports.">
+  <meta property="og:image" content="https://www.easyfile.co.za/logo-b.png">
+  <meta property="og:url" content="https://www.easyfile.co.za/easy-converter.html">
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/easyfile-brand-tokens.css">
+  <link rel="stylesheet" href="assets/css/easyfile-site.css">
+  <link rel="stylesheet" href="assets/css/easyfile-footer.css">
+  <link rel="stylesheet" href="assets/css/easyfile-referrals.css">
+  <link rel="stylesheet" href="assets/css/easyfile-navigation.css">
+  <link rel="stylesheet" href="assets/css/easy-converter-enterprise.css">
   <style>
-    :root{--accent:#2563eb;--page:#f5f7fb;--surface:#fff;--surface2:#f8fafc;--ink:#0f172a;--muted:#64748b;--border:#e2e8f0;--preview:#0f172a;--previewInk:#e2e8f0;--shadow:0 12px 30px rgba(15,23,42,.05)}
-    html[data-theme="dark"]{--page:#07101f;--surface:#0f172a;--surface2:#111827;--ink:#e5e7eb;--muted:#9fb0c8;--border:#26354c;--preview:#020617;--previewInk:#e5e7eb;--shadow:0 12px 30px rgba(0,0,0,.28)}
-    *{box-sizing:border-box}body{margin:0;background:var(--page);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;transition:background .18s ease,color .18s ease}.wrap{max-width:1180px;margin:auto;padding:32px 20px}.hero{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:24px}.hero h1{font-size:clamp(34px,5vw,54px);margin:8px 0}.hero p{max-width:760px;color:var(--muted);line-height:1.65}.pill{display:inline-block;border:1px solid #bfdbfe;background:#eff6ff;color:#1d4ed8;padding:7px 11px;border-radius:999px;font-size:13px;font-weight:800}html[data-theme="dark"] .pill{background:#172554;border-color:#1d4ed8;color:#bfdbfe}.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:20px}.card{background:var(--surface);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:22px}.card h2{margin:0 0 6px}.muted{color:var(--muted);font-size:14px;line-height:1.55}.btn{border:1px solid var(--border);background:var(--surface);color:var(--ink);border-radius:11px;padding:10px 14px;font-weight:800;cursor:pointer;transition:.15s ease}.btn:hover{transform:translateY(-1px)}.btn:focus-visible,.fmt:focus-visible,.dz:focus-visible{outline:3px solid rgba(37,99,235,.28);outline-offset:2px}.btn.dark{background:#0f172a;border-color:#0f172a;color:#fff}html[data-theme="dark"] .btn.dark{background:#2563eb;border-color:#2563eb}.btn:disabled,.fmt:disabled{opacity:.45;cursor:not-allowed;transform:none}.dz{margin-top:18px;border:2px dashed #94a3b8;border-radius:16px;background:var(--surface2);text-align:center;padding:36px 20px;cursor:pointer}.dz.over{border-color:var(--accent);background:#eff6ff}html[data-theme="dark"] .dz.over{background:#172554}.dz i{font-size:38px;color:var(--accent)}.meta{margin-top:10px;font-weight:800;word-break:break-all}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}.metric,.status{border:1px solid var(--border);border-radius:12px;padding:12px}.metric small{color:var(--muted);font-weight:800}.metric b{display:block;font-size:25px;margin-top:4px}.status{margin-top:14px}.bar{height:7px;background:#dbe4ef;border-radius:99px;overflow:hidden;margin-top:9px}html[data-theme="dark"] .bar{background:#1e293b}.bar span{display:block;height:100%;width:0;background:var(--accent);transition:width .18s ease}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.preview{margin:16px 0 0;background:var(--preview);color:var(--previewInk);border-radius:14px;padding:16px;min-height:290px;max-height:470px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace}.warn{display:none;margin-top:12px;padding:12px;border:1px solid #fcd34d;background:#fffbeb;border-radius:12px;color:#92400e;font-size:14px}.warn.show{display:block}html[data-theme="dark"] .warn{background:#2b1c05;border-color:#92400e;color:#fde68a}.exports{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}.fmt{border:1px solid var(--border);background:var(--surface);color:var(--ink);border-radius:14px;padding:15px;text-align:left;cursor:pointer;transition:.15s ease}.fmt:hover:not(:disabled){border-color:#60a5fa;box-shadow:0 8px 20px rgba(37,99,235,.12)}.fmt i{font-size:23px;color:var(--accent)}.fmt b{display:block;margin:8px 0 4px}.note{margin-top:20px}.toast{position:fixed;right:16px;bottom:16px;background:rgba(2,6,23,.94);color:#fff;border-radius:12px;padding:12px 14px;display:none;z-index:9999;max-width:390px;box-shadow:0 12px 30px rgba(0,0,0,.25)}.toast.show{display:block}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}@media(max-width:820px){.grid{grid-template-columns:1fr}.hero{align-items:start;flex-direction:column}.exports{grid-template-columns:repeat(2,1fr)}}@media(max-width:480px){.metrics{grid-template-columns:1fr}.exports{grid-template-columns:1fr}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}@media print{.no-print{display:none!important}body{background:#fff!important;color:#111827!important}.card{box-shadow:none!important;border-color:#ddd!important}}
+    .converter-source-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}.converter-health{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.converter-health span{border:1px solid var(--easyfile-border,#e2e8f0);border-radius:999px;padding:5px 9px;font-size:.78rem}.converter-health .ok{color:#166534;background:#dcfce7;border-color:#bbf7d0}.converter-health .warn{display:inline-block;margin:0;color:#92400e;background:#fffbeb;border-color:#fde68a}.converter-health .bad{color:#991b1b;background:#fee2e2;border-color:#fecaca}.converter-editor{width:100%;min-height:420px;resize:vertical;border:1px solid var(--easyfile-border,#dbe3ee);border-radius:14px;padding:14px;background:var(--easyfile-surface,#fff);color:var(--easyfile-text,#0f172a);font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.converter-editor:focus{outline:3px solid rgba(37,99,235,.18);border-color:#60a5fa}.converter-capability{overflow:auto}.converter-capability table{width:100%;border-collapse:collapse;font-size:.88rem}.converter-capability th,.converter-capability td{padding:10px;border-bottom:1px solid var(--easyfile-border,#e2e8f0);text-align:left;white-space:nowrap}.converter-format.disabled-note{opacity:.72}.converter-inline-alert{padding:12px 14px;border-radius:12px;border:1px solid #fde68a;background:#fffbeb;color:#854d0e;margin-top:12px;display:none}.converter-inline-alert.show{display:block}.converter-settings.compact{grid-template-columns:repeat(4,minmax(0,1fr))}@media(max-width:900px){.converter-settings.compact{grid-template-columns:1fr 1fr}.converter-source-grid{grid-template-columns:1fr}}@media(max-width:560px){.converter-settings.compact{grid-template-columns:1fr}}
   </style>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.umd.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
   <!-- EASYFILE_FAVICONS -->
   <link rel="icon" href="logo-b.png" type="image/png">
   <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
   <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
   <link rel="apple-touch-icon" href="logo-b.png">
 </head>
-<body>
+<body class="easyfile-app">
 <!-- NAV_SYNC -->
 <div class="easyfile-nav no-print">
   <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
 </div>
-  <main class="wrap" id="main-content">
-    <section class="hero">
-      <div><span class="pill">Local browser processing</span><h1>Easy Converter</h1><p>Upload a PDF, extract readable text, preview the result, then export to DOCX, XLSX, CSV, TXT, JSON or XML. PDF download preserves the original file.</p></div>
-      <a class="btn no-print" href="index.html#modules">All modules</a>
-    </section>
-    <section class="grid">
-      <div class="card">
-        <h2>1. Choose a PDF</h2><p class="muted">Best for text-based PDFs. Maximum file size for this browser workflow: 50 MB.</p>
-        <div id="dz" class="dz" role="button" tabindex="0" aria-label="Choose or drop a PDF file"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i><h3>Drop PDF here</h3><p class="muted">or click to browse</p><div id="meta" class="meta">No file selected.</div></div>
-        <input id="file" type="file" accept="application/pdf,.pdf" hidden>
-        <div class="metrics"><div class="metric"><small>PAGES</small><b id="pages">0</b></div><div class="metric"><small>CHARACTERS</small><b id="chars">0</b></div><div class="metric"><small>LINES</small><b id="lines">0</b></div></div>
-        <div class="status" aria-live="polite"><b id="st">Awaiting PDF</b><div id="sd" class="muted">Select a PDF to begin.</div><div class="bar" aria-hidden="true"><span id="bar"></span></div></div>
-        <div class="actions no-print"><button id="parse" type="button" class="btn dark" disabled>Extract content</button><button id="reset" type="button" class="btn">Reset</button></div>
+<a class="converter-skip-link" href="#main-content">Skip to main content</a>
+
+<main id="main-content" class="easyfile-main converter-main">
+  <section class="converter-hero card" aria-labelledby="converter-title">
+    <div class="converter-hero-copy">
+      <div class="converter-eyebrow"><i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i> Documents · Universal Converter</div>
+      <h1 id="converter-title">Convert business files accurately and locally.</h1>
+      <p>One conversion workspace for PDFs, scans, Word documents, spreadsheets, CSV, text, JSON, XML, HTML, Markdown and common images. Easy Converter uses format-specific parsers, OCR fallback, structured exports and explicit fidelity warnings instead of silently guessing.</p>
+      <div class="converter-actions no-print">
+        <a class="converter-btn converter-btn-primary" href="#converter"><i class="fa-solid fa-file-arrow-up" aria-hidden="true"></i> Start conversion</a>
+        <a class="converter-btn converter-btn-secondary" href="easy-converter-enterprise.html"><i class="fa-solid fa-building" aria-hidden="true"></i> PDF Enterprise workflow</a>
       </div>
-      <div class="card">
-        <h2>2. Review content</h2><p class="muted">Preview shows up to 12,000 extracted characters.</p><div class="actions no-print"><button id="copy" type="button" class="btn" disabled>Copy text</button></div>
-        <pre id="preview" class="preview" tabindex="0">Upload a PDF to generate a preview.</pre>
-        <div id="warn" class="warn"><b>Very little selectable text was found.</b> This is likely a scanned/image-only PDF. OCR is not included in Easy Converter, so editable exports may be empty or incomplete.</div>
+      <div class="converter-trust-row" aria-label="Converter highlights">
+        <span><i class="fa-solid fa-shield-halved"></i> Local-first</span>
+        <span><i class="fa-solid fa-eye"></i> OCR fallback</span>
+        <span><i class="fa-solid fa-table"></i> Spreadsheet-aware</span>
+        <span><i class="fa-solid fa-file-word"></i> DOCX parsing</span>
+        <span><i class="fa-solid fa-triangle-exclamation"></i> Fidelity warnings</span>
+      </div>
+    </div>
+    <aside class="converter-format-summary" aria-label="Supported formats">
+      <div class="converter-format-summary-title">Inputs</div>
+      <div class="converter-format-pills"><span>PDF</span><span>DOCX</span><span>XLSX/XLS</span><span>CSV/TSV</span><span>TXT/MD</span><span>JSON/XML</span><span>HTML</span><span>PNG/JPG/WebP/BMP</span></div>
+      <p>Legacy DOC/PPT/PPTX and layout-perfect Office conversion are intentionally not claimed by this browser edition because doing so reliably requires a server-side Office/LibreOffice conversion engine.</p>
+    </aside>
+  </section>
+
+  <section class="converter-metrics" aria-label="Conversion metrics">
+    <article class="card converter-metric"><span>Pages / sheets</span><strong id="unitCount">0</strong></article>
+    <article class="card converter-metric"><span>Characters</span><strong id="charCount">0</strong></article>
+    <article class="card converter-metric"><span>Tables</span><strong id="tableCount">0</strong></article>
+    <article class="card converter-metric"><span>OCR pages / images</span><strong id="ocrCount">0</strong></article>
+  </section>
+
+  <section id="converter" class="converter-workspace">
+    <section class="card converter-panel" aria-labelledby="upload-title">
+      <div class="converter-panel-heading">
+        <div><span class="converter-step">Step 1</span><h2 id="upload-title">Choose and analyse a file</h2><p>The source format is detected from the file extension and MIME type, then routed to the appropriate parser.</p></div>
+        <label class="converter-btn converter-btn-primary no-print" for="fileInput"><i class="fa-solid fa-folder-open"></i> Choose file</label>
+        <input id="fileInput" type="file" accept=".pdf,.docx,.xlsx,.xls,.csv,.tsv,.txt,.md,.markdown,.json,.xml,.html,.htm,.png,.jpg,.jpeg,.webp,.bmp,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,image/*,text/*" class="converter-visually-hidden">
+      </div>
+
+      <div id="dropzone" class="converter-dropzone" tabindex="0" role="button" aria-label="Upload a file by drag and drop or click">
+        <div class="converter-drop-icon"><i class="fa-solid fa-file-arrow-up"></i></div>
+        <h3>Drag and drop a supported file here</h3>
+        <p>Recommended maximum file size: 100 MB. OCR-heavy documents should be smaller for browser reliability.</p>
+        <p id="fileMeta" class="converter-file-meta">No file selected yet.</p>
+      </div>
+
+      <div class="converter-settings compact" aria-label="Conversion settings">
+        <label class="converter-field"><span>PDF OCR mode</span><select id="ocrMode"><option value="auto" selected>Auto detect scanned pages</option><option value="always">Always OCR PDF pages</option><option value="never">Never OCR PDFs</option></select><em>Auto uses OCR when embedded text is sparse.</em></label>
+        <label class="converter-field"><span>OCR render quality</span><select id="ocrScale"><option value="1.5">Balanced</option><option value="2" selected>High accuracy</option><option value="2.5">Best quality</option></select><em>Higher values use more memory and CPU.</em></label>
+        <label class="converter-field"><span>OCR language</span><select id="ocrLanguage"><option value="eng" selected>English</option><option value="afr">Afrikaans</option><option value="eng+afr">English + Afrikaans</option><option value="por">Portuguese</option><option value="fra">French</option></select><em>Language data is downloaded only when OCR is used.</em></label>
+        <label class="converter-field"><span>Text threshold</span><input id="minWords" type="number" min="5" max="400" step="1" value="24"><em>PDF pages below this word count become OCR candidates.</em></label>
+      </div>
+
+      <div class="converter-command-row no-print">
+        <button id="analyzeBtn" class="converter-btn converter-btn-primary" type="button" disabled><i class="fa-solid fa-wand-magic-sparkles"></i> Analyse file</button>
+        <button id="cancelBtn" class="converter-btn converter-btn-secondary" type="button" disabled><i class="fa-solid fa-ban"></i> Cancel</button>
+        <button id="resetBtn" class="converter-btn converter-btn-secondary" type="button"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+      </div>
+
+      <div class="converter-progress" aria-live="polite">
+        <div class="converter-progress-track"><div id="progressBar" class="converter-progress-bar"></div></div>
+        <div class="converter-status"><span id="statusText">Awaiting file upload</span><span id="statusMeta">Idle</span></div>
+      </div>
+      <div id="warningBox" class="converter-inline-alert" role="alert"></div>
+
+      <details class="converter-log" open>
+        <summary><span><i class="fa-solid fa-terminal"></i> Processing log</span><button id="clearLogBtn" class="converter-log-clear no-print" type="button">Clear</button></summary>
+        <div id="logBody" class="converter-log-body" aria-live="polite">System ready. Upload a file to begin.</div>
+      </details>
+
+      <div class="converter-health" id="libraryHealth" aria-label="Library health"></div>
+    </section>
+
+    <section class="card converter-panel" aria-labelledby="review-title">
+      <div class="converter-panel-heading">
+        <div><span class="converter-step">Step 2</span><h2 id="review-title">Review and correct extracted text</h2><p>The text area is editable. Text-based exports use your corrected version; spreadsheet exports retain structured tables where available.</p></div>
+        <button id="copyBtn" class="converter-btn converter-btn-secondary no-print" type="button" disabled><i class="fa-solid fa-copy"></i> Copy</button>
+      </div>
+      <textarea id="editor" class="converter-editor" spellcheck="false" aria-label="Extracted text editor" placeholder="Extracted or parsed content will appear here."></textarea>
+      <div class="converter-source-grid">
+        <div><strong id="sourceType">Source: —</strong><p id="sourceSummary" class="converter-file-meta">No analysis available.</p></div>
+        <div><strong>Structured data</strong><p id="structureSummary" class="converter-file-meta">No tables detected.</p></div>
       </div>
     </section>
-    <section class="card note"><h2>3. Export</h2><p id="hint" class="muted">Select a PDF to enable PDF download.</p><div class="exports no-print">
-      <button class="fmt" type="button" data-f="pdf" disabled><i class="fa-solid fa-file-pdf" aria-hidden="true"></i><b>PDF</b><span class="muted">Original file</span></button>
-      <button class="fmt" type="button" data-f="docx" disabled><i class="fa-solid fa-file-word" aria-hidden="true"></i><b>DOCX</b><span class="muted">Word document</span></button>
-      <button class="fmt" type="button" data-f="xlsx" disabled><i class="fa-solid fa-file-excel" aria-hidden="true"></i><b>XLSX</b><span class="muted">Pages + lines</span></button>
-      <button class="fmt" type="button" data-f="csv" disabled><i class="fa-solid fa-file-csv" aria-hidden="true"></i><b>CSV</b><span class="muted">Flat line export</span></button>
-      <button class="fmt" type="button" data-f="txt" disabled><i class="fa-solid fa-file-lines" aria-hidden="true"></i><b>TXT</b><span class="muted">Plain text</span></button>
-      <button class="fmt" type="button" data-f="json" disabled><i class="fa-solid fa-code" aria-hidden="true"></i><b>JSON</b><span class="muted">Structured data</span></button>
-      <button class="fmt" type="button" data-f="xml" disabled><i class="fa-solid fa-code" aria-hidden="true"></i><b>XML</b><span class="muted">Structured XML</span></button>
-    </div></section>
-    <section class="card note"><h2>Conversion notes</h2><p class="muted"><b>Text PDFs:</b> reading order is approximated from text coordinates. <b>Scanned PDFs:</b> require OCR, which this module does not perform. <b>XLSX/CSV:</b> preserve page and line structure rather than recreating arbitrary visual tables. <b>Privacy:</b> processing occurs in browser memory and exports are downloaded locally.</p></section>
-  </main>
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script type="module">
-    import * as pdfjs from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.3.136/pdf.min.mjs';
-    pdfjs.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.3.136/pdf.worker.min.mjs';
-    const $=id=>document.getElementById(id),S={file:null,buf:null,p:null,name:'document.pdf'},MAX=50*1024*1024,F=[...document.querySelectorAll('[data-f]')];
-    function toast(x){const t=$('toast');t.textContent=x;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2800)}
-    function size(n){const u=['B','KB','MB','GB'];let i=0;while(n>=1024&&i<3){n/=1024;i++}return`${n.toFixed(i&&n<10?2:0)} ${u[i]}`}
-    function base(){return(S.name||'document.pdf').replace(/\.pdf$/i,'')||'document'}
-    function status(a,b,p=0){$('st').textContent=a;$('sd').textContent=b;$('bar').style.width=`${Math.max(0,Math.min(100,p))}%`}
-    function dl(blob,name){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1500)}
-    function xe(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;')}
-    function csv(v){return`"${String(v??'').replace(/"/g,'""')}"`}
-    function enable(){F.forEach(b=>b.disabled=b.dataset.f==='pdf'?!S.file:!S.p);$('copy').disabled=!S.p?.text;$('hint').textContent=!S.file?'Select a PDF to enable PDF download.':!S.p?'Original PDF ready. Extract content for editable exports.':'All formats are enabled.'}
-    async function pick(f){if(!f)return;const ok=f.type==='application/pdf'||/\.pdf$/i.test(f.name||'');if(!ok){toast('Please choose a PDF file.');return}if(f.size>MAX){toast('PDF exceeds the 50 MB browser limit.');return}try{S.file=f;S.name=f.name||'document.pdf';S.buf=await f.arrayBuffer();S.p=null;$('meta').textContent=`${S.name} · ${size(f.size)}`;$('preview').textContent='PDF loaded. Click “Extract content”.';$('warn').classList.remove('show');$('pages').textContent=$('chars').textContent=$('lines').textContent='0';$('parse').disabled=false;status('PDF ready','Original PDF is ready; extract text for editable exports.',10);enable()}catch(e){console.error(e);reset();toast('Could not read this PDF.')}}
-    function reset(show=false){S.file=S.buf=S.p=null;S.name='document.pdf';$('file').value='';$('meta').textContent='No file selected.';$('preview').textContent='Upload a PDF to generate a preview.';$('warn').classList.remove('show');$('pages').textContent=$('chars').textContent=$('lines').textContent='0';$('parse').disabled=true;status('Awaiting PDF','Select a PDF to begin.',0);enable();if(show)toast('Converter reset.')}
-    async function extract(){if(!S.buf)return;$('parse').disabled=true;status('Extracting content…','Opening PDF…',10);$('preview').textContent='Extracting content…';try{const pdf=await pdfjs.getDocument({data:S.buf.slice(0)}).promise,ps=[];for(let n=1;n<=pdf.numPages;n++){const page=await pdf.getPage(n),c=await page.getTextContent({normalizeWhitespace:true}),it=c.items.filter(x=>typeof x.str==='string'&&x.str.trim()).map(x=>({t:x.str.trim(),x:+(x.transform?.[4]||0),y:+(x.transform?.[5]||0),w:+(x.width||0)})).sort((a,b)=>Math.abs(b.y-a.y)>3?b.y-a.y:a.x-b.x),groups=[];for(const q of it){let g=groups.find(z=>Math.abs(z.y-q.y)<=3);if(!g){g={y:q.y,a:[]};groups.push(g)}g.a.push(q)}groups.sort((a,b)=>b.y-a.y);const ls=groups.map(g=>{g.a.sort((a,b)=>a.x-b.x);let out='',pr=null;for(const q of g.a){if(pr&&q.x-(pr.x+pr.w)>1&&out&&!/\s$/.test(out))out+=' ';out+=q.t;pr=q}return out.replace(/\s+/g,' ').trim()}).filter(Boolean),tx=ls.join('\n');ps.push({pageNumber:n,lineCount:ls.length,characterCount:tx.length,lines:ls,text:tx});status('Extracting content…',`Page ${n} of ${pdf.numPages}`,10+Math.round(n/pdf.numPages*80));page.cleanup?.()}const raw=ps.map(x=>x.text).filter(Boolean).join('\n\n'),all=ps.map(x=>`--- Page ${x.pageNumber} ---\n${x.text}`).join('\n\n'),lc=ps.reduce((a,x)=>a+x.lines.length,0);S.p={sourceFile:S.name,fileSize:S.file?.size||0,pageCount:ps.length,lineCount:lc,characterCount:raw.length,extractedAt:new Date().toISOString(),pages:ps,text:all};$('pages').textContent=S.p.pageCount;$('chars').textContent=S.p.characterCount.toLocaleString('en-ZA');$('lines').textContent=S.p.lineCount.toLocaleString('en-ZA');$('preview').textContent=all.slice(0,12000)||'No selectable text was extracted.';const sparse=S.p.characterCount<Math.max(20,S.p.pageCount*10);$('warn').classList.toggle('show',sparse);status(sparse?'Extraction completed with limited text':'Content extracted successfully',sparse?'PDF appears to contain mostly images/scans.':`${S.p.pageCount} page(s) ready for export.`,100);enable()}catch(e){console.error(e);S.p=null;$('preview').textContent='Could not extract content.';const locked=e?.name==='PasswordException'||/password/i.test(e?.message||'');status('PDF extraction failed',locked?'Password-protected PDF. Remove protection and retry.':(e?.message||'Malformed, encrypted or unsupported PDF.'),0);enable();toast('PDF extraction failed.')}finally{$('parse').disabled=!S.buf}}
-    function outTxt(){dl(new Blob([S.p.text],{type:'text/plain;charset=utf-8'}),`${base()}.txt`)}
-    function outJson(){dl(new Blob([JSON.stringify(S.p,null,2)],{type:'application/json;charset=utf-8'}),`${base()}.json`)}
-    function outCsv(){const r=[['page_number','line_number','line_text']];S.p.pages.forEach(p=>{if(!p.lines.length)r.push([p.pageNumber,'','']);p.lines.forEach((l,i)=>r.push([p.pageNumber,i+1,l]))});dl(new Blob(['\uFEFF',r.map(x=>x.map(csv).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}),`${base()}.csv`)}
-    function outXml(){const b=S.p.pages.map(p=>`  <page number="${p.pageNumber}" lineCount="${p.lineCount}" characterCount="${p.characterCount}">\n${p.lines.map((l,i)=>`    <line number="${i+1}">${xe(l)}</line>`).join('\n')}\n    <text>${xe(p.text)}</text>\n  </page>`).join('\n'),x=`<?xml version="1.0" encoding="UTF-8"?>\n<pdfDocument sourceFile="${xe(S.p.sourceFile)}" pageCount="${S.p.pageCount}" extractedAt="${xe(S.p.extractedAt)}">\n${b}\n</pdfDocument>`;dl(new Blob([x],{type:'application/xml;charset=utf-8'}),`${base()}.xml`)}
-    function outXlsx(){if(!window.XLSX)throw Error('Excel export library is still loading or unavailable. Reload the page and retry.');const w=XLSX.utils.book_new(),sum=[{source_file:S.p.sourceFile,pages:S.p.pageCount,lines:S.p.lineCount,characters:S.p.characterCount,extracted_at:S.p.extractedAt}],pg=S.p.pages.map(p=>({page_number:p.pageNumber,line_count:p.lineCount,character_count:p.characterCount,text:p.text})),ln=S.p.pages.flatMap(p=>p.lines.map((l,i)=>({page_number:p.pageNumber,line_number:i+1,line_text:l})));XLSX.utils.book_append_sheet(w,XLSX.utils.json_to_sheet(sum),'Summary');XLSX.utils.book_append_sheet(w,XLSX.utils.json_to_sheet(pg),'Pages');XLSX.utils.book_append_sheet(w,XLSX.utils.json_to_sheet(ln),'Lines');XLSX.writeFile(w,`${base()}.xlsx`)}
-    async function outDocx(){if(!window.docx)throw Error('Word export library is still loading or unavailable. Reload the page and retry.');const{Document,Packer,Paragraph,HeadingLevel,TextRun}=window.docx,ch=[new Paragraph({heading:HeadingLevel.TITLE,children:[new TextRun(`Converted from ${S.p.sourceFile}`)]}),new Paragraph({text:`Pages: ${S.p.pageCount} · Lines: ${S.p.lineCount} · Characters: ${S.p.characterCount}`})];S.p.pages.forEach(p=>{ch.push(new Paragraph({heading:HeadingLevel.HEADING_1,text:`Page ${p.pageNumber}`}));(p.lines.length?p.lines:['[No selectable text extracted]']).forEach(l=>ch.push(new Paragraph({text:l}))) });dl(await Packer.toBlob(new Document({sections:[{children:ch}]})),`${base()}.docx`)}
-    async function run(f){try{if(f!=='pdf'&&!S.p)return;if(f==='pdf')dl(S.file,S.name);else if(f==='txt')outTxt();else if(f==='json')outJson();else if(f==='csv')outCsv();else if(f==='xml')outXml();else if(f==='xlsx')outXlsx();else if(f==='docx')await outDocx();toast(`${f.toUpperCase()} export started.`)}catch(e){console.error(e);toast(e?.message||'Export failed.')}}
-    async function copyText(){const text=S.p?.text||'';if(!text)return;try{await navigator.clipboard.writeText(text);toast('Extracted text copied.')}catch{const ta=document.createElement('textarea');ta.value=text;ta.setAttribute('readonly','');ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();const ok=document.execCommand('copy');ta.remove();toast(ok?'Extracted text copied.':'Copy blocked by browser.')}}
-    $('file').addEventListener('change',e=>pick(e.target.files?.[0]));$('dz').addEventListener('click',()=>$('file').click());$('dz').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('file').click()}});['dragenter','dragover'].forEach(n=>$('dz').addEventListener(n,e=>{e.preventDefault();$('dz').classList.add('over')}));['dragleave','drop'].forEach(n=>$('dz').addEventListener(n,e=>{e.preventDefault();$('dz').classList.remove('over')}));$('dz').addEventListener('drop',e=>pick(e.dataTransfer?.files?.[0]));$('parse').addEventListener('click',extract);$('reset').addEventListener('click',()=>reset(true));$('copy').addEventListener('click',copyText);F.forEach(b=>b.addEventListener('click',()=>run(b.dataset.f)));reset();
-  </script>
-  <script defer src="scripts/sync-nav.js"></script>
+  </section>
+
+  <section id="export-formats" class="card converter-panel converter-export-panel" aria-labelledby="export-title">
+    <div class="converter-panel-heading">
+      <div><span class="converter-step">Step 3</span><h2 id="export-title">Export</h2><p>Exports are enabled after analysis. PDF input can also be downloaded unchanged for maximum fidelity.</p></div>
+      <span id="exportHint" class="converter-state-badge">Analyse a file to enable export</span>
+    </div>
+    <div class="converter-export-grid">
+      <button class="converter-format converter-format-dark" data-format="pdf" type="button" disabled><i class="fa-solid fa-file-pdf"></i><strong>PDF</strong><span>Original PDF or generated text PDF</span></button>
+      <button class="converter-format" data-format="docx" type="button" disabled><i class="fa-solid fa-file-word"></i><strong>DOCX</strong><span>Editable Word document</span></button>
+      <button class="converter-format" data-format="xlsx" type="button" disabled><i class="fa-solid fa-file-excel"></i><strong>XLSX</strong><span>Workbook with content and tables</span></button>
+      <button class="converter-format" data-format="csv" type="button" disabled><i class="fa-solid fa-file-csv"></i><strong>CSV</strong><span>Tables or flat lines</span></button>
+      <button class="converter-format" data-format="txt" type="button" disabled><i class="fa-solid fa-file-lines"></i><strong>TXT</strong><span>Corrected plain text</span></button>
+      <button class="converter-format" data-format="json" type="button" disabled><i class="fa-solid fa-code"></i><strong>JSON</strong><span>Structured conversion model</span></button>
+      <button class="converter-format" data-format="xml" type="button" disabled><i class="fa-solid fa-code"></i><strong>XML</strong><span>Structured system exchange</span></button>
+      <button class="converter-format" data-format="html" type="button" disabled><i class="fa-solid fa-globe"></i><strong>HTML</strong><span>Standalone safe HTML</span></button>
+      <button class="converter-format" data-format="md" type="button" disabled><i class="fa-brands fa-markdown"></i><strong>Markdown</strong><span>Portable text document</span></button>
+    </div>
+  </section>
+
+  <section class="card converter-panel converter-capability">
+    <h2>Conversion capability and fidelity</h2>
+    <table>
+      <thead><tr><th>Input</th><th>Parser</th><th>What is preserved</th><th>Known limitation</th></tr></thead>
+      <tbody>
+        <tr><td>PDF</td><td>PDF.js + Tesseract OCR fallback</td><td>Page text, page boundaries, OCR confidence; original PDF retained</td><td>Complex visual layout is not reconstructed into Word/Excel</td></tr>
+        <tr><td>DOCX</td><td>Mammoth</td><td>Readable document text and paragraphs</td><td>Exact Word styling, floating objects and advanced fields are not reproduced</td></tr>
+        <tr><td>XLSX/XLS</td><td>SheetJS</td><td>Sheet names and tabular cell values</td><td>Macros, charts and some formatting are not carried into text exports</td></tr>
+        <tr><td>CSV/TSV</td><td>Papa Parse</td><td>Rows, columns, quoting and delimiters</td><td>No workbook styling exists in source data</td></tr>
+        <tr><td>Images</td><td>Tesseract OCR</td><td>Recognised text + OCR confidence</td><td>Accuracy depends on resolution, skew, contrast and language</td></tr>
+        <tr><td>TXT/MD/JSON/XML/HTML</td><td>Native browser parsers</td><td>Text or structured content</td><td>Rendered application-specific styling is not inferred</td></tr>
+      </tbody>
+    </table>
+  </section>
+</main>
+
+<footer class="easyfile-footer no-print" aria-label="EasyFile site footer"><div class="converter-footer-copy">Easy Converter · EasyFile</div></footer>
+<script type="module" src="assets/js/easy-converter.js"></script>
+<script defer src="scripts/sync-nav.js"></script>
 </body>
 </html>

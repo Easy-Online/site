@@ -12,20 +12,15 @@
   const MODULES = Object.freeze([
     { name: "Home", href: "index.html", icon: "fa-house", group: "General", description: "EasyFile landing page" },
     { name: "Company Profile", href: "easy-company-profile.html", icon: "fa-building", group: "General", description: "Manage shared company identity, branding and document defaults", landing: true },
-    { name: "Landing Page", href: "easy-landing-page.html", icon: "fa-bullhorn", group: "General", description: "Build and export conversion-focused campaign landing pages", landing: true },
-    { name: "Save", href: "easy-save.html", icon: "fa-cloud-arrow-up", group: "General", description: "Save local files or website links to browser or connected cloud storage", landing: true },
-    { name: "Add-ons", href: "easy-addons.html", icon: "fa-puzzle-piece", group: "General", description: "Explore EasyFile add-ons, extensions and connected capabilities", landing: true },
-
     { name: "Quote", href: "easy-quote.html", icon: "fa-file-lines", group: "Documents", description: "Create customer quotations" },
     { name: "Invoice", href: "easy-invoice.html", icon: "fa-file-invoice-dollar", group: "Documents", description: "Create and manage invoices" },
     { name: "Purchase Order", href: "easy-purchase-order.html", icon: "fa-cart-shopping", group: "Documents", description: "Create supplier purchase orders" },
     { name: "Sales Order", href: "easy-sales-order.html", icon: "fa-bag-shopping", group: "Documents", description: "Record customer sales orders" },
     { name: "Receipt", href: "easy-receipt.html", icon: "fa-receipt", group: "Documents", description: "Issue payment receipts" },
     { name: "Capture", href: "easy-capture.html", icon: "fa-camera-retro", group: "Documents", description: "Capture receipts and supplier invoices, extract VAT details and post reviewed expenses", landing: true },
+    { name: "Edit", href: "easy-edit.html", icon: "fa-pen-ruler", group: "Documents", description: "Edit PDFs, images, HTML, text, data and convertible Office files", landing: true },
     { name: "Statement", href: "easy-statement.html", icon: "fa-file-contract", group: "Documents", description: "Generate account statements" },
     { name: "Letterhead", href: "easy-letterhead.html", icon: "fa-file-signature", group: "Documents", description: "Create branded business letters, correspondence and reusable templates", landing: true },
-    { name: "Bill", href: "easy-bill.html", icon: "fa-file-invoice", group: "Documents", description: "Capture and manage supplier or business bills", landing: true },
-    { name: "Contracts", href: "easy-contracts.html", icon: "fa-file-signature", group: "Documents", description: "Create and manage business contracts", landing: true },
     { name: "Bank Converter", href: "easy-bank-statement-converter.html", icon: "fa-building-columns", group: "Documents", description: "Convert PDF bank statements to Sage CSV or Excel" },
     { name: "Converter", href: "easy-converter.html", icon: "fa-arrows-rotate", group: "Documents", description: "Convert business files and structured data between supported formats", landing: true },
     { name: "Enterprise Converter", href: "easy-converter-enterprise.html", icon: "fa-right-left", group: "Documents", description: "Advanced file conversion workflows for larger business datasets", landing: true },
@@ -288,7 +283,7 @@
           <div class="module-card-icon"><i class="fa-solid ${item.icon}" aria-hidden="true"></i></div>
           <h3>Easy ${escapeHtml(item.name)}</h3>
           <p>${escapeHtml(item.description)}</p>
-          <div class="module-tags"><span class="module-tag">${escapeHtml(item.group.toLowerCase())}</span><span class="module-tag">shared</span></div>
+          <div class="module-tags"><span class="module-tag">documents</span><span class="module-tag">shared</span></div>
           <a class="module-card-link" href="${item.href}">Open module <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>`;
         grid.appendChild(article);
       });
@@ -351,7 +346,10 @@
     installFavicons();
     installHomeModuleCards();
 
-    if (MODULE_FILES.has(current)) ensureScript("assets/js/easyfile-module-actions.js", "easyfileModuleActions");
+    if (MODULE_FILES.has(current)) {
+      ensureScript("assets/js/easyfile-module-actions.js", "easyfileModuleActions");
+      if (current !== "easy-edit.html") ensureScript("assets/js/easyfile-edit-handoff.js", "easyfileEditHandoff");
+    }
     if (PROFILE_MODULE_FILES.has(current)) {
       const profileScript = ensureScript("assets/js/easyfile-company-profile.js", "easyfileCompanyProfile");
       const loadProfileIntegration = () => ensureScript("assets/js/easyfile-company-profile-integration.js", "easyfileCompanyProfileIntegration");

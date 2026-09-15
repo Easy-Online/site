@@ -1,0 +1,44 @@
+name: Easy Edit Engine Quality
+
+on:
+  push:
+    paths:
+      - "easy-edit.html"
+      - "assets/js/easyfile-document-bus.js"
+      - "assets/js/easyfile-edit-handoff.js"
+      - "assets/js/easy-edit/**"
+      - "scripts/sync-nav.js"
+      - "docs/easy-edit-engine.md"
+      - "scripts/validate-easy-edit-engine.mjs"
+      - ".github/workflows/easy-edit-quality.yml"
+  pull_request:
+    paths:
+      - "easy-edit.html"
+      - "assets/js/easyfile-document-bus.js"
+      - "assets/js/easyfile-edit-handoff.js"
+      - "assets/js/easy-edit/**"
+      - "scripts/sync-nav.js"
+      - "docs/easy-edit-engine.md"
+      - "scripts/validate-easy-edit-engine.mjs"
+      - ".github/workflows/easy-edit-quality.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Validate JavaScript syntax
+        run: |
+          node --check assets/js/easyfile-document-bus.js
+          node --check assets/js/easyfile-edit-handoff.js
+          node --check assets/js/easy-edit/engine.js
+          node --check assets/js/easy-edit/adapters.js
+          node --check assets/js/easy-edit/app.js
+      - name: Validate shared-engine architecture
+        run: node scripts/validate-easy-edit-engine.mjs
