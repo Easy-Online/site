@@ -18,6 +18,21 @@
     "EASYFILE_INVITE_COOLDOWN_SECONDS": "86400",
     "EASYFILE_INVITE_DAILY_LIMIT": "25",
     "EASYFILE_MAX_BODY_BYTES": "8192",
-    "EASYFILE_ALLOWED_ORIGINS": "http://127.0.0.1:5500,http://localhost:5500,https://www.easyfile.co.za,https://easyfile.co.za,https://easy-online-office.github.io"
+    "EASYFILE_ALLOWED_ORIGINS": "http://127.0.0.1:5500,http://localhost:5500,https://www.easyfile.co.za,https://easyfile.co.za,https://easy-online-office.github.io",
+    "EASYFILE_STORAGE_TABLE": "EasyFileStorageConnections",
+    "EASYFILE_STORAGE_SESSION_TTL_MINUTES": "480",
+    "EASYFILE_STORAGE_MAX_UPLOAD_BYTES": "52428800",
+    "EASYFILE_STORAGE_ALLOWED_ORIGINS": "http://127.0.0.1:5500,http://localhost:5500,https://www.easyfile.co.za,https://easyfile.co.za",
+    "EASYFILE_STORAGE_RETURN_URL": "https://www.easyfile.co.za/easy-save.html",
+    "EASYFILE_STORAGE_CALLBACK_BASE": "https://easyfile-referrals-prod-za.azurewebsites.net/api/easy-save/oauth/callback",
+    "EASYFILE_STORAGE_ENCRYPTION_KEY": "optional-dedicated-key-at-least-32-characters-or-falls-back-to-email-hmac-secret",
+    "EASYFILE_GOOGLE_CLIENT_ID": "",
+    "EASYFILE_GOOGLE_CLIENT_SECRET": "",
+    "EASYFILE_MICROSOFT_CLIENT_ID": "",
+    "EASYFILE_MICROSOFT_CLIENT_SECRET": "",
+    "EASYFILE_DROPBOX_CLIENT_ID": "",
+    "EASYFILE_DROPBOX_CLIENT_SECRET": "",
+    "EASYFILE_BOX_CLIENT_ID": "",
+    "EASYFILE_BOX_CLIENT_SECRET": ""
   }
 }
