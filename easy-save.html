@@ -14,207 +14,124 @@
   <link rel="stylesheet" href="assets/css/easyfile-site.css">
   <link rel="stylesheet" href="assets/css/easyfile-footer.css">
   <link rel="stylesheet" href="assets/css/easyfile-navigation.css">
-  <style>
-    :root {
-      --save-blue-soft: #eff6ff;
-      --save-blue-border: #bfdbfe;
-      --save-green-soft: #dcfce7;
-      --save-amber-soft: #fef3c7;
-      --save-danger-soft: #fee2e2;
-    }
+  <link rel="stylesheet" href="assets/css/easy-save.css">
+  <!-- EASYFILE_FAVICONS -->
+  <link rel="icon" href="logo-b.png" type="image/png">
+  <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
+  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="logo-b.png">
+</head>
+<body class="min-h-screen">
+<!-- NAV_SYNC -->
+<div class="easyfile-nav no-print">
+  <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
+</div>
+<header class="save-module-header no-print">
+  <div class="container mx-auto px-4 py-4 flex flex-col lg:flex-row lg:items-center gap-4 lg:justify-between">
+    <div class="flex items-center gap-3">
+      <div class="save-module-icon"><i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i></div>
+      <div>
+        <h1 id="save-title" class="text-2xl font-extrabold">Easy Save</h1>
+        <p class="save-module-subtitle text-sm">Unified file and cloud-storage workspace</p>
+      </div>
+    </div>
+    <div class="save-toolbar" aria-label="Easy Save capabilities">
+      <span class="save-chip"><i class="fa-solid fa-hard-drive" aria-hidden="true"></i> Local-first</span>
+      <span class="save-chip"><i class="fa-solid fa-cloud" aria-hidden="true"></i> Multi-cloud</span>
+      <span class="save-chip"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Secure connectors</span>
+    </div>
+  </div>
+</header>
 
-    .save-module-header {
-      border-bottom: 1px solid var(--easyfile-border);
-      background: color-mix(in srgb, var(--easyfile-surface) 96%, transparent);
-      box-shadow: 0 5px 20px rgba(15, 23, 42, .04);
-      backdrop-filter: blur(12px);
-    }
-    .save-module-icon {
-      width: 2.75rem;
-      height: 2.75rem;
-      display: grid;
-      place-items: center;
-      flex: 0 0 auto;
-      border-radius: .75rem;
-      background: var(--easyfile-blue);
-      color: #fff;
-      font-weight: 900;
-      box-shadow: 0 8px 22px rgba(37, 99, 235, .18);
-    }
-    .save-module-subtitle { color: var(--easyfile-muted); }
-    .save-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
-    .save-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: .4rem;
-      border: 1px solid var(--easyfile-border);
-      border-radius: 999px;
-      padding: .38rem .65rem;
-      background: var(--easyfile-surface);
-      color: var(--easyfile-muted);
-      font-size: .75rem;
-      font-weight: 800;
-      white-space: nowrap;
-    }
+<main class="easyfile-main container mx-auto px-4 save-shell" id="main-content">
+  <section class="save-card save-intro" aria-labelledby="save-overview-title">
+    <div class="save-intro-grid">
+      <div>
+        <span class="save-eyebrow"><i class="fa-solid fa-arrow-right-arrow-left" aria-hidden="true"></i>Select â†’ Destination â†’ Save</span>
+        <h2 id="save-overview-title">Save one file anywhere, without changing your workflow.</h2>
+        <p class="save-intro-copy">Browse local files or add a website link, choose the storage destination, review the queue, and save through one consistent EasyFile interface. Browser storage works immediately; connected cloud providers use secure adapters so credentials remain outside the page.</p>
+      </div>
+      <div class="save-flow" aria-label="Easy Save workflow">
+        <div class="save-flow-item"><span>1</span><strong>Select files or paste a URL</strong></div>
+        <div class="save-flow-item"><span>2</span><strong>Choose a storage destination</strong></div>
+        <div class="save-flow-item"><span>3</span><strong>Review and save securely</strong></div>
+      </div>
+    </div>
+  </section>
 
-    .save-shell { padding-top: 1.75rem; padding-bottom: 4rem; }
-    .save-card {
-      border: 1px solid var(--easyfile-border);
-      border-radius: var(--easyfile-radius);
-      background: var(--easyfile-surface);
-      color: var(--easyfile-text);
-      box-shadow: var(--easyfile-shadow);
-    }
-    .save-intro {
-      position: relative;
-      overflow: hidden;
-      padding: 1.4rem;
-    }
-    .save-intro::after {
-      content: "";
-      position: absolute;
-      width: 18rem;
-      height: 18rem;
-      right: -8rem;
-      top: -10rem;
-      border-radius: 999px;
-      background: rgba(37, 99, 235, .08);
-      pointer-events: none;
-    }
-    .save-intro-grid {
-      position: relative;
-      z-index: 1;
-      display: grid;
-      grid-template-columns: minmax(0, 1.25fr) minmax(18rem, .75fr);
-      gap: 1.5rem;
-      align-items: center;
-    }
-    .save-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: .45rem;
-      color: var(--easyfile-blue);
-      font-size: .75rem;
-      font-weight: 900;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
-    .save-intro h2 {
-      margin: .35rem 0 0;
-      color: var(--easyfile-text);
-      font-size: clamp(1.55rem, 3vw, 2.25rem);
-      line-height: 1.08;
-      font-weight: 900;
-      letter-spacing: -.035em;
-    }
-    .save-intro-copy {
-      max-width: 52rem;
-      margin: .6rem 0 0;
-      color: var(--easyfile-muted);
-      font-size: .92rem;
-      line-height: 1.65;
-    }
-    .save-flow { display: grid; gap: .55rem; }
-    .save-flow-item {
-      display: flex;
-      align-items: center;
-      gap: .7rem;
-      border: 1px solid var(--easyfile-border);
-      border-radius: .75rem;
-      padding: .7rem .8rem;
-      background: var(--easyfile-surface);
-      font-size: .82rem;
-    }
-    .save-flow-item span {
-      width: 1.8rem;
-      height: 1.8rem;
-      display: grid;
-      place-items: center;
-      flex: 0 0 auto;
-      border-radius: .55rem;
-      background: var(--save-blue-soft);
-      color: #1d4ed8;
-      font-size: .75rem;
-      font-weight: 900;
-    }
+  <section class="save-card save-section" aria-labelledby="destinations-heading">
+    <div class="save-section-head">
+      <div><h2 id="destinations-heading">Storage destinations</h2><p>Select one target. Provider credentials are never stored in localStorage.</p></div>
+      <span id="selectedProviderLabel" class="status local"><i class="fa-solid fa-circle-check"></i> Browser storage selected</span>
+    </div>
+    <div class="save-section-body">
+      <div id="providerGrid" class="provider-grid"></div>
+      <div class="notice info mt-4"><strong>Connector model:</strong> Google Drive, OneDrive, Dropbox and Box authenticate through an EasyFile connector service. FTP/SFTP is proxied server-side. S3-compatible storage can use a pre-signed HTTPS upload URL, including MinIO or other containerised object stores.</div>
+    </div>
+  </section>
 
-    .save-section { margin-top: 1.25rem; overflow: hidden; }
-    .save-section-head {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      padding: 1.05rem 1.15rem;
-      border-bottom: 1px solid var(--easyfile-border);
-      background: rgba(248, 250, 252, .72);
-    }
-    .save-section-head h2 { margin: 0; font-size: 1rem; font-weight: 900; }
-    .save-section-head p { margin: .2rem 0 0; color: var(--easyfile-muted); font-size: .8rem; }
-    .save-section-body { padding: 1.15rem; }
+  <section class="save-card save-section" aria-labelledby="source-heading">
+    <div class="save-section-head"><div><h2 id="source-heading">Add files</h2><p>Use local files, drag and drop, a supported browser file picker, or a public website link.</p></div></div>
+    <div class="save-section-body source-grid">
+      <label id="dropZone" class="drop-zone" for="fileInput">
+        <div><i class="fa-solid fa-folder-open"></i><strong>Browse or drop files here</strong><small>Multiple files supported. Files remain local until you choose Save.</small></div>
+      </label>
+      <input id="fileInput" type="file" multiple hidden>
+      <div class="url-card">
+        <label class="field-label" for="urlInput">Website or direct file URL</label>
+        <input id="urlInput" class="field" type="url" placeholder="https://example.com/file.pdf">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+          <div><label class="field-label" for="urlFileName">Save as</label><input id="urlFileName" class="field" placeholder="Optional filename"></div>
+          <div><label class="field-label" for="urlType">Content type</label><input id="urlType" class="field" placeholder="Auto detect"></div>
+        </div>
+        <button id="addUrlBtn" class="btn btn-primary w-full mt-3" type="button"><i class="fa-solid fa-link"></i>Add URL to queue</button>
+        <div class="notice warn mt-3">Remote URL capture depends on the source allowing browser CORS requests. If blocked, Easy Save will require the server-side fetch connector.</div>
+      </div>
+    </div>
+  </section>
 
-    .provider-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .75rem; }
-    .provider {
-      position: relative;
-      min-height: 9.5rem;
-      display: flex;
-      flex-direction: column;
-      border: 1px solid var(--easyfile-border);
-      border-radius: .85rem;
-      padding: .9rem;
-      background: var(--easyfile-surface);
-      color: var(--easyfile-text);
-      text-align: left;
-      cursor: pointer;
-      transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease, background-color .15s ease;
-    }
-    .provider:hover { transform: translateY(-1px); border-color: #93c5fd; box-shadow: 0 10px 24px rgba(37, 99, 235, .09); }
-    .provider.is-selected { border-color: var(--easyfile-blue); background: var(--save-blue-soft); box-shadow: 0 0 0 3px rgba(37, 99, 235, .11); }
-    .provider-top { display: flex; justify-content: space-between; gap: .65rem; align-items: flex-start; }
-    .provider-icon {
-      width: 2.45rem;
-      height: 2.45rem;
-      display: grid;
-      place-items: center;
-      border-radius: .7rem;
-      background: var(--save-blue-soft);
-      color: #2563eb;
-      font-size: 1.05rem;
-    }
-    .provider.is-selected .provider-icon { background: #dbeafe; }
-    .provider h3 { margin: .75rem 0 .25rem; font-weight: 900; font-size: .93rem; }
-    .provider p { margin: 0; color: var(--easyfile-muted); font-size: .76rem; line-height: 1.45; }
+  <section class="save-card save-section" aria-labelledby="queue-heading">
+    <div class="save-section-head">
+      <div><h2 id="queue-heading">Save queue</h2><p>Review files before anything is written to the selected destination.</p></div>
+      <span id="queueCount" class="text-sm font-black">0 items</span>
+    </div>
+    <div class="save-section-body">
+      <div id="queue" class="queue"><div class="queue-empty">No files queued yet.</div></div>
+      <div class="queue-actions">
+        <button id="saveAllBtn" class="btn btn-primary" type="button"><i class="fa-solid fa-cloud-arrow-up"></i>Save all</button>
+        <button id="clearQueueBtn" class="btn btn-secondary" type="button"><i class="fa-solid fa-broom"></i>Clear queue</button>
+      </div>
+    </div>
+  </section>
 
-    .status {
-      display: inline-flex;
-      align-items: center;
-      gap: .35rem;
-      border-radius: 999px;
-      padding: .24rem .5rem;
-      font-size: .67rem;
-      font-weight: 900;
-      white-space: nowrap;
-    }
-    .status.local { background: var(--save-green-soft); color: #166534; }
-    .status.connector { background: #dbeafe; color: #1d4ed8; }
-    .status.direct { background: var(--save-amber-soft); color: #92400e; }
+  <section class="save-card save-section" aria-labelledby="saved-heading">
+    <div class="save-section-head"><div><h2 id="saved-heading">Browser vault</h2><p>Files saved locally in IndexedDB are available for download or deletion on this device.</p></div><span id="vaultUsage" class="text-sm font-black">0 files</span></div>
+    <div class="save-section-body overflow-x-auto">
+      <table class="saved-table">
+        <thead><tr><th>Name</th><th>Type</th><th>Size</th><th>Saved</th><th>Actions</th></tr></thead>
+        <tbody id="vaultRows"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
 
-    .source-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    .drop-zone {
-      min-height: 14rem;
-      display: grid;
-      place-items: center;
-      border: 2px dashed var(--save-blue-border);
-      border-radius: .9rem;
-      padding: 1.4rem;
-      background: rgba(239, 246, 255, .72);
-      color: var(--easyfile-text);
-      text-align: center;
-      cursor: pointer;
-      transition: border-color .15s ease, background-color .15s ease, transform .15s ease;
-    }
-    .drop-zone:hover { border-color: #60a5fa; transform: translateY(-1px); }
-    .drop-zone.drag { border-color: var(--easyfile-blue); background: #dbeafe; }
-    .drop-zone²È="25¥±”ˆìôô¤ ¤ì(€€€ÅÕ•Õ”¹ÁÕÍ ¡ì¥éÕ¥ ¤°­¥¹è‰ÕÉ°ˆ°¹…µ”è ‰ÕÉ±¥±•9…µ”ˆ¤¹Ù…±Õ”¹ÑÉ¥´ ¤ñğ™…±±‰…¬°ÑåÁ”è ‰ÕÉ±QåÁ”ˆ¤¹Ù…±Õ”¹ÑÉ¥´ ¤ñğ€ˆˆ°Í¥é”èÀ°ÕÉ°°Í½ÕÉ”è‰ÕÉ°ˆô¤ì(€€€€ ‰ÕÉ±%¹ÁÕĞˆ¤¹Ù…±Õ”€ô€ˆˆì€ ‰ÕÉ±¥±•9…µ”ˆ¤¹Ù…±Õ”€ô€ˆˆì€ ‰ÕÉ±QåÁ”ˆ¤¹Ù…±Õ”€ô€ˆˆìÉ•¹‘•ÉEÕ•Õ” ¤ì(€ô(€™Õ¹Ñ¥½¸É•µ½Ù•EÕ•Õ”¡¥¥ìÅÕ•Õ”€ôÅÕ•Õ”¹™¥±Ñ•È¡à€ôøà¹¥€„ôô¥¤ìÉ•¹‘•ÉEÕ•Õ” ¤ìô(€™Õ¹Ñ¥½¸É•¹‘•ÉEÕ•Õ” ¥ì(€€€€ ‰ÅÕ•Õ•½Õ¹Ğˆ¤¹Ñ•áÑ½¹Ñ•¹Ğ€ô€‘íÅÕ•Õ”¹±•¹Ñ¡ô€‘íÅÕ•Õ”¹±•¹Ñ ôôôÄü‰¥Ñ•´ˆè‰¥Ñ•µÌ‰õ€ì(€€€¥˜€ …ÅÕ•Õ”¹±•¹Ñ ¤ì€ ‰ÅÕ•Õ”ˆ¤¹¥¹¹•É!Q50€ô€œñ‘¥Ø±…ÍÌô‰ÅÕ•Õ”µ•µÁÑäˆù9¼™¥±•ÌÅÕ•Õ•å•Ğ¸ğ½‘¥ØøœìÉ•ÑÕÉ¸ìô(€€€€ ‰ÅÕ•Õ”ˆ¤¹¥¹¹•É!Q50€ôÅÕ•Õ”¹µ…À¡¥Ñ•´€ôø€(€€€€€€ñ‘¥Ø±…ÍÌô‰™¥±”µÉ½Üˆøñ‘¥Ø±…ÍÌô‰™¥±”µµ…¥¸ˆøñ¤±…ÍÌô‰™„µÍ½±¥€‘í¥Ñ•´¹­¥¹ôôô‰ÕÉ°ˆü‰™„µ±¥¹¬ˆè‰™„µ™¥±”‰ôˆøğ½¤øñ‘¥ØÍÑå±”ô‰µ¥¸µİ¥‘Ñ èÀˆøñ‘¥Ø±…ÍÌô‰™¥±”µ¹…µ”ˆø‘í•Í…Á•!Ñµ°¡¥Ñ•´¹¹…µ”¥ôğ½‘¥Øøñ‘¥Ø±…ÍÌô‰™¥±”µµ•Ñ„ˆø‘í•Í…Á•!Ñµ°¡¥Ñ•´¹ÑåÁ”ñğ€‰QåÁ”İ¥±°‰”‘•Ñ•Ñ•ˆ¥ô€‘í¥Ñ•´¹Í¥é”ıƒ
-Ü€‘í‰åÑ•Ì¡¥Ñ•´¹Í¥é”¥õ€èˆ‰ôƒ
-Ü€‘í¥Ñ•´¹­¥¹ôôô‰ÕÉ°ˆü‰]•‰Í¥Ñ”±¥¹¬ˆè‰1½…°™¥±”‰ôğ½‘¥Øøğ½‘¥Øøğ½‘¥ØøñÍÁ…¸±…ÍÌô‰ÍÑ…ÑÕÌ€‘í¥Ñ•´¹­¥¹ôôô‰ÕÉ°ˆü‰‘¥É•Ğˆè‰±½…°‰ôˆø‘í¥Ñ•´¹­¥¹ôôô‰ÕÉ°ˆü‰UI0ˆè‰1½…°‰ôğ½ÍÁ…¸øñ‰ÕÑÑ½¸±…ÍÌô‰‰Ñ¸‰Ñ¸µÍ•½¹‘…ÉäˆÑåÁ”ô‰‰ÕÑÑ½¸ˆ‘…Ñ„µÉ•µ½Ù”ôˆ‘í¥Ñ•´¹¥‘ôˆ…É¥„µ±…‰•°ô‰I•µ½Ù”€‘í•Í…Á•!Ñµ°¡¥Ñ•´¹¹…µ”¥ôˆøñ¤±…ÍÌô‰™„µÍ½±¥™„µÑÉ…Í ˆøğ½¤øğ½‰ÕÑÑ½¸øğ½‘¥Øù€¤¹©½¥¸ ˆˆ¤ì(€€€€ ‰ÅÕ•Õ”ˆ¤¹ÅÕ•ÉåM•±•Ñ½É±° ‰m‘…Ñ„µÉ•µ½Ù•tˆ¤¹™½É… ¡‰Ñ¸€ôø‰Ñ¸¹…‘‘Ù•¹Ñ1¥ÍÑ•¹•È ‰±¥¬ˆ°€ ¤€ôøÉ•µ½Ù•EÕ•Õ”¡‰Ñ¸¹‘…Ñ…Í•Ğ¹É•µ½Ù”¤¤¤ì(€ô((€…Íå¹Œ™Õ¹Ñ¥½¸µ…Ñ•É¥…±¥é”¡¥Ñ•´¥ì(€€€¥˜€¡¥Ñ•´¹‰±½ˆ¤É•ÑÕÉ¸¥Ñ•´ì(€€€½¹ÍĞÉ•ÍÁ½¹Í”€ô…İ…¥Ğ™•Ñ ¡¥Ñ•´¹ÕÉ°°ìµ½‘”è‰½ÉÌˆô¤ì(€€€¥˜€ …É•ÍÁ½¹Í”¹½¬¤Ñ¡É½Ü¹•ÜÉÉ½È¡I•µ½Ñ”™•Ñ ™…¥±•€ ‘íÉ•ÍÁ½¹Í”¹ÍÑ…ÑÕÍô¥€¤ì(€€€½¹ÍĞ‰±½ˆ€ô…İ…¥ĞÉ•ÍÁ½¹Í”¹‰±½ˆ ¤ì(€€€É•ÑÕÉ¸ì¸¸¹¥Ñ•´°‰±½ˆ°Í¥é”é‰±½ˆ¹Í¥é”°ÑåÁ”é¥Ñ•´¹ÑåÁ”ñğ‰±½ˆ¹ÑåÁ”ñğ€‰…ÁÁ±¥…Ñ¥½¸½½Ñ•ĞµÍÑÉ•…´‰ôì(€ô((€™Õ¹Ñ¥½¸½Á•¹ˆ ¥ì(€€€É•ÑÕÉ¸¹•ÜAÉ½µ¥Í” ¡É•Í½±Ù”±É•©•Ğ¤€ôøì½¹ÍĞÉ•Äõ¥¹‘•á•‘¹½Á•¸¡	}95°Ä¤ìÉ•Ä¹½¹ÕÁÉ…‘•¹••‘•ô ¤ôùì¥˜ …É•Ä¹É•ÍÕ±Ğ¹½‰©•ÑMÑ½É•9…µ•Ì¹½¹Ñ…¥¹Ì¡MQ=I¤¤É•Ä¹É•ÍÕ±Ğ¹É•…Ñ•=‰©•ÑMÑ½É”¡MQ=I±í­•åA…Ñ è‰¥‰ô¤ìôìÉ•Ä¹½¹ÍÕ•ÍÌô ¤ôùÉ•Í½±Ù”¡É•Ä¹É•ÍÕ±Ğ¤ìÉ•Ä¹½¹•ÉÉ½Èô ¤ôùÉ•©•Ğ¡É•Ä¹•ÉÉ½È¤ìô¤ì(€ô(€…Íå¹Œ™Õ¹Ñ¥½¸Ù…Õ±ÑAÕĞ¡¥Ñ•´¥ì½¹ÍĞ‘ˆõ…İ…¥Ğ½Á•¹ˆ ¤ìÉ•ÑÕÉ¸¹•ÜAÉ½µ¥Í” ¡É•Í½±Ù”±É•©•Ğ¤ôùì½¹ÍĞÑàõ‘ˆ¹ÑÉ…¹Í…Ñ¥½¸¡MQ=I°‰É•…‘İÉ¥Ñ”ˆ¤ìÑà¹½‰©•ÑMÑ½É”¡MQ=I¤¹ÁÕĞ¡í¥é¥Ñ•´¹¥±¹…µ”é¥Ñ•´¹¹…µ”±ÑåÁ”é¥Ñ•´¹ÑåÁ”±Í¥é”é¥Ñ•´¹Í¥é”±‰±½ˆé¥Ñ•´¹‰±½ˆ±Í…Ù•‘Ğé¹•Ü…Ñ” ¤¹Ñ½%M=MÑÉ¥¹œ ¤±Í½ÕÉ”é¥Ñ•´¹Í½ÕÉ•ô¤ìÑà¹½¹½µÁ±•Ñ”õÉ•Í½±Ù”ìÑà¹½¹•ÉÉ½Èô ¤ôùÉ•©•Ğ¡Ñà¹•ÉÉ½È¤ìô¤ìô(€…Íå¹Œ™Õ¹Ñ¥½¸Ù…Õ±Ñ±° ¥ì½¹ÍĞ‘ˆõ…İ…¥Ğ½Á•¹ˆ ¤ìÉ•ÑÕÉ¸¹•ÜAÉ½µ¥Í” ¡É•Í½±Ù”±É•©•Ğ¤ôùì½¹ÍĞÉ•Äõ‘ˆ¹ÑÉ…¹Í…Ñ¥½¸¡MQ=I°‰É•…‘½¹±äˆ¤¹½‰©•ÑMÑ½É”¡MQ=I¤¹•Ñ±° ¤ìÉ•Ä¹½¹ÍÕ•ÍÌô ¤ôùÉ•Í½±Ù”¡É•Ä¹É•ÍÕ±Ñññmt¤ìÉ•Ä¹½¹•ÉÉ½Èô ¤ôùÉ•©•Ğ¡É•Ä¹•ÉÉ½È¤ìô¤ìô(€…Íå¹Œ™Õ¹Ñ¥½¸Ù…Õ±Ñ•±•Ñ”¡¥¥ì½¹ÍĞ‘ˆõ…İ…¥Ğ½Á•¹ˆ ¤ìÉ•ÑÕÉ¸¹•ÜAÉ½µ¥Í” ¡É•Í½±Ù”±É•©•Ğ¤ôùì½¹ÍĞÑàõ‘ˆ¹ÑÉ…¹Í…Ñ¥½¸¡MQ=I°‰É•…‘İÉ¥Ñ”ˆ¤ìÑà¹½‰©•ÑMÑ½É”¡MQ=I¤¹‘•±•Ñ”¡¥¤ìÑà¹½¹½µÁ±•Ñ”õÉ•Í½±Ù”ìÑà¹½¹•ÉÉ½Èô ¤ôùÉ•©•Ğ¡Ñà¹•ÉÉ½È¤ìô¤ìô((€…Íå¹Œ™Õ¹Ñ¥½¸½¹¹•Ñ½ÉUÁ±½…¡¥Ñ•´¥ì(€€€½¹ÍĞ™½É´€ô¹•Ü½Éµ…Ñ„ ¤ì™½É´¹…ÁÁ•¹ ‰™¥±”ˆ°¥Ñ•´¹‰±½ˆ°¥Ñ•´¹¹…µ”¤ì™½É´¹…ÁÁ•¹ ‰ÁÉ½Ù¥‘•Èˆ°Í•±•Ñ•‘AÉ½Ù¥‘•È¤ì(€€€½¹ÍĞÉ•ÍÁ½¹Í”€ô…İ…¥Ğ™•Ñ ¡€‘í=99Q=I}	Mô½ÕÁ±½…‘€°ìµ•Ñ¡½è‰A=MPˆ°‰½‘äé™½É´°É•‘•¹Ñ¥…±Ìè‰Í…µ”µ½É¥¥¸ˆô¤ì(€€€¥˜€ …É•ÍÁ½¹Í”¹½¬¤Ñ¡É½Ü¹•ÜÉÉ½È¡½¹¹•Ñ½ÈÕÁ±½…™…¥±•€ ‘íÉ•ÍÁ½¹Í”¹ÍÑ…ÑÕÍô¥€¤ì(€€€É•ÑÕÉ¸É•ÍÁ½¹Í”¹©Í½¸ ¤¹…Ñ   ¤€ôø€¡íô¤¤ì(€ô(€…Íå¹Œ™Õ¹Ñ¥½¸‘¥É•ÑUÁ±½…‘¥±”¡¥Ñ•´¥ì(€€€½¹ÍĞ¡•…‘•ÉÌ€ôì¸¸¹‘¥É•ÑUÁ±½…¹¡•…‘•ÉÍôì¥˜€¡¥Ñ•´¹ÑåÁ”€˜˜€…¡•…‘•ÉÍl‰½¹Ñ•¹ĞµQåÁ”‰t¤¡•…‘•ÉÍl‰½¹Ñ•¹ĞµQåÁ”‰t€ô¥Ñ•´¹ÑåÁ”ì(€€€½¹ÍĞÉ•ÍÁ½¹Í”€ô…İ…¥Ğ™•Ñ ¡‘¥É•ÑUÁ±½…¹ÕÁ±½…‘UÉ°°ìµ•Ñ¡½è‰AUPˆ°¡•…‘•ÉÌ°‰½‘äé¥Ñ•´¹‰±½ˆô¤ì(€€€¥˜€ …É•ÍÁ½¹Í”¹½¬¤Ñ¡É½Ü¹•ÜÉÉ½È¡¥É•ĞÕÁ±½…™…¥±•€ ‘íÉ•ÍÁ½¹Í”¹ÍÑ…ÑÕÍô¥€¤ì(€ô((€…Íå¹Œ™Õ¹Ñ¥½¸Í…Ù•±° ¥ì(€€€¥˜€ …ÅÕ•Õ”¹±•¹Ñ ¤É•ÑÕÉ¸Ñ½…ÍĞ ‰‘…Ğ±•…ÍĞ½¹”™¥±”™¥ÉÍĞ¸ˆ¤ì(€€€½¹ÍĞÍ…Ù•	Ñ¸ô ‰Í…Ù•±±	Ñ¸ˆ¤ìÍ…Ù•	Ñ¸¹‘¥Í…‰±•õÑÉÕ”ìÍ…Ù•	Ñ¸¹¥¹¹•É!Q50ôœñ¤±…ÍÌô‰™„µÍ½±¥™„µÍÁ¥¹¹•È™„µÍÁ¥¸ˆøğ½¤ùM…Ù¥¹ŸŠ˜œì(€€€±•ĞÍ…Ù•ôÀ°™…¥±•ôÀì(€€€™½È€¡½¹ÍĞ½É¥¥¹…°½˜ÅÕ•Õ”¤ì(€€€€€ÑÉäì(€€€€€€€½¹ÍĞ¥Ñ•´€ô…İ…¥Ğµ…Ñ•É¥…±¥é”¡½É¥¥¹…°¤ì(€€€€€€€¥˜€¡Í•±•Ñ•‘AÉ½Ù¥‘•È€ôôô€‰‰É½İÍ•Èˆ¤…İ…¥ĞÙ…Õ±ÑAÕĞ¡¥Ñ•´¤ì(€€€€€€€•±Í”¥˜€¡Í•±•Ñ•‘AÉ½Ù¥‘•È€ôôô€‰ÌÌˆ¤ì¥˜€ …‘¥É•ÑUÁ±½…¹ÕÁ±½…‘UÉ°¤Ñ¡É½Ü¹•ÜÉÉ½È ‰½¹™¥ÕÉ”„ÁÉ”µÍ¥¹•ÕÁ±½…UI0™¥ÉÍĞ¸ˆ¤ì…İ…¥Ğ‘¥É•ÑUÁ±½…‘¥±”¡¥Ñ•´¤ìô(€€€€€€€•±Í”…İ…¥Ğ½¹¹•Ñ½ÉUÁ±½…¡¥Ñ•´¤ì(€€€€€€€Í…Ù•¬¬ì(€€€€€ô…Ñ €¡•ÉÉ½È¤ì½¹Í½±”¹•ÉÉ½È¡•ÉÉ½È¤ì™…¥±•¬¬ìô(€€€ô(€€€Í…Ù•	Ñ¸¹‘¥Í…‰±•õ™…±Í”ìÍ…Ù•	Ñ¸¹¥¹¹•É!Q50ôœñ¤±…ÍÌô‰™„µÍ½±¥™„µ±½Õµ…ÉÉ½ÜµÕÀˆøğ½¤ùM…Ù”…±°œì(€€€¥˜€¡Í…Ù•¤ìÅÕ•Õ”õmtìÉ•¹‘•ÉEÕ•Õ” ¤ì…İ…¥ĞÉ•¹‘•ÉY…Õ±Ğ ¤ìô(€€€Ñ½…ÍĞ¡™…¥±•€üM…Ù•€‘íÍ…Ù•‘ôì€‘í™…¥±•‘ô™…¥±•¸¡•¬ÁÉ½Ù¥‘•È½=IL½¹™¥ÕÉ…Ñ¥½¸¹€€èM…Ù•€‘íÍ…Ù•‘ô¥Ñ•´‘íÍ…Ù•ôôôÄüˆˆè‰Ì‰ôÍÕ•ÍÍ™Õ±±ä¹€¤ì(€ô((€…Íå¹Œ™Õ¹Ñ¥½¸É•¹‘•ÉY…Õ±Ğ ¥ì(€€€½¹ÍĞÉ½İÌ€ô€¡…İ…¥ĞÙ…Õ±Ñ±° ¤¤¹Í½ÉĞ ¡„±ˆ¤ôùMÑÉ¥¹œ¡ˆ¹Í…Ù•‘Ğ¤¹±½…±•½µÁ…É”¡MÑÉ¥¹œ¡„¹Í…Ù•‘Ğ¤¤¤ì(€€€€ ‰Ù…Õ±ÑUÍ…”ˆ¤¹Ñ•áÑ½¹Ñ•¹Ğ€ô€‘íÉ½İÌ¹±•¹Ñ¡ô€‘íÉ½İÌ¹±•¹Ñ ôôôÄü‰™¥±”ˆè‰™¥±•Ì‰õ€ì(€€€€ ‰Ù…Õ±ÑI½İÌˆ¤¹¥¹¹•É!Q50€ôÉ½İÌ¹±•¹Ñ €üÉ½İÌ¹µ…À¡¥Ñ•´€ôø€ñÑÈøñÑøñÍÑÉ½¹œø‘í•Í…Á•!Ñµ°¡¥Ñ•´¹¹…µ”¥ôğ½ÍÑÉ½¹œøğ½ÑøñÑø‘í•Í…Á•!Ñµ°¡¥Ñ•´¹ÑåÁ”ñğ€ˆ´ˆ¥ôğ½ÑøñÑø‘í‰åÑ•Ì¡¥Ñ•´¹Í¥é”¥ôğ½ÑøñÑø‘í¹•Ü…Ñ”¡¥Ñ•´¹Í…Ù•‘Ğ¤¹Ñ½1½…±•MÑÉ¥¹œ ¥ôğ½ÑøñÑøñ‰ÕÑÑ½¸±…ÍÌô‰‰Ñ¸‰Ñ¸µÍ•½¹‘…ÉäµÈ´ÈˆÑåÁ”ô‰‰ÕÑÑ½¸ˆ‘…Ñ„µ‘½İ¹±½…ôˆ‘í¥Ñ•´¹¥‘ôˆøñ¤±…ÍÌô‰™„µÍ½±¥™„µ‘½İ¹±½…ˆøğ½¤øğ½‰ÕÑÑ½¸øñ‰ÕÑÑ½¸±…ÍÌô‰‰Ñ¸‰Ñ¸µÍ•½¹‘…ÉäˆÑåÁ”ô‰‰ÕÑÑ½¸ˆ‘…Ñ„µ‘•±•Ñ”ôˆ‘í¥Ñ•´¹¥‘ôˆøñ¤±…ÍÌô‰™„µÍ½±¥™„µÑÉ…Í ˆøğ½¤øğ½‰ÕÑÑ½¸øğ½Ñøğ½ÑÈù€¤¹©½¥¸ ˆˆ¤€è€œñÑÈøñÑ½±ÍÁ…¸ôˆÔˆÍÑå±”ô‰½±½ÈéÙ…È ´µ•…Íå™¥±”µµÕÑ•¤íÑ•áĞµ…±¥¸é•¹Ñ•ÈíÁ…‘‘¥¹œèÄ¸ÉÉ•´ˆù9¼‰É½İÍ•ÈµÙ…Õ±Ğ™¥±•Ìå•Ğ¸ğ½Ñøğ½ÑÈøœì(€€€€ ‰Ù…Õ±ÑI½İÌˆ¤¹ÅÕ•ÉåM•±•Ñ½É±° ‰m‘…Ñ„µ‘½İ¹±½…‘tˆ¤¹™½É… ¡‰Ñ¸ôù‰Ñ¸¹…‘‘Ù•¹Ñ1¥ÍÑ•¹•È ‰±¥¬ˆ°…Íå¹Œ ¤ôùì½¹ÍĞ¥Ñ•´ô¡…İ…¥ĞÙ…Õ±Ñ±° ¤¤¹™¥¹¡àôùà¹¥ôôõ‰Ñ¸¹‘…Ñ…Í•Ğ¹‘½İ¹±½…¤ì¥˜ …¥Ñ•´¥É•ÑÕÉ¸ì½¹ÍĞÕÉ°õUI0¹É•…Ñ•=‰©•ÑUI0¡¥Ñ•´¹‰±½ˆ¤ì½¹ÍĞ„õ‘½Õµ•¹Ğ¹É•…Ñ•±•µ•¹Ğ ‰„ˆ¤ì„¹¡É•˜õÕÉ°ì„¹‘½İ¹±½…õ¥Ñ•´¹¹…µ”ì„¹±¥¬ ¤ìÍ•ÑQ¥µ•½ÕĞ  ¤ôùUI0¹É•Ù½­•=‰©•ÑUI0¡ÕÉ°¤°À¤ìô¤¤ì(€€€€ ‰Ù…Õ±ÑI½İÌˆ¤¹ÅÕ•ÉåM•±•Ñ½É±° ‰m‘…Ñ„µ‘•±•Ñ•tˆ¤¹™½É… ¡‰Ñ¸ôù‰Ñ¸¹…‘‘Ù•¹Ñ1¥ÍÑ•¹•È ‰±¥¬ˆ°…Íå¹Œ ¤ôùì¥˜ …½¹™¥É´ ‰•±•Ñ”Ñ¡¥Ì™¥±”™É½´Ñ¡”‰É½İÍ•ÈÙ…Õ±Ğüˆ¤¥É•ÑÕÉ¸ì…İ…¥ĞÙ…Õ±Ñ•±•Ñ”¡‰Ñ¸¹‘…Ñ…Í•Ğ¹‘•±•Ñ”¤ì…İ…¥ĞÉ•¹‘•ÉY…Õ±Ğ ¤ìÑ½…ÍĞ ‰¥±”‘•±•Ñ•™É½´‰É½İÍ•ÈÙ…Õ±Ğ¸ˆ¤ìô¤¤ì(€ô((€½¹ÍĞ™¥±•%¹ÁÕĞô ‰™¥±•%¹ÁÕĞˆ¤°‘É½Àô ‰‘É½Ái½¹”ˆ¤ì(€™¥±•%¹ÁÕĞ¹…‘‘Ù•¹Ñ1¥ÍÑ•¹•È ‰¡…¹”ˆ°”ôùì…‘‘¥±•Ì¡”¹Ñ…É•Ğ¹™¥±•Ì¤ì”¹Ñ…É•Ğ¹Ù…±Õ”ôˆˆìô¤ì(€l‰‘É…•¹Ñ•Èˆ°‰‘É…½Ù•È‰t¹™½É… ¡•Øôù‘É½À¹…‘‘Ù•¹Ñ1¥ÍÑ•¹•È¡•Ø±”ôùí”¹ÁÉ•Ù•¹Ñ•™…Õ±Ğ ¤í‘É½À¹±…ÍÍ1¥ÍĞ¹…‘ ‰‘É…œˆ¤íô¤¤ì(€l‰‘É…±•…Ù”ˆ°‰‘É½À‰t¹™½É… ¡•Øôù‘É½À¹…‘‘Ù•¹Ñ1¥ÍÑ•¹•È¡•Ø±”ôùí”¹ÁÉ•Ù•¹Ñ•™…Õ±Ğ ¤í‘É½À¹±…ÍÍ1¥ÍĞ¹É•µ½Ù” ‰‘É…œˆ¤íô¤¤ì(€‘É½À¹…‘‘Ù•¹Ñ1¥ÍÑ•¹•È ‰‘É½Àˆ°”ôù…‘‘¥±•Ì¡”¹‘…Ñ…QÉ…¹Í™•È¹™¥±•Ì¤¤ì(€€ ‰…‘‘UÉ±	Ñ¸ˆ¤¹…‘‘Ù•¹Ñ1¥ÍÑ•¹•È ‰±¥¬ˆ°…‘‘UÉ°¤ì(€€ ‰ÕÉ±%¹ÁÕĞˆ¤¹…‘‘Ù•¹Ñ1¥ÍÑ•¹•È ‰­•å‘½İ¸ˆ°”ôùí¥˜¡”¹­•äôôô‰¹Ñ•Èˆ¥í”¹ÁÉ•Ù•¹Ñ•™…Õ±Ğ ¤í…‘‘UÉ° ¤íõô¤ì(€€ ‰±•…ÉEÕ•Õ•	Ñ¸ˆ¤¹…‘‘Ù•¹Ñ1¥ÍÑ•¹•È ‰±¥¬ˆ° ¤ôùíÅÕ•Õ”õmtíÉ•¹‘•ÉEÕ•Õ” ¤íô¤ì(€€ ‰Í…Ù•±±	Ñ¸ˆ¤¹…‘‘Ù•¹Ñ1¥ÍÑ•¹•È ‰±¥¬ˆ±Í…Ù•±°¤ì(€€ ‰µ½‘…±±½Í”ˆ¤¹…‘‘Ù•¹Ñ1¥ÍÑ•¹•È ‰±¥¬ˆ±±½Í•5½‘…°¤ì€ ‰µ½‘…±…¹•°ˆ¤¹…‘‘Ù•¹Ñ1¥ÍÑ•¹•È ‰±¥¬ˆ±±½Í•5½‘…°¤ì€ ‰µ½‘…±½¹¹•Ğˆ¤¹…‘‘Ù•¹Ñ1¥ÍÑ•¹•È ‰±¥¬ˆ±½¹¹•ÑAÉ½Ù¥‘•È¤ì(€€ ‰½¹¹•Ñ½É5½‘…°ˆ¤¹…‘‘Ù•¹Ñ1¥ÍÑ•¹•È ‰±¥¬ˆ±”ôùí¥˜¡”¹Ñ…É•Ğôôô ‰½¹¹•Ñ½É5½‘…°ˆ¤¥±½Í•5½‘…° ¤íô¤ì(€‘½Õµ•¹Ğ¹…‘‘Ù•¹Ñ1¥ÍÑ•¹•È ‰­•å‘½İ¸ˆ±”ôùí¥˜¡”¹­•äôôô‰Í…Á”ˆ¥±½Í•5½‘…° ¤íô¤ì((€É•¹‘•ÉAÉ½Ù¥‘•ÉÌ ¤ìÉ•¹‘•ÉEÕ•Õ” ¤ìÉ•¹‘•ÉY…Õ±Ğ ¤¹…Ñ ¡½¹Í½±”¹•ÉÉ½È¤ì)ô¤ ¤ì(ğ½ÍÉ¥ÁĞø(ñÍÉ¥ÁĞ‘•™•ÈÍÉŒô‰ÍÉ¥ÁÑÌ½Íå¹Œµ¹…Ø¹©Ìˆøğ½ÍÉ¥ÁĞø(ğ½‰½‘äø(ğ½¡Ñµ°ø(
+<footer class="easyfile-footer border-t border-adaptive">
+  <div class="container mx-auto px-4 py-7 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+    <p class="muted-adaptive text-sm font-bold">Easy Save Â· EasyFile</p>
+    <p class="muted-adaptive text-sm">Local-first queue Â· Secure connector architecture Â· Provider-neutral storage</p>
+  </div>
+</footer>
+
+<div id="connectorModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="connectorTitle">
+  <div class="modal-card">
+    <div class="modal-head"><div><h2 id="connectorTitle" class="text-lg font-black">Configure storage</h2><p id="connectorSubtitle" class="text-sm" style="color:var(--easyfile-muted)"></p></div><button id="modalClose" class="btn btn-secondary" type="button" aria-label="Close"><i class="fa-solid fa-xmark"></i></button></div>
+    <div id="connectorBody" class="modal-body"></div>
+    <div class="modal-foot"><button id="modalCancel" class="btn btn-secondary" type="button">Cancel</button><button id="modalConnect" class="btn btn-primary" type="button">Connect</button></div>
+  </div>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script defer src="assets/js/easy-save.js"></script>
+<script defer src="scripts/sync-nav.js"></script>
+</body>
+</html>
