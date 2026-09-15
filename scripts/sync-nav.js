@@ -19,6 +19,7 @@
     { name: "Purchase Order", href: "easy-purchase-order.html", icon: "fa-cart-shopping", group: "Documents", description: "Create supplier purchase orders" },
     { name: "Sales Order", href: "easy-sales-order.html", icon: "fa-bag-shopping", group: "Documents", description: "Record customer sales orders" },
     { name: "Receipt", href: "easy-receipt.html", icon: "fa-receipt", group: "Documents", description: "Issue payment receipts" },
+    { name: "Capture", href: "easy-capture.html", icon: "fa-camera-retro", group: "Documents", description: "Capture receipts and supplier invoices, extract VAT details and post reviewed expenses", landing: true },
     { name: "Statement", href: "easy-statement.html", icon: "fa-file-contract", group: "Documents", description: "Generate account statements" },
     { name: "Letterhead", href: "easy-letterhead.html", icon: "fa-file-signature", group: "Documents", description: "Create branded business letters, correspondence and reusable templates", landing: true },
     { name: "Bank Converter", href: "easy-bank-statement-converter.html", icon: "fa-building-columns", group: "Documents", description: "Convert PDF bank statements to Sage CSV or Excel" },
