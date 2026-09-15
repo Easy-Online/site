@@ -223,10 +223,10 @@ function importJSONFile(file){
   reader.readAsText(file);
 }
 
-$("btnImport").addEventListener("click", ()=> $("fileJson").click());
-$("fileJson").addEventListener("change", (e)=> importJSONFile(e.target.files[0]));
-$("btnExport").addEventListener("click", ()=> exportAll());
-$("btnSeed").addEventListener("click", ()=> seed());
+$$("btnImport").addEventListener("click", ()=> $$("fileJson").click());
+$$("fileJson").addEventListener("change", (e)=> importJSONFile(e.target.files[0]));
+$$("btnExport").addEventListener("click", ()=> exportAll());
+$$("btnSeed").addEventListener("click", ()=> seed());
 
 function exportAll(){ downloadJSON(data, "easy-expenses.json"); }
 
