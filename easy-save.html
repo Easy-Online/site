@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Easy Save | EasyFile</title>
+  <meta name="description" content="Select files or website links and save them to browser storage, Google Drive, OneDrive, Dropbox, Box, FTP/SFTP or S3-compatible cloud storage through EasyFile storage connectors.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#061a4d">
+  <link rel="icon" href="logo-b.png" type="image/png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/easyfile-brand-tokens.css">
+  <link rel="stylesheet" href="assets/css/easyfile-site.css">
+  <link rel="stylesheet" href="assets/css/easyfile-footer.css">
+  <link rel="stylesheet" href="assets/css/easyfile-navigation.css">
+  <style>
+    :root {
+      --save-ink:#0f172a; --save-muted:#64748b; --save-page:#eff6ff; --save-card:#fff;
+      --save-border:#dbe6f5; --save-blue:#2563eb; --save-blue-dark:#0b3ba8;
+      --save-green:#16a34a; --save-amber:#d97706; --save-red:#dc2626;
+    }
+    html[data-theme="dark"] {
+      --save-ink:#e5e7eb; --save-muted:#9fb0c8; --save-page:#07101f; --save-card:#0f172a;
+      --save-border:rgba(148,163,184,.22);
+    }
+    body { background:var(--save-page); color:var(--save-ink); }
+    .save-shell { width:min(100% - 2rem, 92rem); margin-inline:auto; padding:2rem 0 4rem; }
+    .save-hero { border:1px solid var(--save-border); border-radius:1.5rem; padding:clamp(1.5rem,4vw,3rem); background:linear-gradient(135deg,#061a4d,#0b3ba8 58%,#2563eb); color:white; box-shadow:0 24px 60px rgba(2,12,45,.22); }
+    .save-hero-grid { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(18rem,.8fr); gap:2rem; align-items:center; }
+    .save-eyebrow { display:inline-flex; align-items:center; gap:.45rem; font-size:.76rem; font-weight:900; letter-spacing:.11em; text-transform:uppercase; color:#93c5fd; }
+    .save-title { margin:.65rem 0 0; font-size:clamp(2.4rem,6vw,5rem); line-height:.96; font-weight:900; letter-spacing:-.055em; }
+    .save-lead { max-width:54rem; margin:1rem 0 0; font-size:1rem; line-height:1.7; color:#dbeafe; }
+    .save-flow { display:grid; gap:.7rem; }
+    .save-flow-item { display:flex; align-items:center; gap:.8rem; border:1px solid rgba(255,255,255,.18); border-radius:1rem; padding:.85rem 1rem; background:rgba(255,255,255,.09); }
+    .save-flow-item span { width:2rem; height:2rem; display:grid; place-items:center; flex:0 0 auto; border-radius:.7rem; background:#fff; color:#0b3ba8; font-weight:900; }
+    .save-section { margin-top:1.4rem; border:1px solid var(--save-border); border-radius:1.35rem; background:var(--save-card); box-shadow:0 14px 38px rgba(15,23,42,.07); overflow:hidden; }
+    .save-section-head { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem; padding:1.2rem 1.3rem; border-bottom:1px solid var(--save-border); }
+    .save-section-head h2 { margin:0; font-size:1.12rem; font-weight:900; }
+    .save-section-head p { margin:.2rem 0 0; color:var(--save-muted); font-size:.86rem; }
+    .save-section-body { padding:1.25rem; }
+    .provider-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.8rem; }
+    .provider { position:relative; min-height:10.5rem; display:flex; flex-direction:column; border:1px solid var(--save-border); border-radius:1rem; padding:1rem; background:var(--save-card); text-align:left; transition:.16s ease; }
+    .provider:hover { transform:translateY(-2px); border-color:#93c5fd; box-shadow:0 12px 28px rgba(37,99,235,.11); }
+    .provider.is-selected { outline:3px solid rgba(37,99,235,.15); border-color:#2563eb; }
+    .provider-top { display:flex; justify-content:space-between; gap:.7rem; align-items:flex-start; }
+    .provider-icon { width:2.6rem; height:2.6rem; display:grid; place-items:center; border-radius:.8rem; background:#eff6ff; color:#2563eb; font-size:1.15rem; }
+    html[data-theme="dark"] .provider-icon { background:rgba(37,99,235,.18); }
+    .provider h3 { margin:.9rem 0 .25rem; font-weight:900; font-size:.98rem; }
+    .provider p { margin:0; color:var(--save-muted); font-size:.79rem; line-height:1.45; }
+    .status { display:inline-flex; align-items:center; gap:.35rem; border-radius:999px; padding:.25rem .5rem; font-size:.68rem; font-weight:900; white-space:nowrap; }
+    .status.local { background:#dcfce7; color:#166534; }
+    .status.connector { background:#dbeafe; color:#1d4ed8; }
+    .status.direct { background:#fef3c7; color:#92400e; }
+    .source-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    .drop-zone { min-height:15rem; display:grid; place-items:center; border:2px dashed #93c5fd; border-radius:1.1rem; padding:1.5rem; background:rgba(219,234,254,.36); text-align:center; cursor:pointer; }
+    html[data-theme="dark"] .drop-zone { background:rgba(37,99,235,.08); }
+    .drop-zone.drag { border-color:#2563eb; background:rgba(37,99,235,.12); }
+    .drop-zone i { font-size:2rem; color:#2563eb; }
+    .drop-zone strong { display:block; margin-top:.75rem; font-size:1rem; }
+    .drop-zone small { display:block; margin-top:.35rem; color:var(--save-muted); }
+    .url-card { border:1px solid var(--save-border); border-radius:1.1rem; padding:1.1rem; }
+    .field-label { display:block; margin-bottom:.4rem; font-size:.75rem; font-weight:900; color:var(--save-muted); text-transform:uppercase; letter-spacing:.06em; }
+    .field { width:100%; min-height:2.75rem; border:1px solid var(--save-border); border-radius:.8rem; padding:.7rem .8rem; background:var(--save-card); color:var(--save-ink); }
+    .field:focus { outline:none; border-color:#2563eb; box-shadow:0 0 0 3px rgba(37,99,235,.15); }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:.5rem; min-height:2.75rem; border-radius:.8rem; padding:.65rem .95rem; font-weight:900; border:1px solid transparent; }
+    .btn-primary { background:#2563eb; color:#fff; }
+    .btn-secondary { border-color:var(--save-border); background:var(--save-card); color:var(--save-ink); }
+    .btn-danger { background:#dc2626; color:white; }
+    .queue { display:grid; gap:.65rem; }
+    .queue-empty { border:1px dashed var(--save-border); border-radius:1rem; padding:1.3rem; color:var(--save-muted); text-align:center; }
+    .file-row { display:grid; grid-template-columns:minmax(0,1fr) auto auto; gap:.8rem; align-items:center; border:1px solid var(--save-border); border-radius:.9rem; padding:.8rem; }
+    .file-main { min-width:0; display:flex; align-items:center; gap:.7rem; }
+    .file-main i { width:2rem; text-align:center; color:#2563eb; }
+    .file-name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:800; }
+    .file-meta { color:var(--save-muted); font-size:.75rem; }
+    .queue-actions { display:flex; flex-wrap:wrap; gap:.6rem; margin-top:1rem; }
+    .notice { border-radius:.9rem; padding:.8rem 1rem; font-size:.82rem; line-height:1.55; }
+    .notice.info { background:#eff6ff; color:#1e3a8a; }
+    .notice.warn { background:#fffbeb; color:#92400e; }
+    html[data-theme="dark"] .notice.info { background:rgba(37,99,235,.12); color:#bfdbfe; }
+    html[data-theme="dark"] .notice.warn { background:rgba(217,119,6,.12); color:#fde68a; }
+    .saved-table { width:100%; border-collapse:collapse; font-size:.85rem; }
+    .saved-table th,.saved-table td { padding:.7rem; border-bottom:1px solid var(--save-border); text-align:left; vertical-align:middle; }
+    .saved-table th { color:var(--save-muted); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; }
+    .modal { position:fixed; inset:0; z-index:1200; display:none; align-items:center; justify-content:center; padding:1rem; background:rgba(2,6,23,.72); }
+    .modal.open { display:flex; }
+    .modal-card { width:min(100%,42rem); max-height:90vh; overflow:auto; border-radius:1.2rem; background:var(--save-card); color:var(--save-ink); box-shadow:0 28px 70px rgba(0,0,0,.35); }
+    .modal-head,.modal-body,.modal-foot { padding:1rem 1.15rem; }
+    .modal-head { display:flex; justify-content:space-between; gap:1rem; border-bottom:1px solid var(--save-border); }
+    .modal-foot { display:flex; justify-content:flex-end; gap:.6rem; border-top:1px solid var(--save-border); }
+    .toast { position:fixed; right:1rem; bottom:1rem; z-index:1400; display:none; max-width:26rem; border-radius:.9rem; padding:.8rem 1rem; background:#0f172a; color:white; box-shadow:0 18px 44px rgba(0,0,0,.24); }
+    .toast.show { display:block; }
+    @media (max-width:980px){ .provider-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.save-hero-grid,.source-grid{grid-template-columns:1fr;} }
+    @media (max-width:560px){ .provider-grid{grid-template-columns:1fr;}.file-row{grid-template-columns:minmax(0,1fr);}.save-shell{width:min(100% - 1rem,92rem);}.save-section-body{padding:1rem;} }
+  </style>
+  <script defer src="scripts/sync-nav.js"></script>
+</head>
+<body>
+  <main class="save-shell" id="main-content">
+    <section class="save-hero" aria-labelledby="save-title">
+      <div class="save-hero-grid">
+        <div>
+          <span class="save-eyebrow"><i class="fa-solid fa-cloud-arrow-up"></i> EasyFile storage workspace</span>
+          <h1 id="save-title" class="save-title">Easy Save</h1>
+          <p class="save-lead">Pick files from your device or add a website link, choose where the content should live, then save it through one consistent EasyFile workflow. Local browser storage works immediately; cloud providers use secure connector adapters so credentials never need to be stored in the page.</p>
+        </div>
+        <div class="save-flow" aria-label="Easy Save workflow">
+          <div class="save-flow-item"><span>1</span><strong>Select files or paste a URL</strong></div>
+          <div class="save-flow-item"><span>2</span><strong>Choose a storage destination</strong></div>
+          <div class="save-flow-item"><span>3</span><strong>Upload, verify and keep an audit record</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="save-section" aria-labelledby="destinations-heading">
+      <div class="save-section-head">
+        <div><h2 id="destinations-heading">Storage destinations</h2><p>Select one target. Provider credentials are never stored in localStorage.</p></div>
+        <span id="selectedProviderLabel" class="status local"><i class="fa-solid fa-circle-check"></i> Browser storage selected</span>
+      </div>
+      <div class="save-section-body">
+        <div id="providerGrid" class="provider-grid"></div>
+        <div class="notice info mt-4"><strong>Connector model:</strong> Google Drive, OneDrive, Dropbox and Box authenticate through an EasyFile connector service. FTP/SFTP is proxied server-side. S3-compatible storage can use a pre-signed HTTPS upload URL, including MinIO or other containerised object stores.</div>
+      </div>
+    </section>
+
+    <section class="save-section" aria-labelledby="source-heading">
+      <div class="save-section-head"><div><h2 id="source-heading">Add files</h2><p>Use local files, drag and drop, a supported browser file picker, or a public website link.</p></div></div>
+      <div class="save-section-body source-grid">
+        <label id="dropZone" class="drop-zone" for="fileInput">
+          <div><i class="fa-solid fa-folder-open"></i><strong>Browse or drop files here</strong><small>Multiple files supported. Files remain local until you choose Save.</small></div>
+        </label>
+        <input id="fileInput" type="file" multiple hidden>
+        <div class="url-card">
+          <label class="field-label" for="urlInput">Website or direct file URL</label>
+          <input id="urlInput" class="field" type="url" placeholder="https://example.com/file.pdf">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+            <div><label class="field-label" for="urlFileName">Save as</label><input id="urlFileName" class="field" placeholder="Optional filename"></div>
+            <div><label class="field-label" for="urlType">Content type</label><input id="urlType" class="field" placeholder="Auto detect"></div>
+          </div>
+          <button id="addUrlBtn" class="btn btn-primary w-full mt-3" type="button"><i class="fa-solid fa-link"></i>Add URL to queue</button>
+          <div class="notice warn mt-3">Remote URL capture depends on the source allowing browser CORS requests. If blocked, Easy Save will require the server-side fetch connector.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="save-section" aria-labelledby="queue-heading">
+      <div class="save-section-head">
+        <div><h2 id="queue-heading">Save queue</h2><p>Review files before anything is written to the selected destination.</p></div>
+        <span id="queueCount" class="text-sm font-black">0 items</span>
+      </div>
+      <div class="save-section-body">
+        <div id="queue" class="queue"><div class="queue-empty">No files queued yet.</div></div>
+        <div class="queue-actions">
+          <button id="saveAllBtn" class="btn btn-primary" type="button"><i class="fa-solid fa-cloud-arrow-up"></i>Save all</button>
+          <button id="clearQueueBtn" class="btn btn-secondary" type="button"><i class="fa-solid fa-broom"></i>Clear queue</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="save-section" aria-labelledby="saved-heading">
+      <div class="save-section-head"><div><h2 id="saved-heading">Browser vault</h2><p>Files saved locally in IndexedDB are available for download or deletion on this device.</p></div><span id="vaultUsage" class="text-sm font-black">0 files</span></div>
+      <div class="save-section-body overflow-x-auto">
+        <table class="saved-table">
+          <thead><tr><th>Name</th><th>Type</th><th>Size</th><th>Saved</th><th>Actions</th></tr></thead>
+          <tbody id="vaultRows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="easyfile-footer border-t border-adaptive">
+    <div class="container mx-auto px-4 py-7 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+      <p class="muted-adaptive text-sm font-bold">Easy Save · EasyFile</p>
+      <p class="muted-adaptive text-sm">Local-first queue · Secure connector architecture · Provider-neutral storage</p>
+    </div>
+  </footer>
+
+  <div id="connectorModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="connectorTitle">
+    <div class="modal-card">
+      <div class="modal-head"><div><h2 id="connectorTitle" class="text-lg font-black">Configure storage</h2><p id="connectorSubtitle" class="text-sm" style="color:var(--save-muted)"></p></div><button id="modalClose" class="btn btn-secondary" type="button" aria-label="Close"><i class="fa-solid fa-xmark"></i></button></div>
+      <div id="connectorBody" class="modal-body"></div>
+      <div class="modal-foot"><button id="modalCancel" class="btn btn-secondary" type="button">Cancel</button><button id="modalConnect" class="btn btn-primary" type="button">Connect</button></div>
+    </div>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  "use strict";
+  const $ = (id) => document.getElementById(id);
+  const DB_NAME = "easyfile.easy-save.v1";
+  const STORE = "files";
+  const CONNECTOR_BASE = "/api/easy-save";
+
+  const providers = [
+    {id:"browser", name:"Browser storage", icon:"fa-hard-drive", mode:"local", status:"Ready", description:"IndexedDB on this device. No account or network required."},
+    {id:"google-drive", name:"Google Drive", icon:"fa-brands fa-google-drive", mode:"connector", status:"Connector", description:"OAuth-based Google Drive upload through the EasyFile connector service."},
+    {id:"onedrive", name:"OneDrive", icon:"fa-brands fa-microsoft", mode:"connector", status:"Connector", description:"Microsoft Graph / OneDrive destination using delegated OAuth."},
+    {id:"dropbox", name:"Dropbox", icon:"fa-brands fa-dropbox", mode:"connector", status:"Connector", description:"Dropbox API destination with scoped OAuth access."},
+    {id:"box", name:"Box", icon:"fa-box-archive", mode:"connector", status:"Connector", description:"Box file storage through a scoped connector session."},
+    {id:"ftp", name:"FTP / SFTP", icon:"fa-server", mode:"connector", status:"Backend proxy", description:"SFTP or FTPS through a server-side gateway; plain FTP is legacy only."},
+    {id:"s3", name:"S3 / MinIO", icon:"fa-cubes-stacked", mode:"direct", status:"Pre-signed URL", description:"AWS S3, MinIO or compatible container/object storage using HTTPS PUT."},
+    {id:"webdav", name:"WebDAV / private cloud", icon:"fa-cloud", mode:"connector", status:"Connector", description:"Nextcloud, ownCloud or WebDAV-compatible storage through a backend adapter."}
+  ];
+
+  let selectedProvider = "browser";
+  let queue = [];
+  let activeConnector = null;
+  let directUpload = { uploadUrl:"", headers:{} };
+
+  function toast(message) {
+    const el = $("toast"); el.textContent = message; el.classList.add("show");
+    clearTimeout(toast.timer); toast.timer = setTimeout(() => el.classList.remove("show"), 3200);
+  }
+  function bytes(value){
+    const n = Number(value || 0); if (n < 1024) return `${n} B`; if (n < 1048576) return `${(n/1024).toFixed(1)} KB`; if (n < 1073741824) return `${(n/1048576).toFixed(1)} MB`; return `${(n/1073741824).toFixed(2)} GB`;
+  }
+  function escapeHtml(value){ return String(value || "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c])); }
+  function uid(){ return `${Date.now()}-${Math.random().toString(16).slice(2)}`; }
+
+  function renderProviders(){
+    $("providerGrid").innerHTML = providers.map(p => `
+      <button class="provider ${selectedProvider===p.id?"is-selected":""}" type="button" data-provider="${p.id}">
+        <div class="provider-top"><div class="provider-icon"><i class="fa-solid ${p.icon.includes("fa-brands")?"":""} ${p.icon}"></i></div><span class="status ${p.mode}">${escapeHtml(p.status)}</span></div>
+        <h3>${escapeHtml(p.name)}</h3><p>${escapeHtml(p.description)}</p>
+      </button>`).join("");
+    $("providerGrid").querySelectorAll("[data-provider]").forEach(btn => btn.addEventListener("click", () => selectProvider(btn.dataset.provider)));
+    const p = providers.find(x => x.id === selectedProvider);
+    $("selectedProviderLabel").className = `status ${p.mode}`;
+    $("selectedProviderLabel").innerHTML = `<i class="fa-solid fa-circle-check"></i>${escapeHtml(p.name)} selected`;
+  }
+
+  function selectProvider(id){
+    selectedProvider = id; renderProviders();
+    if (id !== "browser") openConnector(id);
+  }
+
+  function openConnector(id){
+    const p = providers.find(x => x.id === id); activeConnector = p;
+    $("connectorTitle").textContent = `Connect ${p.name}`;
+    $("connectorSubtitle").textContent = p.description;
+    if (id === "s3") {
+      $("connectorBody").innerHTML = `
+        <div class="notice info mb-3">Use a short-lived pre-signed HTTPS PUT URL generated by your storage service. Do not paste access keys or secret keys here.</div>
+        <label class="field-label" for="signedUrl">Pre-signed upload URL</label><input id="signedUrl" class="field" type="url" placeholder="https://storage.example/...signature...">
+        <label class="field-label mt-3" for="signedHeaders">Optional request headers (JSON)</label><textarea id="signedHeaders" class="field" rows="4" placeholder='{"x-amz-server-side-encryption":"AES256"}'></textarea>`;
+      $("modalConnect").textContent = "Use upload URL";
+    } else {
+      $("connectorBody").innerHTML = `
+        <div class="notice info"><strong>${escapeHtml(p.name)} connection</strong><br>Easy Save will request a short-lived connector session from <code>${CONNECTOR_BASE}/connect/${id}</code>. OAuth tokens, passwords and storage secrets must be held by the connector service or its secret vault, not by this HTML page.</div>`;
+      $("modalConnect").textContent = "Connect securely";
+    }
+    $("connectorModal").classList.add("open");
+  }
+  function closeModal(){ $("connectorModal").classList.remove("open"); }
+
+  async function connectProvider(){
+    if (!activeConnector) return;
+    if (activeConnector.id === "s3") {
+      const uploadUrl = document.getElementById("signedUrl")?.value.trim();
+      if (!uploadUrl || !/^https:\/\//i.test(uploadUrl)) return toast("Enter a valid HTTPS pre-signed URL.");
+      let headers = {};
+      const raw = document.getElementById("signedHeaders")?.value.trim();
+      if (raw) { try { headers = JSON.parse(raw); } catch { return toast("Optional headers must be valid JSON."); } }
+      directUpload = { uploadUrl, headers }; closeModal(); toast("Pre-signed upload URL configured for this session."); return;
+    }
+    try {
+      const response = await fetch(`${CONNECTOR_BASE}/connect/${encodeURIComponent(activeConnector.id)}`, { method:"POST", headers:{"Accept":"application/json"}, credentials:"same-origin" });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      if (data.authorizeUrl) location.href = data.authorizeUrl;
+      else { closeModal(); toast(`${activeConnector.name} connector session created.`); }
+    } catch (error) {
+      toast(`${activeConnector.name} connector service is not deployed yet.`);
+    }
+  }
+
+  function addFiles(files){
+    [...files].forEach(file => queue.push({ id:uid(), kind:"file", name:file.name, type:file.type || "application/octet-stream", size:file.size, blob:file, source:"local" }));
+    renderQueue();
+  }
+  function addUrl(){
+    const url = $("urlInput").value.trim(); if (!url || !/^https?:\/\//i.test(url)) return toast("Enter a valid HTTP or HTTPS URL.");
+    const fallback = (() => { try { const u = new URL(url); return decodeURIComponent(u.pathname.split("/").filter(Boolean).pop() || u.hostname || "website-file"); } catch { return "website-file"; } })();
+    queue.push({ id:uid(), kind:"url", name:$("urlFileName").value.trim() || fallback, type:$("urlType").value.trim() || "", size:0, url, source:"url" });
+    $("urlInput").value = ""; $("urlFileName").value = ""; $("urlType").value = ""; renderQueue();
+  }
+  function removeQueue(id){ queue = queue.filter(x => x.id !== id); renderQueue(); }
+  function renderQueue(){
+    $("queueCount").textContent = `${queue.length} ${queue.length===1?"item":"items"}`;
+    if (!queue.length) { $("queue").innerHTML = '<div class="queue-empty">No files queued yet.</div>'; return; }
+    $("queue").innerHTML = queue.map(item => `
+      <div class="file-row"><div class="file-main"><i class="fa-solid ${item.kind==="url"?"fa-link":"fa-file"}"></i><div style="min-width:0"><div class="file-name">${escapeHtml(item.name)}</div><div class="file-meta">${escapeHtml(item.type || "Type will be detected")} ${item.size?`· ${bytes(item.size)}`:""} · ${item.kind==="url"?"Website link":"Local file"}</div></div></div><span class="status ${item.kind==="url"?"direct":"local"}">${item.kind==="url"?"URL":"Local"}</span><button class="btn btn-secondary" type="button" data-remove="${item.id}" aria-label="Remove ${escapeHtml(item.name)}"><i class="fa-solid fa-trash"></i></button></div>`).join("");
+    $("queue").querySelectorAll("[data-remove]").forEach(btn => btn.addEventListener("click", () => removeQueue(btn.dataset.remove)));
+  }
+
+  async function materialize(item){
+    if (item.blob) return item;
+    const response = await fetch(item.url, { mode:"cors" });
+    if (!response.ok) throw new Error(`Remote fetch failed (${response.status})`);
+    const blob = await response.blob();
+    return {...item, blob, size:blob.size, type:item.type || blob.type || "application/octet-stream"};
+  }
+
+  function openDb(){
+    return new Promise((resolve,reject) => { const req=indexedDB.open(DB_NAME,1); req.onupgradeneeded=()=>{ if(!req.result.objectStoreNames.contains(STORE)) req.result.createObjectStore(STORE,{keyPath:"id"}); }; req.onsuccess=()=>resolve(req.result); req.onerror=()=>reject(req.error); });
+  }
+  async function vaultPut(item){ const db=await openDb(); return new Promise((resolve,reject)=>{ const tx=db.transaction(STORE,"readwrite"); tx.objectStore(STORE).put({id:item.id,name:item.name,type:item.type,size:item.size,blob:item.blob,savedAt:new Date().toISOString(),source:item.source}); tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error); }); }
+  async function vaultAll(){ const db=await openDb(); return new Promise((resolve,reject)=>{ const req=db.transaction(STORE,"readonly").objectStore(STORE).getAll(); req.onsuccess=()=>resolve(req.result||[]); req.onerror=()=>reject(req.error); }); }
+  async function vaultDelete(id){ const db=await openDb(); return new Promise((resolve,reject)=>{ const tx=db.transaction(STORE,"readwrite"); tx.objectStore(STORE).delete(id); tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error); }); }
+
+  async function connectorUpload(item){
+    const form = new FormData(); form.append("file", item.blob, item.name); form.append("provider", selectedProvider);
+    const response = await fetch(`${CONNECTOR_BASE}/upload`, { method:"POST", body:form, credentials:"same-origin" });
+    if (!response.ok) throw new Error(`Connector upload failed (${response.status})`);
+    return response.json().catch(() => ({}));
+  }
+  async function directUploadFile(item){
+    const headers = {...directUpload.headers}; if (item.type && !headers["Content-Type"]) headers["Content-Type"] = item.type;
+    const response = await fetch(directUpload.uploadUrl, { method:"PUT", headers, body:item.blob });
+    if (!response.ok) throw new Error(`Direct upload failed (${response.status})`);
+  }
+
+  async function saveAll(){
+    if (!queue.length) return toast("Add at least one file first.");
+    const saveBtn=$("saveAllBtn"); saveBtn.disabled=true; saveBtn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i>Saving…';
+    let saved=0, failed=0;
+    for (const original of queue) {
+      try {
+        const item = await materialize(original);
+        if (selectedProvider === "browser") await vaultPut(item);
+        else if (selectedProvider === "s3") { if (!directUpload.uploadUrl) throw new Error("Configure a pre-signed upload URL first."); await directUploadFile(item); }
+        else await connectorUpload(item);
+        saved++;
+      } catch (error) { console.error(error); failed++; }
+    }
+    saveBtn.disabled=false; saveBtn.innerHTML='<i class="fa-solid fa-cloud-arrow-up"></i>Save all';
+    if (saved) { queue=[]; renderQueue(); await renderVault(); }
+    toast(failed ? `Saved ${saved}; ${failed} failed. Check provider/CORS configuration.` : `Saved ${saved} item${saved===1?"":"s"} successfully.`);
+  }
+
+  async function renderVault(){
+    const rows = (await vaultAll()).sort((a,b)=>String(b.savedAt).localeCompare(String(a.savedAt)));
+    $("vaultUsage").textContent = `${rows.length} ${rows.length===1?"file":"files"}`;
+    $("vaultRows").innerHTML = rows.length ? rows.map(item => `<tr><td><strong>${escapeHtml(item.name)}</strong></td><td>${escapeHtml(item.type || "-")}</td><td>${bytes(item.size)}</td><td>${new Date(item.savedAt).toLocaleString()}</td><td><button class="btn btn-secondary mr-2" type="button" data-download="${item.id}"><i class="fa-solid fa-download"></i></button><button class="btn btn-secondary" type="button" data-delete="${item.id}"><i class="fa-solid fa-trash"></i></button></td></tr>`).join("") : '<tr><td colspan="5" style="color:var(--save-muted);text-align:center;padding:1.2rem">No browser-vault files yet.</td></tr>';
+    $("vaultRows").querySelectorAll("[data-download]").forEach(btn=>btn.addEventListener("click", async()=>{ const item=(await vaultAll()).find(x=>x.id===btn.dataset.download); if(!item)return; const url=URL.createObjectURL(item.blob); const a=document.createElement("a"); a.href=url; a.download=item.name; a.click(); setTimeout(()=>URL.revokeObjectURL(url),0); }));
+    $("vaultRows").querySelectorAll("[data-delete]").forEach(btn=>btn.addEventListener("click", async()=>{ if(!confirm("Delete this file from the browser vault?"))return; await vaultDelete(btn.dataset.delete); await renderVault(); toast("File deleted from browser vault."); }));
+  }
+
+  const fileInput=$("fileInput"), drop=$("dropZone");
+  fileInput.addEventListener("change", e=>{ addFiles(e.target.files); e.target.value=""; });
+  ["dragenter","dragover"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("drag");}));
+  ["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("drag");}));
+  drop.addEventListener("drop", e=>addFiles(e.dataTransfer.files));
+  $("addUrlBtn").addEventListener("click", addUrl);
+  $("urlInput").addEventListener("keydown", e=>{if(e.key==="Enter"){e.preventDefault();addUrl();}});
+  $("clearQueueBtn").addEventListener("click",()=>{queue=[];renderQueue();});
+  $("saveAllBtn").addEventListener("click",saveAll);
+  $("modalClose").addEventListener("click",closeModal); $("modalCancel").addEventListener("click",closeModal); $("modalConnect").addEventListener("click",connectProvider);
+  $("connectorModal").addEventListener("click",e=>{if(e.target===$("connectorModal"))closeModal();});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal();});
+
+  renderProviders(); renderQueue(); renderVault().catch(console.error);
+})();
+</script>
+</body>
+</html>
