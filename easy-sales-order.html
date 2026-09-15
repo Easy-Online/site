@@ -5,205 +5,887 @@
   <!-- NAV_SYNC: scripts/sync-nav.js -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Easy Sales Order</title>
-  
+  <title>EasySO — Sales Order Manager | EasyFile</title>
+  <meta name="description" content="Create, manage, preview and export professional customer sales orders with VAT, discounts, inventory assistance, CRM customer lookup, autosave and local history.">
 
-  <!-- Favicon -->
-  
-  
-<meta name="description" content="Create and manage customer sales orders with Easy Sales Order.">
-  <!-- Favicon --><!-- Tailwind -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-
-  <style>
-    @media print {
-      nav, .no-print {
-        display: none !important;
-      }
-      body {
-        background: white;
-      }
-      .print-container {
-        box-shadow: none !important;
-        border: none !important;
-      }
-    }
-  </style>
-  <link rel="stylesheet" href="assets/css/easy-print.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/easy-print.css">
   <script defer src="assets/js/easy-suite-core.js"></script>
+
   <!-- EASYFILE_FAVICONS -->
   <link rel="icon" href="logo-b.png" type="image/png">
   <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
   <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
   <link rel="apple-touch-icon" href="logo-b.png">
+
+  <style>
+    :root{
+      --primary:#2563eb;
+      --primary2:#1d4ed8;
+      --bg:#f5f7fb;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --border:#e2e8f0;
+      --danger:#dc2626;
+      --success:#16a34a;
+      --warning:#d97706;
+      --shadow:0 10px 25px rgba(2,6,23,.06);
+    }
+    body{background:var(--bg);color:var(--text)}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.68rem .95rem;border-radius:10px;font-weight:800;border:1px solid transparent;transition:.15s;user-select:none}
+    .btn:hover{transform:translateY(-1px)}
+    .btn:active{transform:translateY(0)}
+    .btn-primary{background:var(--primary);color:#fff}
+    .btn-primary:hover{background:var(--primary2)}
+    .btn-outline{background:var(--card);border-color:var(--border);color:var(--text)}
+    .btn-outline:hover{background:#f8fafc;border-color:#cbd5e1}
+    .btn-success{background:var(--success);color:#fff}
+    .btn-danger{background:var(--danger);color:#fff}
+    .badge{display:inline-flex;align-items:center;gap:.4rem;padding:.27rem .65rem;border-radius:999px;font-weight:900;font-size:.74rem}
+    .badge-draft{background:#eef2ff;color:#3730a3}
+    .badge-confirmed{background:#dbeafe;color:#1d4ed8}
+    .badge-processing{background:#fef3c7;color:#92400e}
+    .badge-shipped{background:#e0f2fe;color:#075985}
+    .badge-completed{background:#dcfce7;color:#166534}
+    .badge-cancelled{background:#fee2e2;color:#991b1b}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+    .responsive-table{overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .stock-ok{color:#166534;font-weight:800}
+    .stock-low{color:#b45309;font-weight:800}
+    .stock-none{color:#b91c1c;font-weight:800}
+    input:focus,textarea:focus,select:focus{outline:none!important;border-color:rgba(37,99,235,.8)!important;box-shadow:0 0 0 3px rgba(37,99,235,.14)!important}
+    #toast{position:fixed;right:18px;bottom:18px;z-index:9999;max-width:360px;background:rgba(15,23,42,.95);color:#fff;border-radius:12px;padding:12px 14px;display:none;box-shadow:0 14px 35px rgba(2,6,23,.28)}
+    #toast.show{display:block}
+    #toast.error{background:rgba(153,27,27,.97)}
+    .modal-backdrop{background:rgba(2,6,23,.64)}
+
+    [data-theme="dark"]{--bg:#0b1220;--card:#0f172a;--text:#e5e7eb;--muted:#9ca3af;--border:#243041;--shadow:0 10px 25px rgba(0,0,0,.34)}
+    [data-theme="dark"] .btn-outline{background:#0f172a;color:#e5e7eb;border-color:#334155}
+    [data-theme="dark"] .btn-outline:hover{background:#111c31}
+    [data-theme="dark"] .bg-white{background:var(--card)!important}
+    [data-theme="dark"] .bg-gray-50,[data-theme="dark"] .bg-gray-100{background:#111827!important}
+    [data-theme="dark"] .text-gray-500,[data-theme="dark"] .text-gray-600,[data-theme="dark"] .text-slate-500,[data-theme="dark"] .text-slate-600{color:var(--muted)!important}
+    [data-theme="dark"] .text-gray-700,[data-theme="dark"] .text-gray-800,[data-theme="dark"] .text-slate-700,[data-theme="dark"] .text-slate-900{color:#e5e7eb!important}
+    [data-theme="dark"] input,[data-theme="dark"] textarea,[data-theme="dark"] select{background:#0b1220;color:#e5e7eb;border-color:#334155}
+
+    @media print{
+      .no-print{display:none!important}
+      body{background:#fff!important;color:#111827!important}
+      .card{box-shadow:none!important;border:none!important}
+    }
+  </style>
 </head>
 
-<body class="bg-gray-100 min-h-screen">
+<body class="min-h-screen flex flex-col" data-theme="light">
 <!-- NAV_SYNC -->
 <div class="easyfile-nav no-print">
   <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
 </div>
-<!-- Easy Suite mounts (injected) -->
-  <header class="bg-white border-b border-gray-200 no-print">
-  <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row gap-4 sm:gap-0 items-start sm:items-center justify-between">
+
+<header class="bg-white border-b border-gray-200 no-print">
+  <div class="container mx-auto px-4 py-4 flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between">
     <div class="flex items-center gap-3">
       <div class="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black">SO</div>
       <div>
         <h1 class="text-2xl font-extrabold text-blue-700">EasySO</h1>
-        <p class="text-sm text-gray-500">Feature-Rich Sales Order Generator</p>
+        <p class="text-sm text-gray-500">Sales Order Manager</p>
       </div>
     </div>
-
-    <div class="flex flex-wrap items-center gap-2">
-      <a href="index.html" class="btn btn-primary" title="Back to Dashboard">
-        <i class="fa-solid fa-gauge"></i> Dashboard
-      </a>
+    <div class="flex flex-wrap gap-2">
+      <button class="btn btn-outline" id="btnSaveDraft"><i class="fa-solid fa-floppy-disk"></i> Save Draft</button>
+      <button class="btn btn-outline" id="btnNewSalesOrder"><i class="fa-solid fa-file-circle-plus"></i> New Sales Order #</button>
+      <button class="btn btn-primary" id="btnMarkConfirmed"><i class="fa-solid fa-circle-check"></i> Mark Confirmed</button>
+      <a href="index.html" class="btn btn-outline"><i class="fa-solid fa-gauge"></i> Dashboard</a>
     </div>
   </div>
-</header><!-- HEADER:START --><!-- HEADER:END --><!-- NAV -->
-<main class="container mx-auto px-4 py-8">
+</header>
 
-  <div class="print-container bg-white p-8 rounded-lg shadow-lg">
-
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-3xl font-bold text-gray-800">Sales Order</h1>
-      <div class="text-right">
-        <label class="block text-sm text-gray-600">Order No</label>
-        <input type="text" class="border px-2 py-1 rounded w-40" placeholder="SO-001">
+<main class="flex-grow container mx-auto px-4 py-6 md:py-8">
+  <div class="card p-4 mb-6 no-print">
+    <div class="flex flex-col md:flex-row md:items-center gap-3">
+      <div class="text-blue-600"><i class="fa-solid fa-circle-info"></i></div>
+      <div class="flex-1">
+        <h2 class="text-sm font-extrabold">Quick flow</h2>
+        <p class="text-sm mt-1" style="color:var(--muted)">1) Select or enter customer → 2) Set order and delivery details → 3) Add inventory or custom items → 4) Review discounts, VAT and totals → 5) Confirm → 6) Preview, print or export.</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <span id="autosaveStatus" class="text-xs font-bold" style="color:var(--muted)">Autosave on</span>
+        <span id="statusBadge" class="badge badge-draft"><i class="fa-solid fa-pen"></i> DRAFT</span>
       </div>
     </div>
+  </div>
 
-    <!-- Customer Details -->
-    <div class="grid md:grid-cols-2 gap-6 mb-8">
-      <div>
-        <h2 class="font-semibold text-gray-700 mb-2">Customer Information</h2>
-        <input type="text" placeholder="Customer Name" class="border w-full px-3 py-2 rounded mb-2">
-        <input type="text" placeholder="Address" class="border w-full px-3 py-2 rounded mb-2">
-        <input type="email" placeholder="Email" class="border w-full px-3 py-2 rounded mb-2">
-        <input type="text" placeholder="Phone" class="border w-full px-3 py-2 rounded">
-      </div>
-
-      <div>
-        <h2 class="font-semibold text-gray-700 mb-2">Order Details</h2>
-        <label class="block text-sm text-gray-600">Order Date</label>
-        <input type="date" class="border w-full px-3 py-2 rounded mb-2">
-        <label class="block text-sm text-gray-600">Delivery Date</label>
-        <input type="date" class="border w-full px-3 py-2 rounded mb-2">
-        <label class="block text-sm text-gray-600">Status</label>
-        <select class="border w-full px-3 py-2 rounded">
-          <option>Pending</option>
-          <option>Confirmed</option>
-          <option>Shipped</option>
-          <option>Completed</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Line Items -->
-    <div class="overflow-x-auto">
-      <table class="min-w-full text-sm text-left border">
-        <thead class="bg-gray-200">
-          <tr>
-            <th class="px-3 py-2 border">Description</th>
-            <th class="px-3 py-2 border">Qty</th>
-            <th class="px-3 py-2 border">Unit Price</th>
-            <th class="px-3 py-2 border">Total</th>
-            <th class="px-3 py-2 border no-print"></th>
-          </tr>
-        </thead>
-        <tbody id="items"></tbody>
-      </table>
-    </div>
-
-    <button onclick="addRow()" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded no-print">
-      + Add Item
-    </button>
-
-    <!-- Totals -->
-    <div class="mt-8 flex justify-end">
-      <div class="w-full md:w-1/3 text-sm">
-        <div class="flex justify-between py-1">
-          <span>Subtotal:</span>
-          <span id="subtotal">R0.00</span>
+  <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+    <section class="xl:col-span-4 space-y-6">
+      <div class="card p-5">
+        <div class="flex items-center justify-between gap-3 mb-4">
+          <div>
+            <h2 class="text-lg font-extrabold">Customer</h2>
+            <p class="text-xs" style="color:var(--muted)">CRM-assisted when local Easy CRM data is available.</p>
+          </div>
+          <button class="btn btn-outline no-print" id="btnRefreshCRM" title="Reload customer suggestions from Easy CRM"><i class="fa-solid fa-rotate"></i> CRM</button>
         </div>
-        <div class="flex justify-between py-1">
-          <span>VAT (15%):</span>
-          <span id="vat">R0.00</span>
-        </div>
-        <div class="flex justify-between py-2 font-bold border-t mt-2">
-          <span>Total:</span>
-          <span id="grandTotal">R0.00</span>
+        <datalist id="crmCustomers"></datalist>
+        <div class="space-y-3">
+          <div>
+            <label class="text-xs font-bold" style="color:var(--muted)">Customer / Company</label>
+            <input id="customerCompany" list="crmCustomers" class="w-full mt-1 border rounded-lg p-2" placeholder="Customer company or person">
+          </div>
+          <div>
+            <label class="text-xs font-bold" style="color:var(--muted)">Contact Person</label>
+            <input id="customerContact" class="w-full mt-1 border rounded-lg p-2" placeholder="Contact name">
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="text-xs font-bold" style="color:var(--muted)">Email</label>
+              <input id="customerEmail" type="email" class="w-full mt-1 border rounded-lg p-2" placeholder="orders@customer.co.za">
+            </div>
+            <div>
+              <label class="text-xs font-bold" style="color:var(--muted)">Phone</label>
+              <input id="customerPhone" class="w-full mt-1 border rounded-lg p-2" placeholder="+27 ...">
+            </div>
+          </div>
+          <div>
+            <label class="text-xs font-bold" style="color:var(--muted)">Billing Address</label>
+            <textarea id="billingAddress" rows="3" class="w-full mt-1 border rounded-lg p-2" placeholder="Billing address"></textarea>
+          </div>
+          <div>
+            <label class="text-xs font-bold" style="color:var(--muted)">VAT / Registration No.</label>
+            <input id="customerVat" class="w-full mt-1 border rounded-lg p-2" placeholder="Optional">
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Actions -->
-    <div class="mt-8 flex gap-4 no-print">
-      <button onclick="window.print()" class="bg-green-600 text-white px-4 py-2 rounded">
-        Print / Save PDF
-      </button>
-      <button onclick="clearForm()" class="bg-gray-500 text-white px-4 py-2 rounded">
-        Clear
-      </button>
-    </div>
+      <div class="card p-5">
+        <h2 class="text-lg font-extrabold mb-4">Delivery & Fulfilment</h2>
+        <div class="space-y-3">
+          <div>
+            <label class="text-xs font-bold" style="color:var(--muted)">Delivery Address</label>
+            <textarea id="deliveryAddress" rows="3" class="w-full mt-1 border rounded-lg p-2" placeholder="Deliver to"></textarea>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="text-xs font-bold" style="color:var(--muted)">Delivery Method</label>
+              <select id="deliveryMethod" class="w-full mt-1 border rounded-lg p-2">
+                <option>Courier</option><option>Collection</option><option>Digital Delivery</option><option>On-site Delivery</option><option>Other</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-xs font-bold" style="color:var(--muted)">Tracking / Waybill</label>
+              <input id="trackingNumber" class="w-full mt-1 border rounded-lg p-2" placeholder="Optional">
+            </div>
+          </div>
+          <label class="inline-flex items-center gap-2 text-sm font-bold"><input id="sameAsBilling" type="checkbox" class="h-4 w-4"> Delivery address same as billing</label>
+        </div>
+      </div>
 
+      <div class="card p-5 no-print">
+        <h2 class="text-lg font-extrabold mb-3">Saved Orders</h2>
+        <div class="flex flex-col gap-2">
+          <select id="historySelect" class="w-full border rounded-lg p-2"><option value="">No saved orders yet</option></select>
+          <div class="grid grid-cols-2 gap-2">
+            <button id="btnLoadHistory" class="btn btn-outline"><i class="fa-solid fa-folder-open"></i> Load</button>
+            <button id="btnDeleteHistory" class="btn btn-outline"><i class="fa-solid fa-trash"></i> Delete</button>
+          </div>
+          <button id="btnSaveHistory" class="btn btn-primary"><i class="fa-solid fa-bookmark"></i> Save to History</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="xl:col-span-8 space-y-6">
+      <div class="card p-5">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="text-xs font-bold" style="color:var(--muted)">Sales Order #</label>
+            <input id="orderNumber" class="w-full mt-1 border rounded-lg p-2 mono" placeholder="SO0000001">
+          </div>
+          <div>
+            <label class="text-xs font-bold" style="color:var(--muted)">Customer PO / Reference</label>
+            <input id="customerReference" class="w-full mt-1 border rounded-lg p-2 mono" placeholder="PO / RFQ / Project ref">
+          </div>
+          <div>
+            <label class="text-xs font-bold" style="color:var(--muted)">Salesperson</label>
+            <input id="salesperson" class="w-full mt-1 border rounded-lg p-2" placeholder="Owner / account manager">
+          </div>
+
+          <div>
+            <label class="text-xs font-bold" style="color:var(--muted)">Order Date</label>
+            <input id="orderDate" type="date" class="w-full mt-1 border rounded-lg p-2">
+          </div>
+          <div>
+            <label class="text-xs font-bold" style="color:var(--muted)">Requested Delivery Date</label>
+            <input id="deliveryDate" type="date" class="w-full mt-1 border rounded-lg p-2">
+          </div>
+          <div>
+            <label class="text-xs font-bold" style="color:var(--muted)">Status</label>
+            <select id="orderStatus" class="w-full mt-1 border rounded-lg p-2">
+              <option value="Draft">Draft</option>
+              <option value="Confirmed">Confirmed</option>
+              <option value="Processing">Processing</option>
+              <option value="Partially Shipped">Partially Shipped</option>
+              <option value="Shipped">Shipped</option>
+              <option value="Completed">Completed</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-xs font-bold" style="color:var(--muted)">Currency</label>
+            <select id="currency" class="w-full mt-1 border rounded-lg p-2">
+              <option value="ZAR">ZAR (R)</option><option value="USD">USD ($)</option><option value="EUR">EUR (€)</option><option value="GBP">GBP (£)</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-bold" style="color:var(--muted)">Payment Terms</label>
+            <input id="paymentTerms" class="w-full mt-1 border rounded-lg p-2" placeholder="e.g. COD / Net 30">
+          </div>
+          <div>
+            <label class="text-xs font-bold" style="color:var(--muted)">Price List / Channel</label>
+            <input id="priceList" class="w-full mt-1 border rounded-lg p-2" placeholder="Retail / Reseller / Contract">
+          </div>
+        </div>
+      </div>
+
+      <div class="card p-5">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 mb-4">
+          <div>
+            <h2 class="text-lg font-extrabold">Line Items</h2>
+            <p class="text-xs" style="color:var(--muted)">SKU entries can auto-fill from Easy Inventory when local inventory data exists.</p>
+          </div>
+          <div class="flex flex-wrap gap-2 no-print">
+            <button id="btnRefreshInventory" class="btn btn-outline"><i class="fa-solid fa-boxes-stacked"></i> Refresh Inventory</button>
+            <button id="btnImportCSV" class="btn btn-outline"><i class="fa-solid fa-file-import"></i> Import CSV</button>
+            <input id="csvFile" type="file" accept=".csv,text/csv" class="hidden">
+            <button id="btnAddLine" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add Line</button>
+          </div>
+        </div>
+
+        <datalist id="inventorySkus"></datalist>
+        <div class="responsive-table">
+          <table class="min-w-full text-sm border-collapse">
+            <thead class="bg-gray-50 text-slate-600">
+              <tr>
+                <th class="border p-2 text-left">SKU</th>
+                <th class="border p-2 text-left" style="min-width:220px">Description</th>
+                <th class="border p-2 text-center">Qty</th>
+                <th class="border p-2 text-center">Unit</th>
+                <th class="border p-2 text-right">Unit Price</th>
+                <th class="border p-2 text-center">Disc %</th>
+                <th class="border p-2 text-center">VAT %</th>
+                <th class="border p-2 text-right">Excl.</th>
+                <th class="border p-2 text-right">Incl.</th>
+                <th class="border p-2 text-center">Stock</th>
+                <th class="border p-2 text-center no-print">Action</th>
+              </tr>
+            </thead>
+            <tbody id="itemsBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="card p-5">
+          <h2 class="text-lg font-extrabold mb-3">Notes</h2>
+          <textarea id="notes" rows="6" class="w-full border rounded-lg p-2" placeholder="Customer instructions, fulfilment notes, internal notes..."></textarea>
+        </div>
+        <div class="card p-5">
+          <h2 class="text-lg font-extrabold mb-3">Terms & Conditions</h2>
+          <textarea id="terms" rows="6" class="w-full border rounded-lg p-2" placeholder="Payment, lead time, delivery, cancellation and return terms..."></textarea>
+        </div>
+      </div>
+
+      <div class="card p-5">
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
+          <div class="lg:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="text-xs font-bold" style="color:var(--muted)">Overall Discount %</label>
+              <input id="overallDiscount" type="number" min="0" max="100" step="0.01" value="0" class="w-full mt-1 border rounded-lg p-2">
+            </div>
+            <div>
+              <label class="text-xs font-bold" style="color:var(--muted)">Shipping / Delivery</label>
+              <input id="shipping" type="number" min="0" step="0.01" value="0" class="w-full mt-1 border rounded-lg p-2">
+            </div>
+            <div>
+              <label class="text-xs font-bold" style="color:var(--muted)">Default VAT %</label>
+              <input id="defaultVat" type="number" min="0" max="100" step="0.01" value="15" class="w-full mt-1 border rounded-lg p-2">
+            </div>
+            <div class="sm:col-span-3 text-xs" style="color:var(--muted)">Calculation order: quantity × unit price → line discount → overall discount → VAT → shipping. Shipping is treated as VAT-inclusive-neutral and added after VAT.</div>
+          </div>
+
+          <div class="lg:col-span-2 text-sm space-y-2">
+            <div class="flex justify-between border-t pt-2"><span class="font-bold">Subtotal before discounts</span><span id="tGross" class="mono font-extrabold">R0.00</span></div>
+            <div class="flex justify-between"><span>Line discounts</span><span id="tLineDiscount" class="mono font-bold">R0.00</span></div>
+            <div class="flex justify-between"><span>Overall discount</span><span id="tOverallDiscount" class="mono font-bold">R0.00</span></div>
+            <div class="flex justify-between"><span>Subtotal excl. VAT</span><span id="tSubtotal" class="mono font-extrabold">R0.00</span></div>
+            <div class="flex justify-between"><span>VAT</span><span id="tVat" class="mono font-extrabold">R0.00</span></div>
+            <div class="flex justify-between"><span>Shipping</span><span id="tShipping" class="mono font-extrabold">R0.00</span></div>
+            <div class="flex justify-between border-t border-b py-2 text-lg"><span class="font-black">GRAND TOTAL</span><span id="tGrand" class="mono font-black">R0.00</span></div>
+          </div>
+        </div>
+
+        <div class="mt-6 flex flex-wrap gap-2 justify-center no-print">
+          <button class="btn btn-outline" id="btnPreview"><i class="fa-solid fa-eye"></i> Preview</button>
+          <button class="btn btn-outline" id="btnPrint"><i class="fa-solid fa-print"></i> Print Sales Order</button>
+          <button class="btn btn-danger" id="btnPDF"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
+          <button class="btn btn-primary" id="btnWord"><i class="fa-solid fa-file-word"></i> Export Word</button>
+          <button class="btn btn-success" id="btnExcel"><i class="fa-solid fa-file-excel"></i> Export Excel</button>
+          <button class="btn btn-outline" id="btnCSV"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+          <button class="btn btn-outline" id="btnJSON"><i class="fa-solid fa-code"></i> Export JSON</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="previewModal" class="fixed inset-0 hidden items-center justify-center p-4 z-50 no-print">
+    <div class="modal-backdrop absolute inset-0"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-5xl max-h-screen overflow-y-auto">
+      <div class="p-4 border-b flex items-center justify-between gap-3">
+        <div><h2 class="text-xl font-black text-slate-900">Sales Order Preview</h2><p class="text-xs text-slate-500">This layout is used for print/PDF and document exports.</p></div>
+        <button id="btnClosePreview" class="text-2xl text-slate-500 hover:text-slate-900" aria-label="Close preview">×</button>
+      </div>
+      <div id="previewContent" class="p-6"></div>
+      <div class="p-4 border-t flex flex-wrap justify-end gap-2">
+        <button id="btnClosePreviewBottom" class="btn btn-outline">Close</button>
+        <button id="btnPrintPreview" class="btn btn-primary"><i class="fa-solid fa-print"></i> Print / Save PDF</button>
+      </div>
+    </div>
   </div>
 </main>
 
+<div id="toast" role="status" aria-live="polite"><strong id="toastTitle">Saved</strong><div id="toastMsg" class="text-sm mt-1"></div></div>
+
 <script>
-  function addRow() {
-    const table = document.getElementById('items');
-    const row = document.createElement('tr');
+(function(){
+  "use strict";
 
-    row.innerHTML = `
-      <td class="border px-3 py-2">
-        <input type="text" class="w-full border px-2 py-1 rounded desc">
-      </td>
-      <td class="border px-3 py-2">
-        <input type="number" value="1" class="w-full border px-2 py-1 rounded qty" oninput="calculate()">
-      </td>
-      <td class="border px-3 py-2">
-        <input type="number" value="0" class="w-full border px-2 py-1 rounded price" oninput="calculate()">
-      </td>
-      <td class="border px-3 py-2 total">R0.00</td>
-      <td class="border px-3 py-2 no-print">
-        <button onclick="this.closest('tr').remove(); calculate();" class="text-red-600">âœ*</button>
-      </td>
-    `;
+  const $ = (id) => document.getElementById(id);
+  const DRAFT_KEY = "easy.salesorder.draft.v3";
+  const HISTORY_KEY = "easy.salesorder.history.v3";
+  const SEQ_KEY = "easy.salesorder.sequence.v2";
+  const INVENTORY_KEY = "easy.inventory.v2";
+  const CRM_KEY = "crm";
+  let inventory = [];
+  let crmContacts = [];
+  let lineCounter = 0;
+  let autosaveTimer = null;
 
-    table.appendChild(row);
+  function escapeHtml(value){
+    return String(value ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[ch]));
   }
 
-  function calculate() {
-    let subtotal = 0;
-    document.querySelectorAll('#items tr').forEach(row => {
-      const qty = parseFloat(row.querySelector('.qty').value) || 0;
-      const price = parseFloat(row.querySelector('.price').value) || 0;
-      const total = qty * price;
-      row.querySelector('.total').textContent = "R" + total.toFixed(2);
-      subtotal += total;
+  function toast(title,msg,isError=false){
+    const node = $("toast");
+    $("toastTitle").textContent = title || "EasySO";
+    $("toastMsg").textContent = msg || "";
+    node.classList.toggle("error",Boolean(isError));
+    node.classList.add("show");
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(()=>node.classList.remove("show"),2600);
+  }
+
+  function safeParse(raw,fallback){
+    try { const value = JSON.parse(raw); return value ?? fallback; } catch { return fallback; }
+  }
+
+  function todayISO(){
+    const d = new Date();
+    const local = new Date(d.getTime() - d.getTimezoneOffset()*60000);
+    return local.toISOString().slice(0,10);
+  }
+
+  function plusDaysISO(days){
+    const d = new Date();
+    d.setDate(d.getDate()+days);
+    const local = new Date(d.getTime() - d.getTimezoneOffset()*60000);
+    return local.toISOString().slice(0,10);
+  }
+
+  function nextOrderNumber(){
+    let n = Number(localStorage.getItem(SEQ_KEY) || 1);
+    if(!Number.isFinite(n) || n < 1) n = 1;
+    localStorage.setItem(SEQ_KEY,String(n+1));
+    return "SO" + String(n).padStart(7,"0");
+  }
+
+  function currencySymbol(cur){
+    return ({ZAR:"R",USD:"$",EUR:"€",GBP:"£"})[cur] || cur + " ";
+  }
+
+  function fmt(value){
+    const n = Number(value || 0);
+    const cur = $("currency").value || "ZAR";
+    return currencySymbol(cur) + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,",");
+  }
+
+  function setStatusBadge(){
+    const raw = $("orderStatus").value || "Draft";
+    const key = raw.toLowerCase();
+    const map = {
+      draft:["badge badge-draft","fa-pen","DRAFT"],
+      confirmed:["badge badge-confirmed","fa-circle-check","CONFIRMED"],
+      processing:["badge badge-processing","fa-gears","PROCESSING"],
+      "partially shipped":["badge badge-shipped","fa-truck-fast","PART SHIPPED"],
+      shipped:["badge badge-shipped","fa-truck","SHIPPED"],
+      completed:["badge badge-completed","fa-check-double","COMPLETED"],
+      cancelled:["badge badge-cancelled","fa-ban","CANCELLED"]
+    };
+    const v = map[key] || map.draft;
+    $("statusBadge").className = v[0];
+    $("statusBadge").innerHTML = `<i class="fa-solid ${v[1]}"></i> ${v[2]}`;
+  }
+
+  function loadInventory(){
+    inventory = safeParse(localStorage.getItem(INVENTORY_KEY) || "[]",[]);
+    if(!Array.isArray(inventory)) inventory = [];
+    const dl = $("inventorySkus");
+    dl.innerHTML = inventory.slice().sort((a,b)=>String(a.sku||"").localeCompare(String(b.sku||""))).map(item =>
+      `<option value="${escapeHtml(String(item.sku||"").toUpperCase())}">${escapeHtml(item.name||"")} — ${escapeHtml(fmtInventoryPrice(item.price))}</option>`
+    ).join("");
+    updateAllStockIndicators();
+    toast("Inventory refreshed",inventory.length ? `${inventory.length} inventory record(s) available.` : "No Easy Inventory records found.");
+  }
+
+  function fmtInventoryPrice(value){
+    return "R" + Number(value || 0).toFixed(2);
+  }
+
+  function loadCRM(){
+    crmContacts = safeParse(localStorage.getItem(CRM_KEY) || "[]",[]);
+    if(!Array.isArray(crmContacts)) crmContacts = [];
+    const seen = new Set();
+    $("crmCustomers").innerHTML = crmContacts.map(c => String(c.company || c.name || "").trim()).filter(v=>v && !seen.has(v) && seen.add(v)).sort().map(v=>`<option value="${escapeHtml(v)}"></option>`).join("");
+    toast("CRM refreshed",crmContacts.length ? `${crmContacts.length} contact(s) available.` : "No Easy CRM contacts found.");
+  }
+
+  function applyCRMMatch(){
+    const value = $("customerCompany").value.trim().toLowerCase();
+    if(!value) return;
+    const c = crmContacts.find(x => String(x.company || x.name || "").trim().toLowerCase() === value);
+    if(!c) return;
+    if(!$("customerContact").value) $("customerContact").value = c.name || "";
+    if(!$("customerEmail").value) $("customerEmail").value = c.email || "";
+    if(!$("customerPhone").value) $("customerPhone").value = c.phone || "";
+    scheduleAutosave();
+  }
+
+  function inventoryMatch(sku){
+    const s = String(sku||"").trim().toUpperCase();
+    return inventory.find(x => String(x.sku||"").trim().toUpperCase() === s) || null;
+  }
+
+  function addLine(prefill={}){
+    const tr = document.createElement("tr");
+    tr.className = "line-item";
+    tr.dataset.lineId = String(++lineCounter);
+    const defaultVat = Number($("defaultVat").value || 15);
+    tr.innerHTML = `
+      <td class="border p-2"><input list="inventorySkus" class="item-sku w-28 border rounded px-2 py-1 mono" value="${escapeHtml(prefill.sku||"")}" placeholder="SKU"></td>
+      <td class="border p-2"><input class="item-desc w-full border rounded px-2 py-1" value="${escapeHtml(prefill.desc||"")}" placeholder="Item description"></td>
+      <td class="border p-2"><input type="number" min="0" step="0.01" class="item-qty w-20 border rounded px-2 py-1 text-center" value="${escapeHtml(prefill.qty ?? 1)}"></td>
+      <td class="border p-2"><input class="item-unit w-20 border rounded px-2 py-1 text-center" value="${escapeHtml(prefill.unit||"ea")}"></td>
+      <td class="border p-2"><input type="number" min="0" step="0.01" class="item-price w-28 border rounded px-2 py-1 text-right" value="${escapeHtml(prefill.price ?? 0)}"></td>
+      <td class="border p-2"><input type="number" min="0" max="100" step="0.01" class="item-disc w-20 border rounded px-2 py-1 text-center" value="${escapeHtml(prefill.disc ?? 0)}"></td>
+      <td class="border p-2"><input type="number" min="0" max="100" step="0.01" class="item-vat w-20 border rounded px-2 py-1 text-center" value="${escapeHtml(prefill.vat ?? defaultVat)}"></td>
+      <td class="border p-2 text-right mono item-excl">${fmt(0)}</td>
+      <td class="border p-2 text-right mono item-incl">${fmt(0)}</td>
+      <td class="border p-2 text-center text-xs item-stock" title="Inventory availability">—</td>
+      <td class="border p-2 text-center no-print"><button type="button" class="text-red-600 hover:text-red-800" data-delete-line title="Delete line"><i class="fa-solid fa-trash-can"></i></button></td>`;
+    $("itemsBody").appendChild(tr);
+
+    tr.querySelectorAll("input").forEach(input => input.addEventListener("input",()=>{ calculateTotals(); scheduleAutosave(); }));
+    tr.querySelector(".item-sku").addEventListener("change",()=>{ applyInventoryToRow(tr); calculateTotals(); scheduleAutosave(); });
+    tr.querySelector("[data-delete-line]").addEventListener("click",()=>{ tr.remove(); calculateTotals(); scheduleAutosave(); });
+    applyInventoryToRow(tr,false);
+    calculateTotals();
+  }
+
+  function applyInventoryToRow(tr,fill=true){
+    const sku = tr.querySelector(".item-sku").value;
+    const item = inventoryMatch(sku);
+    if(item && fill){
+      if(!tr.querySelector(".item-desc").value) tr.querySelector(".item-desc").value = item.name || "";
+      if(Number(tr.querySelector(".item-price").value || 0) === 0) tr.querySelector(".item-price").value = Number(item.price || 0).toFixed(2);
+    }
+    updateStockIndicator(tr,item);
+  }
+
+  function updateStockIndicator(tr,item=inventoryMatch(tr.querySelector(".item-sku").value)){
+    const el = tr.querySelector(".item-stock");
+    el.className = "border p-2 text-center text-xs item-stock";
+    if(!item){ el.textContent = "—"; return; }
+    const stock = Number(item.stock || 0);
+    const qty = Number(tr.querySelector(".item-qty").value || 0);
+    el.textContent = String(stock);
+    if(stock <= 0) el.classList.add("stock-none");
+    else if(stock < qty || stock <= Number(item.reorder || 0)) el.classList.add("stock-low");
+    else el.classList.add("stock-ok");
+  }
+
+  function updateAllStockIndicators(){
+    document.querySelectorAll(".line-item").forEach(tr=>updateStockIndicator(tr));
+  }
+
+  function readLines(){
+    return Array.from(document.querySelectorAll(".line-item")).map(tr=>({
+      sku:tr.querySelector(".item-sku").value.trim(),
+      desc:tr.querySelector(".item-desc").value.trim(),
+      qty:Number(tr.querySelector(".item-qty").value || 0),
+      unit:tr.querySelector(".item-unit").value.trim(),
+      price:Number(tr.querySelector(".item-price").value || 0),
+      disc:Number(tr.querySelector(".item-disc").value || 0),
+      vat:Number(tr.querySelector(".item-vat").value || 0)
+    }));
+  }
+
+  function calculateTotals(){
+    setStatusBadge();
+    const overallPct = Math.min(100,Math.max(0,Number($("overallDiscount").value || 0)));
+    const shipping = Math.max(0,Number($("shipping").value || 0));
+    let gross = 0, lineDiscount = 0, netBeforeOverall = 0, rawVat = 0;
+
+    document.querySelectorAll(".line-item").forEach(tr=>{
+      const qty = Math.max(0,Number(tr.querySelector(".item-qty").value || 0));
+      const price = Math.max(0,Number(tr.querySelector(".item-price").value || 0));
+      const disc = Math.min(100,Math.max(0,Number(tr.querySelector(".item-disc").value || 0)));
+      const vatPct = Math.min(100,Math.max(0,Number(tr.querySelector(".item-vat").value || 0)));
+      const base = qty * price;
+      const discAmount = base * disc/100;
+      const net = base - discAmount;
+      const vat = net * vatPct/100;
+      gross += base;
+      lineDiscount += discAmount;
+      netBeforeOverall += net;
+      rawVat += vat;
+      tr.querySelector(".item-excl").textContent = fmt(net);
+      tr.querySelector(".item-incl").textContent = fmt(net+vat);
+      updateStockIndicator(tr);
     });
 
-    const vat = subtotal * 0.15;
-    const grandTotal = subtotal + vat;
+    const overallDiscount = netBeforeOverall * overallPct/100;
+    const discountFactor = netBeforeOverall > 0 ? (netBeforeOverall-overallDiscount)/netBeforeOverall : 1;
+    const subtotal = Math.max(0,netBeforeOverall-overallDiscount);
+    const vat = rawVat * discountFactor;
+    const grand = subtotal + vat + shipping;
 
-    document.getElementById('subtotal').textContent = "R" + subtotal.toFixed(2);
-    document.getElementById('vat').textContent = "R" + vat.toFixed(2);
-    document.getElementById('grandTotal').textContent = "R" + grandTotal.toFixed(2);
+    $("tGross").textContent = fmt(gross);
+    $("tLineDiscount").textContent = fmt(lineDiscount);
+    $("tOverallDiscount").textContent = fmt(overallDiscount);
+    $("tSubtotal").textContent = fmt(subtotal);
+    $("tVat").textContent = fmt(vat);
+    $("tShipping").textContent = fmt(shipping);
+    $("tGrand").textContent = fmt(grand);
+    return {gross,lineDiscount,overallDiscount,subtotal,vat,shipping,grand};
   }
 
-  function clearForm() {
-    document.getElementById('items').innerHTML = '';
-    calculate();
+  const FIELD_IDS = [
+    "customerCompany","customerContact","customerEmail","customerPhone","billingAddress","customerVat","deliveryAddress","deliveryMethod","trackingNumber","sameAsBilling",
+    "orderNumber","customerReference","salesperson","orderDate","deliveryDate","orderStatus","currency","paymentTerms","priceList","notes","terms","overallDiscount","shipping","defaultVat"
+  ];
+
+  function collect(){
+    const fields = {};
+    FIELD_IDS.forEach(id=>{
+      const el = $(id);
+      fields[id] = el.type === "checkbox" ? el.checked : el.value;
+    });
+    return {version:3,savedAt:new Date().toISOString(),fields,items:readLines(),totals:calculateTotals()};
   }
 
-  addRow();
+  function applyState(data){
+    if(!data || typeof data !== "object") return;
+    const fields = data.fields || {};
+    FIELD_IDS.forEach(id=>{
+      if(!(id in fields)) return;
+      const el = $(id);
+      if(el.type === "checkbox") el.checked = Boolean(fields[id]); else el.value = fields[id] ?? "";
+    });
+    $("itemsBody").innerHTML = "";
+    const rows = Array.isArray(data.items) && data.items.length ? data.items : [{}];
+    rows.forEach(addLine);
+    setStatusBadge();
+    calculateTotals();
+  }
+
+  function saveDraft(showToast=true){
+    try{
+      localStorage.setItem(DRAFT_KEY,JSON.stringify(collect()));
+      $("autosaveStatus").textContent = "Saved " + new Date().toLocaleTimeString("en-ZA",{hour:"2-digit",minute:"2-digit"});
+      if(showToast) toast("Draft saved","Sales order saved in this browser.");
+    }catch(err){
+      console.error(err); toast("Save failed","Browser storage is unavailable or full.",true);
+    }
+  }
+  window.saveDraft = saveDraft;
+
+  function scheduleAutosave(){
+    $("autosaveStatus").textContent = "Saving…";
+    clearTimeout(autosaveTimer);
+    autosaveTimer = setTimeout(()=>saveDraft(false),350);
+  }
+
+  function loadDraft(){
+    const data = safeParse(localStorage.getItem(DRAFT_KEY) || "null",null);
+    if(data){ applyState(data); return true; }
+    return false;
+  }
+
+  function newOrder(confirmFirst=true){
+    if(confirmFirst && !confirm("Start a new sales order? The current draft will be replaced.")) return;
+    localStorage.removeItem(DRAFT_KEY);
+    FIELD_IDS.forEach(id=>{
+      const el = $(id);
+      if(el.type === "checkbox") el.checked = false;
+      else if(el.tagName === "SELECT") el.selectedIndex = 0;
+      else el.value = "";
+    });
+    $("orderNumber").value = nextOrderNumber();
+    $("orderDate").value = todayISO();
+    $("deliveryDate").value = plusDaysISO(7);
+    $("currency").value = "ZAR";
+    $("orderStatus").value = "Draft";
+    $("deliveryMethod").value = "Courier";
+    $("overallDiscount").value = "0";
+    $("shipping").value = "0";
+    $("defaultVat").value = "15";
+    $("itemsBody").innerHTML = "";
+    addLine();
+    saveDraft(false);
+    toast("New sales order","A fresh sales order is ready.");
+  }
+
+  function markConfirmed(){
+    const errors = validateOrder();
+    if(errors.length){ toast("Cannot confirm",errors[0],true); return; }
+    $("orderStatus").value = "Confirmed";
+    setStatusBadge(); calculateTotals(); saveDraft(false);
+    toast("Order confirmed",`${$("orderNumber").value} is marked Confirmed.`);
+  }
+
+  function validateOrder(){
+    const errors = [];
+    if(!$("orderNumber").value.trim()) errors.push("Sales order number is required.");
+    if(!$("customerCompany").value.trim()) errors.push("Customer / company is required.");
+    const usefulLines = readLines().filter(x=>x.desc || x.sku || x.price || x.qty);
+    if(!usefulLines.length) errors.push("Add at least one line item.");
+    usefulLines.forEach((x,i)=>{
+      if(x.qty <= 0) errors.push(`Line ${i+1}: quantity must be greater than zero.`);
+      if(x.price < 0) errors.push(`Line ${i+1}: unit price cannot be negative.`);
+    });
+    const order = $("orderDate").value, delivery = $("deliveryDate").value;
+    if(order && delivery && delivery < order) errors.push("Delivery date cannot be before the order date.");
+    return errors;
+  }
+
+  function saveHistory(){
+    const errors = validateOrder();
+    if(errors.length){ toast("Cannot save order",errors[0],true); return; }
+    const order = collect();
+    const list = safeParse(localStorage.getItem(HISTORY_KEY) || "[]",[]);
+    const history = Array.isArray(list) ? list : [];
+    const number = order.fields.orderNumber;
+    const idx = history.findIndex(x=>x?.fields?.orderNumber === number);
+    if(idx >= 0) history[idx] = order; else history.unshift(order);
+    localStorage.setItem(HISTORY_KEY,JSON.stringify(history.slice(0,75)));
+    rebuildHistory();
+    $("historySelect").value = number;
+    toast("Order saved",`${number} saved to local history.`);
+  }
+
+  function rebuildHistory(){
+    const list = safeParse(localStorage.getItem(HISTORY_KEY) || "[]",[]);
+    const history = Array.isArray(list) ? list : [];
+    $("historySelect").innerHTML = history.length ? '<option value="">Select a saved order…</option>' + history.map(x=>{
+      const f=x.fields||{}; return `<option value="${escapeHtml(f.orderNumber||"")}">${escapeHtml(f.orderNumber||"Untitled")} — ${escapeHtml(f.customerCompany||"No customer")} — ${escapeHtml(f.orderStatus||"Draft")}</option>`;
+    }).join("") : '<option value="">No saved orders yet</option>';
+  }
+
+  function loadHistory(){
+    const number = $("historySelect").value;
+    if(!number){ toast("Select an order","Choose an order from history first.",true); return; }
+    const history = safeParse(localStorage.getItem(HISTORY_KEY)||"[]",[]);
+    const order = history.find(x=>x?.fields?.orderNumber === number);
+    if(!order){ toast("Order missing","The selected history record could not be found.",true); return; }
+    applyState(order); saveDraft(false); toast("Order loaded",`${number} loaded.`);
+  }
+
+  function deleteHistory(){
+    const number = $("historySelect").value;
+    if(!number) return;
+    if(!confirm(`Delete saved order ${number}?`)) return;
+    let history = safeParse(localStorage.getItem(HISTORY_KEY)||"[]",[]);
+    history = Array.isArray(history) ? history.filter(x=>x?.fields?.orderNumber !== number) : [];
+    localStorage.setItem(HISTORY_KEY,JSON.stringify(history));
+    rebuildHistory(); toast("Order deleted",`${number} removed from history.`);
+  }
+
+  function csvEscape(value){ return `"${String(value ?? "").replace(/"/g,'""')}"`; }
+
+  function exportCSV(){
+    const data = collect();
+    const lines = [["Sales Order",data.fields.orderNumber],["Customer",data.fields.customerCompany],["Status",data.fields.orderStatus],["Currency",data.fields.currency],[],["SKU","Description","Qty","Unit","Unit Price","Discount %","VAT %","Line Excl.","Line Incl."]];
+    data.items.forEach(item=>{
+      const base=item.qty*item.price, net=base*(1-item.disc/100), vat=net*item.vat/100;
+      lines.push([item.sku,item.desc,item.qty,item.unit,item.price,item.disc,item.vat,net,net+vat]);
+    });
+    lines.push([], ["Subtotal Excl.",data.totals.subtotal],["VAT",data.totals.vat],["Shipping",data.totals.shipping],["Grand Total",data.totals.grand]);
+    downloadBlob(new Blob(["\uFEFF"+lines.map(r=>r.map(csvEscape).join(",")).join("\n")],{type:"text/csv;charset=utf-8"}),fileName("csv"));
+    toast("CSV exported","Sales order CSV created.");
+  }
+  window.exportCSV = exportCSV;
+
+  function exportJSON(){
+    downloadBlob(new Blob([JSON.stringify(collect(),null,2)],{type:"application/json;charset=utf-8"}),fileName("json"));
+    toast("JSON exported","Structured sales order backup created.");
+  }
+
+  function exportExcel(){
+    const html = buildDocumentHTML(true);
+    const workbook = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>${html}</body></html>`;
+    downloadBlob(new Blob(["\uFEFF"+workbook],{type:"application/vnd.ms-excel;charset=utf-8"}),fileName("xls"));
+    toast("Excel export created","The .xls-compatible document contains the sales order tables.");
+  }
+
+  function exportWord(){
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${escapeHtml($("orderNumber").value)}</title><style>body{font-family:Arial,sans-serif;color:#111827;margin:32px}table{width:100%;border-collapse:collapse;margin:16px 0}th,td{border:1px solid #d1d5db;padding:7px;font-size:12px}th{background:#f3f4f6}.right{text-align:right}.muted{color:#64748b}.total{font-size:16px;font-weight:bold}.grid{display:flex;gap:24px}.grid>div{flex:1}</style></head><body>${buildDocumentHTML(false)}</body></html>`;
+    downloadBlob(new Blob(["\uFEFF"+html],{type:"application/msword;charset=utf-8"}),fileName("doc"));
+    toast("Word export created","The sales order was exported as a Word-compatible document.");
+  }
+
+  function fileName(ext){
+    const n = ($("orderNumber").value || "sales-order").replace(/[^a-z0-9_-]+/gi,"-");
+    return `${n}.${ext}`;
+  }
+
+  function downloadBlob(blob,name){
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href=url; a.download=name; a.style.display="none";
+    document.body.appendChild(a); a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); },0);
+  }
+
+  function profileHeader(){
+    const node = document.querySelector("[data-easyfile-profile-header]");
+    return node ? node.outerHTML : "";
+  }
+
+  function buildDocumentHTML(forSpreadsheet=false){
+    const data = collect();
+    const f = data.fields;
+    const rows = data.items.map(item=>{
+      const base=item.qty*item.price, net=base*(1-item.disc/100), vat=net*item.vat/100;
+      return `<tr><td>${escapeHtml(item.sku)}</td><td>${escapeHtml(item.desc)}</td><td class="right">${item.qty}</td><td>${escapeHtml(item.unit)}</td><td class="right">${escapeHtml(fmt(item.price))}</td><td class="right">${item.disc.toFixed(2)}%</td><td class="right">${item.vat.toFixed(2)}%</td><td class="right">${escapeHtml(fmt(net))}</td><td class="right">${escapeHtml(fmt(net+vat))}</td></tr>`;
+    }).join("");
+    const headingStyle = forSpreadsheet ? "" : "style=\"display:flex;justify-content:space-between;gap:20px;align-items:flex-start\"";
+    return `${profileHeader()}<section class="sales-order-document">
+      <div ${headingStyle}><div><h1 style="margin:0;font-size:30px">SALES ORDER</h1><div class="muted">Customer order and fulfilment document</div></div><div style="text-align:right"><div><strong>Order:</strong> ${escapeHtml(f.orderNumber)}</div><div><strong>Status:</strong> ${escapeHtml(f.orderStatus)}</div><div><strong>Order date:</strong> ${escapeHtml(f.orderDate)}</div><div><strong>Delivery:</strong> ${escapeHtml(f.deliveryDate)}</div><div><strong>Currency:</strong> ${escapeHtml(f.currency)}</div></div></div>
+      <div class="grid" style="margin-top:20px"><div><h3>Customer</h3><strong>${escapeHtml(f.customerCompany)}</strong><div>${escapeHtml(f.customerContact)}</div><div>${escapeHtml(f.customerEmail)}</div><div>${escapeHtml(f.customerPhone)}</div><div style="white-space:pre-line">${escapeHtml(f.billingAddress)}</div><div>${f.customerVat ? "VAT / Reg: "+escapeHtml(f.customerVat) : ""}</div></div><div><h3>Delivery</h3><div style="white-space:pre-line">${escapeHtml(f.deliveryAddress)}</div><div><strong>Method:</strong> ${escapeHtml(f.deliveryMethod)}</div><div><strong>Tracking:</strong> ${escapeHtml(f.trackingNumber)}</div><div><strong>Reference:</strong> ${escapeHtml(f.customerReference)}</div><div><strong>Salesperson:</strong> ${escapeHtml(f.salesperson)}</div><div><strong>Payment terms:</strong> ${escapeHtml(f.paymentTerms)}</div></div></div>
+      <table><thead><tr><th>SKU</th><th>Description</th><th>Qty</th><th>Unit</th><th>Unit Price</th><th>Disc</th><th>VAT</th><th>Excl.</th><th>Incl.</th></tr></thead><tbody>${rows || '<tr><td colspan="9">No line items</td></tr>'}</tbody></table>
+      <div style="max-width:380px;margin-left:auto"><table><tbody><tr><td>Subtotal excl. VAT</td><td class="right">${escapeHtml(fmt(data.totals.subtotal))}</td></tr><tr><td>VAT</td><td class="right">${escapeHtml(fmt(data.totals.vat))}</td></tr><tr><td>Shipping</td><td class="right">${escapeHtml(fmt(data.totals.shipping))}</td></tr><tr><td><strong>GRAND TOTAL</strong></td><td class="right total">${escapeHtml(fmt(data.totals.grand))}</td></tr></tbody></table></div>
+      <div class="grid"><div><h3>Notes</h3><div style="white-space:pre-line">${escapeHtml(f.notes)}</div></div><div><h3>Terms & Conditions</h3><div style="white-space:pre-line">${escapeHtml(f.terms)}</div></div></div>
+      <div style="margin-top:28px;font-size:11px;color:#64748b;text-align:center">Generated with EasyFile EasySO</div>
+    </section>`;
+  }
+
+  function preview(){
+    const errors = validateOrder();
+    if(errors.length) toast("Preview warning",errors[0],true);
+    $("previewContent").innerHTML = `<style>#previewContent table{width:100%;border-collapse:collapse;margin:16px 0}#previewContent th,#previewContent td{border:1px solid #d1d5db;padding:7px;font-size:12px}#previewContent th{background:#f3f4f6}#previewContent .right{text-align:right}#previewContent .muted{color:#64748b}#previewContent .total{font-size:16px;font-weight:bold}#previewContent .grid{display:flex;gap:24px}#previewContent .grid>div{flex:1}@media(max-width:640px){#previewContent .grid{display:block}}</style>${buildDocumentHTML(false)}`;
+    $("previewModal").classList.remove("hidden"); $("previewModal").classList.add("flex");
+  }
+
+  function closePreview(){ $("previewModal").classList.add("hidden"); $("previewModal").classList.remove("flex"); }
+
+  function printOrder(){
+    const html = buildDocumentHTML(false);
+    const w = window.open("","_blank","noopener,noreferrer");
+    if(!w){ toast("Print blocked","Allow pop-ups for EasyFile to print this order.",true); return; }
+    w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${escapeHtml($("orderNumber").value)}</title><style>@page{size:A4;margin:12mm}body{font-family:Arial,sans-serif;color:#111827}table{width:100%;border-collapse:collapse;margin:16px 0}th,td{border:1px solid #d1d5db;padding:7px;font-size:11px}th{background:#f3f4f6}.right{text-align:right}.muted{color:#64748b}.total{font-size:15px;font-weight:bold}.grid{display:flex;gap:24px}.grid>div{flex:1}h1,h2,h3{page-break-after:avoid}tr{page-break-inside:avoid}</style></head><body>${html}<script>window.onload=()=>{window.print();}<\/script></body></html>`);
+    w.document.close();
+  }
+
+  function parseCSV(text){
+    const rows=[]; let row=[],field="",quoted=false;
+    for(let i=0;i<text.length;i++){
+      const ch=text[i];
+      if(quoted){ if(ch==='"' && text[i+1]==='"'){field+='"';i++;} else if(ch==='"'){quoted=false;} else field+=ch; }
+      else if(ch==='"') quoted=true;
+      else if(ch===','){row.push(field);field="";}
+      else if(ch==='\n'){row.push(field);rows.push(row);row=[];field="";}
+      else if(ch!=='\r') field+=ch;
+    }
+    row.push(field); if(row.some(v=>String(v).trim())) rows.push(row); return rows;
+  }
+
+  function importCSV(file){
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = e=>{
+      const rows = parseCSV(String(e.target.result||""));
+      if(!rows.length){ toast("Import failed","CSV is empty.",true); return; }
+      let start=0; const h=rows[0].map(x=>String(x).toLowerCase()); if(h.some(x=>x.includes("description")||x.includes("sku"))) start=1;
+      let count=0;
+      for(let i=start;i<rows.length;i++){
+        const [sku,desc,qty,unit,price,disc,vat] = rows[i];
+        if(!String(sku||desc||"").trim()) continue;
+        addLine({sku,desc,qty:Number(qty||1),unit:unit||"ea",price:Number(price||0),disc:Number(disc||0),vat:Number(vat||$("defaultVat").value||15)}); count++;
+      }
+      calculateTotals(); scheduleAutosave(); toast("CSV imported",`${count} line item(s) added.`);
+    };
+    reader.readAsText(file);
+  }
+
+  function bind(){
+    $("btnAddLine").addEventListener("click",()=>addLine());
+    $("btnNewSalesOrder").addEventListener("click",()=>newOrder(true));
+    $("btnMarkConfirmed").addEventListener("click",markConfirmed);
+    $("btnSaveDraft").addEventListener("click",()=>saveDraft(true));
+    $("btnRefreshInventory").addEventListener("click",loadInventory);
+    $("btnRefreshCRM").addEventListener("click",loadCRM);
+    $("customerCompany").addEventListener("change",applyCRMMatch);
+    $("sameAsBilling").addEventListener("change",()=>{ if($("sameAsBilling").checked) $("deliveryAddress").value = $("billingAddress").value; scheduleAutosave(); });
+    $("billingAddress").addEventListener("input",()=>{ if($("sameAsBilling").checked) $("deliveryAddress").value = $("billingAddress").value; });
+    $("btnSaveHistory").addEventListener("click",saveHistory);
+    $("btnLoadHistory").addEventListener("click",loadHistory);
+    $("btnDeleteHistory").addEventListener("click",deleteHistory);
+    $("btnPreview").addEventListener("click",preview);
+    $("btnClosePreview").addEventListener("click",closePreview);
+    $("btnClosePreviewBottom").addEventListener("click",closePreview);
+    $("previewModal").addEventListener("click",e=>{ if(e.target === $("previewModal") || e.target.classList.contains("modal-backdrop")) closePreview(); });
+    $("btnPrint").addEventListener("click",printOrder);
+    $("btnPrintPreview").addEventListener("click",printOrder);
+    $("btnPDF").addEventListener("click",printOrder);
+    $("btnWord").addEventListener("click",exportWord);
+    $("btnExcel").addEventListener("click",exportExcel);
+    $("btnCSV").addEventListener("click",exportCSV);
+    $("btnJSON").addEventListener("click",exportJSON);
+    $("btnImportCSV").addEventListener("click",()=>$("csvFile").click());
+    $("csvFile").addEventListener("change",e=>{ importCSV(e.target.files[0]); e.target.value=""; });
+
+    FIELD_IDS.forEach(id=>{
+      const el=$(id); if(!el) return;
+      ["input","change"].forEach(eventName=>el.addEventListener(eventName,()=>{ calculateTotals(); scheduleAutosave(); }));
+    });
+
+    document.addEventListener("keydown",e=>{ if(e.key === "Escape") closePreview(); });
+  }
+
+  function boot(){
+    bind();
+    loadInventory();
+    loadCRM();
+    rebuildHistory();
+    if(!loadDraft()) newOrder(false);
+    else { if(!$("orderNumber").value) $("orderNumber").value = nextOrderNumber(); calculateTotals(); }
+  }
+
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded",boot,{once:true}); else boot();
+})();
 </script>
 
 <script defer src="scripts/sync-nav.js"></script>
 </body>
 </html>
-
-
-
-
