@@ -40,10 +40,10 @@
   <link rel="stylesheet" href="assets/css/easyfile-navigation.css">
   <link rel="stylesheet" href="assets/css/easy-converter-enterprise.css">
 
-  
-  
-  
-  
+  <link rel="icon" href="logo-b.png" type="image/png">
+  <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
+  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="logo-b.png">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.umd.js" defer></script>
@@ -62,18 +62,9 @@
     "offers": {"@type": "Offer", "price": "0", "priceCurrency": "ZAR"}
   }
   </script>
-  <!-- EASYFILE_FAVICONS -->
-  <link rel="icon" href="logo-b.png" type="image/png">
-  <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
-  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
-  <link rel="apple-touch-icon" href="logo-b.png">
 </head>
 <body class="easyfile-app">
-<!-- NAV_SYNC -->
-<div class="easyfile-nav no-print">
-  <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
-</div>
-<div class="easyfile-nav no-print">
+  <div class="easyfile-nav no-print">
     <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
   </div>
 
@@ -192,6 +183,11 @@
         <button class="converter-format" data-format="json" type="button" disabled><i class="fa-solid fa-code" aria-hidden="true"></i><strong>JSON</strong><span>Structured extraction data</span></button>
         <button class="converter-format" data-format="xml" type="button" disabled><i class="fa-solid fa-code" aria-hidden="true"></i><strong>XML</strong><span>Structured system exchange</span></button>
       </div>
+    </section>
+
+    <section id="conversion-notes" class="converter-notes-grid">
+      <article class="card converter-panel"><h2>Conversion notes</h2><ul><li><strong>Embedded text:</strong> fastest and usually most accurate.</li><li><strong>Scanned PDFs:</strong> OCR accuracy depends on scan clarity, skew, contrast and device performance.</li><li><strong>Tables:</strong> spatial heuristics work best on regular invoices, statements, schedules and reports.</li><li><strong>Large files:</strong> OCR is CPU- and memory-intensive; split very large documents when practical.</li><li><strong>Privacy:</strong> this static implementation does not upload source PDFs to EasyFile storage.</li></ul></article>
+      <article class="card converter-panel"><h2>Enterprise workflow</h2><ul><li>Automatic OCR fallback for low-text pages</li><li>Page-level source and confidence metadata</li><li>Table-aware DOCX, XLSX, CSV, JSON and XML exports</li><li>Progress telemetry and processing log</li><li>EasyFile shared navigation, theme and responsive design system</li></ul></article>
     </section>
 
     <section id="conversion-notes" class="converter-notes-grid">
