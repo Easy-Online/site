@@ -11,12 +11,14 @@
 
   const MODULES = Object.freeze([
     { name: "Home", href: "index.html", icon: "fa-house", group: "General", description: "EasyFile landing page" },
+    { name: "Company Profile", href: "easy-company-profile.html", icon: "fa-building", group: "General", description: "Manage shared company identity, branding and document defaults", landing: true },
     { name: "Quote", href: "easy-quote.html", icon: "fa-file-lines", group: "Documents", description: "Create customer quotations" },
     { name: "Invoice", href: "easy-invoice.html", icon: "fa-file-invoice-dollar", group: "Documents", description: "Create and manage invoices" },
     { name: "Purchase Order", href: "easy-purchase-order.html", icon: "fa-cart-shopping", group: "Documents", description: "Create supplier purchase orders" },
     { name: "Sales Order", href: "easy-sales-order.html", icon: "fa-bag-shopping", group: "Documents", description: "Record customer sales orders" },
     { name: "Receipt", href: "easy-receipt.html", icon: "fa-receipt", group: "Documents", description: "Issue payment receipts" },
     { name: "Statement", href: "easy-statement.html", icon: "fa-file-contract", group: "Documents", description: "Generate account statements" },
+    { name: "Letterhead", href: "easy-letterhead.html", icon: "fa-file-signature", group: "Documents", description: "Create branded business letters, correspondence and reusable templates", landing: true },
     { name: "Bank Converter", href: "easy-bank-statement-converter.html", icon: "fa-building-columns", group: "Documents", description: "Convert PDF bank statements to Sage CSV or Excel" },
     { name: "Job Card", href: "easy-job-card.html", icon: "fa-briefcase", group: "Operations", description: "Track service and repair work" },
     { name: "Payroll", href: "easy-payroll.html", icon: "fa-money-bill-wave", group: "Operations", description: "Prepare payroll summaries" },
@@ -223,6 +225,49 @@
     });
   }
 
+  function installHomeModuleCards() {
+    if (current !== "index.html" && current !== "") return;
+    const grid = document.getElementById("moduleGrid");
+    if (!grid) return;
+    const extraModules = MODULES.filter((item) => item.landing);
+    let injecting = false;
+
+    function escapeHtml(value) {
+      return String(value || "").replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[character]));
+    }
+
+    function inject() {
+      if (injecting) return;
+      injecting = true;
+      const search = document.getElementById("moduleSearch");
+      const query = String(search?.value || "").trim().toLowerCase();
+      extraModules.forEach((item) => {
+        const haystack = `${item.name} ${item.group} ${item.description}`.toLowerCase();
+        if (query && !haystack.includes(query)) return;
+        if (grid.querySelector(`a[href="${item.href}"]`)) return;
+        const article = document.createElement("article");
+        article.className = "module-card";
+        article.dataset.easyfileDynamicModule = item.href;
+        article.innerHTML = `
+          <div class="module-card-icon"><i class="fa-solid ${item.icon}" aria-hidden="true"></i></div>
+          <h3>Easy ${escapeHtml(item.name)}</h3>
+          <p>${escapeHtml(item.description)}</p>
+          <div class="module-tags"><span class="module-tag">documents</span><span class="module-tag">shared</span></div>
+          <a class="module-card-link" href="${item.href}">Open module <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>`;
+        grid.appendChild(article);
+      });
+      const count = document.getElementById("moduleResultCount");
+      if (count) count.textContent = `${grid.children.length} modules`;
+      injecting = false;
+    }
+
+    const observer = new MutationObserver(() => window.requestAnimationFrame(inject));
+    observer.observe(grid, { childList: true });
+    document.getElementById("moduleSearch")?.addEventListener("input", () => window.requestAnimationFrame(inject));
+    window.addEventListener("easyfile:module-search", () => window.requestAnimationFrame(inject));
+    inject();
+  }
+
   function applyLayoutHooks() {
     document.body.classList.add("easyfile-app");
     document.querySelector("main")?.classList.add("easyfile-main");
@@ -268,6 +313,7 @@
     installNavigation();
     installPolicyLinks();
     installFavicons();
+    installHomeModuleCards();
 
     if (MODULE_FILES.has(current)) ensureScript("assets/js/easyfile-module-actions.js", "easyfileModuleActions");
     if (referralEnabledPage) {

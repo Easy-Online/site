@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Easy Company Profile | EasyFile</title>
+  <meta name="description" content="Manage one reusable EasyFile company profile for business documents, including logo, legal details, contacts, signature and branding.">
+  <meta name="robots" content="index, follow">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    :root{--accent:#2563eb;--page:#f5f7fb;--surface:#fff;--ink:#0f172a;--muted:#64748b;--border:#dbe3ef}
+    html[data-theme="dark"]{--page:#07101f;--surface:#0f172a;--ink:#e5e7eb;--muted:#9fb0c8;--border:#26354c}
+    body{background:var(--page);color:var(--ink)}
+    .shell{width:min(100% - 2rem,84rem);margin:0 auto;padding:2rem 0 4rem}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:1rem;box-shadow:0 14px 34px rgba(15,23,42,.06)}
+    .field label{display:block;font-size:.76rem;font-weight:900;color:var(--muted);margin-bottom:.38rem;text-transform:uppercase;letter-spacing:.04em}
+    .field input,.field textarea{width:100%;border:1px solid var(--border);border-radius:.72rem;padding:.72rem .8rem;background:var(--surface);color:var(--ink)}
+    .field textarea{min-height:6rem;resize:vertical}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border-radius:.75rem;padding:.72rem 1rem;font-weight:900;border:1px solid transparent}
+    .btn-primary{background:#2563eb;color:#fff}.btn-outline{background:var(--surface);border-color:var(--border);color:var(--ink)}.btn-danger{background:#b91c1c;color:#fff}
+    .preview{border-top:5px solid var(--accent);background:#fff;color:#111827;border-radius:.85rem;padding:1.5rem;min-height:30rem;box-shadow:0 12px 35px rgba(15,23,42,.12)}
+    .preview-logo{max-width:160px;max-height:70px;object-fit:contain}.signature{max-width:170px;max-height:74px;object-fit:contain}
+    .upload-preview{min-height:5rem;border:1px dashed var(--border);border-radius:.8rem;display:flex;align-items:center;justify-content:center;padding:.7rem;color:var(--muted);overflow:hidden}
+    .upload-preview img{max-height:72px;max-width:100%;object-fit:contain}
+    .notice{border:1px solid #bfdbfe;background:#eff6ff;color:#1e3a8a;border-radius:.8rem;padding:.85rem 1rem;font-size:.9rem}
+    html[data-theme="dark"] .notice{background:#0b2143;color:#bfdbfe;border-color:#1d4f91}
+    @media(max-width:900px){.layout{grid-template-columns:1fr!important}.sticky-preview{position:static!important}.shell{width:min(100% - 1rem,84rem)}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="mb-6 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+      <div>
+        <p class="text-xs font-black uppercase tracking-widest text-blue-600">Shared foundation</p>
+        <h1 class="text-3xl md:text-4xl font-black mt-1">Easy Company Profile</h1>
+        <p class="mt-2" style="color:var(--muted)">Enter your organisation details once. Easy Letterhead and future EasyFile document modules can reuse the same profile.</p>
+      </div>
+      <a class="btn btn-outline" href="easy-letterhead.html"><i class="fa-solid fa-file-signature"></i> Open Letterhead</a>
+    </header>
+
+    <div class="notice mb-6"><strong>Offline-first:</strong> this profile is stored in your browser using <code>easy.company.profile.v1</code>. Export a JSON backup before clearing browser storage.</div>
+
+    <div class="layout grid grid-cols-1 lg:grid-cols-5 gap-6">
+      <section class="card p-5 lg:col-span-3">
+        <form id="profileForm" class="space-y-6" autocomplete="on">
+          <div>
+            <h2 class="text-lg font-black mb-3">Organisation identity</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+              <div class="field"><label for="companyName">Registered company name</label><input id="companyName" placeholder="Example (Pty) Ltd"></div>
+              <div class="field"><label for="tradingName">Trading name</label><input id="tradingName" placeholder="Example"></div>
+              <div class="field"><label for="registrationNumber">Registration number</label><input id="registrationNumber" placeholder="2026/123456/07"></div>
+              <div class="field"><label for="vatNumber">VAT number</label><input id="vatNumber" placeholder="4XXXXXXXXX"></div>
+              <div class="field md:col-span-2"><label for="slogan">Tagline / slogan</label><input id="slogan" placeholder="Optional company tagline"></div>
+            </div>
+          </div>
+
+          <div>
+            <h2 class="text-lg font-black mb-3">Contact details</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+              <div class="field"><label for="phone">Telephone</label><input id="phone" type="tel" placeholder="+27 ..."></div>
+              <div class="field"><label for="email">Email</label><input id="email" type="email" placeholder="accounts@example.co.za"></div>
+              <div class="field md:col-span-2"><label for="website">Website</label><input id="website" type="url" placeholder="https://example.co.za"></div>
+              <div class="field"><label for="address">Physical address</label><textarea id="address" placeholder="Street, suburb, city, province, postal code"></textarea></div>
+              <div class="field"><label for="postalAddress">Postal address</label><textarea id="postalAddress" placeholder="Optional postal address"></textarea></div>
+            </div>
+          </div>
+
+          <div>
+            <h2 class="text-lg font-black mb-3">Brand assets</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+              <div>
+                <div class="field"><label for="logoFile">Company logo</label><input id="logoFile" type="file" accept="image/*"></div>
+                <div id="logoPreview" class="upload-preview mt-2">No logo saved</div>
+                <button class="text-sm font-bold text-red-600 mt-2" id="removeLogo" type="button">Remove logo</button>
+              </div>
+              <div>
+                <div class="field"><label for="signatureFile">Default signature</label><input id="signatureFile" type="file" accept="image/*"></div>
+                <div id="signaturePreview" class="upload-preview mt-2">No signature saved</div>
+                <button class="text-sm font-bold text-red-600 mt-2" id="removeSignature" type="button">Remove signature</button>
+              </div>
+              <div class="field"><label for="signatoryName">Default signatory</label><input id="signatoryName" placeholder="Full name"></div>
+              <div class="field"><label for="signatoryTitle">Signatory title</label><input id="signatoryTitle" placeholder="Managing Director"></div>
+              <div class="field"><label for="brandColour">Brand accent colour</label><input id="brandColour" type="color" value="#2563eb" style="height:3rem;padding:.3rem"></div>
+            </div>
+          </div>
+
+          <div>
+            <h2 class="text-lg font-black mb-3">Document footer defaults</h2>
+            <div class="grid gap-4">
+              <div class="field"><label for="footerText">Footer text</label><textarea id="footerText" placeholder="Company registration, directors, banking or other standard footer text"></textarea></div>
+              <div class="field"><label for="legalDisclaimer">Legal disclaimer</label><textarea id="legalDisclaimer" placeholder="Optional confidentiality or legal disclaimer"></textarea></div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-2 border-t pt-5" style="border-color:var(--border)">
+            <button class="btn btn-primary" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save profile</button>
+            <button class="btn btn-outline" type="button" id="exportBtn"><i class="fa-solid fa-download"></i> Export JSON</button>
+            <label class="btn btn-outline cursor-pointer"><i class="fa-solid fa-upload"></i> Import JSON<input id="importFile" type="file" accept="application/json,.json" class="hidden"></label>
+            <button class="btn btn-danger ml-auto" type="button" id="clearBtn"><i class="fa-solid fa-trash"></i> Clear profile</button>
+          </div>
+          <p id="status" class="text-sm font-bold" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <aside class="lg:col-span-2 sticky-preview" style="position:sticky;top:6rem;align-self:start">
+        <div class="preview" id="preview">
+          <div class="flex justify-between gap-4 items-start">
+            <div><img id="pLogo" class="preview-logo hidden" alt="Company logo"><h2 id="pName" class="text-2xl font-black">Your Company</h2><p id="pSlogan" class="text-sm text-gray-500 mt-1"></p></div>
+            <div class="text-right text-xs text-gray-500"><div id="pReg"></div><div id="pVat"></div></div>
+          </div>
+          <div class="mt-8 border-t pt-4 text-sm" style="border-color:#e5e7eb">
+            <p class="font-black uppercase tracking-wide text-xs text-gray-400">Contact</p>
+            <div id="pAddress" class="whitespace-pre-line mt-2"></div><div id="pContact" class="mt-2"></div>
+          </div>
+          <div class="mt-12">
+            <p class="text-gray-400 text-sm">Letter content will appear here when this profile is used by Easy Letterhead.</p>
+          </div>
+          <div class="mt-16">
+            <img id="pSignature" class="signature hidden" alt="Signature"><p id="pSignatory" class="font-bold"></p><p id="pSignatoryTitle" class="text-sm text-gray-500"></p>
+          </div>
+          <footer class="mt-12 border-t pt-3 text-center text-xs text-gray-500" style="border-color:#e5e7eb"><div id="pFooter"></div><div id="pDisclaimer" class="mt-2"></div></footer>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script src="assets/js/easyfile-company-profile.js"></script>
+  <script>
+    (function(){
+      "use strict";
+      const api=window.EasyFileCompanyProfile;
+      const ids=["companyName","tradingName","registrationNumber","vatNumber","address","postalAddress","phone","email","website","slogan","signatoryName","signatoryTitle","footerText","legalDisclaimer","brandColour"];
+      let state=api.load();
+      const $=id=>document.getElementById(id);
+      const esc=v=>String(v||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
+
+      function populate(){ ids.forEach(id=>{if($(id)) $(id).value=state[id]|| (id==="brandColour"?"#2563eb":"")}); renderAssets(); renderPreview(); }
+      function collect(){ const next={...state}; ids.forEach(id=>next[id]=$(id).value.trim()); return next; }
+      function renderAssets(){
+        $("logoPreview").innerHTML=state.logo?`<img src="${state.logo}" alt="Saved company logo">`:"No logo saved";
+        $("signaturePreview").innerHTML=state.signature?`<img src="${state.signature}" alt="Saved signature">`:"No signature saved";
+      }
+      function renderPreview(){
+        const p={...state,...collect()}; document.documentElement.style.setProperty("--accent",p.brandColour||"#2563eb");
+        $("pName").textContent=p.tradingName||p.companyName||"Your Company"; $("pSlogan").textContent=p.slogan||"";
+        $("pReg").textContent=p.registrationNumber?`Reg: ${p.registrationNumber}`:""; $("pVat").textContent=p.vatNumber?`VAT: ${p.vatNumber}`:"";
+        $("pAddress").textContent=p.address||""; $("pContact").innerHTML=[p.phone,p.email,p.website].filter(Boolean).map(esc).join(" • ");
+        $("pSignatory").textContent=p.signatoryName||""; $("pSignatoryTitle").textContent=p.signatoryTitle||""; $("pFooter").textContent=p.footerText||""; $("pDisclaimer").textContent=p.legalDisclaimer||"";
+        $("pLogo").src=p.logo||""; $("pLogo").classList.toggle("hidden",!p.logo); $("pSignature").src=p.signature||""; $("pSignature").classList.toggle("hidden",!p.signature);
+      }
+      ids.forEach(id=>$(id)?.addEventListener("input",renderPreview));
+      $("logoFile").addEventListener("change",async e=>{try{state.logo=await api.readFileAsDataUrl(e.target.files[0]);renderAssets();renderPreview()}catch(err){$("status").textContent=err.message}});
+      $("signatureFile").addEventListener("change",async e=>{try{state.signature=await api.readFileAsDataUrl(e.target.files[0]);renderAssets();renderPreview()}catch(err){$("status").textContent=err.message}});
+      $("removeLogo").addEventListener("click",()=>{state.logo="";renderAssets();renderPreview()});
+      $("removeSignature").addEventListener("click",()=>{state.signature="";renderAssets();renderPreview()});
+      $("profileForm").addEventListener("submit",e=>{e.preventDefault();state=api.save({...collect(),logo:state.logo,signature:state.signature});$("status").textContent="Company profile saved for reuse across EasyFile.";populate()});
+      $("exportBtn").addEventListener("click",()=>api.download({...collect(),logo:state.logo,signature:state.signature}));
+      $("importFile").addEventListener("change",async e=>{try{state=await api.importFromFile(e.target.files[0]);$("status").textContent="Company profile imported.";populate()}catch(err){$("status").textContent=err.message}e.target.value=""});
+      $("clearBtn").addEventListener("click",()=>{if(!confirm("Clear the shared EasyFile company profile from this browser?")) return;state=api.clear();$("status").textContent="Company profile cleared.";populate()});
+      populate();
+    })();
+  </script>
+  <script defer src="scripts/sync-nav.js"></script>
+</body>
+</html>
