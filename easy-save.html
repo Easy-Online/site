@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Easy Save | EasyFile</title>
+  <meta name="description" content="Select files or website links and save them to browser storage, Google Drive, OneDrive, Dropbox, Box, FTP/SFTP or S3-compatible cloud storage through EasyFile storage connectors.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#2563eb">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/easyfile-brand-tokens.css">
+  <link rel="stylesheet" href="assets/css/easyfile-site.css">
+  <link rel="stylesheet" href="assets/css/easyfile-footer.css">
+  <link rel="stylesheet" href="assets/css/easyfile-navigation.css">
+  <link rel="stylesheet" href="assets/css/easy-save.css">
+  <!-- EASYFILE_FAVICONS -->
+  <link rel="icon" href="logo-b.png" type="image/png">
+  <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
+  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="logo-b.png">
+</head>
+<body class="min-h-screen">
+<!-- NAV_SYNC -->
+<div class="easyfile-nav no-print">
+  <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
+</div>
+<header class="save-module-header no-print">
+  <div class="container mx-auto px-4 py-4 flex flex-col lg:flex-row lg:items-center gap-4 lg:justify-between">
+    <div class="flex items-center gap-3">
+      <div class="save-module-icon"><i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i></div>
+      <div>
+        <h1 id="save-title" class="text-2xl font-extrabold">Easy Save</h1>
+        <p class="save-module-subtitle text-sm">Unified file and cloud-storage workspace</p>
+      </div>
+    </div>
+    <div class="save-toolbar" aria-label="Easy Save capabilities">
+      <span class="save-chip"><i class="fa-solid fa-hard-drive" aria-hidden="true"></i> Local-first</span>
+      <span class="save-chip"><i class="fa-solid fa-cloud" aria-hidden="true"></i> Multi-cloud</span>
+      <span class="save-chip"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Secure connectors</span>
+    </div>
+  </div>
+</header>
+
+<main class="easyfile-main container mx-auto px-4 save-shell" id="main-content">
+  <section class="save-card save-intro" aria-labelledby="save-overview-title">
+    <div class="save-intro-grid">
+      <div>
+        <span class="save-eyebrow"><i class="fa-solid fa-arrow-right-arrow-left" aria-hidden="true"></i>Select → Destination → Save</span>
+        <h2 id="save-overview-title">Save one file anywhere, without changing your workflow.</h2>
+        <p class="save-intro-copy">Browse local files or add a website link, choose the storage destination, review the queue, and save through one consistent EasyFile interface. Browser storage works immediately; connected cloud providers use secure adapters so credentials remain outside the page.</p>
+      </div>
+      <div class="save-flow" aria-label="Easy Save workflow">
+        <div class="save-flow-item"><span>1</span><strong>Select files or paste a URL</strong></div>
+        <div class="save-flow-item"><span>2</span><strong>Choose a storage destination</strong></div>
+        <div class="save-flow-item"><span>3</span><strong>Review and save securely</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="save-card save-section" aria-labelledby="destinations-heading">
+    <div class="save-section-head">
+      <div><h2 id="destinations-heading">Storage destinations</h2><p>Select one target. Provider credentials are never stored in localStorage.</p></div>
+      <span id="selectedProviderLabel" class="status local"><i class="fa-solid fa-circle-check"></i> Browser storage selected</span>
+    </div>
+    <div class="save-section-body">
+      <div id="providerGrid" class="provider-grid"></div>
+      <div class="notice info mt-4"><strong>Connector model:</strong> Google Drive, OneDrive, Dropbox and Box authenticate through an EasyFile connector service. FTP/SFTP is proxied server-side. S3-compatible storage can use a pre-signed HTTPS upload URL, including MinIO or other containerised object stores.</div>
+    </div>
+  </section>
+
+  <section class="save-card save-section" aria-labelledby="source-heading">
+    <div class="save-section-head"><div><h2 id="source-heading">Add files</h2><p>Use local files, drag and drop, a supported browser file picker, or a public website link.</p></div></div>
+    <div class="save-section-body source-grid">
+      <label id="dropZone" class="drop-zone" for="fileInput">
+        <div><i class="fa-solid fa-folder-open"></i><strong>Browse or drop files here</strong><small>Multiple files supported. Files remain local until you choose Save.</small></div>
+      </label>
+      <input id="fileInput" type="file" multiple hidden>
+      <div class="url-card">
+        <label class="field-label" for="urlInput">Website or direct file URL</label>
+        <input id="urlInput" class="field" type="url" placeholder="https://example.com/file.pdf">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+          <div><label class="field-label" for="urlFileName">Save as</label><input id="urlFileName" class="field" placeholder="Optional filename"></div>
+          <div><label class="field-label" for="urlType">Content type</label><input id="urlType" class="field" placeholder="Auto detect"></div>
+        </div>
+        <button id="addUrlBtn" class="btn btn-primary w-full mt-3" type="button"><i class="fa-solid fa-link"></i>Add URL to queue</button>
+        <div class="notice warn mt-3">Remote URL capture depends on the source allowing browser CORS requests. If blocked, Easy Save will require the server-side fetch connector.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="save-card save-section" aria-labelledby="queue-heading">
+    <div class="save-section-head">
+      <div><h2 id="queue-heading">Save queue</h2><p>Review files before anything is written to the selected destination.</p></div>
+      <span id="queueCount" class="text-sm font-black">0 items</span>
+    </div>
+    <div class="save-section-body">
+      <div id="queue" class="queue"><div class="queue-empty">No files queued yet.</div></div>
+      <div class="queue-actions">
+        <button id="saveAllBtn" class="btn btn-primary" type="button"><i class="fa-solid fa-cloud-arrow-up"></i>Save all</button>
+        <button id="clearQueueBtn" class="btn btn-secondary" type="button"><i class="fa-solid fa-broom"></i>Clear queue</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="save-card save-section" aria-labelledby="saved-heading">
+    <div class="save-section-head"><div><h2 id="saved-heading">Browser vault</h2><p>Files saved locally in IndexedDB are available for download or deletion on this device.</p></div><span id="vaultUsage" class="text-sm font-black">0 files</span></div>
+    <div class="save-section-body overflow-x-auto">
+      <table class="saved-table">
+        <thead><tr><th>Name</th><th>Type</th><th>Size</th><th>Saved</th><th>Actions</th></tr></thead>
+        <tbody id="vaultRows"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<footer class="easyfile-footer border-t border-adaptive">
+  <div class="container mx-auto px-4 py-7 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+    <p class="muted-adaptive text-sm font-bold">Easy Save · EasyFile</p>
+    <p class="muted-adaptive text-sm">Local-first queue · Secure connector architecture · Provider-neutral storage</p>
+  </div>
+</footer>
+
+<div id="connectorModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="connectorTitle">
+  <div class="modal-card">
+    <div class="modal-head"><div><h2 id="connectorTitle" class="text-lg font-black">Configure storage</h2><p id="connectorSubtitle" class="text-sm" style="color:var(--easyfile-muted)"></p></div><button id="modalClose" class="btn btn-secondary" type="button" aria-label="Close"><i class="fa-solid fa-xmark"></i></button></div>
+    <div id="connectorBody" class="modal-body"></div>
+    <div class="modal-foot"><button id="modalCancel" class="btn btn-secondary" type="button">Cancel</button><button id="modalConnect" class="btn btn-primary" type="button">Connect</button></div>
+  </div>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script defer src="assets/js/easy-save.js"></script>
+<script defer src="scripts/sync-nav.js"></script>
+</body>
+</html>
