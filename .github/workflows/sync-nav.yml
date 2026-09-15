@@ -42,6 +42,9 @@ jobs:
       - name: Validate HTML conventions
         run: htmlhint --config .htmlhintrc ./*.html
 
+      - name: Verify global module menu coverage
+        run: node scripts/verify-module-registry.js
+
       - name: Commit generated navigation updates
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
