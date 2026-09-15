@@ -111,6 +111,94 @@
     });
   }
 
+  function isPurchaseOrderPage() {
+    return /(?:^|\/)easy-purchase-order\.html$/i.test(location.pathname);
+  }
+
+  function repairPurchaseOrderText(value) {
+    if (typeof value !== "string" || !value) return value;
+
+    const replacements = [
+      [/â†’/g, "→"],
+      [/â€¢/g, "•"],
+      [/â€”/g, "—"],
+      [/â€“/g, "–"],
+      [/â€¦/g, "…"],
+      [/â€™/g, "’"],
+      [/â€œ/g, "“"],
+      [/â€/g, "”"],
+      [/Â/g, ""]
+    ];
+
+    return replacements.reduce((text, [pattern, replacement]) => text.replace(pattern, replacement), value);
+  }
+
+  function applyPurchaseOrderPolish() {
+    if (!isPurchaseOrderPage()) return;
+
+    const styleId = "easyfile-purchase-order-typography";
+    if (!document.getElementById(styleId)) {
+      const style = document.createElement("style");
+      style.id = styleId;
+      style.textContent = `
+        body,
+        button,
+        input,
+        select,
+        textarea {
+          font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+        }
+        body {
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+          text-rendering: optimizeLegibility;
+          font-kerning: normal;
+        }
+        input,
+        select,
+        textarea,
+        button {
+          font: inherit;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    const textNodes = [];
+    let node;
+    while ((node = walker.nextNode())) textNodes.push(node);
+
+    textNodes.forEach((textNode) => {
+      const parentTag = textNode.parentElement?.tagName;
+      if (["SCRIPT", "STYLE", "NOSCRIPT", "TEXTAREA"].includes(parentTag)) return;
+      const repaired = repairPurchaseOrderText(textNode.nodeValue);
+      if (repaired !== textNode.nodeValue) textNode.nodeValue = repaired;
+    });
+
+    ["placeholder", "title", "aria-label"].forEach((attribute) => {
+      document.querySelectorAll(`[${attribute}]`).forEach((element) => {
+        const current = element.getAttribute(attribute);
+        const repaired = repairPurchaseOrderText(current);
+        if (repaired !== current) element.setAttribute(attribute, repaired);
+      });
+    });
+
+    document.querySelectorAll("header p").forEach((paragraph) => {
+      if ((paragraph.textContent || "").trim() === "Feature-Rich Purchase Order Generator") {
+        paragraph.textContent = "Feature-rich Purchase Order Generator";
+      }
+    });
+
+    document.querySelectorAll('input[placeholder="Supplier / Vendor name"]').forEach((input) => {
+      input.placeholder = "Supplier or vendor name";
+    });
+
+    document.querySelectorAll('input[placeholder="VAT..."]').forEach((input) => {
+      input.placeholder = "VAT number";
+    });
+  }
+
   async function boot() {
     try {
       await injectPartial(navMount, "partials/easy-nav.html");
@@ -134,6 +222,7 @@
 
       ensureFavicons();
       applyBranding();
+      applyPurchaseOrderPolish();
     } catch (error) {
       console.warn("EasyFile core load warning:", error);
     }
