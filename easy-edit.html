@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Easy Edit | Low-code file editor</title>
+  <meta name="description" content="Edit PDFs, images, HTML, text, data and selected Office files locally in your browser with Easy Edit.">
+  <meta name="theme-color" content="#061a4d">
+  <link rel="icon" href="logo-b.png" type="image/png">
+  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="logo-b.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/easyfile-brand-tokens.css">
+  <link rel="stylesheet" href="assets/css/easyfile-site.css">
+  <link rel="stylesheet" href="assets/css/easyfile-footer.css">
+  <link rel="stylesheet" href="assets/css/easyfile-navigation.css">
+  <style>
+    :root{--ee-bg:#f4f7fb;--ee-card:#fff;--ee-border:#dbe4f0;--ee-ink:#0f172a;--ee-muted:#64748b;--ee-blue:#2563eb;--ee-navy:#061a4d;--ee-success:#15803d;--ee-danger:#b91c1c}
+    html[data-theme="dark"]{--ee-bg:#07101f;--ee-card:#0f172a;--ee-border:#26354d;--ee-ink:#e5e7eb;--ee-muted:#9fb0c8;--ee-blue:#60a5fa;--ee-navy:#020617}
+    *{box-sizing:border-box} body{margin:0;background:var(--ee-bg);color:var(--ee-ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    .ee-shell{width:min(100% - 2rem,96rem);margin:0 auto;padding:1.5rem 0 4rem}.ee-card{background:var(--ee-card);border:1px solid var(--ee-border);border-radius:1rem;box-shadow:0 14px 38px rgba(15,23,42,.07)}
+    .ee-hero{display:flex;gap:1.25rem;align-items:flex-start;justify-content:space-between;padding:1.35rem;margin-bottom:1rem}.ee-title-wrap{display:flex;gap:.9rem;align-items:center}.ee-icon{width:3.25rem;height:3.25rem;border-radius:1rem;display:grid;place-items:center;background:linear-gradient(145deg,#2563eb,#0b3ba8);color:#fff;font-size:1.35rem}.ee-title{margin:0;font-size:clamp(1.65rem,3vw,2.4rem);font-weight:900;letter-spacing:-.04em}.ee-subtitle{margin:.3rem 0 0;color:var(--ee-muted);line-height:1.6}.ee-private{display:inline-flex;align-items:center;gap:.45rem;border:1px solid #bbf7d0;border-radius:999px;padding:.45rem .7rem;background:#f0fdf4;color:#166534;font-weight:800;font-size:.76rem;white-space:nowrap}
+    html[data-theme="dark"] .ee-private{background:#052e16;border-color:#166534;color:#bbf7d0}.ee-grid{display:grid;grid-template-columns:18rem minmax(0,1fr) 19rem;gap:1rem;align-items:start}.ee-panel{padding:1rem}.ee-panel h2{margin:0 0 .8rem;font-size:.9rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.ee-drop{border:2px dashed #94a3b8;border-radius:1rem;padding:1.35rem;text-align:center;cursor:pointer;transition:.18s;background:rgba(148,163,184,.05)}.ee-drop.drag{border-color:#2563eb;background:rgba(37,99,235,.08)}.ee-drop i{font-size:2rem;color:#2563eb}.ee-drop strong{display:block;margin-top:.7rem}.ee-drop small{display:block;margin-top:.4rem;color:var(--ee-muted);line-height:1.4}.ee-btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;min-height:2.6rem;border:1px solid var(--ee-border);border-radius:.72rem;padding:.6rem .8rem;background:var(--ee-card);color:var(--ee-ink);font-weight:850;cursor:pointer;transition:.15s}.ee-btn:hover{transform:translateY(-1px);border-color:#94a3b8}.ee-btn-primary{background:#2563eb;color:#fff;border-color:#2563eb}.ee-btn-danger{color:var(--ee-danger)}.ee-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}.ee-toolbar{display:flex;flex-wrap:wrap;gap:.5rem;padding:1rem;margin-bottom:1rem}.ee-badge{display:inline-flex;align-items:center;gap:.35rem;border-radius:999px;padding:.35rem .55rem;background:#e0e7ff;color:#3730a3;font-size:.73rem;font-weight:900}.ee-badge[data-dirty="true"]{background:#fff7ed;color:#9a3412}.ee-badge[data-dirty="false"]{background:#ecfdf5;color:#166534}.ee-file-name{font-weight:900;overflow-wrap:anywhere}.ee-meta{font-size:.8rem;color:var(--ee-muted);line-height:1.55}.ee-stage{min-height:38rem;padding:1rem;position:relative;overflow:auto}.ee-empty{min-height:34rem;display:grid;place-items:center;text-align:center;color:var(--ee-muted)}.ee-empty i{font-size:3rem;color:#94a3b8;margin-bottom:1rem}.ee-empty h3{color:var(--ee-ink);font-size:1.2rem;margin:0}.ee-empty p{max-width:32rem;line-height:1.6}.ee-editor{width:100%;min-height:34rem;resize:vertical;border:1px solid var(--ee-border);border-radius:.8rem;padding:1rem;background:#0b1220;color:#dbeafe;font:500 .9rem/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;tab-size:2}.ee-html-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.8rem}.ee-preview{width:100%;min-height:34rem;border:1px solid var(--ee-border);border-radius:.8rem;background:#fff}.ee-canvas-wrap{position:relative;display:flex;justify-content:center;align-items:flex-start;min-height:34rem;background:repeating-conic-gradient(#e5e7eb 0 25%,#f8fafc 0 50%) 50%/18px 18px;border-radius:.8rem;padding:1rem;overflow:auto}.ee-canvas-wrap canvas{max-width:100%;height:auto;background:#fff;box-shadow:0 12px 30px rgba(15,23,42,.14);cursor:crosshair}.ee-pdf-controls{display:flex;align-items:center;justify-content:center;gap:.6rem;margin-bottom:.75rem;flex-wrap:wrap}.ee-field{display:grid;gap:.35rem;margin-bottom:.75rem}.ee-field label{font-size:.75rem;font-weight:900;color:var(--ee-muted)}.ee-input,.ee-select{width:100%;min-height:2.55rem;border:1px solid var(--ee-border);border-radius:.65rem;padding:.55rem .65rem;background:var(--ee-card);color:var(--ee-ink)}.ee-textarea{min-height:6rem;resize:vertical}.ee-help{font-size:.75rem;color:var(--ee-muted);line-height:1.5}.ee-section{border-top:1px solid var(--ee-border);padding-top:.9rem;margin-top:.9rem}.ee-section:first-child{border-top:0;padding-top:0;margin-top:0}.ee-actions{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}.ee-actions .wide{grid-column:1/-1}.ee-status{position:fixed;right:1rem;bottom:1rem;z-index:9999;max-width:24rem;border-radius:.8rem;padding:.8rem 1rem;background:#0f172a;color:#fff;box-shadow:0 16px 35px rgba(2,6,23,.28);font-size:.85rem;font-weight:700}.ee-status[hidden]{display:none}.ee-support{display:grid;gap:.5rem;margin-top:1rem}.ee-support div{display:flex;justify-content:space-between;gap:.5rem;padding:.55rem .65rem;border-radius:.65rem;background:rgba(148,163,184,.08);font-size:.78rem}.ee-support strong{font-weight:900}.ee-kbd{font:800 .72rem ui-monospace,monospace;padding:.18rem .35rem;border:1px solid var(--ee-border);border-radius:.35rem;background:rgba(148,163,184,.09)}.ee-selection{font-size:.76rem;color:var(--ee-muted);padding:.6rem;border:1px dashed var(--ee-border);border-radius:.65rem;overflow-wrap:anywhere}.ee-warning{padding:.8rem;border-radius:.7rem;background:#fff7ed;color:#9a3412;border:1px solid #fed7aa;font-size:.8rem;line-height:1.5}.hidden{display:none!important}
+    @media(max-width:1100px){.ee-grid{grid-template-columns:16rem minmax(0,1fr)}.ee-inspector{grid-column:1/-1}.ee-inspector .ee-inspector-inner{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}.ee-section{border-top:0;margin-top:0;padding-top:0}}
+    @media(max-width:760px){.ee-shell{width:min(100% - 1rem,96rem);padding-top:.75rem}.ee-grid{grid-template-columns:1fr}.ee-hero{flex-direction:column}.ee-private{white-space:normal}.ee-html-grid{grid-template-columns:1fr}.ee-preview{min-height:26rem}.ee-stage{min-height:30rem;padding:.65rem}.ee-editor{min-height:28rem}.ee-inspector .ee-inspector-inner{grid-template-columns:1fr}.ee-toolbar{padding:.65rem}.ee-btn{flex:1 1 auto}.ee-actions{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="easyfile-nav no-print"><a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a></div>
+  <main class="ee-shell">
+    <section class="ee-card ee-hero">
+      <div class="ee-title-wrap"><div class="ee-icon"><i class="fa-solid fa-pen-ruler"></i></div><div><h1 class="ee-title">Easy Edit</h1><p class="ee-subtitle">EasyFile’s shared local-first document engine for PDFs, images, HTML, text, data and convertible Office files.</p></div></div>
+      <div class="ee-private"><i class="fa-solid fa-shield-halved"></i> Files stay in this browser until you export</div>
+    </section>
+
+    <section class="ee-card ee-toolbar no-print" aria-label="Editor actions">
+      <button class="ee-btn ee-btn-primary" id="openBtn"><i class="fa-solid fa-folder-open"></i> Open file</button>
+      <input id="fileInput" type="file" class="hidden" accept=".pdf,.png,.jpg,.jpeg,.webp,.gif,.bmp,.html,.htm,.txt,.md,.markdown,.json,.csv,.xml,.svg,.css,.js,.mjs,.ts,.docx,.xlsx,.xls">
+      <button class="ee-btn" id="downloadBtn" disabled><i class="fa-solid fa-download"></i> Download</button>
+      <button class="ee-btn" id="undoBtn" disabled title="Undo (Ctrl/Cmd+Z)"><i class="fa-solid fa-rotate-left"></i> Undo</button>
+      <button class="ee-btn" id="redoBtn" disabled title="Redo (Ctrl/Cmd+Shift+Z)"><i class="fa-solid fa-rotate-right"></i> Redo</button>
+      <button class="ee-btn" id="resetBtn" disabled><i class="fa-solid fa-clock-rotate-left"></i> Reset edits</button>
+      <button class="ee-btn" id="recoverBtn"><i class="fa-solid fa-life-ring"></i> Recover</button>
+      <button class="ee-btn" id="newHtmlBtn"><i class="fa-solid fa-code"></i> New HTML</button>
+      <span class="ee-badge" id="modeBadge"><i class="fa-solid fa-circle-info"></i> No file</span>
+      <span class="ee-badge" id="dirtyBadge" data-dirty="false">Saved / clean</span>
+    </section>
+
+    <div class="ee-grid">
+      <aside class="ee-card ee-panel no-print">
+        <h2>File</h2>
+        <div class="ee-drop" id="dropZone" tabindex="0" role="button" aria-label="Drop a file or choose one">
+          <i class="fa-solid fa-cloud-arrow-up"></i><strong>Drop a file here</strong><small>or click to choose a file from your device</small>
+        </div>
+        <div class="ee-section">
+          <div id="fileName" class="ee-file-name">Nothing open</div>
+          <div id="fileMeta" class="ee-meta">PDF, image, HTML, text, data, DOCX and XLSX supported.</div>
+        </div>
+        <div class="ee-section">
+          <h2>Formats</h2>
+          <div class="ee-support"><div><strong>PDF</strong><span>rotate + text</span></div><div><strong>Images</strong><span>adjust + text</span></div><div><strong>HTML</strong><span>visual + code</span></div><div><strong>Text/data</strong><span>direct edit</span></div><div><strong>DOCX</strong><span>to HTML</span></div><div><strong>XLSX</strong><span>to CSV</span></div></div>
+        </div>
+        <div class="ee-section ee-help"><strong>Shortcuts:</strong><br><span class="ee-kbd">Ctrl/Cmd + S</span> download current file<br><span class="ee-kbd">Ctrl/Cmd + O</span> open file</div>
+      </aside>
+
+      <section class="ee-card ee-stage" id="stage">
+        <div class="ee-empty" id="emptyState"><div><i class="fa-regular fa-file-lines"></i><h3>Open a file to start editing</h3><p>Easy Edit detects the file type and loads the right editing workspace automatically.</p></div></div>
+
+        <div id="textWorkspace" class="hidden"><textarea id="textEditor" class="ee-editor" spellcheck="false" aria-label="Text editor"></textarea></div>
+
+        <div id="htmlWorkspace" class="hidden ee-html-grid"><textarea id="htmlEditor" class="ee-editor" spellcheck="false" aria-label="HTML source editor"></textarea><iframe id="htmlPreview" class="ee-preview" sandbox="allow-same-origin" title="HTML live preview"></iframe></div>
+
+        <div id="canvasWorkspace" class="hidden"><div class="ee-pdf-controls" id="pageControls"><button class="ee-btn" id="prevPage"><i class="fa-solid fa-chevron-left"></i></button><span id="pageLabel" class="ee-meta">Page 1 / 1</span><button class="ee-btn" id="nextPage"><i class="fa-solid fa-chevron-right"></i></button></div><div class="ee-canvas-wrap"><canvas id="editCanvas"></canvas></div></div>
+      </section>
+
+      <aside class="ee-card ee-panel ee-inspector no-print"><div class="ee-inspector-inner">
+        <section class="ee-section" id="commonInspector"><h2>Inspector</h2><div id="selectionSummary" class="ee-selection">Open a file to see editing controls.</div></section>
+
+        <section class="ee-section hidden" id="pdfInspector"><h2>PDF tools</h2><div class="ee-actions"><button class="ee-btn" id="pdfRotateLeft"><i class="fa-solid fa-rotate-left"></i> Rotate</button><button class="ee-btn" id="pdfRotateRight"><i class="fa-solid fa-rotate-right"></i> Rotate</button></div><div class="ee-field" style="margin-top:.8rem"><label for="pdfText">Text overlay</label><input id="pdfText" class="ee-input" placeholder="Type text, then click the page"></div><div class="ee-field"><label for="pdfTextSize">Font size</label><input id="pdfTextSize" type="number" min="6" max="96" value="18" class="ee-input"></div><button class="ee-btn ee-btn-danger" id="pdfClearPage"><i class="fa-solid fa-eraser"></i> Clear page overlays</button><p class="ee-help">Enter overlay text, then click where it should appear on the current PDF page.</p></section>
+
+        <section class="ee-section hidden" id="imageInspector"><h2>Image tools</h2><div class="ee-actions"><button class="ee-btn" id="imgRotateLeft"><i class="fa-solid fa-rotate-left"></i></button><button class="ee-btn" id="imgRotateRight"><i class="fa-solid fa-rotate-right"></i></button><button class="ee-btn" id="imgFlip"><i class="fa-solid fa-arrows-left-right"></i> Flip</button><button class="ee-btn" id="imgGray"><i class="fa-solid fa-circle-half-stroke"></i> Greyscale</button></div><div class="ee-field" style="margin-top:.8rem"><label for="brightness">Brightness <span id="brightnessVal">100%</span></label><input id="brightness" type="range" min="20" max="200" value="100"></div><div class="ee-field"><label for="contrast">Contrast <span id="contrastVal">100%</span></label><input id="contrast" type="range" min="20" max="200" value="100"></div><div class="ee-field"><label for="imgText">Text overlay</label><input id="imgText" class="ee-input" placeholder="Type text, then click the image"></div><div class="ee-field"><label for="imgTextSize">Font size</label><input id="imgTextSize" type="number" min="8" max="160" value="30" class="ee-input"></div><button class="ee-btn ee-btn-danger" id="imgClearText"><i class="fa-solid fa-eraser"></i> Clear overlays</button></section>
+
+        <section class="ee-section hidden" id="htmlInspector"><h2>Low-code HTML</h2><div class="ee-actions"><button class="ee-btn" data-add-tag="h2">Heading</button><button class="ee-btn" data-add-tag="p">Paragraph</button><button class="ee-btn" data-add-tag="button">Button</button><button class="ee-btn" data-add-tag="img">Image</button></div><div class="ee-field" style="margin-top:.8rem"><label for="elementText">Selected text</label><textarea id="elementText" class="ee-input ee-textarea" placeholder="Click an element in Preview"></textarea></div><div class="ee-field"><label for="fontSize">Font size (px)</label><input id="fontSize" type="number" min="8" max="120" class="ee-input"></div><div class="ee-field"><label for="textAlign">Alignment</label><select id="textAlign" class="ee-select"><option value="">Default</option><option value="left">Left</option><option value="center">Centre</option><option value="right">Right</option></select></div><div class="ee-field"><label for="textColor">Text colour</label><input id="textColor" type="color" value="#111827" class="ee-input"></div><button class="ee-btn ee-btn-danger" id="deleteElement"><i class="fa-solid fa-trash"></i> Delete selected</button><p class="ee-help">Click an element inside the live preview to edit it without manually changing markup. Scripts are not executed in preview mode.</p></section>
+
+        <section class="ee-section hidden" id="textInspector"><h2>Text/data tools</h2><button class="ee-btn wide" id="formatJson"><i class="fa-solid fa-wand-magic-sparkles"></i> Format JSON</button><button class="ee-btn wide" id="minifyJson" style="margin-top:.5rem"><i class="fa-solid fa-compress"></i> Minify JSON</button><p class="ee-help">JSON formatting is enabled only for JSON files. Other text formats remain plain-text edits.</p></section>
+      </div></aside>
+    </div>
+  </main>
+  <div class="ee-status" id="status" hidden role="status" aria-live="polite"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="assets/js/easyfile-document-bus.js"></script>
+  <script src="assets/js/easy-edit/engine.js"></script>
+  <script src="assets/js/easy-edit/adapters.js"></script>
+  <script src="assets/js/easy-edit/app.js"></script>
+  <script defer src="scripts/sync-nav.js"></script>
+</body>
+</html>
