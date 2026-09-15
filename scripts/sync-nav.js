@@ -328,6 +328,7 @@
     installHomeModuleCards();
 
     if (MODULE_FILES.has(current)) ensureScript("assets/js/easyfile-module-actions.js", "easyfileModuleActions");
+    if (current === "easy-capture.html") ensureScript("assets/js/easy-capture-enhancements.js", "easyCaptureEnhancements");
     if (PROFILE_MODULE_FILES.has(current)) {
       const profileScript = ensureScript("assets/js/easyfile-company-profile.js", "easyfileCompanyProfile");
       const loadProfileIntegration = () => ensureScript("assets/js/easyfile-company-profile-integration.js", "easyfileCompanyProfileIntegration");
