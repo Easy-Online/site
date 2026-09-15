@@ -22,6 +22,7 @@
     { name: "Sales Order", href: "easy-sales-order.html", icon: "fa-bag-shopping", group: "Documents", description: "Record customer sales orders" },
     { name: "Receipt", href: "easy-receipt.html", icon: "fa-receipt", group: "Documents", description: "Issue payment receipts" },
     { name: "Capture", href: "easy-capture.html", icon: "fa-camera-retro", group: "Documents", description: "Capture receipts and supplier invoices, extract VAT details and post reviewed expenses", landing: true },
+    { name: "Edit", href: "easy-edit.html", icon: "fa-pen-ruler", group: "Documents", description: "Edit PDFs, images, HTML, text, data and convertible Office files", landing: true },
     { name: "Statement", href: "easy-statement.html", icon: "fa-file-contract", group: "Documents", description: "Generate account statements" },
     { name: "Letterhead", href: "easy-letterhead.html", icon: "fa-file-signature", group: "Documents", description: "Create branded business letters, correspondence and reusable templates", landing: true },
     { name: "Bill", href: "easy-bill.html", icon: "fa-file-invoice", group: "Documents", description: "Capture and manage supplier or business bills", landing: true },
@@ -351,7 +352,10 @@
     installFavicons();
     installHomeModuleCards();
 
-    if (MODULE_FILES.has(current)) ensureScript("assets/js/easyfile-module-actions.js", "easyfileModuleActions");
+    if (MODULE_FILES.has(current)) {
+      ensureScript("assets/js/easyfile-module-actions.js", "easyfileModuleActions");
+      if (current !== "easy-edit.html") ensureScript("assets/js/easyfile-edit-handoff.js", "easyfileEditHandoff");
+    }
     if (PROFILE_MODULE_FILES.has(current)) {
       const profileScript = ensureScript("assets/js/easyfile-company-profile.js", "easyfileCompanyProfile");
       const loadProfileIntegration = () => ensureScript("assets/js/easyfile-company-profile-integration.js", "easyfileCompanyProfileIntegration");

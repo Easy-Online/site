@@ -1,20 +1,23 @@
 {
   "name": "easyfile-referral-api",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "private": true,
-  "description": "Server-authoritative referral access API for EasyFile.",
-  "main": "src/functions/referrals.js",
+  "description": "Server-authoritative EasyFile referral and Easy Save storage connector API.",
+  "main": "src/functions/*.js",
   "scripts": {
     "start": "func start",
-    "check": "node --check src/functions/referrals.js && node --test test/referrals.test.js"
+    "check": "node --check src/functions/referrals.js && node --check src/functions/storage.js && node --check src/storage/core.js && node --check src/storage/oauth.js && node --check src/storage/providers.js && node --test test/referrals.test.js test/storage.test.js"
   },
   "engines": {
     "node": ">=20"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.883.0",
     "@azure/communication-email": "^1.1.0",
     "@azure/data-tables": "^13.3.2",
-    "@azure/functions": "^4.7.2"
+    "@azure/functions": "^4.7.2",
+    "basic-ftp": "^5.0.5",
+    "ssh2-sftp-client": "^12.0.1"
   },
   "devDependencies": {
     "azure-functions-core-tools": "^4.0.6821"

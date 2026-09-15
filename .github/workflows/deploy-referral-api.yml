@@ -58,6 +58,16 @@ jobs:
       - name: Validate deployment configuration
         shell: bash
         run: |
+          if [ -z "$AZURE_FUNCTIONAPP_NAME" ]; then
+            echo "Missing repository variable: AZURE_FUNCTIONAPP_NAME"
+            exit 1
+          fi
+
+          if [ -n "$AZURE_FUNCTIONAPP_PUBLISH_PROFILE" ]; then
+            echo "Using Azure Function publish-profile authentication fallback."
+            exit 0
+          fi
+
           missing=0
           for name in AZURE_FUNCTIONAPP_NAME AZURE_CLIENT_ID AZURE_TENANT_ID AZURE_SUBSCRIPTION_ID; do
             if [ -z "${!name}" ]; then
@@ -66,8 +76,10 @@ jobs:
             fi
           done
           if [ "$missing" -ne 0 ]; then
+            echo "Neither a publish profile nor a complete OIDC configuration is available."
             exit 1
           fi
+          echo "Using Azure OIDC authentication."
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -79,6 +91,7 @@ jobs:
         run: npm install --omit=dev --no-audit --no-fund
 
       - name: Log in to Azure with OIDC
+        if: ${{ env.AZURE_FUNCTIONAPP_PUBLISH_PROFILE == '' }}
         uses: azure/login@v3
         with:
           client-id: ${{ env.AZURE_CLIENT_ID }}
