@@ -30,6 +30,15 @@
   ]);
 
   const MODULE_FILES = new Set(MODULES.filter((item) => !["index.html", "referrals.html"].includes(item.href)).map((item) => item.href));
+  const PROFILE_MODULE_FILES = new Set([
+    "easy-invoice.html",
+    "easy-quote.html",
+    "easy-purchase-order.html",
+    "easy-receipt.html",
+    "easy-sales-order.html",
+    "easy-statement.html",
+    "easy-job-card.html"
+  ]);
   const SHARED_STYLES = Object.freeze([
     "assets/css/easyfile-brand-tokens.css",
     "assets/css/easyfile-site.css",
@@ -316,6 +325,12 @@
     installHomeModuleCards();
 
     if (MODULE_FILES.has(current)) ensureScript("assets/js/easyfile-module-actions.js", "easyfileModuleActions");
+    if (PROFILE_MODULE_FILES.has(current)) {
+      const profileScript = ensureScript("assets/js/easyfile-company-profile.js", "easyfileCompanyProfile");
+      const loadProfileIntegration = () => ensureScript("assets/js/easyfile-company-profile-integration.js", "easyfileCompanyProfileIntegration");
+      if (window.EasyFileCompanyProfile) loadProfileIntegration();
+      else profileScript.addEventListener("load", loadProfileIntegration, { once: true });
+    }
     if (referralEnabledPage) {
       ensureScript("assets/js/easyfile-referral-compat.js", "easyfileReferralCompat");
       const configScript = ensureScript("assets/js/easyfile-referral-config.js", "easyfileReferralConfig");
