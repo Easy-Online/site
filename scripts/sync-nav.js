@@ -14,8 +14,6 @@
     { name: "Company Profile", href: "easy-company-profile.html", icon: "fa-building", group: "General", description: "Manage shared company identity, branding and document defaults", landing: true },
     { name: "Landing Page", href: "easy-landing-page.html", icon: "fa-bullhorn", group: "General", description: "Build and export conversion-focused campaign landing pages", landing: true },
     { name: "Save", href: "easy-save.html", icon: "fa-cloud-arrow-up", group: "General", description: "Save local files or website links to browser or connected cloud storage", landing: true },
-    { name: "Add-ons", href: "easy-addons.html", icon: "fa-puzzle-piece", group: "General", description: "Explore EasyFile add-ons, extensions and connected capabilities", landing: true },
-
     { name: "Quote", href: "easy-quote.html", icon: "fa-file-lines", group: "Documents", description: "Create customer quotations" },
     { name: "Invoice", href: "easy-invoice.html", icon: "fa-file-invoice-dollar", group: "Documents", description: "Create and manage invoices" },
     { name: "Purchase Order", href: "easy-purchase-order.html", icon: "fa-cart-shopping", group: "Documents", description: "Create supplier purchase orders" },
