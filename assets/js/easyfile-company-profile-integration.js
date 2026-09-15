@@ -68,7 +68,7 @@
       anchor: "companyName",
       logoMode: "lexical"
     },
-    "easy-quote.html": { brandedHeader: true, target: ".print-container", logoMode: "quote" },
+    "easy-quote.html": { brandedHeader: true, target: ".print-container", logoMode: "none" },
     "easy-receipt.html": { brandedHeader: true, target: "main .bg-white", logoMode: "none" },
     "easy-sales-order.html": { brandedHeader: true, target: ".print-container", logoMode: "none" }
   };
@@ -139,9 +139,9 @@
         if (typeof state !== "undefined" && state && state.company) {
           if (overwrite || !state.company.logoDataUrl) state.company.logoDataUrl = profile.logo;
           if (typeof renderLogo === "function") renderLogo();
-        } else {
-          setImage(el("logoPreview"), profile.logo);
         }
+        if (overwrite || !el("logoPreview")?.getAttribute("src")) setImage(el("logoPreview"), profile.logo);
+        if (overwrite || !el("logoPrint")?.getAttribute("src")) setImage(el("logoPrint"), profile.logo);
       } else if (config.logoMode === "lexical") {
         try {
           if (overwrite || !companyLogoDataUrl) companyLogoDataUrl = profile.logo;
@@ -150,9 +150,6 @@
         if (preview && (overwrite || !preview.querySelector("img"))) {
           preview.innerHTML = `<img src="${profile.logo}" alt="Company logo" style="max-height:3.5rem;max-width:100%;object-fit:contain">`;
         }
-      } else if (config.logoMode === "quote") {
-        const image = el("companyLogo");
-        if (image && (overwrite || !image.getAttribute("src"))) image.src = profile.logo;
       }
     } catch (error) {
       console.warn("EasyFile could not apply the shared company logo to this module.", error);
@@ -188,18 +185,12 @@
     if (!config.brandedHeader) return;
     const target = document.querySelector(config.target);
     if (!target) return;
-    let header = target.querySelector(":scope > [data-easyfile-profile-header]");
-    if (!header) {
-      const wrap = document.createElement("div");
-      wrap.innerHTML = profileHeaderMarkup(profile).trim();
-      header = wrap.firstElementChild;
-      target.insertBefore(header, target.firstChild);
-    } else {
-      const wrap = document.createElement("div");
-      wrap.innerHTML = profileHeaderMarkup(profile).trim();
-      header.replaceWith(wrap.firstElementChild);
-    }
-    if (current === "easy-quote.html") applyLogo(profile, false);
+    const wrap = document.createElement("div");
+    wrap.innerHTML = profileHeaderMarkup(profile).trim();
+    const replacement = wrap.firstElementChild;
+    const header = target.querySelector(":scope > [data-easyfile-profile-header]");
+    if (header) header.replaceWith(replacement);
+    else target.insertBefore(replacement, target.firstChild);
   }
 
   function collectModuleCompany(profile) {
@@ -221,9 +212,9 @@
       const field = el(config.anchor);
       const card = field?.closest("section, .card, .bg-white");
       const heading = card?.querySelector("h2");
-      if (heading) return heading.parentElement || heading;
+      if (heading) return heading;
     }
-    return document.querySelector("main > header") || document.querySelector("main h1")?.parentElement || document.querySelector("main");
+    return document.querySelector("main > h1") || document.querySelector("main");
   }
 
   function addProfileToolbar() {
@@ -243,9 +234,13 @@
       <a href="easy-company-profile.html" style="border:1px solid #bfdbfe;background:#fff;color:#1d4ed8;border-radius:.55rem;padding:.4rem .58rem;font-weight:900;text-decoration:none">Manage profile</a>`;
 
     if (anchor.matches?.("h1,h2")) anchor.insertAdjacentElement("afterend", bar);
-    else anchor.appendChild(bar);
+    else anchor.insertBefore(bar, anchor.firstChild);
 
     bar.querySelector("[data-profile-use]")?.addEventListener("click", () => {
+      if (!PROFILE.hasProfile()) {
+        showStatus("Create a company profile first", true);
+        return;
+      }
       const profile = PROFILE.load();
       applyProfile(profile, true);
       showStatus("Profile applied", false);
@@ -277,6 +272,7 @@
   }
 
   function refreshFromStorage() {
+    addProfileToolbar();
     const profile = PROFILE.load();
     if (!PROFILE.hasProfile()) {
       showStatus("No shared profile saved", true);
@@ -296,6 +292,7 @@
     }
 
     window.addEventListener(PROFILE.EVENT_NAME, (event) => {
+      addProfileToolbar();
       applyProfile(event.detail?.profile || PROFILE.load(), false);
       showStatus("Profile refreshed", false);
     });
@@ -305,6 +302,7 @@
 
     /* Re-apply after legacy modules restore their own drafts on window load. */
     window.addEventListener("load", () => setTimeout(refreshFromStorage, 50), { once: true });
+    setTimeout(refreshFromStorage, 120);
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot, { once: true });
