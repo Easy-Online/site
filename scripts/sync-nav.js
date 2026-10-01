@@ -287,16 +287,18 @@
         const haystack = `${item.name} ${item.group} ${item.description}`.toLowerCase();
         if (query && !haystack.includes(query)) return;
         if (grid.querySelector(`a[href="${item.href}"]`)) return;
-        const article = document.createElement("article");
-        article.className = "module-card";
-        article.dataset.easyfileDynamicModule = item.href;
-        article.innerHTML = `
+        const card = document.createElement("a");
+        card.className = "module-card";
+        card.href = item.href;
+        card.setAttribute("aria-label", `Open Easy ${item.name}`);
+        card.dataset.easyfileDynamicModule = item.href;
+        card.innerHTML = `
           <div class="module-card-icon"><i class="fa-solid ${item.icon}" aria-hidden="true"></i></div>
           <h3>Easy ${escapeHtml(item.name)}</h3>
           <p>${escapeHtml(item.description)}</p>
           <div class="module-tags"><span class="module-tag">documents</span><span class="module-tag">shared</span></div>
-          <a class="module-card-link" href="${item.href}">Open module <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>`;
-        grid.appendChild(article);
+          <span class="module-card-link" aria-hidden="true">Open module <i class="fa-solid fa-arrow-right"></i></span>`;
+        grid.appendChild(card);
       });
       const count = document.getElementById("moduleResultCount");
       if (count) count.textContent = `${grid.children.length} modules`;
