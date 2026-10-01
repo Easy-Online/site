@@ -2,36 +2,512 @@
 <html lang="en-ZA">
 <head>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9270041066336676" crossorigin="anonymous"></script>
-  <!-- NAV_SYNC: scripts/sync-nav.js -->
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Easy Quote | Easy Suite</title>
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Easy Quote | EasyFile</title>
+  <meta name="description" content="Responsive quotation generator with VAT, discounts, local draft storage and print/PDF export.">
+  <meta name="theme-color" content="#061a4d">
+  <meta name="color-scheme" content="light dark">
 
-  <!-- Favicon -->
-  
-  
-<meta name="description" content="Professional quotation generator with VAT, discounts and PDF export.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/easyfile-brand-tokens.css">
+  <link rel="stylesheet" href="assets/css/easyfile-site.css">
+  <link rel="stylesheet" href="assets/css/easyfile-footer.css">
+  <link rel="stylesheet" href="assets/css/easyfile-navigation.css">
+  <link rel="stylesheet" href="assets/css/easy-print.css">
 
-  <!-- Favicon --><!-- Tailwind -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <script>
+    (function () {
+      try {
+        const stored = localStorage.getItem("easyfile:theme") || localStorage.getItem("easySuite.theme");
+        const dark = stored ? stored === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.dataset.theme = dark ? "dark" : "light";
+        document.documentElement.classList.toggle("dark", dark);
+      } catch (_) {}
+    })();
+  </script>
 
   <style>
+    :root {
+      --quote-card: #ffffff;
+      --quote-page: #eef4fb;
+      --quote-text: #0f172a;
+      --quote-muted: #475569;
+      --quote-subtle: #64748b;
+      --quote-border: #cbd5e1;
+      --quote-border-soft: #dbe4f0;
+      --quote-blue: #1d4ed8;
+      --quote-blue-strong: #1e40af;
+      --quote-blue-soft: #eff6ff;
+      --quote-green: #15803d;
+      --quote-danger: #b91c1c;
+      --quote-danger-soft: #fef2f2;
+      --quote-input: #ffffff;
+      --quote-total-bg: #f8fafc;
+      --quote-shadow: 0 18px 45px rgba(15,23,42,.10);
+    }
+
+    html[data-theme="dark"] {
+      --quote-card: #0f172a;
+      --quote-page: #07101f;
+      --quote-text: #f8fafc;
+      --quote-muted: #d5deea;
+      --quote-subtle: #a8b6c9;
+      --quote-border: #475569;
+      --quote-border-soft: #334155;
+      --quote-blue: #60a5fa;
+      --quote-blue-strong: #93c5fd;
+      --quote-blue-soft: #172554;
+      --quote-green: #4ade80;
+      --quote-danger: #fca5a5;
+      --quote-danger-soft: #3b1117;
+      --quote-input: #111c31;
+      --quote-total-bg: #111c31;
+      --quote-shadow: 0 24px 55px rgba(0,0,0,.34);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body.easyfile-app { background: var(--quote-page); color: var(--quote-text); }
+    button, input, select, textarea { font: inherit; }
+    button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+
+    .quote-page-header {
+      border-bottom: 1px solid var(--quote-border-soft);
+      background: color-mix(in srgb, var(--quote-card) 94%, transparent);
+      box-shadow: 0 8px 24px rgba(15,23,42,.05);
+      backdrop-filter: blur(14px);
+    }
+
+    .quote-header-shell {
+      width: min(100% - 2rem, 80rem);
+      min-height: 5.25rem;
+      margin-inline: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: .9rem 0;
+    }
+
+    .quote-header-title { display: flex; align-items: center; gap: .8rem; min-width: 0; }
+    .quote-header-icon {
+      width: 2.9rem;
+      height: 2.9rem;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border-radius: .9rem;
+      background: #1d4ed8;
+      color: #fff;
+      font-weight: 900;
+    }
+    .quote-header-copy h1 { margin: 0; color: var(--quote-text); font-size: 1.3rem; font-weight: 900; letter-spacing: -.025em; }
+    .quote-header-copy p { margin: .2rem 0 0; color: var(--quote-muted); font-size: .82rem; font-weight: 650; }
+    .quote-dashboard-link {
+      min-height: 2.75rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .45rem;
+      border: 1px solid var(--quote-border);
+      border-radius: .75rem;
+      padding: .65rem .9rem;
+      background: var(--quote-card);
+      color: var(--quote-text);
+      font-size: .86rem;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .quote-shell {
+      width: min(100% - 2rem, 80rem);
+      margin: 1.4rem auto 3rem;
+    }
+
+    .quote-card {
+      overflow: hidden;
+      border: 1px solid var(--quote-border-soft);
+      border-radius: 1.25rem;
+      background: var(--quote-card);
+      box-shadow: var(--quote-shadow);
+    }
+
+    .quote-document { padding: clamp(1rem, 2.5vw, 2rem); }
+    .quote-document-head {
+      display: grid;
+      grid-template-columns: minmax(0,1fr) minmax(16rem,22rem);
+      gap: 1.5rem;
+      align-items: start;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--quote-border-soft);
+    }
+
+    .quote-brand-block h2 { margin: .7rem 0 .2rem; color: var(--quote-text); font-size: clamp(1.8rem, 4vw, 2.4rem); font-weight: 900; letter-spacing: -.035em; }
+    .quote-brand-block p { margin: 0; color: var(--quote-muted); font-size: .94rem; }
+
+    .logo-controls { display: flex; flex-wrap: wrap; align-items: center; gap: .7rem; }
+    #companyLogo {
+      display: none;
+      max-width: 12rem;
+      max-height: 4.5rem;
+      object-fit: contain;
+      object-position: left center;
+    }
+    #companyLogo.has-logo { display: block; }
+    .file-label {
+      min-height: 2.75rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .45rem;
+      border: 1px solid var(--quote-border);
+      border-radius: .7rem;
+      padding: .6rem .8rem;
+      background: var(--quote-input);
+      color: var(--quote-text);
+      cursor: pointer;
+      font-size: .82rem;
+      font-weight: 800;
+    }
+    #logoUpload { position: absolute; inline-size: 1px; block-size: 1px; opacity: 0; pointer-events: none; }
+
+    .quote-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .8rem;
+      border: 1px solid var(--quote-border-soft);
+      border-radius: 1rem;
+      padding: 1rem;
+      background: var(--quote-total-bg);
+    }
+    .field { display: grid; gap: .38rem; min-width: 0; }
+    .field-full { grid-column: 1 / -1; }
+    .field label, .field-label {
+      color: var(--quote-muted);
+      font-size: .74rem;
+      font-weight: 850;
+      letter-spacing: .02em;
+    }
+    .quote-number {
+      min-height: 2.8rem;
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--quote-border);
+      border-radius: .68rem;
+      padding: .6rem .75rem;
+      background: var(--quote-input);
+      color: var(--quote-blue-strong);
+      font-weight: 900;
+      word-break: break-word;
+    }
+
+    .quote-control {
+      width: 100%;
+      min-height: 2.8rem;
+      border: 1px solid var(--quote-border) !important;
+      border-radius: .68rem !important;
+      padding: .62rem .75rem !important;
+      background: var(--quote-input) !important;
+      color: var(--quote-text) !important;
+      line-height: 1.25;
+    }
+    textarea.quote-control { min-height: 8rem; resize: vertical; }
+    .quote-control::placeholder { color: var(--quote-subtle); opacity: 1; }
+    .quote-control:focus {
+      border-color: var(--quote-blue) !important;
+      outline: 3px solid color-mix(in srgb, var(--quote-blue) 23%, transparent) !important;
+      outline-offset: 1px;
+    }
+
+    .quote-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+    .section-card {
+      border: 1px solid var(--quote-border-soft);
+      border-radius: 1rem;
+      padding: 1rem;
+      background: var(--quote-card);
+    }
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      margin: 0 0 .85rem;
+      color: var(--quote-text);
+      font-size: .93rem;
+      font-weight: 900;
+    }
+    .section-title i { color: var(--quote-blue); }
+
+    .stack { display: grid; gap: .7rem; }
+
+    .items-section { margin-top: 1.5rem; }
+    .items-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .8rem;
+      margin-bottom: .75rem;
+    }
+    .items-toolbar h3 { margin: 0; color: var(--quote-text); font-size: 1rem; font-weight: 900; }
+    .items-help { margin: .2rem 0 0; color: var(--quote-subtle); font-size: .75rem; }
+
+    .quote-button {
+      min-height: 2.75rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .48rem;
+      border: 1px solid transparent;
+      border-radius: .72rem;
+      padding: .65rem .9rem;
+      cursor: pointer;
+      font-size: .84rem;
+      font-weight: 850;
+      line-height: 1.1;
+      text-decoration: none;
+      transition: transform .15s ease, background-color .15s ease, border-color .15s ease;
+    }
+    .quote-button:hover { transform: translateY(-1px); }
+    .quote-button-primary { background: #1d4ed8; color: #fff; }
+    .quote-button-primary:hover { background: #1e40af; }
+    .quote-button-success { background: #15803d; color: #fff; }
+    .quote-button-success:hover { background: #166534; }
+    .quote-button-secondary { border-color: var(--quote-border); background: var(--quote-input); color: var(--quote-text); }
+    .quote-button-danger { border-color: color-mix(in srgb, var(--quote-danger) 35%, transparent); background: var(--quote-danger-soft); color: var(--quote-danger); }
+
+    .items-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--quote-border-soft);
+      border-radius: 1rem;
+      -webkit-overflow-scrolling: touch;
+    }
+    .items-table { width: 100%; border-collapse: collapse; min-width: 48rem; }
+    .items-table th {
+      padding: .72rem;
+      border-bottom: 1px solid var(--quote-border-soft);
+      background: var(--quote-total-bg);
+      color: var(--quote-muted);
+      font-size: .73rem;
+      font-weight: 900;
+      text-align: left;
+      text-transform: uppercase;
+      letter-spacing: .035em;
+    }
+    .items-table td { padding: .55rem; border-top: 1px solid var(--quote-border-soft); vertical-align: middle; }
+    .items-table tbody tr:first-child td { border-top: 0; }
+    .items-table .quote-control { min-height: 2.55rem; padding: .5rem .58rem !important; }
+    .line-total { min-width: 6.5rem; color: var(--quote-text); font-weight: 900; text-align: right; white-space: nowrap; }
+    .remove-item { width: 2.65rem; padding: .5rem; }
+
+    .totals-row {
+      display: grid;
+      grid-template-columns: minmax(0,1fr) minmax(18rem,25rem);
+      gap: 1.25rem;
+      align-items: start;
+      margin-top: 1.5rem;
+    }
+    .draft-note {
+      border: 1px solid var(--quote-border-soft);
+      border-radius: 1rem;
+      padding: 1rem;
+      background: var(--quote-blue-soft);
+      color: var(--quote-muted);
+      font-size: .82rem;
+      line-height: 1.55;
+    }
+    .draft-note strong { color: var(--quote-text); }
+    .totals-card {
+      border: 1px solid var(--quote-border-soft);
+      border-radius: 1rem;
+      padding: 1rem;
+      background: var(--quote-total-bg);
+    }
+    .total-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      min-height: 2.4rem;
+      color: var(--quote-muted);
+      font-size: .9rem;
+    }
+    .total-line strong { color: var(--quote-text); }
+    .vat-control { display: inline-flex; align-items: center; gap: .45rem; }
+    #vatRate { width: 5rem; min-height: 2.4rem; }
+    .grand-total {
+      margin-top: .55rem;
+      padding-top: .8rem;
+      border-top: 2px solid var(--quote-border);
+      color: var(--quote-text);
+      font-size: 1.12rem;
+      font-weight: 900;
+    }
+
+    .quote-actions {
+      position: sticky;
+      bottom: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+      margin: 1.25rem -1rem -1rem;
+      border-top: 1px solid var(--quote-border-soft);
+      padding: .85rem 1rem calc(.85rem + env(safe-area-inset-bottom));
+      background: color-mix(in srgb, var(--quote-card) 94%, transparent);
+      backdrop-filter: blur(14px);
+    }
+    .quote-actions-group { display: flex; flex-wrap: wrap; gap: .55rem; }
+    .save-status {
+      min-height: 1.2rem;
+      margin: .65rem 0 0;
+      color: var(--quote-subtle);
+      font-size: .75rem;
+      font-weight: 700;
+    }
+
+    .quote-toast {
+      position: fixed;
+      right: 1rem;
+      bottom: calc(1rem + env(safe-area-inset-bottom));
+      z-index: 9999;
+      max-width: min(26rem, calc(100vw - 2rem));
+      border-radius: .8rem;
+      padding: .8rem 1rem;
+      background: #0f172a;
+      color: #fff;
+      box-shadow: 0 18px 45px rgba(15,23,42,.28);
+      font-size: .85rem;
+      font-weight: 750;
+    }
+
+    @media (max-width: 760px) {
+      .quote-header-shell { width: min(100% - 1rem, 80rem); min-height: 4.7rem; padding: .7rem 0; }
+      .quote-header-copy p { display: none; }
+      .quote-dashboard-link span { display: none; }
+
+      .quote-shell { width: min(100% - .75rem, 80rem); margin-top: .75rem; }
+      .quote-card { border-radius: .9rem; }
+      .quote-document { padding: .8rem; }
+
+      .quote-document-head { grid-template-columns: 1fr; gap: 1rem; }
+      .quote-meta { grid-template-columns: 1fr 1fr; padding: .8rem; }
+      .quote-info-grid { grid-template-columns: 1fr; gap: .8rem; margin-top: 1rem; }
+      .section-card { padding: .85rem; }
+
+      .items-section { margin-top: 1rem; }
+      .items-toolbar { align-items: flex-start; }
+      .items-toolbar .quote-button { flex: 0 0 auto; }
+
+      .items-table-wrap { overflow: visible; border: 0; border-radius: 0; }
+      .items-table { min-width: 0; display: block; }
+      .items-table thead { display: none; }
+      .items-table tbody { display: grid; gap: .8rem; }
+      .items-table tr {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: .65rem;
+        border: 1px solid var(--quote-border-soft);
+        border-radius: .9rem;
+        padding: .8rem;
+        background: var(--quote-card);
+        box-shadow: 0 8px 20px rgba(15,23,42,.05);
+      }
+      .items-table td {
+        display: grid;
+        gap: .3rem;
+        border: 0 !important;
+        padding: 0;
+        min-width: 0;
+      }
+      .items-table td::before {
+        content: attr(data-label);
+        color: var(--quote-muted);
+        font-size: .68rem;
+        font-weight: 900;
+        letter-spacing: .035em;
+        text-transform: uppercase;
+      }
+      .items-table td[data-field="description"] { grid-column: 1 / -1; }
+      .items-table td[data-field="total"] { grid-column: 1 / 2; align-content: end; }
+      .items-table td[data-field="remove"] { grid-column: 2 / 3; align-content: end; justify-items: end; }
+      .line-total {
+        min-height: 2.55rem;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        border: 1px solid var(--quote-border-soft);
+        border-radius: .68rem;
+        padding: .5rem .65rem;
+        background: var(--quote-total-bg);
+        text-align: left;
+      }
+      .remove-item { width: auto; min-width: 7rem; }
+
+      .totals-row { grid-template-columns: 1fr; gap: .8rem; margin-top: 1rem; }
+      .draft-note { order: 2; }
+      .totals-card { order: 1; }
+
+      .quote-actions {
+        margin: 1rem -.8rem -.8rem;
+        align-items: stretch;
+        flex-direction: column-reverse;
+      }
+      .quote-actions-group { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+      .quote-actions > .quote-button { width: 100%; }
+      .quote-actions .quote-button { min-height: 3rem; }
+    }
+
+    @media (max-width: 430px) {
+      .quote-meta { grid-template-columns: 1fr; }
+      .field-full { grid-column: auto; }
+      .items-table tr { grid-template-columns: 1fr; }
+      .items-table td[data-field="description"],
+      .items-table td[data-field="total"],
+      .items-table td[data-field="remove"] { grid-column: 1; }
+      .items-table td[data-field="remove"] { justify-items: stretch; }
+      .remove-item { width: 100%; }
+      .quote-actions-group { grid-template-columns: 1fr; }
+      .logo-controls { align-items: flex-start; flex-direction: column; }
+    }
+
     @media print {
-      nav, .no-print, button {
-        display: none !important;
+      .easyfile-nav, .quote-page-header, .no-print, .quote-actions, .quote-toast { display: none !important; }
+      body.easyfile-app { background: #fff !important; color: #111827 !important; }
+      .quote-shell { width: 100%; margin: 0; }
+      .quote-card { border: 0; border-radius: 0; box-shadow: none; }
+      .quote-document { padding: 0; }
+      .quote-document-head, .quote-info-grid, .totals-row { break-inside: avoid; }
+      .quote-control {
+        border-color: transparent !important;
+        background: transparent !important;
+        color: #111827 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
       }
-      body {
-        background: white;
-      }
-      .print-container {
+      .section-card, .quote-meta, .totals-card, .draft-note {
+        background: #fff !important;
+        color: #111827 !important;
         box-shadow: none !important;
-        border: none !important;
       }
+      .items-table-wrap { overflow: visible; }
+      .items-table { min-width: 100%; }
+      #companyLogo { max-height: 3.6rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
     }
   </style>
-  <link rel="stylesheet" href="assets/css/easy-print.css" />
-  <script defer src="assets/js/easy-suite-core.js"></script>
+
   <!-- EASYFILE_FAVICONS -->
   <link rel="icon" href="logo-b.png" type="image/png">
   <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
@@ -39,246 +515,419 @@
   <link rel="apple-touch-icon" href="logo-b.png">
 </head>
 
-<body class="bg-gray-100 min-h-screen">
+<body class="easyfile-app">
 <!-- NAV_SYNC -->
 <div class="easyfile-nav no-print">
   <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
 </div>
-<!-- Easy Suite mounts (injected) -->
-  <header class="bg-white border-b border-gray-200 no-print">
-  <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row gap-4 sm:gap-0 items-start sm:items-center justify-between">
-    <div class="flex items-center gap-3">
-      <div class="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black">Q</div>
-      <div>
-        <h1 class="text-2xl font-extrabold text-blue-700">EasyQUOTE</h1>
-        <p class="text-sm text-gray-500">Feature-Rich Quote Generator</p>
+
+<header class="quote-page-header no-print">
+  <div class="quote-header-shell">
+    <div class="quote-header-title">
+      <div class="quote-header-icon" aria-hidden="true">Q</div>
+      <div class="quote-header-copy">
+        <h1>Easy Quote</h1>
+        <p>Responsive quote builder for desktop, tablet and mobile</p>
       </div>
     </div>
+    <a class="quote-dashboard-link" href="index.html#modules" title="Back to EasyFile modules">
+      <i class="fa-solid fa-table-cells-large" aria-hidden="true"></i><span>Modules</span>
+    </a>
+  </div>
+</header>
 
-    <div class="flex flex-wrap items-center gap-2">
-      <a href="index.html" class="btn btn-primary" title="Back to Dashboard">
-        <i class="fa-solid fa-gauge"></i> Dashboard
-      </a>
+<main class="quote-shell easyfile-main">
+  <section class="quote-card print-container" aria-labelledby="quoteDocumentTitle">
+    <div class="quote-document">
+      <div class="quote-document-head">
+        <div class="quote-brand-block">
+          <div class="logo-controls no-print">
+            <label class="file-label" for="logoUpload"><i class="fa-solid fa-image" aria-hidden="true"></i> Add company logo</label>
+            <input id="logoUpload" type="file" accept="image/*">
+            <button id="removeLogo" class="quote-button quote-button-secondary" type="button" hidden><i class="fa-solid fa-trash" aria-hidden="true"></i> Remove logo</button>
+          </div>
+          <img id="companyLogo" alt="Company logo">
+          <h2 id="quoteDocumentTitle">Quotation</h2>
+          <p>Professional customer quotation</p>
+        </div>
+
+        <div class="quote-meta">
+          <div class="field field-full">
+            <span class="field-label">Quote number</span>
+            <div id="quoteNumber" class="quote-number" aria-live="polite"></div>
+          </div>
+          <div class="field">
+            <label for="quoteDate">Date</label>
+            <input id="quoteDate" class="quote-control" type="date">
+          </div>
+          <div class="field">
+            <label for="currency">Currency</label>
+            <select id="currency" class="quote-control">
+              <option value="R">ZAR (R)</option>
+              <option value="$">USD ($)</option>
+              <option value="€">EUR (€)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="quote-info-grid">
+        <section class="section-card" aria-labelledby="clientInfoTitle">
+          <h3 id="clientInfoTitle" class="section-title"><i class="fa-solid fa-user-tie" aria-hidden="true"></i> Client information</h3>
+          <div class="stack">
+            <div class="field"><label for="clientName">Client name</label><input id="clientName" class="quote-control" type="text" autocomplete="name" placeholder="Client name"></div>
+            <div class="field"><label for="clientCompany">Company</label><input id="clientCompany" class="quote-control" type="text" autocomplete="organization" placeholder="Company name"></div>
+            <div class="field"><label for="clientEmail">Email</label><input id="clientEmail" class="quote-control" type="email" autocomplete="email" inputmode="email" placeholder="name@company.com"></div>
+            <div class="field"><label for="clientPhone">Phone</label><input id="clientPhone" class="quote-control" type="tel" autocomplete="tel" inputmode="tel" placeholder="+27 ..."></div>
+          </div>
+        </section>
+
+        <section class="section-card" aria-labelledby="termsTitle">
+          <h3 id="termsTitle" class="section-title"><i class="fa-solid fa-file-signature" aria-hidden="true"></i> Terms &amp; notes</h3>
+          <div class="field">
+            <label for="terms">Quote terms</label>
+            <textarea id="terms" class="quote-control" placeholder="Payment terms, quote validity, delivery conditions or other notes..."></textarea>
+          </div>
+        </section>
+      </div>
+
+      <section class="items-section" aria-labelledby="itemsTitle">
+        <div class="items-toolbar">
+          <div>
+            <h3 id="itemsTitle">Quote items</h3>
+            <p class="items-help">On mobile, each item becomes a touch-friendly editable card.</p>
+          </div>
+          <button id="addItem" class="quote-button quote-button-primary no-print" type="button"><i class="fa-solid fa-plus" aria-hidden="true"></i> Add item</button>
+        </div>
+
+        <div class="items-table-wrap">
+          <table class="items-table">
+            <thead>
+              <tr>
+                <th scope="col">Description</th>
+                <th scope="col">Qty</th>
+                <th scope="col">Unit price</th>
+                <th scope="col">Discount %</th>
+                <th scope="col">Total</th>
+                <th scope="col" class="no-print"><span class="sr-only">Remove</span></th>
+              </tr>
+            </thead>
+            <tbody id="itemsBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="totals-row">
+        <aside class="draft-note no-print">
+          <strong>Draft storage:</strong> quote data is saved in this browser as structured JSON. You can switch between desktop and mobile layouts without losing event handlers or form state.
+          <p id="saveStatus" class="save-status" aria-live="polite"></p>
+        </aside>
+
+        <section class="totals-card" aria-label="Quote totals">
+          <div class="total-line"><span>Subtotal</span><strong id="subtotal">R 0.00</strong></div>
+          <div class="total-line">
+            <span class="vat-control"><label for="vatRate">VAT %</label><input id="vatRate" class="quote-control" type="number" value="15" min="0" max="100" step="0.01" inputmode="decimal"></span>
+            <strong id="vat">R 0.00</strong>
+          </div>
+          <div class="total-line grand-total"><span>Total</span><span id="grandTotal">R 0.00</span></div>
+        </section>
+      </div>
+
+      <div class="quote-actions no-print">
+        <button id="resetQuote" class="quote-button quote-button-danger" type="button"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Reset quote</button>
+        <div class="quote-actions-group">
+          <button id="saveDraft" class="quote-button quote-button-primary" type="button"><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> Save draft</button>
+          <button id="printQuote" class="quote-button quote-button-success" type="button"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> Print / Save PDF</button>
+        </div>
+      </div>
     </div>
-  </div>
-</header><!-- HEADER:START --><!-- HEADER:END --><!-- NAVIGATION -->
-<main class="container mx-auto px-4 py-8">
-
-<div class="bg-white p-8 rounded shadow print-container">
-
-<!-- HEADER -->
-<div class="flex flex-col md:flex-row justify-between items-start mb-6">
-
-  <div>
-    <input type="file" id="logoUpload" class="no-print mb-2">
-    <img id="companyLogo" class="h-16 mb-2" />
-    <h1 class="text-3xl font-bold text-gray-800">Quotation</h1>
-    <p class="text-gray-600">Professional Quote Document</p>
-  </div>
-
-  <div class="text-right mt-4 md:mt-0">
-    <p class="font-semibold">Quote No:</p>
-    <p id="quoteNumber" class="text-lg font-bold text-blue-600"></p>
-
-    <p class="mt-2 font-semibold">Date:</p>
-    <input type="date" id="quoteDate" class="border px-2 py-1 rounded">
-
-    <p class="mt-2 font-semibold">Currency:</p>
-    <select id="currency" onchange="calculate()" class="border px-2 py-1 rounded">
-      <option value="R">ZAR (R)</option>
-      <option value="$">USD ($)</option>
-      <option value="â‚¬">EUR (â‚¬)</option>
-    </select>
-  </div>
-</div>
-
-<!-- CLIENT SECTION -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-  <div>
-    <h2 class="font-semibold mb-2">Client Information</h2>
-    <input id="clientName" type="text" placeholder="Client Name" class="w-full border p-2 mb-2 rounded">
-    <input id="clientCompany" type="text" placeholder="Company Name" class="w-full border p-2 mb-2 rounded">
-    <input id="clientEmail" type="email" placeholder="Email" class="w-full border p-2 mb-2 rounded">
-    <input id="clientPhone" type="text" placeholder="Phone" class="w-full border p-2 rounded">
-  </div>
-
-  <div>
-    <h2 class="font-semibold mb-2">Terms & Notes</h2>
-    <textarea id="terms" placeholder="Payment terms, validity, conditions..."
-              class="w-full border p-2 rounded h-32"></textarea>
-  </div>
-</div>
-
-<!-- ITEMS TABLE -->
-<div class="overflow-x-auto">
-<table class="w-full border text-sm">
-<thead class="bg-gray-200">
-<tr>
-  <th class="p-2 border">Description</th>
-  <th class="p-2 border w-20">Qty</th>
-  <th class="p-2 border w-32">Unit</th>
-  <th class="p-2 border w-24">Disc %</th>
-  <th class="p-2 border w-32">Total</th>
-  <th class="p-2 border no-print"></th>
-</tr>
-</thead>
-<tbody id="itemsBody"></tbody>
-</table>
-</div>
-
-<div class="mt-4 no-print">
-  <button onclick="addRow()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-    + Add Item
-  </button>
-</div>
-
-<!-- TOTALS -->
-<div class="flex justify-end mt-8">
-<div class="w-full md:w-1/3 text-sm">
-
-<div class="flex justify-between mb-2">
-  <span>Subtotal:</span>
-  <span id="subtotal">R 0.00</span>
-</div>
-
-<div class="flex justify-between mb-2">
-  <span>
-    VAT %
-    <input type="number" id="vatRate" value="15" min="0" class="w-16 border px-1 rounded" onchange="calculate()">
-  </span>
-  <span id="vat">R 0.00</span>
-</div>
-
-<div class="flex justify-between font-bold text-lg border-t pt-2">
-  <span>Total:</span>
-  <span id="grandTotal">R 0.00</span>
-</div>
-
-</div>
-</div>
-
-<!-- ACTIONS -->
-<div class="mt-8 flex justify-between no-print">
-  <button onclick="resetQuote()" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">
-    Reset
-  </button>
-
-  <div class="space-x-4">
-    <button onclick="saveDraft()" class="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700">
-      Save Draft
-    </button>
-
-    <button onclick="window.print()" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
-      Print / Save PDF
-    </button>
-  </div>
-</div>
-
-</div>
+  </section>
 </main>
 
 <script>
+(function () {
+  "use strict";
 
-function generateQuoteNumber() {
-  const now = new Date();
-  return "Q-" + now.getFullYear() +
-         String(now.getMonth()+1).padStart(2,'0') +
-         String(now.getDate()).padStart(2,'0') +
-         "-" + Math.floor(Math.random()*1000);
-}
+  const DRAFT_KEY = "easy.quote.v2";
+  const LEGACY_DRAFT_KEY = "easyQuoteDraft";
+  const LOGO_KEY = "easy.quote.logo.v1";
+  const $ = (id) => document.getElementById(id);
 
-document.getElementById("quoteNumber").textContent = generateQuoteNumber();
-document.getElementById("quoteDate").valueAsDate = new Date();
+  function todayISO() {
+    const date = new Date();
+    return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  }
 
-function addRow(description="", qty=1, unit=0, disc=0) {
-  const tbody = document.getElementById("itemsBody");
-  const row = document.createElement("tr");
+  function generateQuoteNumber() {
+    const now = new Date();
+    const random = String(Math.floor(Math.random() * 1000)).padStart(3, "0");
+    return `Q-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}-${random}`;
+  }
 
-  row.innerHTML = `
-    <td class="border p-1">
-      <input type="text" value="${description}" class="w-full p-1 border rounded desc">
-    </td>
-    <td class="border p-1">
-      <input type="number" value="${qty}" class="w-full p-1 border rounded qty" oninput="calculate()">
-    </td>
-    <td class="border p-1">
-      <input type="number" value="${unit}" class="w-full p-1 border rounded unit" oninput="calculate()">
-    </td>
-    <td class="border p-1">
-      <input type="number" value="${disc}" class="w-full p-1 border rounded disc" oninput="calculate()">
-    </td>
-    <td class="border p-1 text-right total">0.00</td>
-    <td class="border p-1 text-center no-print">
-      <button onclick="this.closest('tr').remove(); calculate();" class="text-red-600 font-bold">Ã-</button>
-    </td>
-  `;
+  function safeNumber(value, fallback = 0) {
+    const number = Number(String(value ?? "").replace(/[^0-9.-]/g, ""));
+    return Number.isFinite(number) ? number : fallback;
+  }
 
-  tbody.appendChild(row);
-  calculate();
-}
+  function clamp(value, min, max) {
+    return Math.min(max, Math.max(min, value));
+  }
 
-function calculate() {
-  let subtotal = 0;
-  const currency = document.getElementById("currency").value;
-  const vatRate = parseFloat(document.getElementById("vatRate").value) || 0;
+  function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>"']/g, (character) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+    }[character]));
+  }
 
-  document.querySelectorAll("#itemsBody tr").forEach(row => {
-    const qty = parseFloat(row.querySelector(".qty").value) || 0;
-    const unit = parseFloat(row.querySelector(".unit").value) || 0;
-    const disc = parseFloat(row.querySelector(".disc").value) || 0;
+  function toast(message) {
+    document.querySelector(".quote-toast")?.remove();
+    const node = document.createElement("div");
+    node.className = "quote-toast no-print";
+    node.setAttribute("role", "status");
+    node.textContent = message;
+    document.body.appendChild(node);
+    setTimeout(() => node.remove(), 2400);
+  }
 
-    const lineTotal = qty * unit * (1 - disc/100);
-    row.querySelector(".total").textContent = lineTotal.toFixed(2);
-    subtotal += lineTotal;
+  function setSaveStatus(message) {
+    $("saveStatus").textContent = message || "";
+  }
+
+  function itemFromRow(row) {
+    return {
+      description: row.querySelector(".desc").value.trim(),
+      qty: safeNumber(row.querySelector(".qty").value, 0),
+      unit: safeNumber(row.querySelector(".unit").value, 0),
+      discount: clamp(safeNumber(row.querySelector(".disc").value, 0), 0, 100)
+    };
+  }
+
+  function createRow(item = {}) {
+    const row = document.createElement("tr");
+    const description = escapeHtml(item.description || "");
+    const qty = safeNumber(item.qty, 1);
+    const unit = safeNumber(item.unit, 0);
+    const discount = clamp(safeNumber(item.discount, 0), 0, 100);
+
+    row.innerHTML = `
+      <td data-label="Description" data-field="description">
+        <input class="quote-control desc" type="text" value="${description}" placeholder="Product or service description" aria-label="Item description">
+      </td>
+      <td data-label="Quantity" data-field="quantity">
+        <input class="quote-control qty" type="number" value="${qty}" min="0" step="0.01" inputmode="decimal" aria-label="Quantity">
+      </td>
+      <td data-label="Unit price" data-field="unit">
+        <input class="quote-control unit" type="number" value="${unit}" min="0" step="0.01" inputmode="decimal" aria-label="Unit price">
+      </td>
+      <td data-label="Discount %" data-field="discount">
+        <input class="quote-control disc" type="number" value="${discount}" min="0" max="100" step="0.01" inputmode="decimal" aria-label="Discount percentage">
+      </td>
+      <td data-label="Line total" data-field="total"><span class="line-total">0.00</span></td>
+      <td data-label="Item action" data-field="remove" class="no-print">
+        <button class="quote-button quote-button-danger remove-item" type="button" aria-label="Remove quote item"><i class="fa-solid fa-trash" aria-hidden="true"></i><span>Remove</span></button>
+      </td>`;
+
+    row.querySelectorAll("input").forEach((input) => {
+      input.addEventListener("input", () => {
+        calculate();
+        setSaveStatus("Unsaved changes");
+      });
+    });
+
+    row.querySelector(".remove-item").addEventListener("click", () => {
+      row.remove();
+      if (!$("itemsBody").children.length) createRow();
+      calculate();
+      setSaveStatus("Unsaved changes");
+    });
+
+    $("itemsBody").appendChild(row);
+    calculate();
+    return row;
+  }
+
+  function calculate() {
+    let subtotal = 0;
+    const currency = $("currency").value;
+    const vatRate = clamp(safeNumber($("vatRate").value, 0), 0, 100);
+
+    $("itemsBody").querySelectorAll("tr").forEach((row) => {
+      const item = itemFromRow(row);
+      const lineTotal = Math.max(0, item.qty) * Math.max(0, item.unit) * (1 - item.discount / 100);
+      row.querySelector(".line-total").textContent = `${currency} ${lineTotal.toFixed(2)}`;
+      subtotal += lineTotal;
+    });
+
+    const vat = subtotal * (vatRate / 100);
+    const total = subtotal + vat;
+    $("subtotal").textContent = `${currency} ${subtotal.toFixed(2)}`;
+    $("vat").textContent = `${currency} ${vat.toFixed(2)}`;
+    $("grandTotal").textContent = `${currency} ${total.toFixed(2)}`;
+  }
+
+  function collectState() {
+    return {
+      schema: "easy.quote",
+      version: 2,
+      savedAt: new Date().toISOString(),
+      quoteNumber: $("quoteNumber").textContent.trim(),
+      quoteDate: $("quoteDate").value,
+      currency: $("currency").value,
+      vatRate: clamp(safeNumber($("vatRate").value, 15), 0, 100),
+      client: {
+        name: $("clientName").value.trim(),
+        company: $("clientCompany").value.trim(),
+        email: $("clientEmail").value.trim(),
+        phone: $("clientPhone").value.trim()
+      },
+      terms: $("terms").value,
+      items: Array.from($("itemsBody").querySelectorAll("tr")).map(itemFromRow)
+    };
+  }
+
+  function validateState(state) {
+    return state && state.schema === "easy.quote" && state.version === 2 && Array.isArray(state.items);
+  }
+
+  function saveDraft() {
+    const state = collectState();
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(state));
+    localStorage.removeItem(LEGACY_DRAFT_KEY);
+    const time = new Date(state.savedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    setSaveStatus(`Saved locally at ${time}`);
+    toast("Quote draft saved");
+  }
+
+  function restoreDraft() {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if (!raw) return false;
+    try {
+      const state = JSON.parse(raw);
+      if (!validateState(state)) return false;
+
+      $("quoteNumber").textContent = state.quoteNumber || generateQuoteNumber();
+      $("quoteDate").value = state.quoteDate || todayISO();
+      $("currency").value = ["R", "$", "€"].includes(state.currency) ? state.currency : "R";
+      $("vatRate").value = clamp(safeNumber(state.vatRate, 15), 0, 100);
+      $("clientName").value = state.client?.name || "";
+      $("clientCompany").value = state.client?.company || "";
+      $("clientEmail").value = state.client?.email || "";
+      $("clientPhone").value = state.client?.phone || "";
+      $("terms").value = state.terms || "";
+      $("itemsBody").innerHTML = "";
+      (state.items.length ? state.items : [{}]).forEach(createRow);
+      calculate();
+
+      const savedAt = state.savedAt ? new Date(state.savedAt) : null;
+      setSaveStatus(savedAt && !Number.isNaN(savedAt.getTime()) ? `Draft restored · last saved ${savedAt.toLocaleString()}` : "Draft restored");
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  function resetQuote() {
+    if (!confirm("Clear this quote and its saved draft?")) return;
+    localStorage.removeItem(DRAFT_KEY);
+    localStorage.removeItem(LEGACY_DRAFT_KEY);
+    $("quoteNumber").textContent = generateQuoteNumber();
+    $("quoteDate").value = todayISO();
+    $("currency").value = "R";
+    $("vatRate").value = "15";
+    ["clientName", "clientCompany", "clientEmail", "clientPhone", "terms"].forEach((id) => { $(id).value = ""; });
+    $("itemsBody").innerHTML = "";
+    createRow();
+    calculate();
+    setSaveStatus("New quote");
+    toast("Quote reset");
+  }
+
+  function setLogo(dataUrl) {
+    const image = $("companyLogo");
+    if (dataUrl) {
+      image.src = dataUrl;
+      image.classList.add("has-logo");
+      $("removeLogo").hidden = false;
+    } else {
+      image.removeAttribute("src");
+      image.classList.remove("has-logo");
+      $("removeLogo").hidden = true;
+    }
+  }
+
+  function loadLogo() {
+    setLogo(localStorage.getItem(LOGO_KEY) || localStorage.getItem("logo") || "");
+  }
+
+  $("addItem").addEventListener("click", () => {
+    createRow();
+    const last = $("itemsBody").lastElementChild;
+    last?.querySelector(".desc")?.focus();
+    setSaveStatus("Unsaved changes");
   });
 
-  const vat = subtotal * (vatRate/100);
-  const total = subtotal + vat;
+  $("saveDraft").addEventListener("click", saveDraft);
+  $("printQuote").addEventListener("click", () => window.print());
+  $("resetQuote").addEventListener("click", resetQuote);
 
-  document.getElementById("subtotal").textContent = currency + " " + subtotal.toFixed(2);
-  document.getElementById("vat").textContent = currency + " " + vat.toFixed(2);
-  document.getElementById("grandTotal").textContent = currency + " " + total.toFixed(2);
-}
+  ["quoteDate", "currency", "vatRate", "clientName", "clientCompany", "clientEmail", "clientPhone", "terms"].forEach((id) => {
+    $(id).addEventListener("input", () => {
+      calculate();
+      setSaveStatus("Unsaved changes");
+    });
+    $(id).addEventListener("change", () => {
+      calculate();
+      setSaveStatus("Unsaved changes");
+    });
+  });
 
-function saveDraft() {
-  const data = document.querySelector("main").innerHTML;
-  localStorage.setItem("easyQuoteDraft", data);
-  alert("Draft Saved");
-}
+  $("logoUpload").addEventListener("change", (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) return toast("Choose an image file for the logo.");
+    if (file.size > 2 * 1024 * 1024) return toast("Logo must be smaller than 2 MB.");
 
-function resetQuote() {
-  if(confirm("Clear this quote?")) {
-    localStorage.removeItem("easyQuoteDraft");
-    location.reload();
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = String(reader.result || "");
+      localStorage.setItem(LOGO_KEY, dataUrl);
+      setLogo(dataUrl);
+      toast("Company logo updated");
+    };
+    reader.readAsDataURL(file);
+  });
+
+  $("removeLogo").addEventListener("click", () => {
+    localStorage.removeItem(LOGO_KEY);
+    localStorage.removeItem("logo");
+    setLogo("");
+    toast("Company logo removed");
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
+      event.preventDefault();
+      saveDraft();
+    }
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "p") {
+      event.preventDefault();
+      window.print();
+    }
+  });
+
+  $("quoteNumber").textContent = generateQuoteNumber();
+  $("quoteDate").value = todayISO();
+  loadLogo();
+  if (!restoreDraft()) {
+    createRow();
+    setSaveStatus(localStorage.getItem(LEGACY_DRAFT_KEY) ? "A legacy draft was found. Save this quote to migrate to the new mobile-safe format." : "New quote");
   }
-}
-
-window.onload = function() {
-  const saved = localStorage.getItem("easyQuoteDraft");
-  if(saved) {
-    document.querySelector("main").innerHTML = saved;
-  }
-  addRow();
-}
-
-document.getElementById("logoUpload").addEventListener("change", function(e){
-  const reader = new FileReader();
-  reader.onload = function(){
-    localStorage.setItem("logo", reader.result);
-    document.getElementById("companyLogo").src = reader.result;
-  }
-  reader.readAsDataURL(e.target.files[0]);
-});
-
-const storedLogo = localStorage.getItem("logo");
-if(storedLogo) document.getElementById("companyLogo").src = storedLogo;
-
+  calculate();
+})();
 </script>
 
+<script defer src="assets/js/easy-suite-core.js"></script>
 <script defer src="scripts/sync-nav.js"></script>
 </body>
 </html>
-
-
-
-
