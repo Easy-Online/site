@@ -71,14 +71,23 @@ for (const file of moduleFiles) {
   }
 }
 
+function structuralHtml(html) {
+  return html
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script\s*>/gi, "")
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style\s*>/gi, "");
+}
+
 function countCanonicalNavs(html) {
-  return Array.from(html.matchAll(/<div\b[^>]*class=["'][^"']*\beasyfile-nav\b[^"']*["'][^>]*>/gi)).length;
+  const structural = structuralHtml(html);
+  return Array.from(structural.matchAll(/<div\b[^>]*class=["'][^"']*\beasyfile-nav\b[^"']*["'][^>]*>/gi)).length;
 }
 
 function duplicateIds(html) {
+  const structural = structuralHtml(html);
   const seen = new Set();
   const duplicates = new Set();
-  for (const match of html.matchAll(/\bid\s*=\s*["']([^"']+)["']/gi)) {
+  for (const match of structural.matchAll(/\bid\s*=\s*["']([^"']+)["']/gi)) {
     const id = match[1];
     if (seen.has(id)) duplicates.add(id);
     seen.add(id);
