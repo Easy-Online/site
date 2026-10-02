@@ -179,6 +179,11 @@
       <div class="card p-4 space-y-3">
         <h2 class="font-bold text-lg"><i class="fa-solid fa-user-tie mr-2 text-gray-500"></i>Client (Bill To)</h2>
 
+        <div>
+          <label class="label">Load from Easy CRM</label>
+          <select id="crmClientPicker" class="field bg-white"><option value="">Select CRM customer…</option></select>
+        </div>
+
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="label">Client Name</label>
@@ -326,7 +331,7 @@
         <table class="w-full table">
           <thead>
             <tr>
-              <th class="text-left">Description</th>
+              <th class="text-left">Description / SKU</th>
               <th class="text-right">Qty</th>
               <th class="text-right">Rate (Excl.)</th>
               <th class="text-right">Disc %</th>
@@ -340,8 +345,9 @@
         </table>
       </div>
 
+      <datalist id="inventorySkus"></datalist>
       <p class="text-xs text-gray-500">
-        CSV Import columns: <b>Description,Qty,RateExcl,DiscountPct,VatPct</b>. Discount logic: line discount → overall discount → VAT.
+        CSV Import columns: <b>Description,Qty,RateExcl,DiscountPct,VatPct</b> (optional SKU supported in saved register data). Enter an inventory SKU above a description to auto-fill product name and price. Discount logic: line discount → overall discount → VAT.
       </p>
     </section>
 
@@ -507,6 +513,7 @@
 
     function newLine(prefVat) {
       return {
+        sku: "",
         desc: "",
         qty: 1,
         rate: 0,
@@ -552,6 +559,7 @@
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td class="w-2/5">
+            <input class="field mono mb-1" list="inventorySkus" placeholder="SKU (optional)" value="${escapeHtml(line.sku||"")}" data-k="sku" data-i="${idx}" />
             <textarea class="field" rows="2" placeholder="e.g., Consulting services" data-k="desc" data-i="${idx}">${escapeHtml(line.desc)}</textarea>
           </td>
           <td class="text-right">
@@ -584,9 +592,20 @@
           const k = e.target.getAttribute("data-k");
           if (!Number.isFinite(i) || !k) return;
 
-          if (k === "desc") lines[i][k] = e.target.value;
+          if (k === "desc" || k === "sku") lines[i][k] = e.target.value;
           else lines[i][k] = safeNumber(e.target.value);
 
+          if (k === "sku" && window.EasyAR) {
+            const sku = String(e.target.value||"").trim().toUpperCase();
+            const item = EasyAR.inventory().find(x => String(x.sku||"").toUpperCase() === sku);
+            if (item) {
+              lines[i].sku = item.sku;
+              lines[i].desc = item.name || lines[i].desc;
+              lines[i].rate = safeNumber(item.price);
+              renderLines();
+              return;
+            }
+          }
           recalcTotals();
         });
       });
@@ -628,7 +647,9 @@
       if (!String($("companyName").value || "").trim()) issues.push("Add your company name.");
       if (!String($("clientName").value || "").trim()) issues.push("Add a client name.");
       if (!String($("clientEmail").value || "").trim()) issues.push("Add the client billing email.");
-      if (!String($("companyVat").value || "").trim() && lines.some(ln => safeNumber(ln.vat) > 0)) issues.push("VAT is charged but the company VAT number is blank.");
+      const vatNo = String($("companyVat").value || "").replace(/\s/g,"");
+      if (!vatNo && lines.some(ln => safeNumber(ln.vat) > 0)) issues.push("VAT is charged but the company VAT number is blank.");
+      if (vatNo && !/^4\d{9}$/.test(vatNo)) issues.push("South African VAT numbers should be 10 digits and normally start with 4; verify this VAT number.");
       if (!lines.length || !lines.some(ln => String(ln.desc || "").trim() && calcLine(ln).netEx > 0)) issues.push("Add at least one billable line item.");
       if (!$("dueDate").value) issues.push("Set a due date.");
 
@@ -1268,6 +1289,21 @@
       });
       $("dueDate").addEventListener("change", recalcTotals);
       ["companyName","companyVat","clientName","clientEmail"].forEach(id => $(id).addEventListener("input", () => updateInvoiceHealth(getTotals())));
+
+      if (window.EasyAR) {
+        const crm = EasyAR.crmContacts();
+        $("crmClientPicker").innerHTML = '<option value="">Select CRM customer…</option>' + crm.map((c,i) => '<option value="'+i+'">'+escapeHtml(c.company || c.name || "Customer")+' — '+escapeHtml(c.email || "")+'</option>').join("");
+        $("crmClientPicker").addEventListener("change", () => {
+          const c = crm[Number($("crmClientPicker").value)];
+          if (!c) return;
+          $("clientName").value = c.company || c.name || "";
+          $("clientEmail").value = c.email || "";
+          $("clientPhone").value = c.phone || "";
+          $("clientAddress").value = c.address || "";
+          updateInvoiceHealth(getTotals());
+        });
+        $("inventorySkus").innerHTML = EasyAR.inventory().map(x => '<option value="'+escapeHtml(x.sku)+'">'+escapeHtml(x.name||"")+'</option>').join("");
+      }
 
       ["currency","overallDiscount","defaultVat","shipping","amountPaid"].forEach(id => {
         $(id).addEventListener("input", () => {
