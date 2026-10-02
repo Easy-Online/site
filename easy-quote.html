@@ -87,7 +87,7 @@
     <select id="currency" onchange="calculate()" class="border px-2 py-1 rounded">
       <option value="R">ZAR (R)</option>
       <option value="$">USD ($)</option>
-      <option value="â‚¬">EUR (â‚¬)</option>
+      <option value="€">EUR (€)</option>
     </select>
   </div>
 </div>
@@ -168,6 +168,9 @@
       Save Draft
     </button>
 
+    <button id="btnConvertInvoice" type="button" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+      Convert to Invoice
+    </button>
     <button onclick="window.print()" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
       Print / Save PDF
     </button>
@@ -177,6 +180,7 @@
 </div>
 </main>
 
+<script src="assets/js/easy-ar.js"></script>
 <script>
 
 function generateQuoteNumber() {
@@ -209,7 +213,7 @@ function addRow(description="", qty=1, unit=0, disc=0) {
     </td>
     <td class="border p-1 text-right total">0.00</td>
     <td class="border p-1 text-center no-print">
-      <button onclick="this.closest('tr').remove(); calculate();" class="text-red-600 font-bold">Ã-</button>
+      <button onclick="this.closest('tr').remove(); calculate();" class="text-red-600 font-bold">×</button>
     </td>
   `;
 
@@ -272,6 +276,33 @@ document.getElementById("logoUpload").addEventListener("change", function(e){
 
 const storedLogo = localStorage.getItem("logo");
 if(storedLogo) document.getElementById("companyLogo").src = storedLogo;
+
+function convertQuoteToInvoice(){
+  if(!window.EasyAR) return alert("EasyAR integration is unavailable.");
+  const currencyMap = {"R":"ZAR","$":"USD","€":"EUR","€":"EUR"};
+  const lines = Array.from(document.querySelectorAll("#itemsBody tr")).map(row => ({
+    description: row.querySelector(".desc")?.value || "",
+    qty: Number(row.querySelector(".qty")?.value || 0),
+    unit: Number(row.querySelector(".unit")?.value || 0),
+    disc: Number(row.querySelector(".disc")?.value || 0),
+    vat: Number(document.getElementById("vatRate")?.value || 15)
+  })).filter(x => x.description || x.unit);
+  EasyAR.createTransfer("quote-to-invoice",{
+    quoteNumber: document.getElementById("quoteNumber")?.textContent || "",
+    quoteDate: document.getElementById("quoteDate")?.value || "",
+    currency: currencyMap[document.getElementById("currency")?.value] || "ZAR",
+    client:{
+      name: document.getElementById("clientCompany")?.value || document.getElementById("clientName")?.value || "",
+      contact: document.getElementById("clientName")?.value || "",
+      email: document.getElementById("clientEmail")?.value || "",
+      phone: document.getElementById("clientPhone")?.value || ""
+    },
+    lines,
+    notes: document.getElementById("terms")?.value || ""
+  });
+  window.location.href="easy-invoice.html";
+}
+document.getElementById("btnConvertInvoice")?.addEventListener("click",convertQuoteToInvoice);
 
 </script>
 
