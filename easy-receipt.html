@@ -1,203 +1,239 @@
 <!DOCTYPE html>
 <html lang="en-ZA">
 <head>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9270041066336676" crossorigin="anonymous"></script>
-  <!-- NAV_SYNC: scripts/sync-nav.js -->
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Favicon (Easy Suite) --><!-- Tailwind CSS -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-
-<!-- Font Awesome (optional but recommended for consistent icons/buttons) -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <title>Easy Receipt | Easy Suite</title>
-  
-
-  <!-- Favicon -->
-  
-  
-<meta name="description" content="Generate professional payment receipts with automatic calculations and print-ready formatting.">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/easy-print.css" />
-  <script defer src="assets/js/easy-suite-core.js"></script>
-  <!-- EASYFILE_FAVICONS -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Free Receipt Generator & Receipt Scanner | Easy Receipt South Africa</title>
+  <meta name="description" content="Create, scan, organise and export professional receipts on any device. Mobile-friendly receipt capture with Easy Capture, VAT fields, search, history and print-ready output.">
+  <meta name="keywords" content="receipt generator South Africa, free receipt generator, receipt scanner, scan receipt, VAT receipt, payment receipt template, mobile receipt app">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://www.easyfile.co.za/easy-receipt.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Easy Receipt | Scan, Create & Organise Receipts">
+  <meta property="og:description" content="Scan receipts with Easy Capture or create professional payment receipts manually. Mobile-first, local-first and export ready.">
+  <meta property="og:url" content="https://www.easyfile.co.za/easy-receipt.html">
+  <meta property="og:image" content="https://www.easyfile.co.za/logo-b.png">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="logo-b.png" type="image/png">
-  <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
-  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
   <link rel="apple-touch-icon" href="logo-b.png">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/easy-print.css">
+  <script defer src="assets/js/easy-suite-core.js"></script>
+  <style>
+    :root{--primary:#2563eb;--primary2:#1d4ed8;--bg:#f5f7fb;--card:#fff;--text:#0f172a;--muted:#64748b;--border:#e2e8f0;--success:#16a34a;--danger:#dc2626;--warning:#d97706}
+    body{background:var(--bg);color:var(--text)}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 10px 28px rgba(2,6,23,.06)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.55rem;min-height:44px;padding:.72rem 1rem;border-radius:11px;font-weight:800;border:1px solid transparent;transition:.15s}
+    .btn:hover{transform:translateY(-1px)}.btn:focus-visible{outline:3px solid rgba(37,99,235,.25);outline-offset:2px}
+    .btn-primary{background:var(--primary);color:white}.btn-primary:hover{background:var(--primary2)}
+    .btn-outline{background:#fff;border-color:var(--border);color:var(--text)}
+    .btn-success{background:var(--success);color:#fff}.btn-danger{background:var(--danger);color:#fff}
+    .input{width:100%;border:1px solid var(--border);border-radius:10px;padding:.72rem .8rem;background:#fff}
+    .input:focus{outline:none;border-color:#60a5fa;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+    .label{display:block;font-size:.72rem;font-weight:900;color:#475569;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.35rem}
+    .hero-scan{min-height:148px;border-radius:20px;background:linear-gradient(135deg,#1d4ed8,#2563eb 55%,#60a5fa);box-shadow:0 18px 40px rgba(37,99,235,.24)}
+    .hero-scan:focus-visible{outline:4px solid rgba(37,99,235,.24);outline-offset:3px}
+    .kpi{font-size:1.55rem;font-weight:900}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+    .pill{display:inline-flex;align-items:center;padding:.25rem .6rem;border-radius:999px;font-size:.72rem;font-weight:900}.pill-blue{background:#dbeafe;color:#1d4ed8}.pill-green{background:#dcfce7;color:#166534}
+    .mobile-actions{position:sticky;bottom:0;z-index:30;background:rgba(245,247,251,.94);backdrop-filter:blur(10px);padding:.75rem calc(.75rem + env(safe-area-inset-right)) calc(.75rem + env(safe-area-inset-bottom)) calc(.75rem + env(safe-area-inset-left));border-top:1px solid var(--border)}
+    .toast{position:fixed;right:16px;bottom:16px;z-index:9999}.toast>div{max-width:360px;background:rgba(15,23,42,.96);color:#fff;border-radius:12px;padding:12px 14px}
+    .cookie{position:fixed;left:12px;right:12px;bottom:12px;z-index:9998;max-width:760px;margin:auto}
+    @media(min-width:768px){.mobile-actions{position:static;background:transparent;backdrop-filter:none;border:0;padding:0}}
+    @media print{.no-print,.easyfile-nav,.mobile-actions,.cookie{display:none!important}body{background:#fff}.card{box-shadow:none;border:none}.receipt-shell{padding:0!important}}
+  </style>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"SoftwareApplication","name":"Easy Receipt","applicationCategory":"BusinessApplication","operatingSystem":"Web","url":"https://www.easyfile.co.za/easy-receipt.html","description":"Mobile-friendly receipt generator and receipt capture workflow for creating, scanning, organising and exporting payment receipts.","offers":{"@type":"Offer","price":"0","priceCurrency":"ZAR"}}
+  </script>
 </head>
-
-<body class="bg-gray-100 min-h-screen">
+<body class="min-h-screen">
 <!-- NAV_SYNC -->
 <div class="easyfile-nav no-print">
   <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
 </div>
-<!-- Easy Suite mounts (injected) -->
-  <header class="bg-white border-b border-gray-200 no-print">
-  <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row gap-4 sm:gap-0 items-start sm:items-center justify-between">
-    <div class="flex items-center gap-3">
-      <div class="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black">R</div>
-      <div>
-        <h1 class="text-2xl font-extrabold text-blue-700">EasyREC</h1>
-        <p class="text-sm text-gray-500">Feature-Rich Receipt Generator</p>
-      </div>
-    </div>
 
-    <div class="flex flex-wrap items-center gap-2">
-      <a href="index.html" class="btn btn-primary" title="Back to Dashboard">
-        <i class="fa-solid fa-gauge"></i> Dashboard
-      </a>
+<header class="bg-white border-b border-gray-200 no-print">
+  <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+    <div class="flex items-center gap-3">
+      <div class="h-11 w-11 rounded-xl bg-blue-600 text-white flex items-center justify-center"><i class="fa-solid fa-receipt"></i></div>
+      <div><h1 class="text-2xl font-extrabold text-blue-700">Easy Receipt</h1><p class="text-sm text-gray-500">Scan, create, organise & export receipts</p></div>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <a href="index.html" class="btn btn-outline"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+      <button id="btnNewReceipt" class="btn btn-primary"><i class="fa-solid fa-plus"></i> New Receipt</button>
     </div>
   </div>
-</header><!-- HEADER:START --><!-- HEADER:END --><!-- Navigation -->
-<main class="container mx-auto px-4 py-8">
+</header>
 
-    <h1 class="text-3xl font-bold mb-6 text-gray-800 flex items-center gap-3">
-      <i class="fas fa-receipt text-blue-600"></i>
-      Easy Receipt Generator
-    </h1>
-
-    <!-- Receipt Form -->
-    <div class="bg-white p-6 rounded-lg shadow-lg">
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Receipt Number</label>
-          <input type="text" id="receiptNumber" class="mt-1 w-full border rounded px-3 py-2" placeholder="REC-001">
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Receipt Date</label>
-          <input type="date" id="receiptDate" class="mt-1 w-full border rounded px-3 py-2">
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Received From</label>
-          <input type="text" id="receivedFrom" class="mt-1 w-full border rounded px-3 py-2" placeholder="Customer Name">
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Payment Method</label>
-          <select id="paymentMethod" class="mt-1 w-full border rounded px-3 py-2">
-            <option>Cash</option>
-            <option>Card</option>
-            <option>EFT</option>
-            <option>Bank Transfer</option>
-          </select>
-        </div>
-
+<main class="container mx-auto px-4 py-6 md:py-8">
+  <section class="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6 no-print">
+    <button id="btnScanCapture" class="hero-scan text-white p-6 text-left lg:col-span-2" type="button">
+      <div class="flex items-center gap-5">
+        <div class="h-20 w-20 rounded-full bg-white bg-opacity-20 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-camera text-3xl"></i></div>
+        <div><div class="text-xs font-black uppercase tracking-widest opacity-80">Powered by Easy Capture</div><div class="text-2xl md:text-3xl font-black mt-1">Scan or photograph a receipt</div><p class="mt-2 text-blue-50">Use your phone camera, OCR the receipt, review VAT and totals, then send the structured data back here.</p></div>
       </div>
-
-      <!-- Line Items -->
-      <h2 class="text-xl font-semibold mb-4">Payment Details</h2>
-
-      <div class="overflow-x-auto">
-        <table class="w-full table-auto border">
-          <thead class="bg-gray-100">
-            <tr>
-              <th class="border px-4 py-2 text-left">Description</th>
-              <th class="border px-4 py-2 text-right">Amount (R)</th>
-              <th class="border px-4 py-2 text-center">Action</th>
-            </tr>
-          </thead>
-          <tbody id="itemsBody"></tbody>
-        </table>
-      </div>
-
-      <button onclick="addItem()" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-        + Add Line
-      </button>
-
-      <!-- Total -->
-      <div class="mt-6 text-right">
-        <p class="text-lg font-semibold">
-          Total Received: R <span id="totalAmount">0.00</span>
-        </p>
-      </div>
-
-      <!-- Notes -->
-      <div class="mt-6">
-        <label class="block text-sm font-medium text-gray-700">Notes</label>
-        <textarea id="notes" rows="3" class="mt-1 w-full border rounded px-3 py-2" placeholder="Optional notes..."></textarea>
-      </div>
-
-      <!-- Buttons -->
-      <div class="mt-6 flex gap-4">
-        <button onclick="window.print()" class="bg-green-600 text-white px-5 py-2 rounded hover:bg-green-700">
-          <i class="fas fa-print mr-2"></i> Print Receipt
-        </button>
-        <button onclick="clearForm()" class="bg-gray-500 text-white px-5 py-2 rounded hover:bg-gray-600">
-          Clear
-        </button>
-      </div>
-
+    </button>
+    <div class="card p-5 flex flex-col justify-center">
+      <h2 class="font-black text-slate-900">Prefer manual entry?</h2>
+      <p class="text-sm text-slate-600 mt-1">Create a receipt without scanning. Everything stays in your browser unless you export it.</p>
+      <button id="btnManualFocus" class="btn btn-outline mt-4"><i class="fa-solid fa-keyboard"></i> Enter manually</button>
     </div>
+  </section>
 
-  </main>
+  <section class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 no-print">
+    <div class="card p-4"><div class="text-xs font-black text-slate-500">SAVED RECEIPTS</div><div id="kSaved" class="kpi text-blue-700">0</div></div>
+    <div class="card p-4"><div class="text-xs font-black text-slate-500">THIS MONTH</div><div id="kMonth" class="kpi text-slate-900">0</div></div>
+    <div class="card p-4"><div class="text-xs font-black text-slate-500">MONTH VALUE</div><div id="kValue" class="kpi text-emerald-700">R0.00</div></div>
+    <div class="card p-4"><div class="text-xs font-black text-slate-500">CAPTURED</div><div id="kCaptured" class="kpi text-indigo-700">0</div></div>
+  </section>
 
-  <!-- Print Styling -->
-  <style>
-    @media print {
-      nav, button {
-        display: none !important;
-      }
-      body {
-        background: white;
-      }
-      .shadow-lg {
-        box-shadow: none !important;
-      }
-    }
-  </style>
+  <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+    <aside class="xl:col-span-4 no-print">
+      <section class="card p-4 mb-4">
+        <label class="label" for="receiptSearch">Search receipts</label>
+        <input id="receiptSearch" class="input" placeholder="Number, customer, reference, notes…">
+      </section>
+      <section class="card p-4">
+        <div class="flex items-center justify-between mb-3"><h2 class="font-black">Receipt history</h2><button id="btnExportCsv" class="text-sm font-bold text-blue-600">Export CSV</button></div>
+        <div id="receiptHistory" class="space-y-2"></div>
+      </section>
+    </aside>
 
-  <!-- Script -->
-  <script>
-    function addItem() {
-      const tbody = document.getElementById('itemsBody');
-      const row = document.createElement('tr');
+    <section class="xl:col-span-8">
+      <div class="card p-5 md:p-7 receipt-shell" id="receiptCard">
+        <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
+          <div><div class="text-xs font-black text-blue-600 uppercase tracking-widest">Payment receipt</div><h2 class="text-3xl font-black text-slate-900">Receipt</h2><p class="text-sm text-slate-500 mt-1">Professional proof of payment / money received.</p></div>
+          <div class="md:text-right"><span id="sourcePill" class="pill pill-blue">Manual</span><div id="receiptStatus" class="text-xs text-slate-500 mt-2">Unsaved</div></div>
+        </div>
 
-      row.innerHTML = `
-        <td class="border px-4 py-2">
-          <input type="text" class="w-full border rounded px-2 py-1 description">
-        </td>
-        <td class="border px-4 py-2 text-right">
-          <input type="number" step="0.01" class="w-full border rounded px-2 py-1 text-right amount" oninput="calculateTotal()">
-        </td>
-        <td class="border px-4 py-2 text-center">
-          <button onclick="this.closest('tr').remove(); calculateTotal();" class="text-red-600 hover:text-red-800">
-            <i class="fas fa-trash"></i>
-          </button>
-        </td>
-      `;
-      tbody.appendChild(row);
-    }
+        <div id="receiptForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div><label class="label">Receipt number</label><input id="receiptNumber" class="input mono" placeholder="REC-000001"></div>
+          <div><label class="label">Receipt date</label><input id="receiptDate" type="date" class="input"></div>
+          <div><label class="label">Received from</label><input id="receivedFrom" class="input" placeholder="Customer / payer"></div>
+          <div><label class="label">Payment method</label><select id="paymentMethod" class="input"><option>Cash</option><option>Card</option><option>EFT</option><option>Bank Transfer</option><option>Debit Order</option><option>Other</option></select></div>
+          <div><label class="label">Reference</label><input id="reference" class="input" placeholder="Invoice / bank / card reference"></div>
+          <div><label class="label">Currency</label><select id="currency" class="input"><option value="ZAR">ZAR (R)</option><option value="USD">USD ($)</option><option value="EUR">EUR (€)</option><option value="GBP">GBP (£)</option></select></div>
+          <div><label class="label">VAT number / tax reference</label><input id="vatNumber" class="input" placeholder="Optional"></div>
+          <div><label class="label">Category</label><input id="category" class="input" placeholder="Sales / Deposit / Refund / Other"></div>
+        </div>
 
-    function calculateTotal() {
-      const amounts = document.querySelectorAll('.amount');
-      let total = 0;
-      amounts.forEach(input => {
-        total += parseFloat(input.value) || 0;
-      });
-      document.getElementById('totalAmount').textContent = total.toFixed(2);
-    }
+        <div class="mt-7">
+          <div class="flex items-center justify-between gap-3 mb-3"><div><h3 class="text-lg font-black">Payment details</h3><p class="text-xs text-slate-500">Add one or more lines.</p></div><button id="btnAddLine" class="btn btn-outline no-print"><i class="fa-solid fa-plus"></i> Add line</button></div>
+          <div class="overflow-x-auto"><table class="w-full min-w-full text-sm"><thead class="bg-gray-50 text-slate-600"><tr><th class="p-3 text-left">Description</th><th class="p-3 text-right w-40">Amount</th><th class="p-3 w-14 no-print"></th></tr></thead><tbody id="itemsBody"></tbody></table></div>
+        </div>
 
-    function clearForm() {
-      document.getElementById('itemsBody').innerHTML = '';
-      document.getElementById('totalAmount').textContent = "0.00";
-      document.querySelectorAll('input, textarea').forEach(el => el.value = '');
-    }
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-7">
+          <div><label class="label">Notes</label><textarea id="notes" rows="5" class="input" placeholder="Optional receipt notes"></textarea></div>
+          <div class="bg-slate-50 rounded-xl p-5">
+            <div class="flex justify-between text-sm"><span class="font-bold text-slate-600">Total received</span><span id="totalAmount" class="text-2xl font-black mono">R0.00</span></div>
+            <div class="flex justify-between text-sm mt-3"><span class="text-slate-500">Source</span><span id="sourceText" class="font-bold">Manual entry</span></div>
+          </div>
+        </div>
+      </div>
 
-    // Auto add first row
-    addItem();
-  </script>
+      <div class="mobile-actions mt-4 no-print">
+        <div class="flex flex-wrap gap-2 md:justify-end">
+          <button id="btnSave" class="btn btn-primary flex-1 md:flex-none"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+          <button id="btnPrint" class="btn btn-success flex-1 md:flex-none"><i class="fa-solid fa-print"></i> Print / PDF</button>
+          <button id="btnDuplicate" class="btn btn-outline"><i class="fa-solid fa-copy"></i> Duplicate</button>
+          <button id="btnClear" class="btn btn-outline"><i class="fa-solid fa-rotate-left"></i> Clear</button>
+        </div>
+      </div>
+    </section>
+  </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" defer></script>
+  <section class="mt-10 no-print">
+    <div class="card p-6">
+      <h2 class="text-2xl font-black">Why Easy Receipt?</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-5 text-sm text-slate-600">
+        <div><strong class="block text-slate-900 mb-1">Scan once, reuse the data</strong>Easy Capture handles camera/OCR and sends structured receipt fields back to Easy Receipt.</div>
+        <div><strong class="block text-slate-900 mb-1">Local-first privacy</strong>Receipt history is stored in this browser. Export when you choose.</div>
+        <div><strong class="block text-slate-900 mb-1">Built for mobile</strong>Large touch targets, camera-first workflow and sticky actions make field use fast.</div>
+      </div>
+    </div>
+  </section>
+</main>
 
+<div id="toast" class="toast hidden" role="status" aria-live="polite"><div id="toastMsg"></div></div>
+<div id="cookieBanner" class="cookie card p-4 hidden no-print">
+  <div class="flex flex-col md:flex-row md:items-center gap-3 md:justify-between">
+    <p class="text-sm text-slate-600"><strong class="text-slate-900">Usage analytics.</strong> Easy Receipt can record anonymous usage events when analytics is configured. Functional browser storage is required for receipt history.</p>
+    <div class="flex gap-2"><button id="cookieReject" class="btn btn-outline">Necessary only</button><button id="cookieAccept" class="btn btn-primary">Allow analytics</button></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+const STORE_KEY="easy.receipt.v2";
+const HANDOFF_KEY="easy.receipt.capture-handoff.v1";
+const CONSENT_KEY="easyfile.analytics.consent.v1";
+const SESSION_KEY="easyfile.receipt.session.v1";
+const $=id=>document.getElementById(id);
+let receipts=loadJson(STORE_KEY,[]);
+let activeId=null;
+let source="manual";
+
+function loadJson(k,f){try{const v=JSON.parse(localStorage.getItem(k)||JSON.stringify(f));return v??f}catch{return f}}
+function persist(){localStorage.setItem(STORE_KEY,JSON.stringify(receipts))}
+function now(){return new Date().toISOString()}
+function money(n,c=$("currency").value){const map={ZAR:"R",USD:"$",EUR:"€",GBP:"£"};return (map[c]||c+" ")+Number(n||0).toFixed(2)}
+function toast(m){$("toastMsg").textContent=m;$("toast").classList.remove("hidden");clearTimeout(toast.t);toast.t=setTimeout(()=>$("toast").classList.add("hidden"),2800)}
+function escapeHtml(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
+function nextNumber(){const seq=Number(localStorage.getItem("easy.receipt.sequence")||0)+1;localStorage.setItem("easy.receipt.sequence",String(seq));return "REC-"+String(seq).padStart(6,"0")}
+function analyticsConsent(){return localStorage.getItem(CONSENT_KEY)==="granted"}
+function track(name,props={}){
+  const payload={event:name,module:"easy-receipt",path:location.pathname,ts:now(),...props};
+  try{window.dispatchEvent(new CustomEvent("easyfile:analytics",{detail:payload}))}catch{}
+  const endpoint=document.querySelector('meta[name="easyfile-analytics-endpoint"]')?.content;
+  if(analyticsConsent()&&endpoint){try{navigator.sendBeacon(endpoint,new Blob([JSON.stringify(payload)],{type:"application/json"}))}catch{}}
+}
+function initAnalytics(){
+  if(!sessionStorage.getItem(SESSION_KEY)){sessionStorage.setItem(SESSION_KEY,"1");track("receipt_session_start")}
+  const c=localStorage.getItem(CONSENT_KEY);if(!c)$("cookieBanner").classList.remove("hidden");
+  $("cookieAccept").onclick=()=>{localStorage.setItem(CONSENT_KEY,"granted");$("cookieBanner").classList.add("hidden");track("analytics_consent_granted")};
+  $("cookieReject").onclick=()=>{localStorage.setItem(CONSENT_KEY,"denied");$("cookieBanner").classList.add("hidden")};
+}
+function addItem(desc="",amount=""){
+  const tr=document.createElement("tr");tr.className="border-t";
+  tr.innerHTML='<td class="p-2"><input class="input description" value="'+escapeHtml(desc)+'" placeholder="Payment / item description"></td><td class="p-2"><input type="number" min="0" step="0.01" class="input amount text-right" value="'+escapeHtml(amount)+'"></td><td class="p-2 text-center no-print"><button type="button" class="text-red-600 p-2" aria-label="Remove line"><i class="fa-solid fa-trash"></i></button></td>';
+  tr.querySelector(".amount").addEventListener("input",calculateTotal);
+  tr.querySelector("button").addEventListener("click",()=>{tr.remove();calculateTotal()});
+  $("itemsBody").appendChild(tr);calculateTotal();
+}
+function calculateTotal(){let total=0;document.querySelectorAll(".amount").forEach(i=>total+=Number(i.value||0));$("totalAmount").textContent=money(total);return total}
+function setSource(v){source=v;$("sourcePill").textContent=v==="capture"?"Easy Capture":"Manual";$("sourcePill").className="pill "+(v==="capture"?"pill-green":"pill-blue");$("sourceText").textContent=v==="capture"?"Easy Capture scan":"Manual entry"}
+function readForm(){
+  return {id:activeId||("REC-"+Date.now()),number:$("receiptNumber").value.trim(),date:$("receiptDate").value,receivedFrom:$("receivedFrom").value.trim(),paymentMethod:$("paymentMethod").value,reference:$("reference").value.trim(),currency:$("currency").value,vatNumber:$("vatNumber").value.trim(),category:$("category").value.trim(),notes:$("notes").value.trim(),source,total:calculateTotal(),items:Array.from($("itemsBody").querySelectorAll("tr")).map(r=>({description:r.querySelector(".description").value.trim(),amount:Number(r.querySelector(".amount").value||0)})),updatedAt:now()};
+}
+function writeForm(r){
+  activeId=r.id||null;$("receiptNumber").value=r.number||nextNumber();$("receiptDate").value=r.date||new Date().toISOString().slice(0,10);$("receivedFrom").value=r.receivedFrom||"";$("paymentMethod").value=r.paymentMethod||"Cash";$("reference").value=r.reference||"";$("currency").value=r.currency||"ZAR";$("vatNumber").value=r.vatNumber||"";$("category").value=r.category||"";$("notes").value=r.notes||"";$("itemsBody").innerHTML="";(r.items?.length?r.items:[{description:"",amount:""}]).forEach(x=>addItem(x.description,x.amount));setSource(r.source||"manual");$("receiptStatus").textContent=activeId?"Saved receipt":"Unsaved";calculateTotal();
+}
+function newReceipt(){
+  activeId=null;writeForm({number:nextNumber(),date:new Date().toISOString().slice(0,10),currency:"ZAR",source:"manual",items:[{description:"Payment received",amount:""}]});$("receiptStatus").textContent="Unsaved";track("receipt_new");
+}
+function saveReceipt(){
+  const r=readForm();if(!r.number)return toast("Receipt number is required.");if(!r.date)return toast("Receipt date is required.");if(!r.receivedFrom)return toast("Received From is required.");if(!(r.total>0))return toast("Add a receipt amount greater than zero.");
+  r.createdAt=(receipts.find(x=>x.id===r.id)?.createdAt)||now();const i=receipts.findIndex(x=>x.id===r.id);if(i>=0)receipts[i]=r;else receipts.unshift(r);activeId=r.id;persist();renderHistory();renderKpis();$("receiptStatus").textContent="Saved "+new Date().toLocaleTimeString("en-ZA",{hour:"2-digit",minute:"2-digit"});toast("Receipt saved.");track("receipt_saved",{source:r.source,total:r.total,currency:r.currency});
+}
+function loadReceipt(id){const r=receipts.find(x=>x.id===id);if(r){writeForm(r);track("receipt_opened",{source:r.source})}}
+function deleteReceipt(id){if(!confirm("Delete this receipt?"))return;receipts=receipts.filter(x=>x.id!==id);persist();if(activeId===id)newReceipt();renderHistory();renderKpis();track("receipt_deleted")}
+function renderHistory(){
+  const q=$("receiptSearch").value.toLowerCase().trim();const list=receipts.filter(r=>!q||[r.number,r.receivedFrom,r.reference,r.notes].join(" ").toLowerCase().includes(q));$("receiptHistory").innerHTML=list.slice(0,100).map(r=>'<div class="border border-gray-200 rounded-xl p-3"><button class="w-full text-left" data-open="'+escapeHtml(r.id)+'"><div class="flex justify-between gap-3"><strong>'+escapeHtml(r.number)+'</strong><span class="mono">'+escapeHtml(money(r.total,r.currency))+'</span></div><div class="text-xs text-slate-500 mt-1">'+escapeHtml(r.date||"")+' · '+escapeHtml(r.receivedFrom||"")+'</div></button><button class="text-xs text-red-600 mt-2" data-del="'+escapeHtml(r.id)+'">Delete</button></div>').join("")||'<p class="text-sm text-slate-500 py-4">No saved receipts yet.</p>';
+  $("receiptHistory").querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>loadReceipt(b.dataset.open));$("receiptHistory").querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>deleteReceipt(b.dataset.del));
+}
+function renderKpis(){const month=new Date().toISOString().slice(0,7);const m=receipts.filter(r=>(r.date||"").startsWith(month));$("kSaved").textContent=receipts.length;$("kMonth").textContent=m.length;$("kValue").textContent=money(m.reduce((a,r)=>a+Number(r.total||0),0),"ZAR");$("kCaptured").textContent=receipts.filter(r=>r.source==="capture").length}
+function exportCsv(){const rows=[["Receipt Number","Date","Received From","Payment Method","Reference","Currency","VAT Number","Category","Total","Source","Notes"],...receipts.map(r=>[r.number,r.date,r.receivedFrom,r.paymentMethod,r.reference,r.currency,r.vatNumber,r.category,r.total,r.source,r.notes])];const esc=v=>'"'+String(v??"").replace(/"/g,'""')+'"';const blob=new Blob([rows.map(x=>x.map(esc).join(",")).join("\n")],{type:"text/csv;charset=utf-8"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="easy-receipts.csv";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),0);track("receipt_export_csv")}
+function applyCaptureHandoff(){
+  const p=loadJson(HANDOFF_KEY,null);if(!p)return;localStorage.removeItem(HANDOFF_KEY);
+  const total=Number(p.amountIncl||0);activeId=null;writeForm({number:p.number||nextNumber(),date:p.date||new Date().toISOString().slice(0,10),receivedFrom:p.supplier||"",paymentMethod:p.paymentMethod||"Card",reference:p.reference||"",currency:p.currency||"ZAR",vatNumber:p.supplierVat||"",category:p.category||"",notes:[p.notes,p.captureId?"Captured via Easy Capture "+p.captureId:""].filter(Boolean).join(" · "),source:"capture",items:(p.lineItems?.length?p.lineItems.map(x=>({description:x.description||"Captured item",amount:Number(x.total??(Number(x.qty||0)*Number(x.unit||0)))})):[{description:"Captured receipt",amount:total}])});$("receiptStatus").textContent="Imported from Easy Capture — review and save";toast("Receipt data imported from Easy Capture.");track("receipt_capture_import",{confidence:p.confidence||0});
+}
+function bind(){
+  $("btnScanCapture").onclick=()=>{track("receipt_scan_started");location.href="easy-capture.html?return=receipt"};
+  $("btnManualFocus").onclick=()=>{$("receiptNumber").focus();track("receipt_manual_started")};
+  $("btnNewReceipt").onclick=newReceipt;$("btnAddLine").onclick=()=>addItem();$("btnSave").onclick=saveReceipt;$("btnPrint").onclick=()=>{track("receipt_print");window.print()};$("btnClear").onclick=newReceipt;$("btnDuplicate").onclick=()=>{const r=readForm();activeId=null;r.id=null;r.number=nextNumber();r.date=new Date().toISOString().slice(0,10);writeForm(r);$("receiptStatus").textContent="Duplicated — unsaved";track("receipt_duplicated")};$("btnExportCsv").onclick=exportCsv;$("receiptSearch").addEventListener("input",renderHistory);$("currency").addEventListener("change",calculateTotal);
+}
+document.addEventListener("DOMContentLoaded",()=>{bind();initAnalytics();renderHistory();renderKpis();newReceipt();applyCaptureHandoff()});
+</script>
 <script defer src="scripts/sync-nav.js"></script>
 </body>
 </html>
-
-
-
-
