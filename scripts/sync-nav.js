@@ -14,6 +14,7 @@
     { name: "Company Profile", href: "easy-company-profile.html", icon: "fa-building", group: "General", description: "Manage shared company identity, branding and document defaults", landing: true },
     { name: "Quote", href: "easy-quote.html", icon: "fa-file-lines", group: "Documents", description: "Create customer quotations" },
     { name: "Invoice", href: "easy-invoice.html", icon: "fa-file-invoice-dollar", group: "Documents", description: "Create and manage invoices" },
+    { name: "Invoice View", href: "easy-invoice-view.html", icon: "fa-file-invoice", group: "Documents", description: "Read-only shared invoice view" },
     { name: "Accounts Receivable", href: "easy-accounts-receivable.html", icon: "fa-chart-line", group: "Finance", description: "Manage invoice register, payments, aging, reminders and recurring billing", landing: true },
     { name: "Purchase Order", href: "easy-purchase-order.html", icon: "fa-cart-shopping", group: "Documents", description: "Create supplier purchase orders" },
     { name: "Sales Order", href: "easy-sales-order.html", icon: "fa-bag-shopping", group: "Documents", description: "Record customer sales orders" },
