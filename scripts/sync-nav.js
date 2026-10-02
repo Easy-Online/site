@@ -24,6 +24,8 @@
     { name: "Bank Converter", href: "easy-bank-statement-converter.html", icon: "fa-building-columns", group: "Documents", description: "Convert PDF bank statements to Sage CSV or Excel" },
     { name: "Converter", href: "easy-converter.html", icon: "fa-arrows-rotate", group: "Documents", description: "Convert business files and structured data between supported formats", landing: true },
     { name: "Enterprise Converter", href: "easy-converter-enterprise.html", icon: "fa-right-left", group: "Documents", description: "Advanced file conversion workflows for larger business datasets", landing: true },
+    { name: "Contracts", href: "easy-contracts.html", icon: "fa-file-contract", group: "Documents", description: "Create and manage business contracts and agreements", landing: true },
+    { name: "Landing Page", href: "easy-landing-page.html", icon: "fa-window-maximize", group: "Documents", description: "Build branded landing pages for campaigns and business offers", landing: true },
 
     { name: "Expenses", href: "easy-expenses.html", icon: "fa-wallet", group: "Finance", description: "Capture, categorise and review business expenses", landing: true },
     { name: "Cash Flow", href: "easy-cashflow.html", icon: "fa-chart-line", group: "Finance", description: "Track cash inflows, outflows and running balances", landing: true },
@@ -31,6 +33,7 @@
     { name: "Budgets", href: "easy-budgets.html", icon: "fa-chart-pie", group: "Finance", description: "Build and monitor business budgets", landing: true },
     { name: "Credit Control", href: "easy-credit-control.html", icon: "fa-hand-holding-dollar", group: "Finance", description: "Track outstanding accounts and credit-control follow-up", landing: true },
     { name: "Audit", href: "easy-audit.html", icon: "fa-magnifying-glass-chart", group: "Finance", description: "Review financial and operational records for audit readiness", landing: true },
+    { name: "Bill", href: "easy-bill.html", icon: "fa-file-invoice", group: "Finance", description: "Capture and manage supplier and business bills", landing: true },
 
     { name: "Job Card", href: "easy-job-card.html", icon: "fa-briefcase", group: "Operations", description: "Track service and repair work" },
     { name: "Payroll", href: "easy-payroll.html", icon: "fa-money-bill-wave", group: "Operations", description: "Prepare payroll summaries" },
@@ -43,6 +46,8 @@
     { name: "Inspections", href: "easy-site-inspection.html", icon: "fa-clipboard-check", group: "Operations", description: "Capture site inspection records" },
     { name: "Approvals", href: "easy-approvals.html", icon: "fa-circle-check", group: "Operations", description: "Route and track internal business approvals", landing: true },
     { name: "Leave", href: "easy-leave.html", icon: "fa-calendar-check", group: "Operations", description: "Track employee leave requests and balances", landing: true },
+    { name: "Save", href: "easy-save.html", icon: "fa-cloud-arrow-up", group: "Operations", description: "Save and route files to connected storage destinations", landing: true },
+    { name: "Add-ons", href: "easy-addons.html", icon: "fa-puzzle-piece", group: "Operations", description: "Extend EasyFile with optional tools and integrations", landing: true },
 
     { name: "POPIA", href: "easy-popia.html", icon: "fa-shield-halved", group: "Compliance", description: "Support POPIA privacy and compliance administration", landing: true },
     { name: "Insights", href: "easy-insights.html", icon: "fa-chart-column", group: "Insights", description: "Review business performance insights and operational signals", landing: true },

@@ -4,209 +4,286 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9270041066336676" crossorigin="anonymous"></script>
   <!-- NAV_SYNC: scripts/sync-nav.js -->
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Easy Payroll — Pro</title>
-  
-
-  <!-- Favicon -->
-  
-  
-<meta name="description" content="Professional payroll calculator with earnings, deductions, PAYE, UIF and net pay calculation.">
-
-  <!-- Tailwind -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Easy Payroll — South Africa Payroll Workspace</title>
+  <meta name="description" content="South African payroll workspace with 2026/27 PAYE estimates, UIF ceiling support, SDL cost view, payslip printing, CSV export, local drafts and payroll controls.">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-
-  <style>
-    @media print {
-      body * {
-        visibility: hidden;
-      }
-      #printArea, #printArea * {
-        visibility: visible;
-      }
-      #printArea {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-      }
-    }
-  </style>
-  <link rel="stylesheet" href="assets/css/easy-print.css" />
+  <link rel="stylesheet" href="assets/css/easy-print.css">
   <script defer src="assets/js/easy-suite-core.js"></script>
-  <!-- EASYFILE_FAVICONS -->
   <link rel="icon" href="logo-b.png" type="image/png">
-  <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
   <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
   <link rel="apple-touch-icon" href="logo-b.png">
+  <style>
+    :root{--primary:#2563eb;--bg:#f5f7fb;--card:#fff;--text:#0f172a;--muted:#64748b;--border:#e2e8f0;--danger:#dc2626;--success:#16a34a;--warning:#d97706}
+    body{background:var(--bg);color:var(--text)}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:0 10px 25px rgba(2,6,23,.05)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;padding:.65rem .95rem;border-radius:10px;font-weight:800;border:1px solid transparent}
+    .btn-primary{background:var(--primary);color:#fff}.btn-success{background:var(--success);color:#fff}.btn-danger{background:var(--danger);color:#fff}
+    .btn-outline{background:#fff;border-color:var(--border);color:var(--text)}
+    .badge{display:inline-flex;align-items:center;padding:.2rem .6rem;border-radius:999px;font-weight:800;font-size:.75rem}
+    .badge-info{background:#dbeafe;color:#1e40af}.badge-warn{background:#fef3c7;color:#92400e}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+    input:focus,select:focus,textarea:focus{outline:none!important;border-color:#2563eb!important;box-shadow:0 0 0 3px rgba(37,99,235,.12)!important}
+    @media print{
+      .no-print,.easyfile-nav,header{display:none!important}
+      body{background:#fff!important}
+      body *{visibility:hidden}
+      #printArea,#printArea *{visibility:visible}
+      #printArea{position:absolute;left:0;top:0;width:100%;box-shadow:none!important;border:none!important}
+    }
+  </style>
 </head>
-
-<body class="bg-gray-100 min-h-screen">
-<!-- NAV_SYNC -->
+<body class="min-h-screen">
 <div class="easyfile-nav no-print">
   <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
 </div>
-<!-- Easy Suite mounts (injected) -->
-  <header class="bg-white border-b border-gray-200 no-print">
-  <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row gap-4 sm:gap-0 items-start sm:items-center justify-between">
+
+<header class="bg-white border-b border-gray-200 no-print">
+  <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
     <div class="flex items-center gap-3">
       <div class="h-10 w-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black">P</div>
+      <div><h1 class="text-2xl font-extrabold text-blue-700">EasyPAY</h1><p class="text-sm text-gray-500">South Africa payroll workspace</p></div>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <button id="btnSeed" class="btn btn-outline">Seed demo</button>
+      <button id="btnLoad" class="btn btn-outline">Load draft</button>
+      <button id="btnSave" class="btn btn-outline">Save draft</button>
+      <button id="btnReset" class="btn btn-outline">Reset</button>
+      <a href="index.html" class="btn btn-primary">Dashboard</a>
+    </div>
+  </div>
+</header>
+
+<main class="container mx-auto px-4 py-6 md:py-8">
+  <section class="card p-4 mb-6 no-print">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
       <div>
-        <h1 class="text-2xl font-extrabold text-blue-700">EasyPAY</h1>
-        <p class="text-sm text-gray-500">Feature-Rich Payroll Manager</p>
+        <div class="flex flex-wrap gap-2 mb-2">
+          <span class="badge badge-info">2026/27 tax year</span>
+          <span class="badge badge-warn">PAYE estimate — validate before statutory submission</span>
+        </div>
+        <p class="text-sm text-slate-600">Uses the 2026/27 SARS progressive individual tax brackets and age rebates for a monthly annualised PAYE estimate. UIF employee and employer contributions are capped at the R17,712 monthly remuneration ceiling.</p>
+      </div>
+      <div class="text-xs text-slate-500 lg:text-right">Tax year: 1 Mar 2026 – 28 Feb 2027<br>Local-first: payroll draft stays in this browser.</div>
+    </div>
+  </section>
+
+  <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
+    <section class="card p-5 xl:col-span-2">
+      <h2 class="text-lg font-black mb-4">Employee & pay period</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <label class="text-sm font-bold">Employee name<input id="employeeName" class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Nomsa Dlamini"></label>
+        <label class="text-sm font-bold">Employee / payroll ID<input id="employeeId" class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="EMP-001"></label>
+        <label class="text-sm font-bold">Pay period<input id="payPeriod" type="month" class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2"></label>
+        <label class="text-sm font-bold">Age band<select id="ageBand" class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2"><option value="under65">Under 65</option><option value="65to74">65–74</option><option value="75plus">75+</option></select></label>
+        <label class="text-sm font-bold">Tax periods per year<select id="periods" class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2"><option value="12">Monthly (12)</option><option value="26">Fortnightly (26)</option><option value="52">Weekly (52)</option></select></label>
+        <label class="text-sm font-bold">Additional PAYE<input id="additionalPaye" type="number" min="0" step="0.01" value="0" class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2"></label>
+      </div>
+    </section>
+
+    <section class="card p-5">
+      <h2 class="text-lg font-black mb-4">Employer controls</h2>
+      <label class="flex items-center gap-2 text-sm mb-3"><input id="uifEnabled" type="checkbox" checked> Employee liable for UIF</label>
+      <label class="flex items-center gap-2 text-sm mb-3"><input id="sdlEnabled" type="checkbox"> Include SDL employer cost (1%)</label>
+      <p class="text-xs text-slate-500">SDL can be exempt for employers below the applicable annual remuneration threshold. Enable only when applicable to the employer.</p>
+    </section>
+  </div>
+
+  <section class="card p-5 mb-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+      <div><h2 class="text-lg font-black">Earnings</h2><p class="text-xs text-slate-500">Mark non-taxable items explicitly; default is taxable remuneration.</p></div>
+      <button id="btnAddEarning" class="btn btn-primary no-print">+ Add earning</button>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead class="bg-gray-50"><tr><th class="p-2 text-left">Description</th><th class="p-2 text-right">Amount</th><th class="p-2 text-center">PAYE taxable</th><th class="p-2 text-center">UIF liable</th><th class="p-2 no-print"></th></tr></thead>
+        <tbody id="earningsBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card p-5 mb-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+      <div><h2 class="text-lg font-black">Other deductions</h2><p class="text-xs text-slate-500">These are treated as post-tax employee deductions in this version.</p></div>
+      <button id="btnAddDeduction" class="btn btn-outline no-print">+ Add deduction</button>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead class="bg-gray-50"><tr><th class="p-2 text-left">Description</th><th class="p-2 text-right">Amount</th><th class="p-2 no-print"></th></tr></thead>
+        <tbody id="deductionsBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="printArea" class="card p-6 mb-6">
+    <div class="flex flex-col md:flex-row md:justify-between gap-4 border-b border-gray-200 pb-4 mb-5">
+      <div><h2 class="text-2xl font-black">PAYSLIP</h2><p id="pEmployee" class="font-bold mt-1">Employee</p><p id="pEmployeeId" class="text-sm text-slate-500"></p></div>
+      <div class="md:text-right"><p class="text-sm text-slate-500">Pay period</p><p id="pPeriod" class="font-black mono">—</p><p class="text-xs text-slate-500 mt-1">EasyPAY calculation summary</p></div>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div>
+        <h3 class="font-black mb-2">Earnings</h3>
+        <div id="printEarnings" class="space-y-1 text-sm"></div>
+      </div>
+      <div>
+        <h3 class="font-black mb-2">Deductions</h3>
+        <div class="space-y-1 text-sm">
+          <div class="flex justify-between"><span>PAYE estimate</span><span id="pPaye" class="mono">R0.00</span></div>
+          <div class="flex justify-between"><span>UIF employee</span><span id="pUif" class="mono">R0.00</span></div>
+          <div id="printDeductions"></div>
+        </div>
       </div>
     </div>
-
-    <div class="flex flex-wrap items-center gap-2">
-      <a href="index.html" class="btn btn-primary" title="Back to Dashboard">
-        <i class="fa-solid fa-gauge"></i> Dashboard
-      </a>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6 pt-5 border-t border-gray-200">
+      <div><div class="text-xs text-slate-500 font-black">GROSS PAY</div><div id="gross" class="text-xl font-black mono">R0.00</div></div>
+      <div><div class="text-xs text-slate-500 font-black">TOTAL DEDUCTIONS</div><div id="totalDeductions" class="text-xl font-black mono">R0.00</div></div>
+      <div><div class="text-xs text-slate-500 font-black">NET PAY</div><div id="netPay" class="text-xl font-black text-green-700 mono">R0.00</div></div>
+      <div><div class="text-xs text-slate-500 font-black">EMPLOYER COST</div><div id="employerCost" class="text-xl font-black mono">R0.00</div></div>
     </div>
+    <div class="mt-5 text-xs text-slate-500">Employer UIF: <span id="employerUif" class="mono">R0.00</span> · SDL estimate: <span id="sdl" class="mono">R0.00</span> · Taxable remuneration: <span id="taxable" class="mono">R0.00</span></div>
+  </section>
+
+  <section class="card p-5 mb-6 no-print">
+    <h2 class="text-lg font-black mb-3">Payroll control checks</h2>
+    <div id="checks" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm"></div>
+  </section>
+
+  <div class="flex flex-wrap gap-3 no-print">
+    <button id="btnCalculate" class="btn btn-success">Calculate payroll</button>
+    <button id="btnExport" class="btn btn-outline">Export CSV</button>
+    <button onclick="window.print()" class="btn btn-outline">Print payslip</button>
   </div>
-</header><!-- HEADER:START --><!-- HEADER:END --><!-- Navigation -->
-<main class="container mx-auto px-4 py-8">
-
-<h1 class="text-3xl font-bold mb-6 text-gray-800">Easy Payroll — Professional Edition</h1>
-
-<!-- Employee Details -->
-<div class="bg-white p-6 rounded shadow mb-6">
-  <h2 class="text-xl font-semibold mb-4">Employee Details</h2>
-  <div class="grid md:grid-cols-3 gap-4">
-    <input id="employeeName" placeholder="Employee Name" class="border p-2 rounded">
-    <input id="employeeId" placeholder="Employee ID" class="border p-2 rounded">
-    <input id="payPeriod" type="month" class="border p-2 rounded">
-  </div>
-</div>
-
-<!-- Earnings -->
-<div class="bg-white p-6 rounded shadow mb-6">
-  <h2 class="text-xl font-semibold mb-4">Earnings</h2>
-  <table class="w-full mb-4">
-    <thead>
-      <tr class="bg-gray-200 text-left">
-        <th class="p-2">Description</th>
-        <th class="p-2">Amount (R)</th>
-        <th class="p-2"></th>
-      </tr>
-    </thead>
-    <tbody id="earningsBody"></tbody>
-  </table>
-  <button onclick="addRow('earningsBody')" class="bg-blue-600 text-white px-4 py-2 rounded">Add Earning</button>
-</div>
-
-<!-- Deductions -->
-<div class="bg-white p-6 rounded shadow mb-6">
-  <h2 class="text-xl font-semibold mb-4">Deductions</h2>
-  <table class="w-full mb-4">
-    <thead>
-      <tr class="bg-gray-200 text-left">
-        <th class="p-2">Description</th>
-        <th class="p-2">Amount (R)</th>
-        <th class="p-2"></th>
-      </tr>
-    </thead>
-    <tbody id="deductionsBody"></tbody>
-  </table>
-  <button onclick="addRow('deductionsBody')" class="bg-red-600 text-white px-4 py-2 rounded">Add Deduction</button>
-</div>
-
-<!-- Statutory -->
-<div class="bg-white p-6 rounded shadow mb-6">
-  <h2 class="text-xl font-semibold mb-4">Statutory Deductions (Auto)</h2>
-  <div class="grid md:grid-cols-3 gap-4">
-    <div>
-      <label>PAYE (%)</label>
-      <input id="payeRate" type="number" value="18" class="border p-2 rounded w-full">
-    </div>
-    <div>
-      <label>UIF (%)</label>
-      <input id="uifRate" type="number" value="1" class="border p-2 rounded w-full">
-    </div>
-  </div>
-</div>
-
-<!-- Summary -->
-<div id="printArea" class="bg-white p-6 rounded shadow mb-6">
-  <h2 class="text-xl font-semibold mb-4">Payroll Summary</h2>
-  <div class="space-y-2 text-lg">
-    <div>Gross Pay: R <span id="gross">0.00</span></div>
-    <div>Total Deductions: R <span id="totalDeductions">0.00</span></div>
-    <div class="font-bold text-green-600">Net Pay: R <span id="netPay">0.00</span></div>
-  </div>
-</div>
-
-<!-- Buttons -->
-<div class="flex flex-wrap gap-4">
-  <button onclick="calculatePayroll()" class="bg-green-600 text-white px-6 py-2 rounded">Calculate Payroll</button>
-  <button onclick="saveDraft()" class="bg-gray-600 text-white px-6 py-2 rounded">Save Draft</button>
-  <button onclick="exportCSV()" class="bg-purple-600 text-white px-6 py-2 rounded">Export CSV</button>
-  <button onclick="window.print()" class="bg-black text-white px-6 py-2 rounded">Print Payslip</button>
-</div>
-
 </main>
 
 <script>
-function addRow(tableId) {
-  const table = document.getElementById(tableId);
-  const row = document.createElement("tr");
-  row.innerHTML = `
-    <td class="p-2"><input class="border p-1 w-full"></td>
-    <td class="p-2"><input type="number" value="0" class="border p-1 w-full amount"></td>
-    <td class="p-2"><button onclick="this.closest('tr').remove()" class="text-red-600">X</button></td>
-  `;
-  table.appendChild(row);
+const STORE_KEY="easy.payroll.v3";
+const UIF_CEILING_MONTHLY=17712;
+const TAX_YEAR="2026/27";
+const BRACKETS=[
+  {max:245100,base:0,rate:.18,over:0},
+  {max:383100,base:44118,rate:.26,over:245100},
+  {max:530200,base:79998,rate:.31,over:383100},
+  {max:695800,base:125599,rate:.36,over:530200},
+  {max:887000,base:185215,rate:.39,over:695800},
+  {max:1878600,base:259783,rate:.41,over:887000},
+  {max:Infinity,base:666339,rate:.45,over:1878600}
+];
+const REBATES={under65:17820,age65to74:27585,age75plus:30834};
+const $=id=>document.getElementById(id);
+const money=n=>"R"+Number(n||0).toLocaleString("en-ZA",{minimumFractionDigits:2,maximumFractionDigits:2});
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
+
+function addEarning(desc="",amount=0,taxable=true,uif=true){
+  const tr=document.createElement("tr");
+  tr.className="border-t";
+  tr.innerHTML=`<td class="p-2"><input class="desc w-full border rounded px-2 py-1" value="${esc(desc)}"></td>
+  <td class="p-2"><input type="number" min="0" step="0.01" class="amount w-full border rounded px-2 py-1 text-right" value="${Number(amount)||0}"></td>
+  <td class="p-2 text-center"><input type="checkbox" class="taxable" ${taxable?"checked":""}></td>
+  <td class="p-2 text-center"><input type="checkbox" class="uif" ${uif?"checked":""}></td>
+  <td class="p-2 text-center no-print"><button class="remove text-red-600 font-bold">×</button></td>`;
+  $("earningsBody").appendChild(tr);
+  tr.querySelector(".remove").addEventListener("click",()=>{tr.remove();calculatePayroll()});
+  tr.querySelectorAll("input").forEach(x=>x.addEventListener("input",calculatePayroll));
 }
-
-function sumAmounts(selector) {
-  let total = 0;
-  document.querySelectorAll(selector).forEach(input => {
-    total += parseFloat(input.value) || 0;
-  });
-  return total;
+function addDeduction(desc="",amount=0){
+  const tr=document.createElement("tr");tr.className="border-t";
+  tr.innerHTML=`<td class="p-2"><input class="desc w-full border rounded px-2 py-1" value="${esc(desc)}"></td>
+  <td class="p-2"><input type="number" min="0" step="0.01" class="amount w-full border rounded px-2 py-1 text-right" value="${Number(amount)||0}"></td>
+  <td class="p-2 text-center no-print"><button class="remove text-red-600 font-bold">×</button></td>`;
+  $("deductionsBody").appendChild(tr);
+  tr.querySelector(".remove").addEventListener("click",()=>{tr.remove();calculatePayroll()});
+  tr.querySelectorAll("input").forEach(x=>x.addEventListener("input",calculatePayroll));
 }
-
-function calculatePayroll() {
-  const earnings = sumAmounts("#earningsBody .amount");
-  const manualDeductions = sumAmounts("#deductionsBody .amount");
-
-  const payeRate = parseFloat(document.getElementById("payeRate").value) || 0;
-  const uifRate = parseFloat(document.getElementById("uifRate").value) || 0;
-
-  const paye = earnings * (payeRate / 100);
-  const uif = earnings * (uifRate / 100);
-
-  const totalDeductions = manualDeductions + paye + uif;
-  const netPay = earnings - totalDeductions;
-
-  document.getElementById("gross").innerText = earnings.toFixed(2);
-  document.getElementById("totalDeductions").innerText = totalDeductions.toFixed(2);
-  document.getElementById("netPay").innerText = netPay.toFixed(2);
+function rows(table){
+  return [...$(table).querySelectorAll("tr")].map(r=>({
+    description:r.querySelector(".desc")?.value.trim()||"",
+    amount:Number(r.querySelector(".amount")?.value||0),
+    taxable:r.querySelector(".taxable")?.checked,
+    uif:r.querySelector(".uif")?.checked
+  }));
 }
-
-function saveDraft() {
-  const data = document.body.innerHTML;
-  localStorage.setItem("payrollDraft", data);
-  alert("Draft saved locally.");
+function annualTax(taxableAnnual){
+  const b=BRACKETS.find(x=>taxableAnnual<=x.max);
+  return b.base+Math.max(0,taxableAnnual-b.over)*b.rate;
 }
-
-function exportCSV() {
-  let csv = "Description,Amount\n";
-  document.querySelectorAll("#earningsBody tr").forEach(row => {
-    const desc = row.cells[0].querySelector("input").value;
-    const amount = row.cells[1].querySelector("input").value;
-    csv += `${desc},${amount}\n`;
-  });
-  const blob = new Blob([csv], { type: "text/csv" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "payroll.csv";
-  link.click();
+function payeEstimate(taxablePeriod){
+  const periods=Number($("periods").value||12);
+  const annual=taxablePeriod*periods;
+  const key=$("ageBand").value==="65to74"?"age65to74":$("ageBand").value==="75plus"?"age75plus":"under65";
+  const netAnnual=Math.max(0,annualTax(annual)-REBATES[key]);
+  return Math.max(0,netAnnual/periods)+Math.max(0,Number($("additionalPaye").value||0));
 }
+function setPrintRows(id,list){
+  $(id).innerHTML=list.length?list.map(x=>`<div class="flex justify-between"><span>${esc(x.description||"Item")}</span><span class="mono">${money(x.amount)}</span></div>`).join(""):`<div class="text-slate-400">None</div>`;
+}
+function calculatePayroll(){
+  const earnings=rows("earningsBody"),deductions=rows("deductionsBody");
+  const gross=earnings.reduce((a,x)=>a+x.amount,0);
+  const taxable=earnings.filter(x=>x.taxable).reduce((a,x)=>a+x.amount,0);
+  const uifRem=earnings.filter(x=>x.uif).reduce((a,x)=>a+x.amount,0);
+  const paye=payeEstimate(taxable);
+  const uif=$("uifEnabled").checked?Math.min(uifRem,UIF_CEILING_MONTHLY)*.01:0;
+  const manual=deductions.reduce((a,x)=>a+x.amount,0);
+  const totalDed=manual+paye+uif;
+  const net=gross-totalDed;
+  const employerUif=$("uifEnabled").checked?uif:0;
+  const sdl=$("sdlEnabled").checked?gross*.01:0;
+  const employerCost=gross+employerUif+sdl;
+
+  $("gross").textContent=money(gross);$("taxable").textContent=money(taxable);
+  $("pPaye").textContent=money(paye);$("pUif").textContent=money(uif);
+  $("totalDeductions").textContent=money(totalDed);$("netPay").textContent=money(net);
+  $("employerUif").textContent=money(employerUif);$("sdl").textContent=money(sdl);$("employerCost").textContent=money(employerCost);
+  $("pEmployee").textContent=$("employeeName").value.trim()||"Employee";
+  $("pEmployeeId").textContent=$("employeeId").value.trim()?("ID: "+$("employeeId").value.trim()):"";
+  $("pPeriod").textContent=$("payPeriod").value||"—";
+  setPrintRows("printEarnings",earnings);setPrintRows("printDeductions",deductions);
+
+  const checks=[];
+  checks.push({ok:gross>0,text:gross>0?"Gross pay captured":"Add at least one earning"});
+  checks.push({ok:net>=0,text:net>=0?"Net pay is non-negative":"Deductions exceed gross pay"});
+  checks.push({ok:taxable<=gross,text:taxable<=gross?"Taxable remuneration is within gross pay":"Taxable remuneration check failed"});
+  checks.push({ok:!$("uifEnabled").checked||uif<=177.12+.001,text:!$("uifEnabled").checked?"UIF marked not applicable":"UIF capped at R177.12 employee contribution"});
+  checks.push({ok:Boolean($("payPeriod").value),text:$("payPeriod").value?"Pay period selected":"Select a pay period"});
+  checks.push({ok:Boolean($("employeeName").value.trim()),text:$("employeeName").value.trim()?"Employee identified":"Add employee name"});
+  $("checks").innerHTML=checks.map(c=>`<div class="p-3 rounded-lg border ${c.ok?"bg-green-50 border-green-200 text-green-900":"bg-yellow-50 border-yellow-200 text-yellow-900"}"><strong>${c.ok?"OK":"CHECK"}:</strong> ${esc(c.text)}</div>`).join("");
+  return {gross,taxable,paye,uif,manual,totalDed,net,employerUif,sdl,employerCost,earnings,deductions};
+}
+function snapshot(){
+  return {version:3,taxYear:TAX_YEAR,employeeName:$("employeeName").value,employeeId:$("employeeId").value,payPeriod:$("payPeriod").value,ageBand:$("ageBand").value,periods:$("periods").value,additionalPaye:$("additionalPaye").value,uifEnabled:$("uifEnabled").checked,sdlEnabled:$("sdlEnabled").checked,earnings:rows("earningsBody"),deductions:rows("deductionsBody"),savedAt:new Date().toISOString()};
+}
+function saveDraft(){localStorage.setItem(STORE_KEY,JSON.stringify(snapshot()));alert("Payroll draft saved locally.");}
+function loadDraft(){
+  const raw=localStorage.getItem(STORE_KEY);if(!raw){alert("No saved payroll draft found.");return}
+  try{
+    const d=JSON.parse(raw);$("employeeName").value=d.employeeName||"";$("employeeId").value=d.employeeId||"";$("payPeriod").value=d.payPeriod||"";$("ageBand").value=d.ageBand||"under65";$("periods").value=d.periods||"12";$("additionalPaye").value=d.additionalPaye||0;$("uifEnabled").checked=d.uifEnabled!==false;$("sdlEnabled").checked=Boolean(d.sdlEnabled);
+    $("earningsBody").innerHTML="";$("deductionsBody").innerHTML="";
+    (d.earnings||[]).forEach(x=>addEarning(x.description,x.amount,x.taxable!==false,x.uif!==false));
+    (d.deductions||[]).forEach(x=>addDeduction(x.description,x.amount));
+    if(!d.earnings?.length)addEarning("Basic salary",0,true,true);calculatePayroll();
+  }catch(e){alert("Saved draft could not be loaded.");}
+}
+function resetForm(){
+  if(!confirm("Reset this payroll draft?"))return;
+  ["employeeName","employeeId","payPeriod"].forEach(id=>$(id).value="");$("ageBand").value="under65";$("periods").value="12";$("additionalPaye").value="0";$("uifEnabled").checked=true;$("sdlEnabled").checked=false;$("earningsBody").innerHTML="";$("deductionsBody").innerHTML="";addEarning("Basic salary",0,true,true);calculatePayroll();
+}
+function seed(){
+  $("employeeName").value="Nomsa Dlamini";$("employeeId").value="EMP-001";$("payPeriod").value=new Date().toISOString().slice(0,7);$("ageBand").value="under65";$("periods").value="12";$("uifEnabled").checked=true;$("sdlEnabled").checked=true;
+  $("earningsBody").innerHTML="";$("deductionsBody").innerHTML="";
+  addEarning("Basic salary",35000,true,true);addEarning("Performance bonus",2500,true,true);addDeduction("Medical aid employee contribution",1800);calculatePayroll();
+}
+function csvCell(v){return '"'+String(v??"").replaceAll('"','""')+'"'}
+function exportCSV(){
+  const c=calculatePayroll(),lines=[["EasyPAY",TAX_YEAR],["Employee",$("employeeName").value],["Employee ID",$("employeeId").value],["Pay period",$("payPeriod").value],[],["Type","Description","Amount"]];
+  c.earnings.forEach(x=>lines.push(["Earning",x.description,x.amount]));lines.push(["Statutory","PAYE estimate",c.paye],["Statutory","UIF employee",c.uif]);c.deductions.forEach(x=>lines.push(["Deduction",x.description,x.amount]));
+  lines.push([],["Summary","Gross",c.gross],["Summary","Total deductions",c.totalDed],["Summary","Net pay",c.net],["Employer","UIF employer",c.employerUif],["Employer","SDL estimate",c.sdl],["Employer","Total employer cost",c.employerCost]);
+  const blob=new Blob([lines.map(r=>r.map(csvCell).join(",")).join("\n")],{type:"text/csv;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`easy-payroll-${$("payPeriod").value||"payrun"}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),0);
+}
+$("btnAddEarning").addEventListener("click",()=>addEarning("",0,true,true));$("btnAddDeduction").addEventListener("click",()=>addDeduction("",0));
+$("btnCalculate").addEventListener("click",calculatePayroll);$("btnSave").addEventListener("click",saveDraft);$("btnLoad").addEventListener("click",loadDraft);$("btnReset").addEventListener("click",resetForm);$("btnSeed").addEventListener("click",seed);$("btnExport").addEventListener("click",exportCSV);
+["employeeName","employeeId","payPeriod","ageBand","periods","additionalPaye","uifEnabled","sdlEnabled"].forEach(id=>$(id).addEventListener("input",calculatePayroll));
+addEarning("Basic salary",0,true,true);calculatePayroll();
 </script>
-
 <script defer src="scripts/sync-nav.js"></script>
 </body>
 </html>
-
-
-
-
