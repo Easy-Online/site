@@ -4,360 +4,297 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9270041066336676" crossorigin="anonymous"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EasyBudgets – Budgeting</title>
-  <meta name="description" content="Budget caps, variance vs spend, alerts." />
-  
-  
+  <title>Easy Budgets – Budget Intelligence | EasyFile</title>
+  <meta name="description" content="Build business budgets, automatically consolidate actuals and commitments from EasyFile modules, monitor variance, forecast outcomes and surface management alerts." />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-/* EasyFile Add-ons */
-:root{
-  --primary:#2563eb; --primary2:#1d4ed8; --bg:#f5f7fb; --card:#ffffff;
-  --text:#0f172a; --muted:#64748b; --border:#e2e8f0;
-  --danger:#dc2626; --success:#16a34a;
-}
-body{background:var(--bg); color:var(--text);}
-.card{background:var(--card); border:1px solid var(--border); border-radius:14px; box-shadow:0 10px 25px rgba(2,6,23,.05);}
-.btn{display:inline-flex; align-items:center; justify-content:center; gap:.5rem; padding:.65rem 1rem; border-radius:10px; font-weight:800; transition: all .15s ease; border:1px solid transparent;}
-.btn:hover{transform:translateY(-1px);}
-.btn-primary{background:var(--primary); color:#fff;}
-.btn-primary:hover{background:var(--primary2);}
-.btn-outline{background:#fff; border-color:var(--border); color:var(--text);}
-.btn-outline:hover{border-color:#cbd5e1; background:#f8fafc;}
-.btn-danger{background:var(--danger); color:#fff;}
-.mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;}
-.responsive-table{overflow-x:auto; -webkit-overflow-scrolling:touch;}
-.toast{position:fixed; right:16px; bottom:16px; z-index:9999;}
-.toast>div{background:rgba(2,6,23,.92); color:#fff; border-radius:12px; padding:12px 14px; max-width:360px;}
-@media print{ .no-print{display:none !important;} body{background:#fff !important;} .card{box-shadow:none !important; border:none !important;} }
-
+    :root{--primary:#2563eb;--primary2:#1d4ed8;--bg:#f5f7fb;--card:#fff;--text:#0f172a;--muted:#64748b;--border:#e2e8f0;--danger:#dc2626;--success:#16a34a;--warning:#d97706;--info:#0891b2}
+    body{background:var(--bg);color:var(--text)} .card{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:0 10px 25px rgba(2,6,23,.05)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.65rem 1rem;border-radius:10px;font-weight:800;transition:.15s;border:1px solid transparent}.btn:hover{transform:translateY(-1px)}
+    .btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary2)}.btn-outline{background:#fff;border-color:var(--border);color:var(--text)}.btn-outline:hover{background:#f8fafc}.btn-danger{background:var(--danger);color:#fff}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}.responsive-table{overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .pill{display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .55rem;border-radius:999px;font-size:.72rem;font-weight:900}.pill-ok{background:#dcfce7;color:#166534}.pill-risk{background:#fef3c7;color:#92400e}.pill-over{background:#fee2e2;color:#991b1b}.pill-info{background:#e0f2fe;color:#075985}
+    .kpi{font-size:1.7rem;font-weight:900;letter-spacing:-.03em}.bar{height:8px;border-radius:999px;background:#e2e8f0;overflow:hidden}.bar>span{display:block;height:100%;background:#2563eb;border-radius:999px}.bar>span.warn{background:#d97706}.bar>span.bad{background:#dc2626}
+    .toast{position:fixed;right:16px;bottom:16px;z-index:9999}.toast>div{background:rgba(2,6,23,.94);color:#fff;border-radius:12px;padding:12px 14px;max-width:380px}
+    @media print{.no-print{display:none!important}body{background:#fff!important}.card{box-shadow:none!important}}
   </style>
-  <!-- EASYFILE_FAVICONS -->
   <link rel="icon" href="logo-b.png" type="image/png">
   <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
   <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
   <link rel="apple-touch-icon" href="logo-b.png">
 </head>
 <body class="min-h-screen">
-<!-- NAV_SYNC -->
 <div class="easyfile-nav no-print">
   <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
 </div>
+
 <main class="container mx-auto px-4 py-8">
-  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
+  <div class="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-4 mb-6">
     <div>
-      <h1 class="text-3xl font-extrabold text-slate-900">EasyBudgets – Budgeting</h1>
-      <p class="text-sm text-slate-600 mt-1">Budget caps, variance vs spend, alerts.</p>
-      <p class="text-xs text-slate-500 mt-1 mono">Store key: easy.budgets.v1</p>
+      <div class="flex items-center gap-2"><h1 class="text-3xl font-extrabold text-slate-900">Easy Budgets</h1><span class="pill pill-info">v2 Intelligence</span></div>
+      <p class="text-sm text-slate-600 mt-1">Budget → automatic actuals → variance → forecast → alerts → management dashboard.</p>
+      <p class="text-xs text-slate-500 mt-1">Local-first. Reads compatible EasyFile module data from this browser without sending financial records to a server.</p>
     </div>
     <div class="flex flex-wrap gap-2 no-print">
+      <button class="btn btn-primary" id="btnRefresh"><i class="fa-solid fa-rotate"></i> Refresh actuals</button>
       <button class="btn btn-outline" id="btnSeed"><i class="fa-solid fa-seedling"></i> Seed Demo</button>
       <button class="btn btn-outline" id="btnImport"><i class="fa-solid fa-file-import"></i> Import JSON</button>
-      <input id="fileJson" type="file" class="hidden" accept="application/json,.json" />
+      <input id="fileJson" type="file" class="hidden" accept="application/json,.json">
       <button class="btn btn-outline" id="btnExport"><i class="fa-solid fa-file-export"></i> Export</button>
       <button class="btn btn-outline" onclick="window.print()"><i class="fa-solid fa-print"></i> Print</button>
     </div>
   </div>
 
+  <section class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-6 gap-4 mb-6">
+    <div class="card p-4"><div class="text-xs font-black text-slate-500">BUDGET</div><div id="kBudget" class="kpi text-blue-700">R0</div><div class="text-xs text-slate-500">Selected period</div></div>
+    <div class="card p-4"><div class="text-xs font-black text-slate-500">ACTUAL</div><div id="kActual" class="kpi text-slate-900">R0</div><div class="text-xs text-slate-500">Posted activity</div></div>
+    <div class="card p-4"><div class="text-xs font-black text-slate-500">COMMITTED</div><div id="kCommitted" class="kpi text-purple-700">R0</div><div class="text-xs text-slate-500">Approved / sent POs</div></div>
+    <div class="card p-4"><div class="text-xs font-black text-slate-500">VARIANCE</div><div id="kVariance" class="kpi">R0</div><div class="text-xs text-slate-500">Favourable positive</div></div>
+    <div class="card p-4"><div class="text-xs font-black text-slate-500">FORECAST</div><div id="kForecast" class="kpi text-cyan-700">R0</div><div class="text-xs text-slate-500">Month-end projection</div></div>
+    <div class="card p-4"><div class="text-xs font-black text-slate-500">ALERTS</div><div id="kAlerts" class="kpi text-red-600">0</div><div class="text-xs text-slate-500">Needs attention</div></div>
+  </section>
 
-<section class="card p-5 mb-6 no-print">
-  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-3">
-    <div>
-      <h2 class="text-lg font-black text-slate-900">Create / Update Budgets</h2>
-      <p class="text-xs text-slate-500">Budget caps, variance tracking, and alerts.</p>
+  <section class="card p-5 mb-6 no-print">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 mb-4">
+      <div><h2 class="text-lg font-black">Management view</h2><p class="text-xs text-slate-500">Filter a period and inspect budget health across departments and categories.</p></div>
+      <div class="flex flex-wrap gap-2">
+        <input id="filterPeriod" type="month" class="border border-gray-200 rounded-lg px-3 py-2">
+        <select id="filterType" class="border border-gray-200 rounded-lg px-3 py-2"><option value="">All budget types</option><option>Expense</option><option>Revenue</option></select>
+        <input id="q" class="border border-gray-200 rounded-lg px-3 py-2" placeholder="Search department, category, owner...">
+      </div>
     </div>
-    <div class="flex flex-wrap gap-2">
-      <button class="btn btn-primary" id="btnSaveRow"><i class="fa-solid fa-floppy-disk"></i> Save</button>
-      <button class="btn btn-outline" id="btnClear"><i class="fa-solid fa-rotate-left"></i> Clear</button>
-      <button class="btn btn-outline" id="btnExportCSV"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
-    </div>
+    <div id="healthBars" class="space-y-3"></div>
+  </section>
+
+  <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
+    <section class="card p-5 xl:col-span-2 no-print">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+        <div><h2 class="text-lg font-black">Create / Update Budget</h2><p class="text-xs text-slate-500">Actual, committed, variance, forecast and status are calculated automatically.</p></div>
+        <div class="flex gap-2"><button class="btn btn-primary" id="btnSaveRow"><i class="fa-solid fa-floppy-disk"></i> Save</button><button class="btn btn-outline" id="btnClear">Clear</button></div>
+      </div>
+      <input id="rowId" type="hidden">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div><label class="text-xs font-black text-slate-600">Period</label><input id="period" type="month" class="w-full border border-gray-200 rounded-lg px-3 py-2"></div>
+        <div><label class="text-xs font-black text-slate-600">Budget Type</label><select id="type" class="w-full border border-gray-200 rounded-lg px-3 py-2"><option>Expense</option><option>Revenue</option></select></div>
+        <div><label class="text-xs font-black text-slate-600">Source</label><select id="source" class="w-full border border-gray-200 rounded-lg px-3 py-2"><option>Auto</option><option>Expenses</option><option>Payroll</option><option>Purchase Orders</option><option>Invoices</option><option>Manual</option></select></div>
+        <div><label class="text-xs font-black text-slate-600">Department</label><input id="department" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Sales / Operations / IT"></div>
+        <div><label class="text-xs font-black text-slate-600">Category</label><input id="category" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Software / Travel / Payroll / Revenue"></div>
+        <div><label class="text-xs font-black text-slate-600">Budget Amount</label><input id="budget" type="number" min="0" step="0.01" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="0.00"></div>
+        <div><label class="text-xs font-black text-slate-600">Manual Actual <span class="font-normal">(Manual source only)</span></label><input id="manualActual" type="number" min="0" step="0.01" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="0.00"></div>
+        <div><label class="text-xs font-black text-slate-600">Owner</label><input id="owner" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Responsible person"></div>
+        <div class="md:col-span-3"><label class="text-xs font-black text-slate-600">Notes / Management Action</label><textarea id="notes" rows="2" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Corrective action, assumptions, approvals..."></textarea></div>
+      </div>
+    </section>
+
+    <section class="card p-5 no-print">
+      <h2 class="text-lg font-black mb-1">Data connections</h2><p class="text-xs text-slate-500 mb-4">Detected browser stores used for automatic consolidation.</p>
+      <div id="sourceStatus" class="space-y-2 text-sm"></div>
+      <div class="mt-4 p-3 rounded-lg bg-blue-50 text-blue-900 text-xs">
+        <strong>Matching:</strong> period is mandatory. Expense categories match the budget category where possible. Payroll maps to Payroll/Salaries/Wages/Staff/Labour. Revenue maps to saved non-draft invoices. Purchase Orders are treated as commitments, not posted actuals.
+      </div>
+    </section>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-    <input id="rowId" class="hidden" />
-    
-      <div>
-        <label class="text-xs font-black text-slate-600">Period</label>
-        <input id="period" type="text" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="2026-02" />
-      </div>
-      <div>
-        <label class="text-xs font-black text-slate-600">Department</label>
-        <input id="department" type="text" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Ops / Sales / IT" />
-      </div>
-      <div>
-        <label class="text-xs font-black text-slate-600">Category</label>
-        <input id="category" type="text" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Fuel / Salaries / Software" />
-      </div>
-      <div>
-        <label class="text-xs font-black text-slate-600">Budget</label>
-        <input id="budget" type="number" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="0.00" />
-      </div>
-      <div>
-        <label class="text-xs font-black text-slate-600">Actual</label>
-        <input id="actual" type="number" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="0.00" />
-      </div>
-      <div>
-        <label class="text-xs font-black text-slate-600">Variance</label>
-        <input id="variance" type="number" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="0.00" />
-      </div>
-      <div>
-        <label class="text-xs font-black text-slate-600">Owner</label>
-        <input id="owner" type="text" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Responsible person" />
-      </div>
-      <div>
-        <label class="text-xs font-black text-slate-600">Status</label>
-        <input id="status" type="text" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="ok/over/at-risk" />
-      </div>
-      <div>
-        <label class="text-xs font-black text-slate-600">Notes</label>
-        <textarea id="notes" rows="3" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Actions"></textarea>
-      </div>
-  </div>
-</section>
+  <section class="card p-5 mb-6">
+    <div class="flex items-center justify-between gap-3 mb-3"><div><h2 class="text-lg font-black">Alerts & actions</h2><p class="text-xs text-slate-500">Forecast and utilisation exceptions requiring management attention.</p></div><span id="alertSummary" class="pill pill-ok">All clear</span></div>
+    <div id="alerts" class="space-y-2"></div>
+  </section>
 
-<section class="card p-0 overflow-hidden">
-  <div class="p-4 border-b border-gray-100 flex flex-col md:flex-row gap-3 md:items-center md:justify-between no-print">
-    <div class="flex items-center gap-2">
-      <i class="fa-solid fa-table text-blue-700"></i>
-      <div class="font-black text-slate-900">Budgets Register</div>
+  <section class="card p-0 overflow-hidden">
+    <div class="p-4 border-b border-gray-100 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <div><div class="font-black">Budget register</div><div class="text-xs text-slate-500">Computed values refresh from EasyFile source modules.</div></div>
+      <div class="flex gap-2 no-print"><button class="btn btn-outline" id="btnExportCSV"><i class="fa-solid fa-file-csv"></i> Export CSV</button><button class="btn btn-danger" id="btnDeleteAll"><i class="fa-solid fa-trash"></i> Clear All</button></div>
     </div>
-    <div class="flex items-center gap-2">
-      <input id="q" class="w-64 border border-gray-200 rounded-lg px-3 py-2" placeholder="Search..." />
-      <button class="btn btn-outline" id="btnDeleteAll"><i class="fa-solid fa-trash"></i> Clear All</button>
+    <div class="responsive-table">
+      <table class="min-w-full text-sm">
+        <thead class="bg-gray-50 text-slate-600"><tr>
+          <th class="p-3 text-left">Period</th><th class="p-3 text-left">Type</th><th class="p-3 text-left">Department / Category</th><th class="p-3 text-right">Budget</th><th class="p-3 text-right">Actual</th><th class="p-3 text-right">Committed</th><th class="p-3 text-right">Variance</th><th class="p-3 text-right">Forecast</th><th class="p-3 text-left">Status</th><th class="p-3 text-left">Owner</th><th class="p-3 text-center no-print">Actions</th>
+        </tr></thead>
+        <tbody id="rows" class="divide-y divide-gray-100"></tbody>
+      </table>
     </div>
-  </div>
-
-  <div class="responsive-table">
-    <table class="min-w-full text-sm">
-      <thead class="bg-gray-50 text-slate-600">
-        <tr>
-          <th class="p-3 text-left">#</th>
-          <th class="p-3 text-left">Period</th><th class="p-3 text-left">Department</th><th class="p-3 text-left">Category</th><th class="p-3 text-left">Budget</th><th class="p-3 text-left">Actual</th><th class="p-3 text-left">Variance</th><th class="p-3 text-left">Owner</th><th class="p-3 text-left">Status</th><th class="p-3 text-left">Notes</th>
-          <th class="p-3 text-center no-print">Actions</th>
-        </tr>
-      </thead>
-      <tbody id="rows" class="divide-y divide-gray-100"></tbody>
-    </table>
-  </div>
-</section>
-
+  </section>
 </main>
 
 <div class="toast hidden" id="toast"><div id="toastMsg"></div></div>
 
 <script>
-
-const $$ = (id) => document.getElementById(id);
-
-function escapeHtml(str){
-  return String(str || "").replace(/[&<>"']/g, m => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
-  }[m]));
+const $=id=>document.getElementById(id);
+const STORE_KEY="easy.budgets.v2", LEGACY_KEY="easy.budgets.v1";
+const SOURCE_KEYS={expenses:"easy.expenses.v1",invoices:"easy.ar.invoices.v1",payroll:"easy.payroll.v3",po:"EASYPO_AUTOSAVE_V1"};
+const money=n=>"R"+Number(n||0).toLocaleString("en-ZA",{minimumFractionDigits:2,maximumFractionDigits:2});
+const num=v=>Number.isFinite(Number(v))?Number(v):0;
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
+const uid=()=>window.crypto?.randomUUID?crypto.randomUUID():"b-"+Date.now()+"-"+Math.random().toString(16).slice(2);
+const nowISO=()=>new Date().toISOString();
+function read(key,fallback){try{const v=JSON.parse(localStorage.getItem(key)||"");return v??fallback}catch{return fallback}}
+function write(key,v){localStorage.setItem(key,JSON.stringify(v))}
+function toast(msg){$("toastMsg").textContent=msg;$("toast").classList.remove("hidden");clearTimeout(toast.t);toast.t=setTimeout(()=>$("toast").classList.add("hidden"),2600)}
+function saveBlob(blob,name){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},0)}
+function monthOf(v){return String(v||"").slice(0,7)}
+function textEq(a,b){return String(a||"").trim().toLowerCase()===String(b||"").trim().toLowerCase()}
+function categoryMatches(sourceCat,budgetCat){
+  const b=String(budgetCat||"").trim().toLowerCase(), s=String(sourceCat||"").trim().toLowerCase();
+  if(!b || ["all","all expenses","operating expenses","opex","revenue","sales","income"].includes(b)) return true;
+  return s===b || s.includes(b) || b.includes(s);
 }
-
-function saveAs(blob, filename){
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.style.display = "none";
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(()=>{ document.body.removeChild(a); URL.revokeObjectURL(url); }, 0);
+function migrate(){
+  let current=read(STORE_KEY,null); if(Array.isArray(current)) return current;
+  const legacy=read(LEGACY_KEY,[]);
+  const mapped=(Array.isArray(legacy)?legacy:[]).map(x=>({
+    id:x.id||uid(),period:monthOf(x.period),type:"Expense",source:"Manual",department:x.department||"",category:x.category||"",
+    budget:num(x.budget),manualActual:num(x.actual),owner:x.owner||"",notes:x.notes||"",createdAt:x.createdAt||nowISO(),updatedAt:x.updatedAt||nowISO()
+  }));
+  write(STORE_KEY,mapped); return mapped;
 }
+let data=migrate();
 
-function toast(msg){
-  $$("toastMsg").textContent = msg;
-  $$("toast").classList.remove("hidden");
-  setTimeout(()=> $$("toast").classList.add("hidden"), 2500);
+function sourceData(){
+  const expenses=read(SOURCE_KEYS.expenses,[]);
+  const invoices=read(SOURCE_KEYS.invoices,[]);
+  const payroll=read(SOURCE_KEYS.payroll,null);
+  const po=read(SOURCE_KEYS.po,null);
+  return {expenses:Array.isArray(expenses)?expenses:[],invoices:Array.isArray(invoices)?invoices:[],payroll,purchaseOrder:po};
 }
-
-function nowISO(){ return new Date().toISOString(); }
-
-function csvEscape(v){
-  const s = String(v ?? "");
-  if(/[",\n]/.test(s)) return '"' + s.replace(/"/g,'""') + '"';
-  return s;
+function payrollGross(p){return (p?.earnings||[]).reduce((s,x)=>s+num(x.amount),0)}
+function poGrand(po){
+  if(!po?.items) return 0;
+  const meta=po.meta||{}, vatRate=num(meta.vatRate)/100, mode=meta.vatMode||"exclusive";
+  let subtotal=0,vat=0;
+  po.items.forEach(i=>{let base=num(i.qty)*num(i.unitPrice);if(mode==="inclusive"&&i.vat){const ex=base/(1+vatRate);subtotal+=ex;vat+=base-ex}else{subtotal+=base;if(mode!=="none"&&i.vat)vat+=base*vatRate}});
+  const disc=Math.max(0,num(meta.globalDiscount)), ship=Math.max(0,num(meta.shipping));
+  if(mode==="exclusive"&&subtotal>0) vat*=Math.max(0,(subtotal-disc)/subtotal);
+  return Math.max(0,subtotal-disc)+vat+ship;
 }
-function toCSV(rows, headers){
-  const head = headers.join(",");
-  const body = rows.map(r => headers.map(h => csvEscape(r[h])).join(",")).join("\n");
-  return head + "\n" + body + "\n";
+function monthProgress(period){
+  if(!period) return 1; const [y,m]=period.split("-").map(Number); if(!y||!m)return 1;
+  const today=new Date(), start=new Date(y,m-1,1), end=new Date(y,m,0);
+  if(today<start)return .01;if(today>end)return 1;
+  return Math.max(.03,Math.min(1,today.getDate()/end.getDate()));
 }
-function downloadJSON(data, filename){
-  saveAs(new Blob([JSON.stringify(data,null,2)], {type:"application/json"}), filename);
-}
-function downloadCSV(rows, headers, filename){
-  saveAs(new Blob([toCSV(rows, headers)], {type:"text/csv"}), filename);
-}
-function loadStore(key, fallback){
-  try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
-  catch { return fallback; }
-}
-function saveStore(key, data){
-  localStorage.setItem(key, JSON.stringify(data));
-}
-
-
-const STORE_KEY = "easy.budgets.v1";
-let data = loadStore(STORE_KEY, []);
-function persist(){ saveStore(STORE_KEY, data); }
-
-function importJSONFile(file){
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    try {
-      const parsed = JSON.parse(reader.result);
-      if(!Array.isArray(parsed)) throw new Error("Expected an array");
-      data = parsed;
-      persist();
-      render();
-      toast("Imported " + data.length + " rows");
-    } catch(e) {
-      console.error(e);
-      toast("Import failed");
-    }
-  };
-  reader.readAsText(file);
-}
-
-$("btnImport").addEventListener("click", ()=> $("fileJson").click());
-$("fileJson").addEventListener("change", (e)=> importJSONFile(e.target.files[0]));
-$("btnExport").addEventListener("click", ()=> exportAll());
-$("btnSeed").addEventListener("click", ()=> seed());
-
-function exportAll(){ downloadJSON(data, "easy-budgets.json"); }
-
-
-const HEADERS = ["id", "period", "department", "category", "budget", "actual", "variance", "owner", "status", "notes", "createdAt", "updatedAt"];
-
-function clearForm(){
-  $$("rowId").value = "";
-  $$("period").value = "";
-  $$("department").value = "";
-  $$("category").value = "";
-  $$("budget").value = "";
-  $$("actual").value = "";
-  $$("variance").value = "";
-  $$("owner").value = "";
-  $$("status").value = "";
-  $$("notes").value = "";
-}
-
-function getFieldMap(){
-  return {
-    "period": $$("period").value,
-    "department": $$("department").value,
-    "category": $$("category").value,
-    "budget": $$("budget").value,
-    "actual": $$("actual").value,
-    "variance": $$("variance").value,
-    "owner": $$("owner").value,
-    "status": $$("status").value,
-    "notes": $$("notes").value
-  };
-}
-
-function seed(){
-  if(data.length){ if(!confirm("Replace existing data with demo seed?")) return; }
-  const demo = [];
-  for(let i=1;i<=6;i++) {
-    const r = { id:(crypto?.randomUUID ? crypto.randomUUID() : String(Date.now())+"-"+i), createdAt:nowISO(), updatedAt:nowISO() };
-    r["period"] = "Period " + i;
-    r["department"] = "";
-    r["category"] = "";
-    r["budget"] = "";
-    r["actual"] = "";
-    r["variance"] = "";
-    r["owner"] = "";
-    r["status"] = "";
-    r["notes"] = "";
-    demo.push(r);
+function compute(row,sources=sourceData()){
+  const type=row.type||"Expense", source=row.source||"Auto", period=monthOf(row.period), cat=row.category||"";
+  let actual=0, committed=0, detail=[];
+  const use=s=>source==="Auto"||source===s;
+  if(type==="Expense" && use("Expenses")){
+    const matches=sources.expenses.filter(x=>monthOf(x.date)===period && categoryMatches(x.category,cat));
+    const v=matches.reduce((s,x)=>s+num(x.amountIncl||x.amountExcl),0);actual+=v;if(v)detail.push("Expenses "+money(v));
   }
-  data = demo;
-  persist();
-  render();
-  toast("Seeded demo data");
+  if(type==="Expense" && use("Payroll")){
+    const payrollCats=["payroll","salary","salaries","wage","wages","staff","labour","labor","people",""];
+    if(sources.payroll && monthOf(sources.payroll.payPeriod)===period && payrollCats.includes(String(cat).trim().toLowerCase())){
+      const v=payrollGross(sources.payroll);actual+=v;if(v)detail.push("Payroll "+money(v));
+    }
+  }
+  if(type==="Expense" && use("Purchase Orders")){
+    const po=sources.purchaseOrder, status=String(po?.meta?.status||"").toLowerCase();
+    if(po && monthOf(po.meta?.poDate)===period && ["approved","sent","received"].includes(status)){
+      const v=poGrand(po);committed+=v;if(v)detail.push("PO commitment "+money(v));
+    }
+  }
+  if(type==="Revenue" && use("Invoices")){
+    const invs=sources.invoices.filter(x=>monthOf(x.issueDate)===period && String(x.status||"").toLowerCase()!=="draft");
+    const v=invs.reduce((s,x)=>s+num(x.total)*(num(x.fxRate)||1),0);actual+=v;if(v)detail.push("Invoices "+money(v));
+  }
+  if(source==="Manual") actual=num(row.manualActual);
+  const budget=Math.max(0,num(row.budget)), progress=monthProgress(period);
+  let forecast=actual;
+  if(period){
+    const current=monthOf(new Date().toISOString())===period;
+    if(current && progress<1){
+      const runRate=actual/progress;
+      forecast=type==="Expense"?Math.max(runRate,actual+committed):runRate;
+    }else if(type==="Expense") forecast=actual+committed;
+  }
+  const variance=type==="Expense"?budget-actual:actual-budget;
+  const forecastVariance=type==="Expense"?budget-forecast:forecast-budget;
+  const utilisation=budget?actual/budget:0, forecastUtil=budget?forecast/budget:0;
+  let status="On Track";
+  if(budget<=0 && actual>0) status="Over Budget";
+  else if(type==="Expense"){
+    if(forecast>budget*1.001 || actual>budget*1.001) status="Over Budget";
+    else if(forecast>budget*.9 || (progress<1&&utilisation>progress+0.12)) status="At Risk";
+  }else{
+    if(progress>=.5 && forecast<budget*.75) status="At Risk";
+    if(progress>=.85 && forecast<budget*.9) status="Off Target";
+  }
+  return {...row,budget,actual,committed,variance,forecast,forecastVariance,utilisation,forecastUtil,status,detail};
 }
-
-function exportCSV(){
-  downloadCSV(data, HEADERS, "budgets.csv");
+function filteredComputed(){
+  const p=$("filterPeriod").value, t=$("filterType").value, q=$("q").value.trim().toLowerCase(), s=sourceData();
+  return data.map(x=>compute(x,s)).filter(x=>(!p||monthOf(x.period)===p)&&(!t||x.type===t)&&(!q||[x.department,x.category,x.owner,x.notes,x.source].join(" ").toLowerCase().includes(q)));
 }
-
-$$("btnExportCSV").addEventListener("click", exportCSV);
-$$("btnClear").addEventListener("click", clearForm);
-
-$$("btnSaveRow").addEventListener("click", ()=> {
-  const fields = getFieldMap();
-  const firstKey = "period";
-  if(!String(fields[firstKey]||"").trim()){ toast("Please provide: Period"); return; }
-  const id = $$("rowId").value || (crypto?.randomUUID ? crypto.randomUUID() : String(Date.now()));
-  const existing = data.find(x => x.id === id);
-  const now = nowISO();
-  if(existing) Object.assign(existing, fields, {updatedAt:now});
-  else data.unshift({id, ...fields, createdAt:now, updatedAt:now});
-  persist(); render(); toast("Saved"); clearForm();
-});
-
-$$("btnDeleteAll").addEventListener("click", ()=> {
-  if(!confirm("Clear all rows for this module?")) return;
-  data = []; persist(); render(); toast("Cleared");
-});
-
-$$("q").addEventListener("input", render);
-
-function render(){
-  const q = ($$("q").value||"").toLowerCase().trim();
-  const list = data.filter(row => !q || HEADERS.map(h=>String(row[h]||"")).join(" ").toLowerCase().includes(q));
-  const tb = $$("rows"); tb.innerHTML = "";
-  if(!list.length){ tb.innerHTML = `<tr><td colspan="12" class="p-6 text-center text-slate-500">No records.</td></tr>`; return; }
-  list.forEach((row, idx) => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td class="p-3 mono">$${idx+1}</td>
-      <td class="p-3">$${escapeHtml(row["period"]||"")}</td>
-      <td class="p-3">$${escapeHtml(row["department"]||"")}</td>
-      <td class="p-3">$${escapeHtml(row["category"]||"")}</td>
-      <td class="p-3">$${escapeHtml(row["budget"]||"")}</td>
-      <td class="p-3">$${escapeHtml(row["actual"]||"")}</td>
-      <td class="p-3">$${escapeHtml(row["variance"]||"")}</td>
-      <td class="p-3">$${escapeHtml(row["owner"]||"")}</td>
-      <td class="p-3">$${escapeHtml(row["status"]||"")}</td>
-      <td class="p-3">$${escapeHtml(row["notes"]||"")}</td>
-      <td class="p-3 text-center no-print">
-        <div class="flex justify-center gap-2 flex-wrap">
-          <button class="btn btn-outline" data-edit="$${row.id}"><i class="fa-solid fa-pen"></i> Edit</button>
-          <button class="btn btn-danger" data-del="$${row.id}"><i class="fa-solid fa-trash"></i></button>
-        </div>
-      </td>
-    `;
-    tb.appendChild(tr);
+function statusPill(s){const c=s==="On Track"?"pill-ok":s==="At Risk"?"pill-risk":"pill-over";return '<span class="pill '+c+'">'+esc(s)+'</span>'}
+function renderSources(){
+  const s=sourceData();
+  const items=[
+    ["Easy Expenses",SOURCE_KEYS.expenses,Array.isArray(s.expenses)&&s.expenses.length,s.expenses.length+" records"],
+    ["Easy Invoice / AR",SOURCE_KEYS.invoices,Array.isArray(s.invoices)&&s.invoices.length,s.invoices.length+" invoices"],
+    ["Easy Payroll",SOURCE_KEYS.payroll,!!s.payroll,s.payroll?("Period "+(s.payroll.payPeriod||"unknown")):"No saved draft"],
+    ["Easy Purchase Order",SOURCE_KEYS.po,!!s.purchaseOrder,s.purchaseOrder?(s.purchaseOrder.meta?.poNumber||"Saved PO"):"No autosave"]
+  ];
+  $("sourceStatus").innerHTML=items.map(([name,key,ok,detail])=>'<div class="flex items-center justify-between gap-2 p-2 rounded-lg border"><div><div class="font-bold">'+esc(name)+'</div><div class="text-xs text-slate-500 mono">'+esc(key)+'</div></div><div class="text-right"><span class="pill '+(ok?"pill-ok":"pill-info")+'">'+(ok?"Detected":"Waiting")+'</span><div class="text-xs text-slate-500 mt-1">'+esc(detail)+'</div></div></div>').join("");
+}
+function renderKPIs(list){
+  const budget=list.reduce((s,x)=>s+x.budget,0),actual=list.reduce((s,x)=>s+x.actual,0),comm=list.reduce((s,x)=>s+x.committed,0),forecast=list.reduce((s,x)=>s+x.forecast,0);
+  const variance=list.reduce((s,x)=>s+x.variance,0), alerts=list.filter(x=>x.status!=="On Track").length;
+  $("kBudget").textContent=money(budget);$("kActual").textContent=money(actual);$("kCommitted").textContent=money(comm);$("kVariance").textContent=money(variance);$("kForecast").textContent=money(forecast);$("kAlerts").textContent=alerts;
+  $("kVariance").className="kpi "+(variance>=0?"text-green-700":"text-red-600");
+}
+function renderHealth(list){
+  const wrap=$("healthBars"); if(!list.length){wrap.innerHTML='<div class="text-sm text-slate-500">No budgets match the current filters.</div>';return}
+  wrap.innerHTML=list.slice(0,10).map(x=>{const pct=Math.max(0,Math.min(140,x.forecastUtil*100));const cls=pct>100?"bad":pct>90?"warn":"";return '<div><div class="flex justify-between text-xs mb-1"><span class="font-bold">'+esc((x.department||"General")+" · "+(x.category||x.type))+'</span><span>'+money(x.forecast)+' / '+money(x.budget)+' forecast</span></div><div class="bar"><span class="'+cls+'" style="width:'+Math.min(100,pct)+'%"></span></div></div>'}).join("");
+}
+function renderAlerts(list){
+  const alerts=[];
+  list.forEach(x=>{
+    if(x.status==="Over Budget"||x.status==="Off Target") alerts.push({sev:"High",row:x,msg:x.type==="Expense"?"Forecast exceeds budget by "+money(Math.max(0,x.forecast-x.budget)):"Revenue forecast is below target by "+money(Math.max(0,x.budget-x.forecast))});
+    else if(x.status==="At Risk") alerts.push({sev:"Medium",row:x,msg:"Trend indicates this budget may miss its target. Review assumptions and corrective action."});
+    if(x.type==="Expense"&&x.committed>0&&x.actual+x.committed>x.budget) alerts.push({sev:"Medium",row:x,msg:"Actual plus commitments exceed the budget cap by "+money(x.actual+x.committed-x.budget)});
   });
-  tb.querySelectorAll("[data-edit]").forEach(b => b.addEventListener("click", ()=> {
-    const id = b.getAttribute("data-edit");
-    const row = data.find(x => x.id === id); if(!row) return;
-    $$("rowId").value = row.id;
-    $$("period").value = row["period"] || "";
-    $$("department").value = row["department"] || "";
-    $$("category").value = row["category"] || "";
-    $$("budget").value = row["budget"] || "";
-    $$("actual").value = row["actual"] || "";
-    $$("variance").value = row["variance"] || "";
-    $$("owner").value = row["owner"] || "";
-    $$("status").value = row["status"] || "";
-    $$("notes").value = row["notes"] || "";
-    window.scrollTo({top:0, behavior:"smooth"});
-  }));
-  tb.querySelectorAll("[data-del]").forEach(b => b.addEventListener("click", ()=> {
-    const id = b.getAttribute("data-del");
-    if(!confirm("Delete this record?")) return;
-    data = data.filter(x => x.id !== id); persist(); render(); toast("Deleted");
-  }));
+  $("kAlerts").textContent=alerts.length;
+  $("alertSummary").className="pill "+(alerts.length?"pill-risk":"pill-ok");$("alertSummary").textContent=alerts.length?alerts.length+" active alerts":"All clear";
+  $("alerts").innerHTML=alerts.length?alerts.slice(0,12).map(a=>'<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2 p-3 rounded-lg border '+(a.sev==="High"?"bg-red-50":"bg-yellow-50")+'"><div><span class="font-black">'+esc(a.row.department||"General")+' / '+esc(a.row.category||a.row.type)+'</span><div class="text-sm text-slate-700">'+esc(a.msg)+'</div></div><span class="pill '+(a.sev==="High"?"pill-over":"pill-risk")+'">'+a.sev+'</span></div>').join(""):'<div class="text-sm text-slate-500">No active budget exceptions for the selected view.</div>';
 }
-
-render();
+function renderTable(list){
+  const tb=$("rows"); if(!list.length){tb.innerHTML='<tr><td colspan="11" class="p-8 text-center text-slate-500">No budgets found.</td></tr>';return}
+  tb.innerHTML=list.map(x=>'<tr><td class="p-3 mono">'+esc(monthOf(x.period))+'</td><td class="p-3">'+esc(x.type)+'</td><td class="p-3"><div class="font-bold">'+esc(x.department||"General")+'</div><div class="text-xs text-slate-500">'+esc(x.category||"All")+' · '+esc(x.source||"Auto")+'</div></td><td class="p-3 text-right mono">'+money(x.budget)+'</td><td class="p-3 text-right mono">'+money(x.actual)+'</td><td class="p-3 text-right mono">'+money(x.committed)+'</td><td class="p-3 text-right mono '+(x.variance>=0?"text-green-700":"text-red-600")+'">'+money(x.variance)+'</td><td class="p-3 text-right mono">'+money(x.forecast)+'</td><td class="p-3">'+statusPill(x.status)+'</td><td class="p-3">'+esc(x.owner||"—")+'</td><td class="p-3 text-center no-print"><div class="flex justify-center gap-2"><button class="btn btn-outline" data-edit="'+esc(x.id)+'"><i class="fa-solid fa-pen"></i></button><button class="btn btn-danger" data-del="'+esc(x.id)+'"><i class="fa-solid fa-trash"></i></button></div></td></tr>').join("");
+  tb.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>editRow(b.dataset.edit)));
+  tb.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click",()=>deleteRow(b.dataset.del)));
+}
+function render(){const list=filteredComputed();renderKPIs(list);renderHealth(list);renderAlerts(list);renderTable(list);renderSources()}
+function clearForm(){["rowId","department","category","budget","manualActual","owner","notes"].forEach(id=>$(id).value="");$("period").value=$("filterPeriod").value||monthOf(new Date().toISOString());$("type").value="Expense";$("source").value="Auto"}
+function editRow(id){const r=data.find(x=>x.id===id);if(!r)return;["period","type","source","department","category","budget","manualActual","owner","notes"].forEach(k=>$(k).value=r[k]??"");$("rowId").value=r.id;window.scrollTo({top:0,behavior:"smooth"})}
+function deleteRow(id){if(!confirm("Delete this budget?"))return;data=data.filter(x=>x.id!==id);write(STORE_KEY,data);render();toast("Budget deleted")}
+function saveRow(){
+  const period=$("period").value,budget=num($("budget").value);if(!period)return toast("Period is required");if(budget<0)return toast("Budget must be zero or greater");
+  const id=$("rowId").value||uid(),existing=data.find(x=>x.id===id),now=nowISO();
+  const row={id,period,type:$("type").value,source:$("source").value,department:$("department").value.trim(),category:$("category").value.trim(),budget,manualActual:num($("manualActual").value),owner:$("owner").value.trim(),notes:$("notes").value.trim(),createdAt:existing?.createdAt||now,updatedAt:now};
+  if(existing)Object.assign(existing,row);else data.unshift(row);write(STORE_KEY,data);clearForm();render();toast("Budget saved and recalculated");
+}
+function seed(){
+  if(data.length&&!confirm("Replace existing budgets with realistic demo budgets?"))return;
+  const p=$("filterPeriod").value||monthOf(new Date().toISOString());
+  data=[
+    {id:uid(),period:p,type:"Expense",source:"Expenses",department:"Operations",category:"Travel",budget:30000,manualActual:0,owner:"Operations Manager",notes:"Monitor travel and fuel weekly"},
+    {id:uid(),period:p,type:"Expense",source:"Expenses",department:"IT",category:"Software",budget:45000,manualActual:0,owner:"IT Manager",notes:"Licensing and cloud subscriptions"},
+    {id:uid(),period:p,type:"Expense",source:"Payroll",department:"People",category:"Payroll",budget:180000,manualActual:0,owner:"Finance",notes:"Monthly payroll cap"},
+    {id:uid(),period:p,type:"Expense",source:"Purchase Orders",department:"Procurement",category:"Purchasing",budget:80000,manualActual:0,owner:"Procurement",notes:"Committed spend control"},
+    {id:uid(),period:p,type:"Revenue",source:"Invoices",department:"Sales",category:"Revenue",budget:350000,manualActual:0,owner:"Sales",notes:"Monthly billed revenue target"}
+  ].map(x=>({...x,createdAt:nowISO(),updatedAt:nowISO()}));write(STORE_KEY,data);render();toast("Demo management budget seeded");
+}
+function exportJSON(){saveBlob(new Blob([JSON.stringify(data,null,2)],{type:"application/json"}),"easy-budgets-v2.json")}
+function exportCSV(){
+  const rows=filteredComputed(),heads=["period","type","source","department","category","budget","actual","committed","variance","forecast","forecastVariance","status","owner","notes"];
+  const e=v=>{const s=String(v??"");return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};
+  saveBlob(new Blob([heads.join(",")+"\n"+rows.map(r=>heads.map(h=>e(r[h])).join(",")).join("\n")+"\n"],{type:"text/csv"}),"easy-budgets-management.csv");
+}
+function importJSON(file){if(!file)return;const rd=new FileReader();rd.onload=()=>{try{const x=JSON.parse(rd.result);if(!Array.isArray(x))throw 0;data=x.map(r=>({id:r.id||uid(),period:monthOf(r.period),type:r.type||"Expense",source:r.source||"Manual",department:r.department||"",category:r.category||"",budget:num(r.budget),manualActual:num(r.manualActual??r.actual),owner:r.owner||"",notes:r.notes||"",createdAt:r.createdAt||nowISO(),updatedAt:nowISO()}));write(STORE_KEY,data);render();toast("Imported "+data.length+" budgets")}catch{toast("Import failed: expected a budget array")}};rd.readAsText(file)}
+$("btnSaveRow").addEventListener("click",saveRow);$("btnClear").addEventListener("click",clearForm);$("btnDeleteAll").addEventListener("click",()=>{if(confirm("Clear all Easy Budgets v2 records?")){data=[];write(STORE_KEY,data);render()}});
+$("btnSeed").addEventListener("click",seed);$("btnRefresh").addEventListener("click",()=>{render();toast("Actuals, commitments, variance and forecast refreshed")});$("btnExport").addEventListener("click",exportJSON);$("btnExportCSV").addEventListener("click",exportCSV);
+$("btnImport").addEventListener("click",()=>$("fileJson").click());$("fileJson").addEventListener("change",e=>importJSON(e.target.files[0]));["filterPeriod","filterType","q"].forEach(id=>$(id).addEventListener(id==="q"?"input":"change",render));
+const currentMonth=monthOf(new Date().toISOString());$("filterPeriod").value=currentMonth;clearForm();render();
 </script>
 <script defer src="scripts/sync-nav.js"></script>
 </body>
