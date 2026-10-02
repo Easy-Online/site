@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>EasyAR – Invoice to Cash Workspace</title>
+  <meta name="description" content="Local-first accounts receivable workspace for invoice registers, payments, aging, recurring billing, reminders, credit notes and cash-flow forecasting.">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="icon" href="logo-b.png" type="image/png">
+  <style>
+    .card{background:#fff;border:1px solid #e5e7eb;border-radius:1rem}.field{width:100%;border:1px solid #e5e7eb;border-radius:.55rem;padding:.55rem .7rem}
+    .btn{display:inline-flex;align-items:center;gap:.4rem;padding:.55rem .8rem;border-radius:.55rem;font-weight:700}.pill{font-size:.72rem;border-radius:999px;padding:.2rem .55rem;border:1px solid #e5e7eb}
+    .mono{font-variant-numeric:tabular-nums}.modal{background:rgba(15,23,42,.65)} @media print{.no-print{display:none!important}}
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900 min-h-screen">
+<div class="easyfile-nav no-print"><a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a></div>
+<main class="container mx-auto px-4 py-6 space-y-6">
+  <header class="flex flex-wrap gap-3 items-center">
+    <div><h1 class="text-3xl font-black">EasyAR</h1><p class="text-gray-600">Invoice-to-cash workspace: register, collect, reconcile, forecast.</p></div>
+    <div class="ml-auto flex gap-2 flex-wrap no-print">
+      <a href="easy-invoice.html" class="btn bg-blue-600 text-white"><i class="fa-solid fa-plus"></i>New Invoice</a>
+      <button id="btnRunRecurring" class="btn bg-white border"><i class="fa-solid fa-rotate"></i>Run Recurring</button>
+      <button id="btnSettings" class="btn bg-white border"><i class="fa-solid fa-gear"></i>Settings</button>
+    </div>
+  </header>
+
+  <section class="grid grid-cols-2 md:grid-cols-6 gap-3">
+    <div class="card p-4"><div class="text-xs text-gray-500">OUTSTANDING</div><div id="kOutstanding" class="text-xl font-black mono">R0.00</div></div>
+    <div class="card p-4"><div class="text-xs text-gray-500">CURRENT</div><div id="kCurrent" class="text-xl font-black mono">R0.00</div></div>
+    <div class="card p-4"><div class="text-xs text-gray-500">1–30 DAYS</div><div id="k30" class="text-xl font-black mono">R0.00</div></div>
+    <div class="card p-4"><div class="text-xs text-gray-500">31–60 DAYS</div><div id="k60" class="text-xl font-black mono">R0.00</div></div>
+    <div class="card p-4"><div class="text-xs text-gray-500">61–90 DAYS</div><div id="k90" class="text-xl font-black mono">R0.00</div></div>
+    <div class="card p-4"><div class="text-xs text-gray-500">90+ DAYS</div><div id="k90p" class="text-xl font-black mono">R0.00</div></div>
+  </section>
+
+  <section class="grid lg:grid-cols-3 gap-5">
+    <article class="card p-4 lg:col-span-2">
+      <div class="flex flex-wrap gap-2 items-end mb-4">
+        <div class="flex-1 min-w-[220px]"><label class="text-xs font-bold">Search invoice/customer</label><input id="q" class="field" placeholder="Invoice, customer, email, reference"></div>
+        <div><label class="text-xs font-bold">Status</label><select id="statusFilter" class="field"><option value="">All</option><option>Draft</option><option>Sent</option><option>Partially Paid</option><option>Paid</option><option>Overdue</option></select></div>
+      </div>
+      <div class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-left border-b"><tr><th class="p-2">Invoice</th><th>Customer</th><th>Due</th><th>Status</th><th class="text-right">Total</th><th class="text-right">Balance</th><th class="no-print"></th></tr></thead><tbody id="invoiceRows"></tbody></table></div>
+    </article>
+
+    <aside class="space-y-5">
+      <article class="card p-4"><h2 class="font-black">Reminder queue</h2><p class="text-xs text-gray-500 mb-3">Before due → due → 7 days → final notice.</p><div id="reminders" class="space-y-2"></div></article>
+      <article class="card p-4"><h2 class="font-black">90-day cash-flow forecast</h2><div id="forecastTotal" class="text-2xl font-black mono mt-2">R0.00</div><div id="forecastRows" class="text-xs mt-3 space-y-1"></div></article>
+      <article class="card p-4"><h2 class="font-black">Invoice intelligence</h2><div id="assistant" class="text-sm mt-2 space-y-2 text-gray-700"></div></article>
+    </aside>
+  </section>
+
+  <section class="grid lg:grid-cols-2 gap-5">
+    <article class="card p-4">
+      <div class="flex justify-between items-center"><div><h2 class="font-black">Customer ledger</h2><p class="text-xs text-gray-500">Search a CRM/customer identity across invoices, payments and credits.</p></div></div>
+      <div class="flex gap-2 mt-3"><select id="crmCustomer" class="field"><option value="">Select CRM contact…</option></select><button id="btnLedger" class="btn bg-gray-900 text-white">Load</button></div>
+      <div id="ledger" class="mt-4 text-sm"></div>
+    </article>
+    <article class="card p-4">
+      <div class="flex justify-between items-center"><div><h2 class="font-black">Recurring invoices</h2><p class="text-xs text-gray-500">Generate repeat invoices without a server.</p></div><button id="btnAddRecurring" class="btn bg-blue-600 text-white no-print">Add</button></div>
+      <div id="recurringRows" class="mt-4 space-y-2 text-sm"></div>
+    </article>
+  </section>
+
+  <section class="card p-4">
+    <h2 class="font-black">Audit trail</h2><p class="text-xs text-gray-500 mb-3">Created, updated, payments, credits, reminders, inventory and transfers.</p>
+    <div id="auditRows" class="text-xs space-y-1 max-h-64 overflow-y-auto"></div>
+  </section>
+</main>
+
+<div id="detailModal" class="modal fixed inset-0 hidden items-center justify-center p-4 z-50">
+ <div class="bg-white rounded-2xl max-w-3xl w-full max-h-screen overflow-y-auto p-5">
+  <div class="flex justify-between"><div><h2 id="dTitle" class="text-xl font-black">Invoice</h2><p id="dSub" class="text-xs text-gray-500"></p></div><button id="dClose" class="text-xl">×</button></div>
+  <div id="dBody" class="mt-4"></div>
+ </div>
+</div>
+
+<div id="settingsModal" class="modal fixed inset-0 hidden items-center justify-center p-4 z-50">
+ <div class="bg-white rounded-2xl max-w-xl w-full p-5"><div class="flex justify-between"><h2 class="text-xl font-black">AR Settings</h2><button id="sClose">×</button></div>
+  <div class="grid gap-3 mt-4">
+   <div><label class="text-xs font-bold">Base currency</label><select id="sCurrency" class="field"><option>ZAR</option><option>USD</option><option>EUR</option><option>GBP</option></select></div>
+   <div><label class="text-xs font-bold">Payment provider</label><select id="sProvider" class="field"><option>EFT</option><option>PayFast</option><option>Ozow</option><option>Yoco</option><option>Peach Payments</option><option>Stripe</option></select></div>
+   <div><label class="text-xs font-bold">Payment base URL / hosted payment page</label><input id="sPaymentUrl" class="field" placeholder="https://..."></div>
+   <div><label class="text-xs font-bold">Default terms (days)</label><input id="sTerms" type="number" class="field" min="0"></div>
+   <button id="sSave" class="btn bg-blue-600 text-white justify-center">Save settings</button>
+  </div>
+ </div>
+</div>
+
+<script src="assets/js/easy-ar.js"></script>
+<script>
+const $=id=>document.getElementById(id), money=n=>"R"+Number(n||0).toLocaleString("en-ZA",{minimumFractionDigits:2,maximumFractionDigits:2});
+let selected=null;
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
+function render(){
+ const a=EasyAR.aging(); $("kOutstanding").textContent=money(a.total);$("kCurrent").textContent=money(a.current);$("k30").textContent=money(a.d1_30);$("k60").textContent=money(a.d31_60);$("k90").textContent=money(a.d61_90);$("k90p").textContent=money(a.d90plus);
+ const q=$("q").value.trim().toLowerCase(),sf=$("statusFilter").value;
+ const rows=EasyAR.invoices().filter(i=>{const st=EasyAR.deriveStatus(i),hay=[i.number,i.reference,i.client?.name,i.client?.email].join(" ").toLowerCase();return(!q||hay.includes(q))&&(!sf||st===sf)});
+ $("invoiceRows").innerHTML=rows.length?rows.map(i=>{const st=EasyAR.deriveStatus(i),b=EasyAR.balance(i);return `<tr class="border-b"><td class="p-2 font-bold">${esc(i.number||"—")}<div class="text-xs text-gray-400">${esc(i.type)}</div></td><td>${esc(i.client?.name||"—")}</td><td>${esc(i.dueDate||"—")}</td><td><span class="pill">${esc(st)}</span></td><td class="text-right mono">${money(i.total)}</td><td class="text-right mono font-bold">${money(b)}</td><td class="text-right no-print"><button class="btn border bg-white" data-open="${i.id}">Open</button></td></tr>`}).join(""):'<tr><td colspan="7" class="p-6 text-center text-gray-500">No registered invoices yet. Save an invoice to the register from Easy Invoice.</td></tr>';
+ document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openInvoice(b.dataset.open));
+ const rq=EasyAR.reminderQueue();$("reminders").innerHTML=rq.length?rq.slice(0,10).map(x=>`<div class="border rounded-lg p-2"><div class="font-bold">${esc(x.invoice.number)} • ${esc(x.invoice.client?.name||"")}</div><div class="text-xs text-gray-500">${esc(x.stage)} • ${money(EasyAR.balance(x.invoice))}</div><button class="text-xs text-blue-700 mt-1" data-rem="${x.invoice.id}">Copy reminder</button></div>`).join(""):'<p class="text-sm text-gray-500">Nothing due for reminders.</p>';
+ document.querySelectorAll("[data-rem]").forEach(b=>b.onclick=()=>{const i=EasyAR.invoices().find(x=>x.id===b.dataset.rem);navigator.clipboard?.writeText(EasyAR.reminderText(i));EasyAR.audit("reminder.copied","invoice",i.id,{stage:EasyAR.reminderStage(i)});alert("Reminder copied.")});
+ const f=EasyAR.forecast(90);$("forecastTotal").textContent=money(f.total);$("forecastRows").innerHTML=f.rows.slice(0,8).map(x=>`<div class="flex justify-between"><span>${esc(x.date)} • ${esc(x.invoice.number)}</span><b>${money(x.amount)}</b></div>`).join("")||'<span class="text-gray-500">No expected receipts in the next 90 days.</span>';
+ $("auditRows").innerHTML=EasyAR.read(EasyAR.K.audit,[]).slice(0,100).map(e=>`<div class="border-b py-1"><b>${esc(e.action)}</b> • ${esc(e.entityType)} ${esc(e.entityId)} <span class="text-gray-400">${new Date(e.at).toLocaleString()}</span></div>`).join("")||"No audit events yet.";
+ renderRecurring();
+}
+function openInvoice(id){
+ selected=EasyAR.invoices().find(x=>x.id===id);if(!selected)return; const st=EasyAR.deriveStatus(selected),b=EasyAR.balance(selected),p=EasyAR.invoicePayments(id),cr=EasyAR.credits().filter(x=>x.invoiceId===id);
+ $("dTitle").textContent=selected.number||"Invoice";$("dSub").textContent=(selected.client?.name||"")+" • "+st+" • Balance "+money(b);
+ const payUrl=selected.paymentUrl||EasyAR.getSettings().paymentBaseUrl||"";
+ $("dBody").innerHTML=`
+ <div class="grid md:grid-cols-3 gap-3 mb-4"><div class="border rounded p-3"><div class="text-xs text-gray-500">TOTAL</div><b>${money(selected.total)}</b></div><div class="border rounded p-3"><div class="text-xs text-gray-500">PAID</div><b>${money(EasyAR.paymentTotal(id))}</b></div><div class="border rounded p-3"><div class="text-xs text-gray-500">BALANCE</div><b>${money(b)}</b></div></div>
+ <div class="flex flex-wrap gap-2 no-print mb-4">
+  <button id="dPayment" class="btn bg-green-600 text-white">Record Payment</button><button id="dCredit" class="btn bg-white border">Credit Note</button><button id="dReceipt" class="btn bg-white border">Create Receipt</button><button id="dStatement" class="btn bg-white border">Create Statement</button>
+  <button id="dEmail" class="btn bg-white border">Email</button><button id="dInventory" class="btn bg-white border">Commit Stock</button><button id="dRecurring" class="btn bg-white border">Make Recurring</button><label class="btn bg-white border cursor-pointer">Attachment metadata<input id="dFile" type="file" class="hidden"></label>
+ </div>
+ ${payUrl?`<div class="border rounded-lg p-3 mb-4"><b>Payment link</b><div class="text-xs break-all text-blue-700">${esc(payUrl)}</div><button id="dCopyPay" class="text-xs text-blue-700 mt-1">Copy link</button></div>`:""}
+ <div class="grid md:grid-cols-2 gap-4"><div><h3 class="font-black mb-2">Payments</h3>${p.map(x=>`<div class="border-b py-2 flex justify-between"><span>${esc(x.date)} • ${esc(x.method)} • ${esc(x.reference)}</span><b>${money(x.amount)}</b></div>`).join("")||'<p class="text-gray-500">No payments.</p>'}</div><div><h3 class="font-black mb-2">Credit notes</h3>${cr.map(x=>`<div class="border-b py-2 flex justify-between"><span>${esc(x.number)} • ${esc(x.reason)}</span><b>${money(x.amount)}</b></div>`).join("")||'<p class="text-gray-500">No credits.</p>'}</div></div>
+ <div class="mt-4"><h3 class="font-black">Attachments</h3><div class="text-xs text-gray-600">${EasyAR.attachments(id).map(a=>esc(a.name)+" ("+Math.round(a.size/1024)+" KB)").join("<br>")||"None"}</div></div>`;
+ $("detailModal").classList.remove("hidden");$("detailModal").classList.add("flex");
+ $("dPayment").onclick=recordPayment;$("dCredit").onclick=recordCredit;$("dReceipt").onclick=createReceipt;$("dStatement").onclick=createStatement;$("dEmail").onclick=emailInvoice;$("dInventory").onclick=commitStock;$("dRecurring").onclick=makeRecurring;
+ $("dFile").onchange=e=>{if(e.target.files[0]){EasyAR.attachMeta(id,e.target.files[0]);openInvoice(id)}};
+ if($("dCopyPay"))$("dCopyPay").onclick=()=>navigator.clipboard?.writeText(payUrl);
+ $("assistant").innerHTML=EasyAR.assistant(selected).map(t=>`<div class="border-l-4 border-blue-500 pl-2">${esc(t)}</div>`).join("");
+}
+function recordPayment(){const amount=Number(prompt("Payment amount",EasyAR.balance(selected).toFixed(2)));if(!(amount>0))return;const method=prompt("Method (EFT/Card/Cash/Other)","EFT")||"EFT";const ref=prompt("Payment reference","")||"";EasyAR.addPayment({invoiceId:selected.id,amount,method,reference:ref});openInvoice(selected.id);render()}
+function recordCredit(){const amount=Number(prompt("Credit note amount",EasyAR.balance(selected).toFixed(2)));if(!(amount>0))return;const reason=prompt("Reason for credit","Adjustment")||"Adjustment";EasyAR.addCredit({invoiceId:selected.id,amount,reason});openInvoice(selected.id);render()}
+function createReceipt(){const p=EasyAR.invoicePayments(selected.id);const last=p[0];EasyAR.createTransfer("receipt",{invoice:selected,payment:last||{amount:EasyAR.paymentTotal(selected.id),method:"EFT",date:new Date().toISOString().slice(0,10)}});location.href="easy-receipt.html"}
+function createStatement(){EasyAR.createTransfer("statement",{customer:selected.client,ledger:EasyAR.customerLedger(selected.client?.email||selected.client?.name)});location.href="easy-statement.html"}
+function emailInvoice(){const subject=encodeURIComponent("Invoice "+selected.number+" from "+(selected.company?.name||""));const body=encodeURIComponent("Hi "+(selected.client?.name||"")+",\n\nPlease find invoice "+selected.number+". Balance due: "+money(EasyAR.balance(selected))+", due "+(selected.dueDate||"")+"."+ (selected.paymentUrl?"\nPayment link: "+selected.paymentUrl:"")+"\n\nThank you.");location.href="mailto:"+(selected.client?.email||"")+"?subject="+subject+"&body="+body;EasyAR.audit("email.handoff","invoice",selected.id)}
+function commitStock(){const r=EasyAR.consumeInventoryForInvoice(selected);alert(r.ok?"Inventory updated for "+r.changes.length+" SKU line(s).":r.error);selected=EasyAR.invoices().find(x=>x.id===selected.id);render()}
+function makeRecurring(){const freq=prompt("Frequency: weekly, monthly or yearly","monthly")||"monthly";EasyAR.saveRecurring({frequency:freq,nextDate:selected.issueDate||new Date().toISOString().slice(0,10),template:{...selected,id:null,number:"",status:"Draft",inventoryCommitted:false}});render();alert("Recurring schedule saved.")}
+function renderRecurring(){const list=EasyAR.recurring();$("recurringRows").innerHTML=list.length?list.map(r=>`<div class="border rounded-lg p-3 flex justify-between"><span><b>${esc(r.template?.client?.name||"Recurring invoice")}</b><br><span class="text-xs text-gray-500">${esc(r.frequency)} • next ${esc(r.nextDate)}</span></span><span class="pill">${r.active?"Active":"Paused"}</span></div>`).join(""):'<p class="text-gray-500">No recurring schedules.</p>'}
+function loadCRM(){const c=EasyAR.crmContacts();$("crmCustomer").innerHTML='<option value="">Select CRM contact…</option>'+c.map(x=>`<option value="${esc(x.email||x.name)}">${esc(x.company||x.name)} — ${esc(x.email||"")}</option>`).join("")}
+function loadLedger(){const k=$("crmCustomer").value;if(!k)return;const l=EasyAR.customerLedger(k);$("ledger").innerHTML=l.length?`<table class="w-full"><thead><tr><th class="text-left">Invoice</th><th>Status</th><th class="text-right">Balance</th></tr></thead><tbody>${l.map(x=>`<tr class="border-b"><td class="py-2">${esc(x.invoice.number)}</td><td>${esc(x.status)}</td><td class="text-right">${money(x.balance)}</td></tr>`).join("")}</tbody></table>`:'<p class="text-gray-500">No matching invoice history.</p>'}
+function openSettings(){const s=EasyAR.getSettings();$("sCurrency").value=s.baseCurrency;$("sProvider").value=s.paymentProvider;$("sPaymentUrl").value=s.paymentBaseUrl;$("sTerms").value=s.defaultTermsDays;$("settingsModal").classList.remove("hidden");$("settingsModal").classList.add("flex")}
+$("q").oninput=render;$("statusFilter").onchange=render;$("dClose").onclick=()=>{$("detailModal").classList.add("hidden");$("detailModal").classList.remove("flex")};$("sClose").onclick=()=>{$("settingsModal").classList.add("hidden");$("settingsModal").classList.remove("flex")};$("btnSettings").onclick=openSettings;$("sSave").onclick=()=>{EasyAR.saveSettings({baseCurrency:$("sCurrency").value,paymentProvider:$("sProvider").value,paymentBaseUrl:$("sPaymentUrl").value.trim(),defaultTermsDays:Number($("sTerms").value||7)});$("sClose").click();alert("Settings saved.")};$("btnRunRecurring").onclick=()=>{const c=EasyAR.runRecurring();alert(c.length+" recurring invoice(s) generated.");render()};$("btnAddRecurring").onclick=()=>{alert("Open an invoice and choose Make Recurring so the schedule retains its customer and line items.")};$("btnLedger").onclick=loadLedger;
+loadCRM();render();$("assistant").innerHTML='<div class="text-gray-500">Open an invoice for contextual recommendations.</div>';
+</script>
+<script defer src="scripts/sync-nav.js"></script>
+</body></html>
