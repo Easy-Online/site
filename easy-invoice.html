@@ -1294,6 +1294,7 @@
         const crm = EasyAR.crmContacts();
         $("crmClientPicker").innerHTML = '<option value="">Select CRM customer…</option>' + crm.map((c,i) => '<option value="'+i+'">'+escapeHtml(c.company || c.name || "Customer")+' — '+escapeHtml(c.email || "")+'</option>').join("");
         $("crmClientPicker").addEventListener("change", () => {
+          if ($("crmClientPicker").value === "") return;
           const c = crm[Number($("crmClientPicker").value)];
           if (!c) return;
           $("clientName").value = c.company || c.name || "";
