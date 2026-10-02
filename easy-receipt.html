@@ -152,6 +152,7 @@
   </style>
 
   <!-- Script -->
+  <script src="assets/js/easy-ar.js"></script>
   <script>
     function addItem() {
       const tbody = document.getElementById('itemsBody');
@@ -190,6 +191,24 @@
 
     // Auto add first row
     addItem();
+
+    if (window.EasyAR) {
+      const x = EasyAR.consumeTransfer("receipt");
+      if (x) {
+        const inv = x.invoice || {}, p = x.payment || {};
+        document.getElementById("receiptNumber").value = "REC-" + String(Date.now()).slice(-7);
+        document.getElementById("receiptDate").value = p.date || new Date().toISOString().slice(0,10);
+        document.getElementById("receivedFrom").value = inv.client?.name || "";
+        document.getElementById("paymentMethod").value = ["Cash","Card","EFT","Bank Transfer"].includes(p.method) ? p.method : "EFT";
+        const row = document.querySelector("#itemsBody tr");
+        if (row) {
+          row.querySelector(".description").value = "Payment received for " + (inv.number || "invoice");
+          row.querySelector(".amount").value = Number(p.amount || 0).toFixed(2);
+        }
+        document.getElementById("notes").value = "Invoice: " + (inv.number || "") + (p.reference ? "\nPayment reference: " + p.reference : "");
+        calculateTotal();
+      }
+    }
   </script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" defer></script>
