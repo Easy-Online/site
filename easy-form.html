@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Easy Form | AI-Assisted Form Builder | EasyFile</title>
+<meta name="description" content="Build online forms with AI assistance, collect responses, review submissions and export structured data with Easy Form.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="assets/css/easyfile-brand-tokens.css">
+<link rel="stylesheet" href="assets/css/easyfile-site.css">
+<link rel="stylesheet" href="assets/css/easyfile-footer.css">
+<link rel="stylesheet" href="assets/css/easyfile-navigation.css">
+<style>
+:root{--ef-border:#dbe6f5;--ef-muted:#64748b;--ef-card:#fff;--ef-bg:#f5f8ff;--ef-ink:#0f172a;--ef-blue:#2563eb;--ef-soft:#eff6ff}
+html[data-theme="dark"]{--ef-border:#26364d;--ef-muted:#9fb0c8;--ef-card:#0f172a;--ef-bg:#07101f;--ef-ink:#e5e7eb;--ef-soft:#10213d}
+body{background:var(--ef-bg);color:var(--ef-ink)}
+.ef-card{background:var(--ef-card);border:1px solid var(--ef-border);border-radius:1rem;box-shadow:0 12px 35px rgba(15,23,42,.06)}
+.ef-field{width:100%;border:1px solid var(--ef-border);border-radius:.75rem;padding:.7rem .8rem;background:var(--ef-card);color:var(--ef-ink)}
+.ef-label{font-size:.75rem;font-weight:800;color:var(--ef-muted);display:block;margin-bottom:.35rem}
+.ef-btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;border-radius:.75rem;padding:.68rem .9rem;font-weight:800;border:1px solid var(--ef-border)}
+.ef-btn-primary{background:var(--ef-blue);border-color:var(--ef-blue);color:#fff}.ef-btn-soft{background:var(--ef-card);color:var(--ef-ink)}
+.ef-pill{display:inline-flex;align-items:center;border-radius:999px;padding:.25rem .55rem;font-size:.7rem;font-weight:800;background:var(--ef-soft);color:#2563eb}
+.ef-tab[aria-selected="true"]{background:#2563eb;color:#fff;border-color:#2563eb}
+.ef-field-card{border:1px solid var(--ef-border);border-radius:.9rem;padding:1rem;background:var(--ef-card)}
+.ef-question{border:1px solid var(--ef-border);border-radius:.9rem;padding:1rem;background:var(--ef-card)}
+.ef-kpi{padding:1rem;border-radius:.9rem;background:var(--ef-soft)}
+.ef-empty{padding:2rem;text-align:center;color:var(--ef-muted);border:1px dashed var(--ef-border);border-radius:.9rem}
+@media print{.no-print{display:none!important}body{background:#fff!important}.ef-card{box-shadow:none!important}}
+</style>
+<link rel="icon" href="logo-b.png" type="image/png">
+<link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
+<link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="logo-b.png">
+</head>
+<body class="easyfile-app min-h-screen">
+<!-- NAV_SYNC -->
+<div class="easyfile-nav no-print"></div>
+
+<main class="container mx-auto px-4 py-6 md:py-8 max-w-7xl">
+<section class="ef-card p-5 md:p-7 mb-6">
+  <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+    <div>
+      <div class="flex items-center gap-3 mb-2">
+        <div class="h-12 w-12 rounded-xl bg-blue-600 text-white grid place-items-center text-xl"><i class="fa-solid fa-list-check"></i></div>
+        <div><h1 class="text-3xl font-black">Easy Form</h1><p class="text-sm" style="color:var(--ef-muted)">AI-Assisted Form Builder &amp; Response Review</p></div>
+      </div>
+      <p class="max-w-3xl mt-3" style="color:var(--ef-muted)">Build business forms, surveys, intake questionnaires, registrations and checklists. Collect responses, review submissions, flag records and export structured data.</p>
+    </div>
+    <div class="flex flex-wrap gap-2 no-print">
+      <button id="btnSeed" class="ef-btn ef-btn-primary"><i class="fa-solid fa-flask"></i> Seed Demo</button>
+      <button id="btnNewForm" class="ef-btn ef-btn-soft"><i class="fa-solid fa-file-circle-plus"></i> New Form</button>
+      <button id="btnSaveForm" class="ef-btn ef-btn-soft"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+      <button id="btnExportForm" class="ef-btn ef-btn-soft"><i class="fa-solid fa-download"></i> Export Form</button>
+    </div>
+  </div>
+</section>
+
+<section class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+  <div class="ef-kpi"><div class="text-xs font-black" style="color:var(--ef-muted)">FORMS</div><div id="kpiForms" class="text-2xl font-black">0</div></div>
+  <div class="ef-kpi"><div class="text-xs font-black" style="color:var(--ef-muted)">RESPONSES</div><div id="kpiResponses" class="text-2xl font-black">0</div></div>
+  <div class="ef-kpi"><div class="text-xs font-black" style="color:var(--ef-muted)">REVIEWED</div><div id="kpiReviewed" class="text-2xl font-black">0</div></div>
+  <div class="ef-kpi"><div class="text-xs font-black" style="color:var(--ef-muted)">FLAGGED</div><div id="kpiFlagged" class="text-2xl font-black">0</div></div>
+</section>
+
+<div class="ef-card p-2 mb-6 no-print flex flex-wrap gap-2" role="tablist" aria-label="Easy Form views">
+  <button class="ef-tab ef-btn ef-btn-soft" data-tab="builder" aria-selected="true"><i class="fa-solid fa-hammer"></i> Builder</button>
+  <button class="ef-tab ef-btn ef-btn-soft" data-tab="preview" aria-selected="false"><i class="fa-solid fa-eye"></i> Preview &amp; Respond</button>
+  <button class="ef-tab ef-btn ef-btn-soft" data-tab="responses" aria-selected="false"><i class="fa-solid fa-inbox"></i> Responses</button>
+  <button class="ef-tab ef-btn ef-btn-soft" data-tab="settings" aria-selected="false"><i class="fa-solid fa-gear"></i> Settings</button>
+</div>
+
+<section id="view-builder" class="ef-view">
+  <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+    <div class="xl:col-span-8 space-y-6">
+      <div class="ef-card p-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div><label class="ef-label" for="formTitle">Form title</label><input id="formTitle" class="ef-field" placeholder="Customer onboarding form"></div>
+          <div><label class="ef-label" for="formCategory">Category</label><select id="formCategory" class="ef-field"><option>Business</option><option>Customer Intake</option><option>Lead Capture</option><option>Registration</option><option>Survey</option><option>HR</option><option>Training</option><option>Compliance</option><option>Inspection</option><option>Other</option></select></div>
+        </div>
+        <div class="mt-4"><label class="ef-label" for="formDescription">Description / instructions</label><textarea id="formDescription" class="ef-field" rows="3" placeholder="Tell respondents what this form is for."></textarea></div>
+      </div>
+
+      <div class="ef-card p-5">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <div><h2 class="text-xl font-black">Questions</h2><p class="text-sm mt-1" style="color:var(--ef-muted)">Add, edit, duplicate and reorder fields.</p></div>
+          <div class="flex flex-wrap gap-2">
+            <select id="newFieldType" class="ef-field" style="width:auto">
+              <option value="text">Short text</option><option value="textarea">Long text</option><option value="email">Email</option><option value="tel">Phone</option><option value="number">Number</option><option value="date">Date</option><option value="select">Dropdown</option><option value="radio">Multiple choice</option><option value="checkbox">Checkboxes</option><option value="rating">Rating 1–5</option><option value="consent">Consent</option>
+            </select>
+            <button id="btnAddField" class="ef-btn ef-btn-primary"><i class="fa-solid fa-plus"></i> Add Question</button>
+          </div>
+        </div>
+        <div id="fieldList" class="mt-5 space-y-3"></div>
+      </div>
+    </div>
+
+    <aside class="xl:col-span-4 space-y-6">
+      <div class="ef-card p-5">
+        <h2 class="text-lg font-black">AI Form Assistant</h2>
+        <p class="text-sm mt-1" style="color:var(--ef-muted)">Describe the form you need. Easy Form can generate a practical first draft locally; cloud AI can improve it when the endpoint is configured.</p>
+        <div class="mt-4"><label class="ef-label" for="aiPrompt">Describe your form</label><textarea id="aiPrompt" class="ef-field" rows="5" placeholder="Example: Build a Microsoft 365 customer discovery form covering user count, domains, licensing, security, migration, devices and support requirements."></textarea></div>
+        <div class="mt-3 flex flex-wrap gap-2"><button id="btnAiGenerate" class="ef-btn ef-btn-primary"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate Draft</button><button id="btnAiReview" class="ef-btn ef-btn-soft"><i class="fa-solid fa-robot"></i> AI Review</button></div>
+        <div id="aiStatus" class="mt-3 text-xs" style="color:var(--ef-muted)">Local generation is available immediately.</div>
+      </div>
+
+      <div class="ef-card p-5">
+        <h2 class="text-lg font-black">Saved forms</h2>
+        <div class="mt-3"><select id="savedForms" class="ef-field"></select></div>
+        <div class="mt-3 grid grid-cols-2 gap-2"><button id="btnLoadForm" class="ef-btn ef-btn-soft">Load</button><button id="btnDeleteForm" class="ef-btn ef-btn-soft">Delete</button></div>
+      </div>
+
+      <div class="ef-card p-5">
+        <h2 class="text-lg font-black">Recommended controls</h2>
+        <div class="mt-3 space-y-3 text-sm">
+          <label class="flex items-start gap-2"><input id="settingAnonymous" type="checkbox" class="mt-1"><span>Allow anonymous responses</span></label>
+          <label class="flex items-start gap-2"><input id="settingOneResponse" type="checkbox" class="mt-1"><span>One response per respondent</span></label>
+          <label class="flex items-start gap-2"><input id="settingConfirm" type="checkbox" class="mt-1" checked><span>Show confirmation after submit</span></label>
+          <label class="flex items-start gap-2"><input id="settingCollectEmail" type="checkbox" class="mt-1"><span>Require respondent email</span></label>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section id="view-preview" class="ef-view hidden">
+  <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+    <div class="xl:col-span-8 ef-card p-5 md:p-7">
+      <div class="mb-6"><span class="ef-pill" id="previewCategory">Business</span><h2 id="previewTitle" class="text-3xl font-black mt-2">Untitled form</h2><p id="previewDescription" class="mt-2" style="color:var(--ef-muted)"></p></div>
+      <form id="responseForm" class="space-y-4"></form>
+      <div class="mt-6 flex flex-wrap gap-2 no-print"><button id="btnSubmitResponse" class="ef-btn ef-btn-primary" type="button"><i class="fa-solid fa-paper-plane"></i> Submit Response</button><button id="btnClearResponse" class="ef-btn ef-btn-soft" type="button">Clear</button></div>
+      <div id="submitMessage" class="mt-4 hidden p-4 rounded-xl bg-green-50 text-green-800 border border-green-200"></div>
+    </div>
+    <aside class="xl:col-span-4 ef-card p-5">
+      <h2 class="text-lg font-black">Publish status</h2>
+      <p class="text-sm mt-2" style="color:var(--ef-muted)">This build stores forms and submitted responses in this browser. The production API contract is ready for central public collection.</p>
+      <div class="mt-4 space-y-2 text-sm"><div><strong>Form ID:</strong> <span id="previewFormId" class="font-mono"></span></div><div><strong>Fields:</strong> <span id="previewFieldCount">0</span></div></div>
+      <button id="btnCopySchema" class="ef-btn ef-btn-soft w-full mt-4" type="button"><i class="fa-solid fa-code"></i> Copy JSON Schema</button>
+    </aside>
+  </div>
+</section>
+
+<section id="view-responses" class="ef-view hidden">
+  <div class="ef-card p-5">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+      <div><h2 class="text-xl font-black">Response Review</h2><p class="text-sm mt-1" style="color:var(--ef-muted)">Search, filter, review and flag form submissions.</p></div>
+      <div class="flex flex-wrap gap-2 no-print">
+        <input id="responseSearch" class="ef-field" style="width:220px" placeholder="Search responses…">
+        <select id="responseStatusFilter" class="ef-field" style="width:auto"><option value="">All statuses</option><option>New</option><option>Reviewed</option><option>Flagged</option></select>
+        <button id="btnExportResponsesCsv" class="ef-btn ef-btn-soft"><i class="fa-solid fa-file-csv"></i> CSV</button>
+        <button id="btnExportResponsesJson" class="ef-btn ef-btn-soft"><i class="fa-solid fa-code"></i> JSON</button>
+      </div>
+    </div>
+    <div id="responseList" class="mt-5 space-y-3"></div>
+  </div>
+</section>
+
+<section id="view-settings" class="ef-view hidden">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="ef-card p-5"><h2 class="text-xl font-black">Submission settings</h2><div class="space-y-4 mt-4"><div><label class="ef-label" for="confirmationMessage">Confirmation message</label><textarea id="confirmationMessage" class="ef-field" rows="3">Thank you. Your response has been received.</textarea></div><div><label class="ef-label" for="responseOwner">Response owner / team</label><input id="responseOwner" class="ef-field" placeholder="Sales, HR, Support, Training…"></div><div><label class="ef-label" for="retentionDays">Retention period (days)</label><input id="retentionDays" class="ef-field" type="number" min="1" value="365"></div></div></div>
+    <div class="ef-card p-5"><h2 class="text-xl font-black">Privacy &amp; governance</h2><div class="mt-4 space-y-3 text-sm" style="color:var(--ef-muted)"><p><i class="fa-solid fa-shield-halved text-blue-600 mr-2"></i>Do not collect unnecessary personal information. Add a consent field when consent is the appropriate lawful basis.</p><p><i class="fa-solid fa-lock text-blue-600 mr-2"></i>Do not put AI provider keys in browser JavaScript. Route AI through EasyFile backend endpoints.</p><p><i class="fa-solid fa-database text-blue-600 mr-2"></i>Current storage is local browser storage. Production public forms should use authenticated server-side storage, encryption in transit and access-controlled review.</p></div></div>
+  </div>
+</section>
+</main>
+
+<script src="assets/js/easy-form.js"></script>
+<script defer src="scripts/sync-nav.js"></script>
+</body>
+</html>
