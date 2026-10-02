@@ -77,6 +77,15 @@
         <button id="btnMarkPaid" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
           <i class="fa-solid fa-circle-check mr-2"></i>Mark Paid
         </button>
+        <button id="btnSaveDraft" class="bg-white border border-gray-200 hover:bg-gray-50 px-4 py-2 rounded-lg">
+          <i class="fa-solid fa-floppy-disk mr-2"></i>Save Draft
+        </button>
+        <button id="btnLoadDraft" class="bg-white border border-gray-200 hover:bg-gray-50 px-4 py-2 rounded-lg">
+          <i class="fa-solid fa-folder-open mr-2"></i>Load Draft
+        </button>
+        <button id="btnDuplicateInvoice" class="bg-white border border-gray-200 hover:bg-gray-50 px-4 py-2 rounded-lg" title="Create a new draft from this invoice">
+          <i class="fa-solid fa-copy mr-2"></i>Duplicate
+        </button>
 
         <div class="ml-auto flex flex-wrap gap-2">
           <button id="btnPreview" class="bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-lg">
@@ -134,14 +143,14 @@
           </div>
           <div>
             <label class="label">Website</label>
-            <input id="companyWeb" class="field" placeholder="https://..." />
+            <input id="companyWeb" type="url" class="field" placeholder="https://..." />
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="label">Email</label>
-            <input id="companyEmail" class="field" placeholder="accounts@..." />
+            <input id="companyEmail" type="email" class="field" placeholder="accounts@..." />
           </div>
           <div>
             <label class="label">Phone</label>
@@ -188,7 +197,7 @@
 
         <div>
           <label class="label">Email</label>
-          <input id="clientEmail" class="field" placeholder="billing@..." />
+          <input id="clientEmail" type="email" class="field" placeholder="billing@..." />
         </div>
 
         <div>
@@ -347,7 +356,18 @@
         </div>
 
         <div class="no-print text-xs text-gray-500">
-          Auto-save: Draft is stored locally when you click Save (or Ctrl+S).
+          Drafts are stored locally when you click Save Draft (or Ctrl+S).
+        </div>
+
+        <div class="no-print border-t border-gray-100 pt-3 mt-3">
+          <div class="flex items-center justify-between gap-2">
+            <h3 class="font-bold text-sm"><i class="fa-solid fa-wand-magic-sparkles mr-2 text-blue-600"></i>Invoice Health</h3>
+            <button id="btnCopyReminder" class="text-xs bg-white border border-gray-200 hover:bg-gray-50 px-3 py-2 rounded-lg">
+              <i class="fa-solid fa-bell mr-1"></i>Copy Reminder
+            </button>
+          </div>
+          <p id="healthSummary" class="text-xs text-gray-600 mt-2">Checking invoice…</p>
+          <ul id="healthIssues" class="text-xs text-gray-500 mt-2 space-y-1"></ul>
         </div>
       </div>
     </section>
@@ -384,9 +404,6 @@
     </div>
   </div>
 
-  <!-- Optional shared nav sync (safe if missing) -->
-  <script defer src="sync-nav.js"></script>
-
   <script>
     // ---------- Utilities ----------
     const $ = (id) => document.getElementById(id);
@@ -405,6 +422,18 @@
       const d = new Date();
       const tzOff = d.getTimezoneOffset() * 60000;
       return new Date(d - tzOff).toISOString().slice(0,10);
+    }
+
+    function addDaysISO(iso, days) {
+      const base = iso ? new Date(iso + "T00:00:00") : new Date();
+      base.setDate(base.getDate() + days);
+      const tzOff = base.getTimezoneOffset() * 60000;
+      return new Date(base - tzOff).toISOString().slice(0,10);
+    }
+
+    function daysBetween(a, b) {
+      if (!a || !b) return 0;
+      return Math.round((new Date(b + "T00:00:00") - new Date(a + "T00:00:00")) / 86400000);
     }
 
     function currencySymbol(code) {
@@ -552,39 +581,74 @@
     }
 
     // ---------- Totals ----------
-    function recalcTotals() {
-      const cur = $("currency").value;
-
-      const subtotalEx = lines.reduce((s, ln) => s + calcLine(ln).netEx, 0);
-      const vatTotal = lines.reduce((s, ln) => s + calcLine(ln).vat, 0);
-
+    function getTotals() {
+      const subtotalEx = lines.reduce((sum, ln) => sum + calcLine(ln).netEx, 0);
+      const rawVat = lines.reduce((sum, ln) => sum + calcLine(ln).vat, 0);
       const overallDiscPct = Math.min(100, Math.max(0, safeNumber($("overallDiscount").value)));
+      const discountFactor = 1 - (overallDiscPct / 100);
       const overallDiscount = subtotalEx * (overallDiscPct / 100);
-
+      const discountedEx = Math.max(0, subtotalEx - overallDiscount);
+      // Overall discount is applied before VAT, so VAT must reduce proportionally.
+      const vatTotal = Math.max(0, rawVat * discountFactor);
       const shipping = Math.max(0, safeNumber($("shipping").value));
       const paid = Math.max(0, safeNumber($("amountPaid").value));
-
-      // Apply overall discount to subtotalEx; VAT already calculated per line on netEx.
-      // If you want overall discount to reduce VAT proportionally, you can adjust VAT here.
-      const discountedEx = Math.max(0, subtotalEx - overallDiscount);
       const totalInc = discountedEx + vatTotal + shipping;
       const balance = Math.max(0, totalInc - paid);
+      return { subtotalEx, rawVat, overallDiscPct, overallDiscount, discountedEx, vatTotal, shipping, paid, totalInc, balance };
+    }
 
-      $("tSubtotalEx").textContent = formatMoney(cur, subtotalEx);
-      $("tOverallDiscount").textContent = `- ${formatMoney(cur, overallDiscount)}`;
-      $("tShipping").textContent = formatMoney(cur, shipping);
-      $("tVat").textContent = formatMoney(cur, vatTotal);
-      $("tTotal").textContent = formatMoney(cur, totalInc);
-      $("tPaid").textContent = formatMoney(cur, paid);
-      $("tBalance").textContent = formatMoney(cur, balance);
+    function updateInvoiceHealth(totals) {
+      const summary = $("healthSummary");
+      const list = $("healthIssues");
+      if (!summary || !list) return;
 
-      // Status automation: if Paid >= Total then Paid
-      if (paid > 0 && paid + 0.0001 >= totalInc && totalInc > 0) {
-        $("status").value = "Paid";
-      } else if ($("status").value === "Paid" && paid + 0.0001 < totalInc) {
-        $("status").value = "Partially Paid";
-      }
-      setStatusBadge($("status").value);
+      const issues = [];
+      if (!String($("companyName").value || "").trim()) issues.push("Add your company name.");
+      if (!String($("clientName").value || "").trim()) issues.push("Add a client name.");
+      if (!String($("clientEmail").value || "").trim()) issues.push("Add the client billing email.");
+      if (!String($("companyVat").value || "").trim() && lines.some(ln => safeNumber(ln.vat) > 0)) issues.push("VAT is charged but the company VAT number is blank.");
+      if (!lines.length || !lines.some(ln => String(ln.desc || "").trim() && calcLine(ln).netEx > 0)) issues.push("Add at least one billable line item.");
+      if (!$("dueDate").value) issues.push("Set a due date.");
+
+      const due = $("dueDate").value;
+      const today = todayISO();
+      const days = due ? daysBetween(today, due) : null;
+      const status = $("status").value;
+
+      if (totals.balance <= 0 && totals.totalInc > 0) summary.textContent = "Paid in full • no balance outstanding.";
+      else if (due && days < 0) summary.textContent = `Overdue by ${Math.abs(days)} day(s) • ${formatMoney($("currency").value, totals.balance)} outstanding.`;
+      else if (due) summary.textContent = `Due in ${days} day(s) • ${formatMoney($("currency").value, totals.balance)} outstanding • ${status}.`;
+      else summary.textContent = `${formatMoney($("currency").value, totals.balance)} outstanding • ${status}.`;
+
+      list.innerHTML = issues.length
+        ? issues.map(x => `<li><i class="fa-solid fa-triangle-exclamation text-amber-500 mr-1"></i>${escapeHtml(x)}</li>`).join("")
+        : '<li><i class="fa-solid fa-circle-check text-green-600 mr-1"></i>Core invoice checks passed.</li>';
+    }
+
+    function recalcTotals() {
+      const cur = $("currency").value;
+      const t = getTotals();
+
+      $("tSubtotalEx").textContent = formatMoney(cur, t.subtotalEx);
+      $("tOverallDiscount").textContent = `- ${formatMoney(cur, t.overallDiscount)}`;
+      $("tShipping").textContent = formatMoney(cur, t.shipping);
+      $("tVat").textContent = formatMoney(cur, t.vatTotal);
+      $("tTotal").textContent = formatMoney(cur, t.totalInc);
+      $("tPaid").textContent = formatMoney(cur, t.paid);
+      $("tBalance").textContent = formatMoney(cur, t.balance);
+
+      const due = $("dueDate").value;
+      const overdue = due && due < todayISO() && t.balance > 0.0001;
+      let nextStatus = $("status").value;
+
+      if (t.totalInc > 0 && t.paid + 0.0001 >= t.totalInc) nextStatus = "Paid";
+      else if (overdue) nextStatus = "Overdue";
+      else if (t.paid > 0) nextStatus = "Partially Paid";
+      else if (nextStatus === "Paid" || nextStatus === "Partially Paid" || nextStatus === "Overdue") nextStatus = "Sent";
+
+      $("status").value = nextStatus;
+      setStatusBadge(nextStatus);
+      updateInvoiceHealth(t);
     }
 
     // ---------- Draft Save/Load ----------
@@ -714,21 +778,42 @@
       $("invNumber").value = `INV-${pad(next, 5)}`;
     }
 
+    function duplicateInvoice() {
+      const issue = todayISO();
+      $("invNumber").value = "";
+      newInvoiceNumber();
+      $("issueDate").value = issue;
+      $("dueDate").value = addDaysISO(issue, 7);
+      $("amountPaid").value = "0";
+      $("status").value = "Draft";
+      setStatusBadge("Draft");
+      recalcTotals();
+      saveDraft();
+      toast("Duplicated as a new draft ✅");
+    }
+
+    async function copyPaymentReminder() {
+      const t = getTotals();
+      const client = String($("clientName").value || "there").trim();
+      const inv = String($("invNumber").value || "invoice").trim();
+      const due = $("dueDate").value || "the due date";
+      const company = String($("companyName").value || "us").trim();
+      const text = `Hi ${client}, this is a payment reminder for ${inv}. The outstanding balance is ${formatMoney($("currency").value, t.balance)}, due ${due}. Please use ${inv} as the payment reference. Thank you, ${company}.`;
+      try {
+        await navigator.clipboard.writeText(text);
+        toast("Payment reminder copied ✅");
+      } catch {
+        window.prompt("Copy payment reminder:", text);
+      }
+    }
+
     // ---------- Preview ----------
     function buildPreviewHtml() {
       const cur = $("currency").value;
       const sym = currencySymbol(cur);
 
-      // totals (reuse computed)
-      const subtotalEx = lines.reduce((s, ln) => s + calcLine(ln).netEx, 0);
-      const vatTotal = lines.reduce((s, ln) => s + calcLine(ln).vat, 0);
-      const overallDiscPct = Math.min(100, Math.max(0, safeNumber($("overallDiscount").value)));
-      const overallDiscount = subtotalEx * (overallDiscPct / 100);
-      const shipping = Math.max(0, safeNumber($("shipping").value));
-      const discountedEx = Math.max(0, subtotalEx - overallDiscount);
-      const totalInc = discountedEx + vatTotal + shipping;
-      const paid = Math.max(0, safeNumber($("amountPaid").value));
-      const balance = Math.max(0, totalInc - paid);
+      const totals = getTotals();
+      const { subtotalEx, vatTotal, overallDiscount, shipping, totalInc, paid, balance } = totals;
 
       const due = $("dueDate").value;
       const issue = $("issueDate").value;
@@ -1085,6 +1170,7 @@
     function init() {
       // Defaults
       if (!$("issueDate").value) $("issueDate").value = todayISO();
+      if (!$("dueDate").value) $("dueDate").value = addDaysISO($("issueDate").value, 7);
       if (!$("invNumber").value) newInvoiceNumber();
 
       setStatusBadge($("status").value);
@@ -1105,13 +1191,24 @@
       });
 
       $("btnMarkPaid").addEventListener("click", () => {
+        const t = getTotals();
+        $("amountPaid").value = t.totalInc.toFixed(2);
         $("status").value = "Paid";
-        setStatusBadge("Paid");
         recalcTotals();
+        saveDraft();
         toast("Marked as PAID ✅");
       });
 
-      $("status").addEventListener("change", () => setStatusBadge($("status").value));
+      $("btnDuplicateInvoice").addEventListener("click", duplicateInvoice);
+      $("btnCopyReminder").addEventListener("click", copyPaymentReminder);
+
+      $("status").addEventListener("change", () => { setStatusBadge($("status").value); updateInvoiceHealth(getTotals()); });
+      $("issueDate").addEventListener("change", () => {
+        if (!$("dueDate").value || $("dueDate").value < $("issueDate").value) $("dueDate").value = addDaysISO($("issueDate").value, 7);
+        recalcTotals();
+      });
+      $("dueDate").addEventListener("change", recalcTotals);
+      ["companyName","companyVat","clientName","clientEmail"].forEach(id => $(id).addEventListener("input", () => updateInvoiceHealth(getTotals())));
 
       ["currency","overallDiscount","defaultVat","shipping","amountPaid"].forEach(id => {
         $(id).addEventListener("input", () => {
@@ -1171,6 +1268,7 @@
         loadDraft();
       }
 
+      recalcTotals();
       highlightActiveNav();
     }
 
