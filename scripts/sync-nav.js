@@ -353,6 +353,10 @@
     installFavicons();
     installHomeModuleCards();
 
+    if (current === "easy-capture.html" || current === "easy-save.html") {
+      ensureScript("assets/js/easyfile-capture-workflow.js", "easyfileCaptureWorkflow");
+    }
+
     if (MODULE_FILES.has(current)) {
       ensureScript("assets/js/easyfile-module-actions.js", "easyfileModuleActions");
       if (current !== "easy-edit.html") ensureScript("assets/js/easyfile-edit-handoff.js", "easyfileEditHandoff");
