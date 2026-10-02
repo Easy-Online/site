@@ -113,7 +113,7 @@
         <div class="flex-1">
           <h3 class="text-sm font-extrabold text-slate-900">Quick flow</h3>
           <div class="text-sm text-slate-600 mt-1">
-            1) Company + customer â†' 2) Set statement period + opening balance â†' 3) Add/import transactions â†' 4) Review running balance + ageing â†' 5) Preview/print/export.
+            1) Company + customer → 2) Set statement period + opening balance → 3) Add/import transactions → 4) Review running balance + ageing → 5) Preview/print/export.
           </div>
         </div>
       </div>
@@ -270,8 +270,8 @@
               <select id="currency" class="w-full border border-gray-200 rounded-lg px-3 py-2">
                 <option value="ZAR" selected>ZAR (R)</option>
                 <option value="USD">USD ($)</option>
-                <option value="EUR">EUR (â‚¬)</option>
-                <option value="GBP">GBP (Â£)</option>
+                <option value="EUR">EUR (€)</option>
+                <option value="GBP">GBP (£)</option>
               </select>
               <p class="text-xs text-slate-500 mt-1">Formatting adapts; no FX conversion.</p>
             </div>
@@ -388,7 +388,7 @@
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         <div class="lg:col-span-2">
           <h2 class="text-lg font-extrabold mb-2"><i class="fa-solid fa-chart-line text-blue-600 mr-2"></i>Summary</h2>
-          <p class="text-sm text-slate-500">Closing balance equals opening balance plus (debits âˆ' credits) within the period.</p>
+          <p class="text-sm text-slate-500">Closing balance equals opening balance plus (debits − credits) within the period.</p>
 
           <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="border border-gray-200 rounded-lg p-4">
@@ -626,13 +626,14 @@
         </div>
 
         <div class="mt-6 text-xs text-slate-500 text-center">
-          Generated with EasySTAT â€¢ Print-friendly output
+          Generated with EasySTAT • Print-friendly output
         </div>
       </div>
     </div>
 
   </main>
 
+<script src="assets/js/easy-ar.js"></script>
 <script>
   // ===========================
   // Helpers
@@ -648,8 +649,8 @@
   function symbolForCurrency(cur){
     switch(cur){
       case "USD": return "$";
-      case "EUR": return "â‚¬";
-      case "GBP": return "Â£";
+      case "EUR": return "€";
+      case "GBP": return "£";
       case "ZAR":
       default: return "R";
     }
@@ -1557,6 +1558,28 @@
       autosave();
     } else {
       recalcAll();
+    }
+    if (window.EasyAR) {
+      const x = EasyAR.consumeTransfer("statement");
+      if (x) {
+        const c = x.customer || {};
+        $("clientName").value = c.name || "";
+        $("clientEmail").value = c.email || "";
+        $("clientPhone").value = c.phone || "";
+        $("clientVat").value = c.vat || "";
+        $("clientReg").value = c.reg || "";
+        $("clientAddress").value = c.address || "";
+        $("txBody").innerHTML = "";
+        (x.ledger || []).forEach(entry => {
+          const inv = entry.invoice || {};
+          addTxn({date:inv.issueDate,ref:inv.number,desc:(inv.type||"Invoice")+" "+(inv.number||""),dueDate:inv.dueDate,debit:Number(inv.total||0).toFixed(2),credit:"0.00"});
+          (entry.payments || []).forEach(p => addTxn({date:p.date,ref:p.reference||inv.number,desc:"Payment • "+(p.method||""),debit:"0.00",credit:Number(p.amount||0).toFixed(2)}));
+          (entry.credits || []).forEach(cn => addTxn({date:cn.date,ref:cn.number,desc:"Credit note • "+(cn.reason||""),debit:"0.00",credit:Number(cn.amount||0).toFixed(2)}));
+        });
+        $("notes").value = "Generated from the EasyAR customer ledger.";
+        recalcAll();
+        autosave();
+      }
     }
     setStatusBadge();
   }
