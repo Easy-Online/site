@@ -166,6 +166,7 @@
   </div>
 </div>
 
+<script src="assets/js/easy-ar.js"></script>
 <script>
 "use strict";
 const STORE_KEY="easy.receipt.v2";
@@ -231,12 +232,36 @@ function applyCaptureHandoff(){
   const p=loadJson(HANDOFF_KEY,null);if(!p)return;localStorage.removeItem(HANDOFF_KEY);
   const total=Number(p.amountIncl||0);activeId=null;writeForm({number:p.number||nextNumber(),date:p.date||new Date().toISOString().slice(0,10),receivedFrom:p.supplier||"",paymentMethod:p.paymentMethod||"Card",reference:p.reference||"",currency:p.currency||"ZAR",vatNumber:p.supplierVat||"",category:p.category||"",notes:[p.notes,p.captureId?"Captured via Easy Capture "+p.captureId:""].filter(Boolean).join(" · "),source:"capture",items:(p.lineItems?.length?p.lineItems.map(x=>({description:x.description||"Captured item",amount:Number(x.total??(Number(x.qty||0)*Number(x.unit||0)))})):[{description:"Captured receipt",amount:total}])});$("receiptStatus").textContent="Imported from Easy Capture — review and save";toast("Receipt data imported from Easy Capture.");track("receipt_capture_import",{confidence:p.confidence||0});
 }
+function applyArPaymentHandoff(){
+  if(!window.EasyAR) return;
+  const x=EasyAR.consumeTransfer("receipt");
+  if(!x) return;
+  const inv=x.invoice||{}, p=x.payment||{};
+  activeId=null;
+  writeForm({
+    number:nextNumber(),
+    date:p.date||new Date().toISOString().slice(0,10),
+    receivedFrom:inv.client?.name||"",
+    paymentMethod:["Cash","Card","EFT","Bank Transfer","Debit Order","Other"].includes(p.method)?p.method:"EFT",
+    reference:p.reference||inv.number||"",
+    currency:inv.currency||"ZAR",
+    vatNumber:inv.client?.vat||"",
+    category:"Invoice Payment",
+    notes:"Payment received for "+(inv.number||"invoice"),
+    source:"manual",
+    items:[{description:"Payment received for "+(inv.number||"invoice"),amount:Number(p.amount||0)}]
+  });
+  $("receiptStatus").textContent="Imported from EasyAR — review and save";
+  toast("Payment imported from EasyAR.");
+  track("receipt_ar_import",{invoice:inv.number||"",amount:Number(p.amount||0)});
+}
+
 function bind(){
   $("btnScanCapture").onclick=()=>{track("receipt_scan_started");location.href="easy-capture.html?return=receipt"};
   $("btnManualFocus").onclick=()=>{$("receiptNumber").focus();track("receipt_manual_started")};
   $("btnNewReceipt").onclick=newReceipt;$("btnAddLine").onclick=()=>addItem();$("btnSave").onclick=saveReceipt;$("btnPrint").onclick=()=>{track("receipt_print");window.print()};$("btnClear").onclick=newReceipt;$("btnDuplicate").onclick=()=>{const r=readForm();activeId=null;r.id=null;r.number=nextNumber();r.date=new Date().toISOString().slice(0,10);writeForm(r);$("receiptStatus").textContent="Duplicated — unsaved";track("receipt_duplicated")};$("btnExportCsv").onclick=exportCsv;$("receiptSearch").addEventListener("input",renderHistory);$("currency").addEventListener("change",calculateTotal);
 }
-document.addEventListener("DOMContentLoaded",()=>{bind();initAnalytics();renderHistory();renderKpis();newReceipt();applyCaptureHandoff()});
+document.addEventListener("DOMContentLoaded",()=>{bind();initAnalytics();renderHistory();renderKpis();newReceipt();applyCaptureHandoff();applyArPaymentHandoff()});
 </script>
 <script defer src="scripts/sync-nav.js"></script>
 </body>
