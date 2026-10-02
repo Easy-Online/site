@@ -7,6 +7,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="icon" href="logo-b.png" type="image/png">
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     .card{background:#fff;border:1px solid #e5e7eb;border-radius:1rem}.field{width:100%;border:1px solid #e5e7eb;border-radius:.55rem;padding:.55rem .7rem}
     .btn{display:inline-flex;align-items:center;gap:.4rem;padding:.55rem .8rem;border-radius:.55rem;font-weight:700}.pill{font-size:.72rem;border-radius:999px;padding:.2rem .55rem;border:1px solid #e5e7eb}
@@ -112,21 +113,29 @@ function openInvoice(id){
  <div class="grid md:grid-cols-3 gap-3 mb-4"><div class="border rounded p-3"><div class="text-xs text-gray-500">TOTAL</div><b>${money(selected.total)}</b></div><div class="border rounded p-3"><div class="text-xs text-gray-500">PAID</div><b>${money(EasyAR.paymentTotal(id))}</b></div><div class="border rounded p-3"><div class="text-xs text-gray-500">BALANCE</div><b>${money(b)}</b></div></div>
  <div class="flex flex-wrap gap-2 no-print mb-4">
   <button id="dPayment" class="btn bg-green-600 text-white">Record Payment</button><button id="dCredit" class="btn bg-white border">Credit Note</button><button id="dReceipt" class="btn bg-white border">Create Receipt</button><button id="dStatement" class="btn bg-white border">Create Statement</button>
-  <button id="dEmail" class="btn bg-white border">Email</button><button id="dInventory" class="btn bg-white border">Commit Stock</button><button id="dRecurring" class="btn bg-white border">Make Recurring</button><label class="btn bg-white border cursor-pointer">Attachment metadata<input id="dFile" type="file" class="hidden"></label>
+  <button id="dEmail" class="btn bg-white border">Email</button><button id="dShare" class="btn bg-white border">Share Read-only Link</button><button id="dInventory" class="btn bg-white border">Commit Stock</button><button id="dRecurring" class="btn bg-white border">Make Recurring</button><label class="btn bg-white border cursor-pointer">Attachment metadata<input id="dFile" type="file" class="hidden"></label>
  </div>
- ${payUrl?`<div class="border rounded-lg p-3 mb-4"><b>Payment link</b><div class="text-xs break-all text-blue-700">${esc(payUrl)}</div><button id="dCopyPay" class="text-xs text-blue-700 mt-1">Copy link</button></div>`:""}
+ ${payUrl?`<div class="border rounded-lg p-3 mb-4 grid md:grid-cols-2 gap-3"><div><b>Payment link</b><div class="text-xs break-all text-blue-700">${esc(payUrl)}</div><button id="dCopyPay" class="text-xs text-blue-700 mt-1">Copy link</button></div><div><b>Payment QR</b><div id="paymentQr" class="mt-2"></div></div></div>`:""}
  <div class="grid md:grid-cols-2 gap-4"><div><h3 class="font-black mb-2">Payments</h3>${p.map(x=>`<div class="border-b py-2 flex justify-between"><span>${esc(x.date)} • ${esc(x.method)} • ${esc(x.reference)}</span><b>${money(x.amount)}</b></div>`).join("")||'<p class="text-gray-500">No payments.</p>'}</div><div><h3 class="font-black mb-2">Credit notes</h3>${cr.map(x=>`<div class="border-b py-2 flex justify-between"><span>${esc(x.number)} • ${esc(x.reason)}</span><b>${money(x.amount)}</b></div>`).join("")||'<p class="text-gray-500">No credits.</p>'}</div></div>
  <div class="mt-4"><h3 class="font-black">Attachments</h3><div class="text-xs text-gray-600">${EasyAR.attachments(id).map(a=>esc(a.name)+" ("+Math.round(a.size/1024)+" KB)").join("<br>")||"None"}</div></div>`;
  $("detailModal").classList.remove("hidden");$("detailModal").classList.add("flex");
- $("dPayment").onclick=recordPayment;$("dCredit").onclick=recordCredit;$("dReceipt").onclick=createReceipt;$("dStatement").onclick=createStatement;$("dEmail").onclick=emailInvoice;$("dInventory").onclick=commitStock;$("dRecurring").onclick=makeRecurring;
+ $("dPayment").onclick=recordPayment;$("dCredit").onclick=recordCredit;$("dReceipt").onclick=createReceipt;$("dStatement").onclick=createStatement;$("dEmail").onclick=emailInvoice;$("dShare").onclick=shareInvoice;$("dInventory").onclick=commitStock;$("dRecurring").onclick=makeRecurring;
  $("dFile").onchange=e=>{if(e.target.files[0]){EasyAR.attachMeta(id,e.target.files[0]);openInvoice(id)}};
  if($("dCopyPay"))$("dCopyPay").onclick=()=>navigator.clipboard?.writeText(payUrl);
+ if(payUrl && window.QRCode && $("paymentQr")) new QRCode($("paymentQr"),{text:payUrl,width:128,height:128});
  $("assistant").innerHTML=EasyAR.assistant(selected).map(t=>`<div class="border-l-4 border-blue-500 pl-2">${esc(t)}</div>`).join("");
 }
 function recordPayment(){const amount=Number(prompt("Payment amount",EasyAR.balance(selected).toFixed(2)));if(!(amount>0))return;const method=prompt("Method (EFT/Card/Cash/Other)","EFT")||"EFT";const ref=prompt("Payment reference","")||"";EasyAR.addPayment({invoiceId:selected.id,amount,method,reference:ref});openInvoice(selected.id);render()}
 function recordCredit(){const amount=Number(prompt("Credit note amount",EasyAR.balance(selected).toFixed(2)));if(!(amount>0))return;const reason=prompt("Reason for credit","Adjustment")||"Adjustment";EasyAR.addCredit({invoiceId:selected.id,amount,reason});openInvoice(selected.id);render()}
 function createReceipt(){const p=EasyAR.invoicePayments(selected.id);const last=p[0];EasyAR.createTransfer("receipt",{invoice:selected,payment:last||{amount:EasyAR.paymentTotal(selected.id),method:"EFT",date:new Date().toISOString().slice(0,10)}});location.href="easy-receipt.html"}
 function createStatement(){EasyAR.createTransfer("statement",{customer:selected.client,ledger:EasyAR.customerLedger(selected.client?.email||selected.client?.name)});location.href="easy-statement.html"}
+function shareInvoice(){
+ const data={...selected,balance:EasyAR.balance(selected),payments:undefined,credits:undefined};
+ const bytes=new TextEncoder().encode(JSON.stringify(data));let bin="";bytes.forEach(b=>bin+=String.fromCharCode(b));
+ const enc=btoa(bin).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+ const url=new URL("easy-invoice-view.html",location.href);url.hash="data="+enc;
+ navigator.clipboard?.writeText(url.href);EasyAR.audit("share_link.created","invoice",selected.id);alert("Read-only invoice link copied. Anyone with this link can read the encoded invoice data.");
+}
 function emailInvoice(){const subject=encodeURIComponent("Invoice "+selected.number+" from "+(selected.company?.name||""));const body=encodeURIComponent("Hi "+(selected.client?.name||"")+",\n\nPlease find invoice "+selected.number+". Balance due: "+money(EasyAR.balance(selected))+", due "+(selected.dueDate||"")+"."+ (selected.paymentUrl?"\nPayment link: "+selected.paymentUrl:"")+"\n\nThank you.");location.href="mailto:"+(selected.client?.email||"")+"?subject="+subject+"&body="+body;EasyAR.audit("email.handoff","invoice",selected.id)}
 function commitStock(){const r=EasyAR.consumeInventoryForInvoice(selected);alert(r.ok?"Inventory updated for "+r.changes.length+" SKU line(s).":r.error);selected=EasyAR.invoices().find(x=>x.id===selected.id);render()}
 function makeRecurring(){const freq=prompt("Frequency: weekly, monthly or yearly","monthly")||"monthly";EasyAR.saveRecurring({frequency:freq,nextDate:selected.issueDate||new Date().toISOString().slice(0,10),template:{...selected,id:null,number:"",status:"Draft",inventoryCommitted:false}});render();alert("Recurring schedule saved.")}
