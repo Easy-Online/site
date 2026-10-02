@@ -136,7 +136,7 @@
               <div class="flex flex-wrap gap-2">
                 <button class="btn btn-outline" id="btnExtract"><i class="fa-solid fa-wand-magic-sparkles"></i> Smart Extract</button>
                 <button class="btn btn-outline" id="btnMarkReady"><i class="fa-solid fa-circle-check"></i> Mark Ready</button>
-                <button class="btn btn-success" id="btnPostExpense"><i class="fa-solid fa-arrow-right-to-bracket"></i> Post to Expenses</button>
+                <button class="btn btn-success" id="btnPostExpense"><i class="fa-solid fa-arrow-right-to-bracket"></i> Post to Expenses</button>\n                <button class="btn btn-primary hidden" id="btnSendReceipt"><i class="fa-solid fa-receipt"></i> Send to Easy Receipt</button>
               </div>
             </div>
           </section>
@@ -377,6 +377,15 @@ function postExpense(){
   const f=r.fields; const exp={id:makeId("EXP"),captureId:r.id,date:f.date,supplier:f.supplier,category:f.category,amountExcl:Number(f.amountExcl||0).toFixed(2),vatPct:Number(f.vatPct||0).toFixed(2),vatAmt:Number(f.vatAmt||0).toFixed(2),amountIncl:Number(f.amountIncl||0).toFixed(2),reference:f.reference||f.number||"",notes:[f.notes,`Source: Easy Capture ${r.id}`].filter(Boolean).join(" · "),createdAt:nowISO(),updatedAt:nowISO()};
   expenses.push(exp); localStorage.setItem(EXPENSE_KEY,JSON.stringify(expenses)); r.status="processed"; r.postedExpenseId=exp.id; logEvent(r,"Posted to Easy Expenses",exp.id); persist(); renderAll(); toast("Expense posted successfully.");
 }
+function sendToReceipt(){
+  const r=active(); if(!r)return; readForm();
+  const f=r.fields||{};
+  if(!f.supplier || !f.date || !(Number(f.amountIncl)>0)){toast("Complete supplier, date and amount before sending to Easy Receipt.");return;}
+  const payload={captureId:r.id,confidence:r.confidence||0,supplier:f.supplier||"",supplierVat:f.supplierVat||"",number:f.number||"",date:f.date||"",currency:f.currency||"ZAR",category:f.category||"",amountExcl:f.amountExcl||"",vatPct:f.vatPct||"",vatAmt:f.vatAmt||"",amountIncl:f.amountIncl||"",paymentMethod:f.paymentMethod||"",reference:f.reference||"",notes:f.notes||"",lineItems:(r.lineItems||[]).map(x=>({description:x.description||"",qty:Number(x.qty||0),unit:Number(x.unit||0),vatPct:Number(x.vatPct||0),total:Number(x.qty||0)*Number(x.unit||0)}))};
+  localStorage.setItem("easy.receipt.capture-handoff.v1",JSON.stringify(payload));
+  logEvent(r,"Sent to Easy Receipt",f.number||r.id); persist();
+  location.href="easy-receipt.html";
+}
 function markReady(){ const r=active(); if(!r)return; readForm(); const missing=validateForPost(r); if(missing.length){toast(`Complete required fields: ${missing.join(", ")}.`);return;} r.status="ready"; logEvent(r,"Marked ready"); persist(); renderAll(); toast("Capture marked ready."); }
 function reject(){ const r=active(); if(!r)return; r.status="rejected"; $("fStatus").value="rejected"; logEvent(r,"Rejected"); persist(); renderAll(); toast("Capture rejected."); }
 async function removeActive(){ const r=active(); if(!r||!confirm(`Delete ${r.source?.name||r.id}?`))return; records=records.filter(x=>x.id!==r.id); await deleteBlob(r.id); persist(); activeId=null; $("reviewWorkspace").classList.add("hidden"); $("emptyState").classList.remove("hidden"); renderAll(); toast("Capture deleted."); }
@@ -398,12 +407,12 @@ function bind(){
   $("q").addEventListener("input",renderQueue); $("statusFilter").addEventListener("change",renderQueue);
   ["fType","fStatus","fSupplier","fSupplierVat","fNumber","fDate","fCurrency","fCategory","fPayment","fReference","fNotes","fText"].forEach(id=>$(id).addEventListener("input",queueAutosave));
   ["fExcl","fVatPct","fVatAmt","fIncl"].forEach(id=>$(id).addEventListener("input",recalcAmounts));
-  $("btnSave").addEventListener("click",()=>saveReview()); $("btnExtract").addEventListener("click",smartExtract); $("btnExtractText").addEventListener("click",extractText); $("btnMarkReady").addEventListener("click",markReady); $("btnPostExpense").addEventListener("click",postExpense); $("btnReject").addEventListener("click",reject); $("btnDelete").addEventListener("click",removeActive); $("btnAddLine").addEventListener("click",addLine); $("btnExportCsv").addEventListener("click",exportCsv); $("btnExportJson").addEventListener("click",exportJson); $("btnPrint").addEventListener("click",()=>window.print());
+  $("btnSave").addEventListener("click",()=>saveReview()); $("btnExtract").addEventListener("click",smartExtract); $("btnExtractText").addEventListener("click",extractText); $("btnMarkReady").addEventListener("click",markReady); $("btnPostExpense").addEventListener("click",postExpense); $("btnSendReceipt").addEventListener("click",sendToReceipt); $("btnReject").addEventListener("click",reject); $("btnDelete").addEventListener("click",removeActive); $("btnAddLine").addEventListener("click",addLine); $("btnExportCsv").addEventListener("click",exportCsv); $("btnExportJson").addEventListener("click",exportJson); $("btnPrint").addEventListener("click",()=>window.print());
   $("btnOpenOriginal").addEventListener("click",async()=>{const r=active();if(!r)return;const blob=await getBlob(r.id);if(!blob){toast("Original document unavailable.");return;}const url=URL.createObjectURL(blob);window.open(url,"_blank","noopener");setTimeout(()=>URL.revokeObjectURL(url),60000);});
   $("btnSeed").addEventListener("click",seedDemo); $("btnExportBackup").addEventListener("click",exportBackup); $("btnImportBackup").addEventListener("click",()=>$("backupFile").click()); $("backupFile").addEventListener("change",e=>{importBackup(e.target.files[0]);e.target.value="";});
 }
 
-document.addEventListener("DOMContentLoaded",()=>{bind();renderAll();if(records.length)selectRecord(records[0].id);});
+document.addEventListener("DOMContentLoaded",()=>{bind();renderAll();const returning=new URLSearchParams(location.search).get("return");if(returning==="receipt"){$("btnSendReceipt").classList.remove("hidden");$("btnPostExpense").classList.add("hidden");}if(records.length)selectRecord(records[0].id);});
 </script>
 <script defer src="scripts/sync-nav.js"></script>
 </body>
