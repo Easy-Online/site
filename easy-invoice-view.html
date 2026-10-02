@@ -5,10 +5,19 @@
 <title>EasyFile Invoice View</title>
 <meta name="robots" content="noindex,nofollow">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-<link rel="icon" href="logo-b.png" type="image/png">
+
 <style>.card{background:#fff;border:1px solid #e5e7eb;border-radius:1rem}.mono{font-variant-numeric:tabular-nums}@media print{.no-print{display:none!important}body{background:white}}</style>
+  <!-- EASYFILE_FAVICONS -->
+  <link rel="icon" href="logo-b.png" type="image/png">
+  <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
+  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="logo-b.png">
 </head>
 <body class="bg-gray-50 text-gray-900 min-h-screen">
+<!-- NAV_SYNC -->
+<div class="easyfile-nav no-print">
+  <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
+</div>
 <main class="max-w-4xl mx-auto p-4 md:p-8">
 <div class="no-print flex justify-between items-center mb-4"><a href="index.html" class="font-black">EasyFile</a><button onclick="window.print()" class="px-4 py-2 border rounded-lg bg-white">Print / PDF</button></div>
 <div id="view" class="card p-6 md:p-10"></div>
