@@ -86,6 +86,12 @@
         <button id="btnDuplicateInvoice" class="bg-white border border-gray-200 hover:bg-gray-50 px-4 py-2 rounded-lg" title="Create a new draft from this invoice">
           <i class="fa-solid fa-copy mr-2"></i>Duplicate
         </button>
+        <button id="btnRegisterInvoice" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg" title="Save this invoice into the accounts-receivable register">
+          <i class="fa-solid fa-book mr-2"></i>Save to Register
+        </button>
+        <a href="easy-accounts-receivable.html" class="bg-white border border-gray-200 hover:bg-gray-50 px-4 py-2 rounded-lg">
+          <i class="fa-solid fa-chart-line mr-2"></i>Open EasyAR
+        </a>
 
         <div class="ml-auto flex flex-wrap gap-2">
           <button id="btnPreview" class="bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-lg">
@@ -283,6 +289,21 @@
             <input id="amountPaid" type="number" step="0.01" min="0" class="field mono" value="0" />
           </div>
         </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="label">Document Type</label>
+            <select id="documentType" class="field bg-white"><option>Invoice</option><option>Pro-forma Invoice</option></select>
+          </div>
+          <div>
+            <label class="label">FX Rate to base currency</label>
+            <input id="fxRate" type="number" step="0.000001" min="0" class="field mono" value="1" />
+          </div>
+        </div>
+        <div>
+          <label class="label">Payment Link (optional)</label>
+          <input id="paymentUrl" type="url" class="field" placeholder="https://pay.example.com/..." />
+          <p class="text-xs text-gray-500 mt-1">Use a hosted PayFast, Ozow, Yoco, Peach Payments or Stripe payment URL. No credentials are stored here.</p>
+        </div>
       </div>
     </section>
 
@@ -404,6 +425,7 @@
     </div>
   </div>
 
+  <script src="assets/js/easy-ar.js"></script>
   <script>
     // ---------- Utilities ----------
     const $ = (id) => document.getElementById(id);
@@ -776,6 +798,41 @@
       const next = last + 1;
       localStorage.setItem(key, String(next));
       $("invNumber").value = `INV-${pad(next, 5)}`;
+    }
+
+    function currentRegisteredInvoice() {
+      if (!window.EasyAR) return null;
+      const t = getTotals();
+      const existing = EasyAR.invoices().find(i => i.number === $("invNumber").value);
+      return {
+        id: existing?.id,
+        number: $("invNumber").value,
+        reference: $("invRef").value,
+        issueDate: $("issueDate").value,
+        dueDate: $("dueDate").value,
+        currency: $("currency").value,
+        fxRate: safeNumber($("fxRate")?.value || 1) || 1,
+        type: $("documentType")?.value || "Invoice",
+        status: $("status").value,
+        company: {name:$("companyName").value,vat:$("companyVat").value,reg:$("companyReg").value,email:$("companyEmail").value,phone:$("companyPhone").value,address:$("companyAddress").value,web:$("companyWeb").value,bank:$("companyBank").value},
+        client: {name:$("clientName").value,vat:$("clientVat").value,reg:$("clientReg").value,email:$("clientEmail").value,phone:$("clientPhone").value,address:$("clientAddress").value},
+        lines: lines.map(x => ({...x, sku:x.sku || ""})),
+        subtotal:t.subtotalEx, vat:t.vatTotal, discount:t.overallDiscount, shipping:t.shipping, total:t.totalInc,
+        notes:$("notes").value, terms:$("terms").value, paymentUrl:$("paymentUrl")?.value || ""
+      };
+    }
+
+    function registerInvoice() {
+      if (!window.EasyAR) return toast("Accounts receivable engine unavailable.", true);
+      const inv = currentRegisteredInvoice();
+      if (!inv.number || !inv.client.name || !inv.lines.some(l => String(l.desc||"").trim())) return toast("Add invoice number, client, and at least one line item before registering.", true);
+      const saved = EasyAR.saveInvoice(inv);
+      const manualPaid = Math.max(0, safeNumber($("amountPaid").value));
+      const existingPaid = EasyAR.paymentTotal(saved.id);
+      if (manualPaid > existingPaid + 0.005) EasyAR.addPayment({invoiceId:saved.id,amount:manualPaid-existingPaid,method:"Manual",reference:"Opening balance"});
+      saveDraft();
+      toast("Invoice saved to EasyAR register ✅");
+      return saved;
     }
 
     function duplicateInvoice() {
@@ -1200,7 +1257,9 @@
       });
 
       $("btnDuplicateInvoice").addEventListener("click", duplicateInvoice);
+      $("btnRegisterInvoice").addEventListener("click", registerInvoice);
       $("btnCopyReminder").addEventListener("click", copyPaymentReminder);
+      ["documentType","fxRate","paymentUrl"].forEach(id => $(id)?.addEventListener("input", () => { if(id==="fxRate") recalcTotals(); }));
 
       $("status").addEventListener("change", () => { setStatusBadge($("status").value); updateInvoiceHealth(getTotals()); });
       $("issueDate").addEventListener("change", () => {
@@ -1266,6 +1325,21 @@
       // Try auto-load last draft (non-intrusive): only if user already has one
       if (localStorage.getItem(DRAFT_KEY)) {
         loadDraft();
+      }
+
+      if (window.EasyAR) {
+        const q = EasyAR.consumeTransfer("quote-to-invoice");
+        if (q) {
+          $("clientName").value = q.client?.name || q.client?.company || "";
+          $("clientEmail").value = q.client?.email || "";
+          $("clientPhone").value = q.client?.phone || "";
+          $("invRef").value = q.quoteNumber || "";
+          $("currency").value = q.currency || "ZAR";
+          lines = (q.lines || []).map(x => ({desc:x.desc||x.description||"",qty:safeNumber(x.qty)||1,rate:safeNumber(x.rate??x.unit),disc:safeNumber(x.disc),vat:safeNumber(x.vat??15),sku:x.sku||""}));
+          $("notes").value = q.notes || "";
+          renderLines();
+          toast("Quote imported into invoice ✅");
+        }
       }
 
       recalcTotals();
