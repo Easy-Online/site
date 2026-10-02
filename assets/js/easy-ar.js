@@ -60,9 +60,10 @@ function addCredit(c){
 }
 function getSettings(){return Object.assign({baseCurrency:"ZAR",paymentProvider:"EFT",paymentBaseUrl:"",defaultTermsDays:7,defaultVat:15},read(K.settings,{}))}
 function saveSettings(s){write(K.settings,Object.assign(getSettings(),s));audit("settings.updated","settings","ar")}
+function baseAmount(inv,amount){return num(amount)*(num(inv.fxRate)||1)}
 function aging(asOf=new Date().toISOString().slice(0,10)){
  const b={current:0,d1_30:0,d31_60:0,d61_90:0,d90plus:0,total:0};
- invoices().forEach(inv=>{const bal=balance(inv);if(bal<=0)return; b.total+=bal; const due=inv.dueDate||inv.issueDate;
+ invoices().forEach(inv=>{const bal=baseAmount(inv,balance(inv));if(bal<=0)return; b.total+=bal; const due=inv.dueDate||inv.issueDate;
   const d=Math.floor((new Date(asOf+"T00:00:00")-new Date(due+"T00:00:00"))/86400000);
   if(d<=0)b.current+=bal; else if(d<=30)b.d1_30+=bal; else if(d<=60)b.d31_60+=bal; else if(d<=90)b.d61_90+=bal; else b.d90plus+=bal;
  }); return b;
@@ -80,9 +81,10 @@ function saveRecurring(r){
 }
 function nextDate(iso,freq,interval=1){const d=new Date(iso+"T00:00:00");if(freq==="weekly")d.setDate(d.getDate()+7*interval);else if(freq==="yearly")d.setFullYear(d.getFullYear()+interval);else d.setMonth(d.getMonth()+interval);return d.toISOString().slice(0,10)}
 function runRecurring(asOf=new Date().toISOString().slice(0,10)){
- let list=recurring(),created=[];
+ let list=recurring(),created=[]; const terms=Math.max(0,num(getSettings().defaultTermsDays)||7);
  list=list.map(r=>{if(!r.active||r.nextDate>asOf)return r;let guard=0,nr={...r};while(nr.nextDate<=asOf&&guard++<24){
-   const inv=saveInvoice(Object.assign({},clone(nr.template),{id:null,number:"INV-"+Date.now().toString().slice(-7)+"-"+guard,issueDate:nr.nextDate,dueDate:nextDate(nr.nextDate,"weekly",1),status:"Draft",source:"recurring"}));
+   const due=new Date(nr.nextDate+"T00:00:00");due.setDate(due.getDate()+terms);
+   const inv=saveInvoice(Object.assign({},clone(nr.template),{id:null,number:"INV-"+Date.now().toString().slice(-7)+"-"+guard,issueDate:nr.nextDate,dueDate:due.toISOString().slice(0,10),status:"Draft",source:"recurring"}));
    created.push(inv);nr.nextDate=nextDate(nr.nextDate,nr.frequency,nr.interval||1);
  }return nr});write(K.recurring,list);return created;
 }
@@ -107,7 +109,7 @@ function consumeInventoryForInvoice(inv){
 }
 function attachMeta(invoiceId,file){const list=read(K.attachments,[]);const rec={id:uid("att"),invoiceId,name:file.name,size:file.size,type:file.type,lastModified:file.lastModified,createdAt:now()};list.unshift(rec);write(K.attachments,list);audit("attachment.added","invoice",invoiceId,{name:rec.name,size:rec.size});return rec}
 function attachments(invoiceId){return read(K.attachments,[]).filter(x=>x.invoiceId===invoiceId)}
-function forecast(days=90){const start=new Date(),end=new Date();end.setDate(end.getDate()+days);const rows=invoices().filter(i=>balance(i)>0).map(i=>({date:i.dueDate||i.issueDate,amount:balance(i),invoice:i})).filter(x=>new Date(x.date)<=end);const total=rows.reduce((s,x)=>s+x.amount,0);return {days,total,rows}}
+function forecast(days=90){const end=new Date();end.setDate(end.getDate()+days);const rows=invoices().filter(i=>balance(i)>0).map(i=>({date:i.dueDate||i.issueDate,amount:baseAmount(i,balance(i)),nativeAmount:balance(i),invoice:i})).filter(x=>new Date(x.date)<=end);const total=rows.reduce((s,x)=>s+x.amount,0);return {days,total,rows}}
 function assistant(inv){
  const tips=[],bal=inv?balance(inv):0;
  if(!inv)return["Save the invoice to the register to unlock invoice intelligence."];
@@ -119,5 +121,5 @@ function assistant(inv){
  if(!tips.length)tips.push("Invoice checks are clear. Next action: send, track receipt, and monitor payment.");
  return tips;
 }
-window.EasyAR={K,uid,now,read,write,invoices,saveInvoice,deleteInvoice,payments,invoicePayments,paymentTotal,balance,deriveStatus,addPayment,removePayment,credits,addCredit,creditTotal,getSettings,saveSettings,aging,customerLedger,recurring,saveRecurring,runRecurring,reminderStage,reminderText,reminderQueue,createTransfer,consumeTransfer,crmContacts,inventory,consumeInventoryForInvoice,attachMeta,attachments,forecast,assistant,audit};
+window.EasyAR={K,uid,now,read,write,invoices,saveInvoice,deleteInvoice,payments,invoicePayments,paymentTotal,balance,baseAmount,deriveStatus,addPayment,removePayment,credits,addCredit,creditTotal,getSettings,saveSettings,aging,customerLedger,recurring,saveRecurring,runRecurring,reminderStage,reminderText,reminderQueue,createTransfer,consumeTransfer,crmContacts,inventory,consumeInventoryForInvoice,attachMeta,attachments,forecast,assistant,audit};
 })();
