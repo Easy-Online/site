@@ -37,4 +37,5 @@ else{
  <div class="grid md:grid-cols-2 gap-6 mt-8 text-sm"><div><h3 class="font-black">Notes</h3><div class="whitespace-pre-line text-gray-600">${esc(i.notes||"")}</div></div><div><h3 class="font-black">Payment terms</h3><div class="whitespace-pre-line text-gray-600">${esc(i.terms||"")}</div>${i.company?.bank?`<h3 class="font-black mt-3">Bank details</h3><div class="whitespace-pre-line text-gray-600">${esc(i.company.bank)}</div>`:""}</div></div>`;
 }
 </script>
+<script defer src="scripts/sync-nav.js"></script>
 </body></html>
