@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+<meta charset="UTF-8">
+<!-- NAV_SYNC: scripts/sync-nav.js -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Easy SOW | Statement of Work Builder</title>
+<meta name="description" content="Create, manage, preview and export professional Statements of Work with scope, deliverables, milestones, responsibilities, assumptions, exclusions, pricing, acceptance criteria and sign-off.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="assets/css/easyfile-brand-tokens.css">
+<link rel="stylesheet" href="assets/css/easyfile-site.css">
+<link rel="stylesheet" href="assets/css/easyfile-footer.css">
+<link rel="stylesheet" href="assets/css/easyfile-navigation.css">
+<!-- EASYFILE_FAVICONS -->
+<link rel="icon" href="logo-b.png" type="image/png">
+<link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
+<link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="logo-b.png">
+<style>
+:root{--ink:#0f172a;--muted:#64748b;--line:#e2e8f0;--bg:#f8fafc;--card:#fff;--blue:#2563eb;--blue2:#1d4ed8;--green:#16a34a;--red:#dc2626;--amber:#d97706;--violet:#7c3aed}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+a{color:inherit}.container{max-width:1320px;margin:auto;padding:0 18px}
+.topbar{background:#0f172a;color:#fff;position:sticky;top:0;z-index:40}.nav{min-height:62px;display:flex;gap:16px;align-items:center;overflow:auto}.nav a{text-decoration:none;font-size:14px;white-space:nowrap}.brand{font-weight:900;font-size:18px!important}.spacer{flex:1}.pill{border-radius:999px;padding:6px 9px;background:#1e293b;font-size:11px;font-weight:800;white-space:nowrap}
+.hero{padding:30px 0 18px}.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:900}.hero h1{margin:5px 0 8px;font-size:clamp(32px,5vw,52px);line-height:1.05}.lead{max-width:920px;color:var(--muted);font-size:17px}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:12px 0 20px}.kpi,.card{background:#fff;border:1px solid var(--line);border-radius:15px;box-shadow:0 8px 28px rgba(15,23,42,.04)}.kpi{padding:14px}.kpi span{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;font-weight:900;letter-spacing:.06em}.kpi b{font-size:24px}
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px}.tab{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 13px;font-weight:800;cursor:pointer}.tab.active{background:var(--ink);color:#fff;border-color:var(--ink)}.view{display:none}.view.active{display:block}
+.card{padding:18px;margin-bottom:16px}.card h2,.card h3{margin:0 0 6px}.section-head{display:flex;gap:12px;justify-content:space-between;align-items:flex-start;margin-bottom:14px}.section-head p{color:var(--muted);font-size:12px;margin:3px 0 0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.split{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field{margin-bottom:11px}label{display:block;font-size:11px;font-weight:900;color:#475569;margin-bottom:5px}input,textarea,select{width:100%;border:1px solid #cbd5e1;border-radius:9px;padding:10px 11px;background:#fff;color:var(--ink);font:inherit}textarea{min-height:96px;resize:vertical}input:focus,textarea:focus,select:focus{outline:3px solid rgba(37,99,235,.12);border-color:var(--blue)}.hint{color:var(--muted);font-size:11px}
+.btn{border:0;border-radius:9px;padding:10px 13px;font-weight:850;cursor:pointer;display:inline-flex;gap:7px;align-items:center;justify-content:center}.btn-small{padding:7px 9px;font-size:11px}.btn-primary{background:var(--blue);color:#fff}.btn-primary:hover{background:var(--blue2)}.btn-light{background:#fff;border:1px solid var(--line)}.btn-green{background:var(--green);color:#fff}.btn-red{background:var(--red);color:#fff}.btn-violet{background:var(--violet);color:#fff}.btn-amber{background:var(--amber);color:#fff}.toolbar{display:flex;gap:8px;flex-wrap:wrap}
+.notice{border-left:4px solid var(--blue);background:#eff6ff;border-radius:8px;padding:11px 13px;font-size:12px;margin-bottom:13px}.notice.warn{border-left-color:var(--amber);background:#fffbeb}.notice.good{border-left-color:var(--green);background:#f0fdf4}
+.row-card{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:9px}.row-head{display:flex;gap:8px;justify-content:space-between;align-items:center;margin-bottom:8px}
+.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#475569;background:#f8fafc}.status{font-weight:900;font-size:10px;border-radius:999px;background:#e2e8f0;padding:4px 7px;white-space:nowrap}.status.draft{background:#eef2ff;color:#3730a3}.status.review{background:#fff7ed;color:#92400e}.status.approved{background:#dcfce7;color:#166534}.status.closed{background:#e2e8f0;color:#334155}
+.empty{color:var(--muted);text-align:center;padding:22px}.muted{color:var(--muted)}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}.hidden{display:none!important}
+.doc{background:#fff;border:1px solid var(--line);padding:36px;min-height:900px;box-shadow:0 12px 34px rgba(15,23,42,.08)}.doc h1{font-size:30px;margin:0 0 6px}.doc h2{font-size:16px;margin:24px 0 8px;border-bottom:1px solid var(--line);padding-bottom:5px}.doc h3{font-size:13px;margin:15px 0 5px}.doc p,.doc li{font-size:12px;line-height:1.55}.doc .meta{display:grid;grid-template-columns:160px 1fr;gap:4px 12px;font-size:11px}.doc .meta b{color:#475569}.doc table{font-size:11px}.doc .signature{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:36px}.sigline{border-top:1px solid #334155;padding-top:7px;margin-top:34px;font-size:11px}
+footer{padding:38px 0;color:var(--muted);font-size:11px}
+@media(max-width:960px){.grid,.grid-3{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}.doc{min-height:0}}@media(max-width:560px){.split,.kpis{grid-template-columns:1fr}.nav .pill{display:none}.doc{padding:20px}}@media print{.no-print,.topbar,.hero,.kpis,.tabs,footer,.editor{display:none!important}body{background:#fff}.container{max-width:none;padding:0}.view{display:none!important}#builderView{display:block!important}.grid{display:block}.doc{border:0;box-shadow:none;padding:0;min-height:auto}.doc h2{break-after:avoid}.doc table{break-inside:auto}.doc tr{break-inside:avoid}.signature{break-inside:avoid}}
+</style>
+</head>
+<body class="easyfile-app">
+<!-- NAV:START -->
+<div class="easyfile-nav no-print">
+  <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
+</div>
+<!-- NAV:END -->
+
+<header class="hero no-print"><div class="container">
+<div class="eyebrow">Project commercial & delivery control</div>
+<h1>Easy SOW</h1>
+<p class="lead">Create structured Statements of Work covering scope, deliverables, milestones, responsibilities, assumptions, exclusions, commercials, acceptance criteria, change control and sign-off. Save reusable templates and maintain a local SOW register.</p>
+<div class="toolbar"><button class="btn btn-primary" onclick="go('builder')">Build SOW</button><button class="btn btn-light" onclick="seedDemo()">Seed Demo</button><button class="btn btn-violet" onclick="go('register')">SOW Register</button></div>
+</div></header>
+
+<main class="container">
+<section class="kpis no-print">
+<div class="kpi"><span>Saved SOWs</span><b id="kCount">0</b></div>
+<div class="kpi"><span>Draft</span><b id="kDraft">0</b></div>
+<div class="kpi"><span>Approved</span><b id="kApproved">0</b></div>
+<div class="kpi"><span>Contract value</span><b id="kValue">R0</b></div>
+<div class="kpi"><span>Open milestones</span><b id="kMilestones">0</b></div>
+</section>
+
+<div class="tabs no-print">
+<button class="tab active" data-tab="builder" onclick="go('builder')">SOW Builder</button>
+<button class="tab" data-tab="register" onclick="go('register')">Register</button>
+<button class="tab" data-tab="templates" onclick="go('templates')">Templates</button>
+<button class="tab" data-tab="data" onclick="go('data')">Data</button>
+</div>
+
+<section id="builderView" class="view active">
+<div class="notice good no-print"><strong>Recommended flow:</strong> Parties & commercial context → objectives → in/out of scope → deliverables & milestones → responsibilities → pricing → acceptance & change control → preview → save/export.</div>
+<div class="grid">
+<div class="editor">
+
+<div class="card">
+<div class="section-head"><div><h2>Document identity</h2><p>Core commercial and governance metadata.</p></div><span id="docStatusBadge" class="status draft">DRAFT</span></div>
+<div class="split">
+<div class="field"><label>SOW number</label><input id="sowNumber" class="mono"></div>
+<div class="field"><label>Status</label><select id="sowStatus"><option value="draft">Draft</option><option value="review">Under Review</option><option value="approved">Approved</option><option value="closed">Closed</option></select></div>
+</div>
+<div class="field"><label>SOW title</label><input id="title" placeholder="Microsoft 365 Tenant Migration and Adoption Services"></div>
+<div class="split"><div class="field"><label>Effective date</label><input id="effectiveDate" type="date"></div><div class="field"><label>End date</label><input id="endDate" type="date"></div></div>
+<div class="split"><div class="field"><label>Master agreement / contract reference</label><input id="agreementRef" placeholder="MSA-2026-001"></div><div class="field"><label>Quote / PO reference</label><input id="commercialRef" placeholder="Q-2026-001 / PO12345"></div></div>
+<div class="split"><div class="field"><label>Currency</label><select id="currency"><option value="ZAR">ZAR (R)</option><option value="USD">USD ($)</option><option value="EUR">EUR (€)</option><option value="GBP">GBP (£)</option></select></div><div class="field"><label>Pricing model</label><select id="pricingModel"><option>Fixed Fee</option><option>Time & Materials</option><option>Milestone Based</option><option>Retainer</option><option>Hybrid</option></select></div></div>
+</div>
+
+<div class="card">
+<h2>Parties</h2>
+<div class="split"><div class="field"><label>Service provider</label><input id="providerName" placeholder="Your Company (Pty) Ltd"></div><div class="field"><label>Client</label><input id="clientName" placeholder="Client Company"></div></div>
+<div class="split"><div class="field"><label>Provider contact</label><input id="providerContact"></div><div class="field"><label>Client contact</label><input id="clientContact"></div></div>
+<div class="split"><div class="field"><label>Provider email</label><input id="providerEmail" type="email"></div><div class="field"><label>Client email</label><input id="clientEmail" type="email"></div></div>
+<div class="split"><div class="field"><label>Provider address</label><textarea id="providerAddress"></textarea></div><div class="field"><label>Client address</label><textarea id="clientAddress"></textarea></div></div>
+</div>
+
+<div class="card"><h2>Purpose & objectives</h2>
+<div class="field"><label>Background / business context</label><textarea id="background" placeholder="Why this engagement exists and the business context."></textarea></div>
+<div class="field"><label>Objectives</label><textarea id="objectives" placeholder="State measurable outcomes and intended business results."></textarea></div>
+<div class="field"><label>Success measures</label><textarea id="successMeasures" placeholder="How successful completion will be measured."></textarea></div>
+</div>
+
+<div class="card"><div class="section-head"><div><h2>Scope</h2><p>Explicit boundaries reduce scope creep.</p></div></div>
+<div class="field"><label>In scope</label><textarea id="inScope" placeholder="- Discovery workshop&#10;- Tenant assessment&#10;- Migration configuration"></textarea></div>
+<div class="field"><label>Out of scope</label><textarea id="outScope" placeholder="- Third-party license fees&#10;- End-user hardware replacement"></textarea></div>
+</div>
+
+<div class="card"><div class="section-head"><div><h2>Deliverables</h2><p>Outputs that the client can inspect and accept.</p></div><button class="btn btn-primary btn-small" onclick="addDeliverable()">+ Deliverable</button></div><div id="deliverableRows"></div></div>
+
+<div class="card"><div class="section-head"><div><h2>Milestones</h2><p>Dates, dependencies and payment triggers.</p></div><button class="btn btn-primary btn-small" onclick="addMilestone()">+ Milestone</button></div><div id="milestoneRows"></div></div>
+
+<div class="card"><div class="section-head"><div><h2>Responsibilities</h2><p>RACI-style ownership without unnecessary complexity.</p></div><button class="btn btn-primary btn-small" onclick="addResponsibility()">+ Responsibility</button></div><div id="responsibilityRows"></div></div>
+
+<div class="card">
+<h2>Assumptions, dependencies & exclusions</h2>
+<div class="field"><label>Assumptions</label><textarea id="assumptions"></textarea></div>
+<div class="field"><label>Client dependencies / prerequisites</label><textarea id="dependencies"></textarea></div>
+<div class="field"><label>Constraints</label><textarea id="constraints"></textarea></div>
+</div>
+
+<div class="card"><div class="section-head"><div><h2>Commercials</h2><p>Pricing schedule, taxes and expenses.</p></div><button class="btn btn-primary btn-small" onclick="addPrice()">+ Price line</button></div><div id="priceRows"></div><div class="split"><div class="field"><label>VAT / Tax %</label><input id="taxRate" type="number" min="0" step="0.01" value="15"></div><div class="field"><label>Expenses policy</label><input id="expenses" placeholder="Included / billed at cost with approval"></div></div><div class="field"><label>Payment terms</label><textarea id="paymentTerms" placeholder="e.g. 50% on signature, 40% after migration, 10% on acceptance."></textarea></div></div>
+
+<div class="card">
+<h2>Governance & control</h2>
+<div class="field"><label>Project governance / reporting cadence</label><textarea id="governance"></textarea></div>
+<div class="field"><label>Acceptance criteria & acceptance period</label><textarea id="acceptance"></textarea></div>
+<div class="field"><label>Change control</label><textarea id="changeControl" placeholder="Any change to scope, schedule, pricing or assumptions requires a written change request approved by both parties."></textarea></div>
+<div class="field"><label>Confidentiality / security / compliance notes</label><textarea id="security"></textarea></div>
+<div class="field"><label>Warranty / support / handover</label><textarea id="support"></textarea></div>
+</div>
+
+<div class="card">
+<h2>Sign-off</h2>
+<div class="split"><div class="field"><label>Provider signatory</label><input id="providerSignatory"></div><div class="field"><label>Client signatory</label><input id="clientSignatory"></div></div>
+<div class="split"><div class="field"><label>Provider title</label><input id="providerTitle"></div><div class="field"><label>Client title</label><input id="clientTitle"></div></div>
+<div class="field"><label>Additional legal / contract notes</label><textarea id="legalNotes"></textarea></div>
+</div>
+
+<div class="toolbar no-print">
+<button class="btn btn-primary" onclick="saveCurrent()">Save SOW</button>
+<button class="btn btn-green" onclick="window.print()">Print / Save PDF</button>
+<button class="btn btn-light" onclick="exportJSON()">Export JSON</button>
+<button class="btn btn-light" onclick="exportText()">Export Text</button>
+<button class="btn btn-amber" onclick="saveAsTemplate()">Save Template</button>
+<button class="btn btn-red" onclick="resetCurrent()">New / Reset</button>
+</div>
+</div>
+
+<div>
+<div class="card no-print"><strong>Document preview</strong><div class="hint">Updates live as you type. Print uses this contract-style layout.</div></div>
+<article class="doc" id="docPreview"></article>
+</div>
+</div>
+</section>
+
+<section id="registerView" class="view no-print">
+<div class="card"><div class="section-head"><div><h2>SOW Register</h2><p>Saved locally in this browser.</p></div><div class="toolbar"><button class="btn btn-light btn-small" onclick="exportRegisterCSV()">Export CSV</button><button class="btn btn-primary btn-small" onclick="go('builder');resetCurrent()">+ New SOW</button></div></div>
+<div class="field"><label>Search</label><input id="registerSearch" placeholder="Number, title, client, status..." oninput="renderRegister()"></div>
+<div class="table-wrap"><table><thead><tr><th>SOW #</th><th>Title</th><th>Client</th><th>Status</th><th>Value</th><th>Dates</th><th>Actions</th></tr></thead><tbody id="registerRows"></tbody></table></div></div>
+</section>
+
+<section id="templatesView" class="view no-print">
+<div class="grid"><div class="card"><h2>Saved templates</h2><p class="muted">Use templates for recurring service types such as migrations, managed services, training, deployments and consulting engagements.</p><div id="templateList"></div></div>
+<div class="card"><h2>Template guidance</h2><div class="notice">A good SOW template should define structure, default clauses and recurring deliverables, but should not pre-approve client-specific scope, dates, pricing or acceptance criteria.</div><ul><li>Keep measurable deliverables.</li><li>State exclusions clearly.</li><li>Identify client prerequisites.</li><li>Link milestones to acceptance and invoicing.</li><li>Use formal change control for scope changes.</li></ul></div></div>
+</section>
+
+<section id="dataView" class="view no-print">
+<div class="grid"><div class="card"><h2>Backup & restore</h2><p class="muted">Back up the full Easy SOW workspace.</p><div class="toolbar"><button class="btn btn-primary" onclick="backupWorkspace()">Download Backup</button><label class="btn btn-light">Restore Backup<input id="restoreFile" type="file" accept=".json" class="hidden" onchange="restoreWorkspace(event)"></label></div></div>
+<div class="card"><h2>Privacy model</h2><ul><li>Core SOW data is stored in your browser using LocalStorage.</li><li>No client contract data is uploaded by this static module.</li><li>Printing / PDF uses the browser print engine.</li><li>JSON and CSV exports are generated locally.</li></ul></div></div>
+</section>
+</main>
+<footer class="container">Easy SOW • EasyFile • Local-first Statement of Work workspace</footer>
+
+<script>
+const KEY='easy.sow.workspace.v1';
+const blank=()=>({current:emptySow(),saved:[],templates:[]});
+function emptySow(){return {id:null,sowNumber:newNumber(),status:'draft',title:'',effectiveDate:today(),endDate:'',agreementRef:'',commercialRef:'',currency:'ZAR',pricingModel:'Fixed Fee',providerName:'',providerContact:'',providerEmail:'',providerAddress:'',clientName:'',clientContact:'',clientEmail:'',clientAddress:'',background:'',objectives:'',successMeasures:'',inScope:'',outScope:'',deliverables:[],milestones:[],responsibilities:[],assumptions:'',dependencies:'',constraints:'',prices:[],taxRate:15,expenses:'',paymentTerms:'',governance:'',acceptance:'',changeControl:'',security:'',support:'',providerSignatory:'',clientSignatory:'',providerTitle:'',clientTitle:'',legalNotes:'',updatedAt:null}};
+function today(){return new Date().toISOString().slice(0,10)}
+function newNumber(){const d=new Date();return 'SOW-'+d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(Math.floor(Math.random()*9000)+1000)}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function load(){try{const x=JSON.parse(localStorage.getItem(KEY)||'null');return x&&x.current?x:blank()}catch{return blank()}}
+let state=load();
+function persist(){localStorage.setItem(KEY,JSON.stringify(state));refreshAll()}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function money(n,c=state.current.currency){const symbols={ZAR:'R',USD:'$',EUR:'€',GBP:'£'};return (symbols[c]||c+' ')+Number(n||0).toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function lines(s){return String(s||'').split(/\r?\n/).map(x=>x.trim()).filter(Boolean)}
+function bullets(s){const a=lines(s);return a.length?'<ul>'+a.map(x=>'<li>'+esc(x.replace(/^[-•]\s*/,''))+'</li>').join('')+'</ul>':'<p>—</p>'}
+function go(tab){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));document.getElementById(tab+'View').classList.add('active')}
+function calcTotals(s=state.current){const sub=s.prices.reduce((a,x)=>a+(Number(x.qty)||0)*(Number(x.rate)||0),0);const tax=sub*(Number(s.taxRate)||0)/100;return {sub,tax,total:sub+tax}}
+function addDeliverable(x={name:'',description:'',acceptance:'',owner:'Provider'}){state.current.deliverables.push(x);renderDynamic()}
+function addMilestone(x={name:'',date:'',dependency:'',status:'Open',paymentPct:0}){state.current.milestones.push(x);renderDynamic()}
+function addResponsibility(x={activity:'',provider:'Responsible',client:'Support'}){state.current.responsibilities.push(x);renderDynamic()}
+function addPrice(x={description:'',qty:1,rate:0}){state.current.prices.push(x);renderDynamic()}
+function rowField(label,cls,val,type='text'){return '<div class="field"><label>'+label+'</label><input type="'+type+'" class="'+cls+'" value="'+esc(val)+'"></div>'}
+function renderDynamic(){
+deliverableRows.innerHTML=state.current.deliverables.map((x,i)=>'<div class="row-card" data-i="'+i+'"><div class="row-head"><strong>Deliverable '+(i+1)+'</strong><button class="btn btn-red btn-small" onclick="removeRow(\'deliverables\','+i+')">Remove</button></div>'+rowField('Deliverable','d-name',x.name)+'<div class="field"><label>Description</label><textarea class="d-description">'+esc(x.description)+'</textarea></div><div class="split">'+rowField('Acceptance criteria','d-acceptance',x.acceptance)+rowField('Owner','d-owner',x.owner)+'</div></div>').join('')||'<div class="empty">No deliverables yet.</div>';
+milestoneRows.innerHTML=state.current.milestones.map((x,i)=>'<div class="row-card" data-i="'+i+'"><div class="row-head"><strong>Milestone '+(i+1)+'</strong><button class="btn btn-red btn-small" onclick="removeRow(\'milestones\','+i+')">Remove</button></div><div class="split">'+rowField('Milestone','m-name',x.name)+rowField('Target date','m-date',x.date,'date')+'</div><div class="split">'+rowField('Dependency / trigger','m-dependency',x.dependency)+rowField('Payment %','m-payment',x.paymentPct,'number')+'</div><div class="field"><label>Status</label><select class="m-status"><option '+(x.status==='Open'?'selected':'')+'>Open</option><option '+(x.status==='Complete'?'selected':'')+'>Complete</option><option '+(x.status==='Blocked'?'selected':'')+'>Blocked</option></select></div></div>').join('')||'<div class="empty">No milestones yet.</div>';
+responsibilityRows.innerHTML=state.current.responsibilities.map((x,i)=>'<div class="row-card" data-i="'+i+'"><div class="row-head"><strong>Responsibility '+(i+1)+'</strong><button class="btn btn-red btn-small" onclick="removeRow(\'responsibilities\','+i+')">Remove</button></div>'+rowField('Activity','r-activity',x.activity)+'<div class="split">'+rowField('Provider responsibility','r-provider',x.provider)+rowField('Client responsibility','r-client',x.client)+'</div></div>').join('')||'<div class="empty">No responsibilities yet.</div>';
+priceRows.innerHTML=state.current.prices.map((x,i)=>'<div class="row-card" data-i="'+i+'"><div class="row-head"><strong>Commercial line '+(i+1)+'</strong><button class="btn btn-red btn-small" onclick="removeRow(\'prices\','+i+')">Remove</button></div>'+rowField('Description','p-description',x.description)+'<div class="split">'+rowField('Qty / units','p-qty',x.qty,'number')+rowField('Rate','p-rate',x.rate,'number')+'</div></div>').join('')||'<div class="empty">No pricing lines yet.</div>';
+}
+function removeRow(k,i){state.current[k].splice(i,1);renderDynamic();renderPreview()}
+function readDynamic(){
+document.querySelectorAll('#deliverableRows .row-card').forEach((r,i)=>{const x=state.current.deliverables[i];x.name=r.querySelector('.d-name').value;x.description=r.querySelector('.d-description').value;x.acceptance=r.querySelector('.d-acceptance').value;x.owner=r.querySelector('.d-owner').value});
+document.querySelectorAll('#milestoneRows .row-card').forEach((r,i)=>{const x=state.current.milestones[i];x.name=r.querySelector('.m-name').value;x.date=r.querySelector('.m-date').value;x.dependency=r.querySelector('.m-dependency').value;x.paymentPct=Number(r.querySelector('.m-payment').value)||0;x.status=r.querySelector('.m-status').value});
+document.querySelectorAll('#responsibilityRows .row-card').forEach((r,i)=>{const x=state.current.responsibilities[i];x.activity=r.querySelector('.r-activity').value;x.provider=r.querySelector('.r-provider').value;x.client=r.querySelector('.r-client').value});
+document.querySelectorAll('#priceRows .row-card').forEach((r,i)=>{const x=state.current.prices[i];x.description=r.querySelector('.p-description').value;x.qty=Number(r.querySelector('.p-qty').value)||0;x.rate=Number(r.querySelector('.p-rate').value)||0});
+}
+const fields=['sowNumber','title','effectiveDate','endDate','agreementRef','commercialRef','currency','pricingModel','providerName','providerContact','providerEmail','providerAddress','clientName','clientContact','clientEmail','clientAddress','background','objectives','successMeasures','inScope','outScope','assumptions','dependencies','constraints','taxRate','expenses','paymentTerms','governance','acceptance','changeControl','security','support','providerSignatory','clientSignatory','providerTitle','clientTitle','legalNotes'];
+function hydrate(){const s=state.current;fields.forEach(k=>{const e=document.getElementById(k);if(e)e.value=s[k]??''});sowStatus.value=s.status||'draft';renderDynamic();renderPreview()}
+function readForm(){readDynamic();const s=state.current;fields.forEach(k=>{const e=document.getElementById(k);if(e)s[k]=e.type==='number'?Number(e.value)||0:e.value});s.status=sowStatus.value;s.updatedAt=new Date().toISOString()}
+function saveCurrent(){readForm();if(!state.current.title&&!state.current.clientName)return alert('Add at least a SOW title or client.');if(!state.current.id)state.current.id=uid();const i=state.saved.findIndex(x=>x.id===state.current.id);const copy=JSON.parse(JSON.stringify(state.current));if(i>=0)state.saved[i]=copy;else state.saved.unshift(copy);persist();alert('SOW saved to the local register.')}
+function resetCurrent(){if((state.current.title||state.current.clientName)&&!confirm('Start a new SOW? Unsaved changes to the current form will be cleared.'))return;state.current=emptySow();hydrate();persist()}
+function loadSaved(id){const x=state.saved.find(v=>v.id===id);if(!x)return;state.current=JSON.parse(JSON.stringify(x));hydrate();go('builder')}
+function deleteSaved(id){if(!confirm('Delete this saved SOW?'))return;state.saved=state.saved.filter(x=>x.id!==id);persist()}
+function saveAsTemplate(){readForm();const name=prompt('Template name:',state.current.title||'SOW Template');if(!name)return;const t=JSON.parse(JSON.stringify(state.current));t.id=uid();t.templateName=name;t.sowNumber='';t.status='draft';t.clientName='';t.clientContact='';t.clientEmail='';t.clientAddress='';t.commercialRef='';t.effectiveDate='';t.endDate='';state.templates.unshift(t);persist()}
+function loadTemplate(id){const t=state.templates.find(x=>x.id===id);if(!t)return;state.current={...JSON.parse(JSON.stringify(t)),id:null,sowNumber:newNumber(),status:'draft',effectiveDate:today(),updatedAt:null};delete state.current.templateName;hydrate();go('builder')}
+function deleteTemplate(id){state.templates=state.templates.filter(x=>x.id!==id);persist()}
+function renderPreview(){readDynamic();const s=state.current,t=calcTotals(s);const del=s.deliverables.map((x,i)=>'<tr><td>'+(i+1)+'</td><td><b>'+esc(x.name)+'</b><br>'+esc(x.description)+'</td><td>'+esc(x.acceptance||'—')+'</td><td>'+esc(x.owner||'—')+'</td></tr>').join('');const ms=s.milestones.map(x=>'<tr><td>'+esc(x.name)+'</td><td>'+esc(x.date||'—')+'</td><td>'+esc(x.dependency||'—')+'</td><td>'+esc(x.status)+'</td><td>'+esc(x.paymentPct)+'%</td></tr>').join('');const resp=s.responsibilities.map(x=>'<tr><td>'+esc(x.activity)+'</td><td>'+esc(x.provider)+'</td><td>'+esc(x.client)+'</td></tr>').join('');const prices=s.prices.map(x=>'<tr><td>'+esc(x.description)+'</td><td>'+esc(x.qty)+'</td><td>'+money(x.rate,s.currency)+'</td><td>'+money((Number(x.qty)||0)*(Number(x.rate)||0),s.currency)+'</td></tr>').join('');
+docPreview.innerHTML='<h1>STATEMENT OF WORK</h1><div class="meta"><b>SOW Number</b><span class="mono">'+esc(s.sowNumber)+'</span><b>Title</b><span>'+esc(s.title||'Untitled Statement of Work')+'</span><b>Status</b><span>'+esc(s.status.toUpperCase())+'</span><b>Effective Date</b><span>'+esc(s.effectiveDate||'—')+'</span><b>End Date</b><span>'+esc(s.endDate||'—')+'</span><b>Agreement Reference</b><span>'+esc(s.agreementRef||'—')+'</span><b>Commercial Reference</b><span>'+esc(s.commercialRef||'—')+'</span></div>'+
+'<h2>1. Parties</h2><p><b>Service Provider:</b> '+esc(s.providerName||'—')+'<br>'+esc(s.providerContact)+' '+esc(s.providerEmail)+'</p><p><b>Client:</b> '+esc(s.clientName||'—')+'<br>'+esc(s.clientContact)+' '+esc(s.clientEmail)+'</p>'+
+'<h2>2. Background & Objectives</h2><h3>Background</h3><p>'+esc(s.background||'—').replace(/\n/g,'<br>')+'</p><h3>Objectives</h3>'+bullets(s.objectives)+'<h3>Success Measures</h3>'+bullets(s.successMeasures)+
+'<h2>3. Scope</h2><h3>In Scope</h3>'+bullets(s.inScope)+'<h3>Out of Scope</h3>'+bullets(s.outScope)+
+'<h2>4. Deliverables</h2><table><thead><tr><th>#</th><th>Deliverable</th><th>Acceptance</th><th>Owner</th></tr></thead><tbody>'+(del||'<tr><td colspan="4">No deliverables defined.</td></tr>')+'</tbody></table>'+
+'<h2>5. Milestones & Schedule</h2><table><thead><tr><th>Milestone</th><th>Date</th><th>Dependency</th><th>Status</th><th>Payment</th></tr></thead><tbody>'+(ms||'<tr><td colspan="5">No milestones defined.</td></tr>')+'</tbody></table>'+
+'<h2>6. Responsibilities</h2><table><thead><tr><th>Activity</th><th>Service Provider</th><th>Client</th></tr></thead><tbody>'+(resp||'<tr><td colspan="3">No responsibilities defined.</td></tr>')+'</tbody></table>'+
+'<h2>7. Assumptions, Dependencies & Constraints</h2><h3>Assumptions</h3>'+bullets(s.assumptions)+'<h3>Client Dependencies / Prerequisites</h3>'+bullets(s.dependencies)+'<h3>Constraints</h3>'+bullets(s.constraints)+
+'<h2>8. Commercials</h2><p><b>Pricing model:</b> '+esc(s.pricingModel)+' &nbsp; <b>Currency:</b> '+esc(s.currency)+'</p><table><thead><tr><th>Description</th><th>Qty</th><th>Rate</th><th>Line Total</th></tr></thead><tbody>'+(prices||'<tr><td colspan="4">No pricing lines defined.</td></tr>')+'</tbody><tfoot><tr><td colspan="3"><b>Subtotal</b></td><td>'+money(t.sub,s.currency)+'</td></tr><tr><td colspan="3"><b>Tax ('+esc(s.taxRate)+'%)</b></td><td>'+money(t.tax,s.currency)+'</td></tr><tr><td colspan="3"><b>Total</b></td><td><b>'+money(t.total,s.currency)+'</b></td></tr></tfoot></table><p><b>Expenses:</b> '+esc(s.expenses||'—')+'</p><h3>Payment Terms</h3><p>'+esc(s.paymentTerms||'—').replace(/\n/g,'<br>')+'</p>'+
+'<h2>9. Governance, Acceptance & Change Control</h2><h3>Governance</h3><p>'+esc(s.governance||'—').replace(/\n/g,'<br>')+'</p><h3>Acceptance</h3><p>'+esc(s.acceptance||'—').replace(/\n/g,'<br>')+'</p><h3>Change Control</h3><p>'+esc(s.changeControl||'—').replace(/\n/g,'<br>')+'</p>'+
+'<h2>10. Security, Compliance & Support</h2><h3>Security / Compliance</h3><p>'+esc(s.security||'—').replace(/\n/g,'<br>')+'</p><h3>Support / Handover</h3><p>'+esc(s.support||'—').replace(/\n/g,'<br>')+'</p>'+
+'<h2>11. Acceptance & Sign-off</h2><p>'+esc(s.legalNotes||'By signing below, the parties acknowledge and accept this Statement of Work and its referenced terms.').replace(/\n/g,'<br>')+'</p><div class="signature"><div><div class="sigline"><b>'+esc(s.providerSignatory||'Service Provider Signatory')+'</b><br>'+esc(s.providerTitle||'Title')+'<br>Date: ____________________</div></div><div><div class="sigline"><b>'+esc(s.clientSignatory||'Client Signatory')+'</b><br>'+esc(s.clientTitle||'Title')+'<br>Date: ____________________</div></div></div>';
+docStatusBadge.textContent=s.status.toUpperCase();docStatusBadge.className='status '+s.status}
+function renderRegister(){const q=(registerSearch.value||'').toLowerCase();const rows=state.saved.filter(x=>[x.sowNumber,x.title,x.clientName,x.status].join(' ').toLowerCase().includes(q));registerRows.innerHTML=rows.map(x=>{const t=calcTotals(x);return '<tr><td class="mono">'+esc(x.sowNumber)+'</td><td>'+esc(x.title)+'</td><td>'+esc(x.clientName)+'</td><td><span class="status '+esc(x.status)+'">'+esc(x.status)+'</span></td><td>'+money(t.total,x.currency)+'</td><td>'+esc(x.effectiveDate||'—')+' → '+esc(x.endDate||'—')+'</td><td><div class="toolbar"><button class="btn btn-light btn-small" onclick="loadSaved(\''+x.id+'\')">Open</button><button class="btn btn-red btn-small" onclick="deleteSaved(\''+x.id+'\')">Delete</button></div></td></tr>'}).join('')||'<tr><td colspan="7" class="empty">No saved SOWs found.</td></tr>'}
+function renderTemplates(){templateList.innerHTML=state.templates.map(x=>'<div class="row-card"><div class="row-head"><div><strong>'+esc(x.templateName||x.title||'Template')+'</strong><div class="hint">'+esc(x.pricingModel)+' • '+x.deliverables.length+' deliverables</div></div><div class="toolbar"><button class="btn btn-primary btn-small" onclick="loadTemplate(\''+x.id+'\')">Use</button><button class="btn btn-red btn-small" onclick="deleteTemplate(\''+x.id+'\')">Delete</button></div></div></div>').join('')||'<div class="empty">No templates saved yet.</div>'}
+function refreshKPIs(){kCount.textContent=state.saved.length;kDraft.textContent=state.saved.filter(x=>x.status==='draft'||x.status==='review').length;kApproved.textContent=state.saved.filter(x=>x.status==='approved').length;const val=state.saved.filter(x=>x.currency==='ZAR').reduce((a,x)=>a+calcTotals(x).total,0);kValue.textContent=money(val,'ZAR');kMilestones.textContent=state.saved.reduce((a,x)=>a+x.milestones.filter(m=>m.status!=='Complete').length,0)}
+function refreshAll(){refreshKPIs();renderRegister();renderTemplates();renderPreview()}
+function download(name,content,type){const b=new Blob([content],{type}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
+function exportJSON(){readForm();download((state.current.sowNumber||'easy-sow')+'.json',JSON.stringify(state.current,null,2),'application/json')}
+function exportText(){readForm();const s=state.current,t=docPreview.innerText;download((s.sowNumber||'easy-sow')+'.txt',t,'text/plain;charset=utf-8')}
+function exportRegisterCSV(){const rows=[['SOW Number','Title','Client','Status','Currency','Total','Effective Date','End Date','Agreement Ref','Commercial Ref']];state.saved.forEach(x=>rows.push([x.sowNumber,x.title,x.clientName,x.status,x.currency,calcTotals(x).total,x.effectiveDate,x.endDate,x.agreementRef,x.commercialRef]));download('easy-sow-register.csv',rows.map(r=>r.map(v=>'"'+String(v??'').replaceAll('"','""')+'"').join(',')).join('\n'),'text/csv;charset=utf-8')}
+function backupWorkspace(){download('easy-sow-workspace-backup.json',JSON.stringify(state,null,2),'application/json')}
+function restoreWorkspace(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.current||!Array.isArray(d.saved)||!Array.isArray(d.templates))throw new Error();state=d;persist();hydrate();alert('Easy SOW workspace restored.')}catch{alert('Invalid Easy SOW backup.')}};r.readAsText(f);e.target.value=''}
+function seedDemo(){state.current={...emptySow(),sowNumber:newNumber(),status:'draft',title:'Microsoft 365 Tenant Migration and Adoption Services',effectiveDate:today(),pricingModel:'Milestone Based',providerName:'Skunkworks (Pty) Ltd',providerContact:'Project Delivery Lead',providerEmail:'delivery@example.com',clientName:'Contoso Africa (Pty) Ltd',clientContact:'IT Manager',clientEmail:'itmanager@example.com',background:'The client is consolidating collaboration and productivity workloads into Microsoft 365 and requires structured migration, security baseline configuration, adoption support and handover.',objectives:'Migrate agreed users and workloads with controlled disruption\nEstablish a documented security and governance baseline\nTrain administrators and nominated champions\nProvide operational handover documentation',successMeasures:'100% of agreed migration batches completed\nNo unresolved Severity 1 migration defects at handover\nAdministrator handover completed\nAcceptance signed within five business days',inScope:'Tenant discovery and readiness assessment\nIdentity and domain readiness\nMailbox and collaboration workload migration for agreed scope\nSecurity baseline configuration\nPilot and production migration waves\nAdministrator knowledge transfer\nHandover report',outScope:'Third-party software licence costs\nEnd-user hardware replacement\nCustom application remediation\nData cleansing beyond agreed migration rules\n24x7 managed support unless separately contracted',assumptions:'Client provides administrative access and accurate user inventory\nRequired licences are available before migration\nClient SMEs attend discovery and acceptance sessions',dependencies:'DNS access and change authority\nSource tenant or platform administrator access\nApproved migration windows\nUser communications owned jointly by both parties',constraints:'Work outside agreed maintenance windows requires written approval.',taxRate:15,expenses:'Travel outside Gauteng billed at cost with prior written approval.',paymentTerms:'30% on SOW signature\n40% after pilot acceptance\n20% after production migration completion\n10% on final acceptance',governance:'Weekly project status meeting. RAID log maintained throughout the engagement. Critical issues escalated immediately to both project sponsors.',acceptance:'Each deliverable is deemed accepted when the stated acceptance criteria are met and the client has not raised a material written rejection within five business days.',changeControl:'Any change to scope, assumptions, schedule, deliverables or pricing requires a written Change Request describing impact, effort, cost and revised dates. Work begins only after approval by authorised representatives of both parties.',security:'Least-privilege access will be used. Credentials are not embedded in project documents. Client data remains subject to the client’s security and compliance policies.',support:'Five business days of post-migration hypercare are included. Operational documentation and an administrator handover session are provided before closure.',providerSignatory:'Authorised Representative',providerTitle:'Service Provider',clientSignatory:'Authorised Representative',clientTitle:'Client',deliverables:[{name:'Discovery & Readiness Report',description:'Validated inventory, readiness findings, risks, migration approach and agreed scope baseline.',acceptance:'Report delivered and scope baseline approved.',owner:'Provider'},{name:'Pilot Migration',description:'Pilot cohort migrated and validated before production waves.',acceptance:'Pilot users can authenticate and access agreed workloads; no Sev-1 defects remain.',owner:'Provider'},{name:'Production Migration & Handover',description:'Agreed production cohorts migrated, documentation completed and administrators briefed.',acceptance:'Migration completion report and handover pack accepted.',owner:'Provider'}],milestones:[{name:'SOW Kick-off',date:today(),dependency:'Signed SOW',status:'Open',paymentPct:30},{name:'Pilot Accepted',date:'',dependency:'Pilot readiness and client test users',status:'Open',paymentPct:40},{name:'Production Complete',date:'',dependency:'Approved migration waves',status:'Open',paymentPct:20},{name:'Final Acceptance',date:'',dependency:'Handover completed',status:'Open',paymentPct:10}],responsibilities:[{activity:'Project planning and migration execution',provider:'Responsible',client:'Approve schedule and provide access'},{activity:'User communications',provider:'Provide templates and timing guidance',client:'Own and distribute communications'},{activity:'Acceptance testing',provider:'Support defect resolution',client:'Execute and approve acceptance'}],prices:[{description:'Discovery and readiness assessment',qty:1,rate:35000},{description:'Migration implementation services',qty:1,rate:125000},{description:'Administrator enablement and handover',qty:1,rate:25000}]};hydrate();persist();go('builder')}
+document.addEventListener('input',e=>{if(e.target.closest('#builderView')){readForm();renderPreview()}});
+document.addEventListener('change',e=>{if(e.target.closest('#builderView')){readForm();renderPreview()}});
+hydrate();refreshAll();
+</script>
+<script defer src="scripts/sync-nav.js"></script>
+</body>
+</html>
