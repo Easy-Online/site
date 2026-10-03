@@ -40,7 +40,7 @@
     { name: "Expenses", href: "easy-expenses.html", icon: "fa-wallet", group: "Finance", description: "Capture, categorise and review business expenses", landing: true },
     { name: "Fuel Logbook", href: "easy-fuel-logbook.html", icon: "fa-gas-pump", group: "Operations", description: "Track fuel, mileage, business travel, vehicle efficiency and running cost", landing: true },
     { name: "Cash Flow", href: "easy-cashflow.html", icon: "fa-chart-line", group: "Finance", description: "Track cash inflows, outflows and running balances", landing: true },
-    { name: "VAT", href: "easy-vat.html", icon: "fa-calculator", group: "Finance", description: "Prepare and review VAT calculations", landing: true },
+    { name: "VAT", href: "easy-vat.html", icon: "fa-calculator", group: "Finance", description: "Prepare VAT201 working papers with evidence checks, reconciliation and audit-ready exports", landing: true },
     { name: "Budgets", href: "easy-budgets.html", icon: "fa-chart-pie", group: "Finance", description: "Build and monitor business budgets", landing: true },
     { name: "Credit Control", href: "easy-credit-control.html", icon: "fa-hand-holding-dollar", group: "Finance", description: "Track outstanding accounts and credit-control follow-up", landing: true },
     { name: "Audit", href: "easy-audit.html", icon: "fa-magnifying-glass-chart", group: "Finance", description: "Review financial and operational records for audit readiness", landing: true },
