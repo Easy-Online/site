@@ -44,6 +44,7 @@
 
     { name: "Job Card", href: "easy-job-card.html", icon: "fa-briefcase", group: "Operations", description: "Track service and repair work" },
     { name: "Payroll", href: "easy-payroll.html", icon: "fa-money-bill-wave", group: "Operations", description: "Prepare payroll summaries" },
+    { name: "Timesheet & Tracker", href: "easy-timesheet.html", icon: "fa-clock", group: "Operations", description: "Track time, billable work, approvals and labour hand-offs to payroll, invoices and job cards", landing: true },
     { name: "Inventory", href: "easy-inventory.html", icon: "fa-boxes-stacked", group: "Operations", description: "Track stock and movements" },
     { name: "CRM", href: "easy-crm.html", icon: "fa-users", group: "Operations", description: "Manage customer relationships" },
     { name: "SLA", href: "easy-sla.html", icon: "fa-stopwatch", group: "Operations", description: "Define service commitments, track response and resolution targets, and monitor SLA performance", landing: true },
