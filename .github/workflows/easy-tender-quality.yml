@@ -1,0 +1,34 @@
+name: Easy Tender Quality
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "easy-tender.html"
+      - "tests/easy-tender-quality.mjs"
+      - ".github/workflows/easy-tender-quality.yml"
+  pull_request:
+    paths:
+      - "easy-tender.html"
+      - "tests/easy-tender-quality.mjs"
+
+permissions:
+  contents: read
+
+jobs:
+  tender-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: JavaScript syntax and functional/load checks
+        run: node tests/easy-tender-quality.mjs
+      - name: Static page smoke
+        run: |
+          python3 -m http.server 8080 >/tmp/easy-tender-http.log 2>&1 &
+          pid=$!
+          trap 'kill "$pid"' EXIT
+          sleep 1
+          curl --fail --silent --show-error http://127.0.0.1:8080/easy-tender.html | grep -q "Easy Tender"
