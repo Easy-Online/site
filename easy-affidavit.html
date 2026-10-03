@@ -412,7 +412,7 @@ function renderAffidavit(){
   return `
     <h1>${esc(title)}</h1>
     <p><strong>Document reference:</strong> ${esc(val("docNumber")||"—")}</p>
-    <p>I, the undersigned, <strong>${esc(val("primaryName")||"[DEONENT FULL NAME]")}</strong>, ID/Passport number <strong>${esc(val("primaryId")||"[ID / PASSPORT]")}</strong>, residing at ${addressBlock(val("primaryAddress")||"[ADDRESS]")}, ${oath} as follows:</p>
+    <p>I, the undersigned, <strong>${esc(val("primaryName")||"[DEPONENT FULL NAME]")}</strong>, ID/Passport number <strong>${esc(val("primaryId")||"[ID / PASSPORT]")}</strong>, residing at ${addressBlock(val("primaryAddress")||"[ADDRESS]")}, ${oath} as follows:</p>
     <ol style="padding-left:1.35rem">${factHtml||"<li>[Add the factual statement(s) supporting this affidavit.]</li>"}</ol>
     ${val("annexures")?`<h2>Annexures</h2><p style="white-space:pre-line">${esc(val("annexures"))}</p>`:""}
     ${val("notes")?`<h2>Additional statement</h2><p style="white-space:pre-line">${esc(val("notes"))}</p>`:""}
