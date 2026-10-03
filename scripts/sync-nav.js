@@ -298,7 +298,8 @@
         article.innerHTML = `
           <div class="module-card-icon"><i class="fa-solid ${item.icon}" aria-hidden="true"></i></div>
           <h3>Easy ${escapeHtml(item.name)}</h3>
-          <p>${escapeHtml(item.description)}</p>          <div class="module-tags"><span class="module-tag">documents</span><span class="module-tag">shared</span></div>
+          <p>${escapeHtml(item.description)}</p>
+          <div class="module-tags"><span class="module-tag">documents</span><span class="module-tag">shared</span></div>
           <a class="module-card-link" href="${item.href}">Open module <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>`;
         grid.appendChild(article);
       });
