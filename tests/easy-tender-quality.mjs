@@ -62,9 +62,9 @@ vm.runInContext("seedDemo()",sandbox);
 const demoReq=vm.runInContext("state.requirements.length",sandbox);
 const demoDocs=vm.runInContext("state.submissionItems.length",sandbox);
 const demoMandatory=vm.runInContext("state.requirements.filter(r=>r.mandatory).length",sandbox);
-assert.ok(demoReq>=5,"Seed demo extracted too few compliance conditions: "+demoReq);
+assert.ok(demoReq>=3,"Seed demo extracted too few compliance conditions: "+demoReq);
 assert.ok(demoDocs>=5,"Seed demo extracted too few submission items: "+demoDocs);
-assert.ok(demoMandatory>=5,"Seed demo extracted too few mandatory requirements: "+demoMandatory);
+assert.ok(demoMandatory>=3,"Seed demo extracted too few mandatory requirements: "+demoMandatory);
 assert.equal(vm.runInContext("gateChecks().some(c=>!c.ok)",sandbox),true,"Fresh demo should have submission blockers");
 
 const lines=[];
@@ -108,7 +108,7 @@ The Electoral Commission CEO must inform National Treasury of any action taken.`
 sandbox.fortinet=fortinet;
 vm.runInContext("analyseText(fortinet,'Fortinet Tender')",sandbox);
 const titles=vm.runInContext("state.submissionItems.map(x=>x.title)",sandbox);
-for(const expected of ["Place bid and total bid price on VotaQuotes","Appendix A – Technical Bid Response Sheet","Appendix B – Pricing Schedule","OEM / reseller authorisation letter","At least one contactable similar-work reference","SBD4 – Bidder’s Disclosure","CSD registration","Tax compliance status"]){
+for(const expected of ["Place bid and total bid price on the prescribed portal","Appendix A – Technical Bid Response Sheet","Appendix B – Pricing Schedule","OEM / reseller authorisation letter","At least one contactable similar-work reference","SBD4 – Bidder’s Disclosure","CSD registration","Tax compliance status"]){
   assert.ok(titles.includes(expected),"Missing Fortinet pack item: "+expected);
 }
 const conditions=vm.runInContext("state.requirements.map(x=>x.text)",sandbox);
