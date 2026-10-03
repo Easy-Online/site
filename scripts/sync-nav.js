@@ -51,7 +51,7 @@
     { name: "Projects", href: "easy-projects.html", icon: "fa-diagram-project", group: "Operations", description: "Plan and track projects, tasks and delivery", landing: true },
     { name: "Lease", href: "easy-lease.html", icon: "fa-key", group: "Operations", description: "Create and manage property and asset lease agreements", landing: true },
     { name: "Assets", href: "easy-asset-management.html", icon: "fa-screwdriver-wrench", group: "Operations", description: "Maintain the asset register" },
-    { name: "Asset Register", href: "easy-assets-register.html", icon: "fa-list-check", group: "Operations", description: "Maintain a structured business asset register", landing: true },
+    { name: "Asset Register", href: "easy-assets-register.html", icon: "fa-list-check", group: "Operations", description: "Maintain a structured business asset register", landing: true },\n    { name: "Register", href: "easy-register.html", icon: "fa-clipboard-user", group: "Operations", description: "Run access, attendance, training, course, event and compliance registers with check-in/out, signatures, QR tokens and emergency roll call", landing: true },
     { name: "Inspections", href: "easy-site-inspection.html", icon: "fa-clipboard-check", group: "Operations", description: "Capture site inspection records" },
     { name: "Approvals", href: "easy-approvals.html", icon: "fa-circle-check", group: "Operations", description: "Route and track internal business approvals", landing: true },
     { name: "Leave", href: "easy-leave.html", icon: "fa-calendar-check", group: "Operations", description: "Track employee leave requests and balances", landing: true },
