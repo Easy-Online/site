@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Easy Bill of Lading | EasyFile</title>
+  <meta name="description" content="Create, review, save and export professional bills of lading with shipper, consignee, carrier, routing, cargo, container, weight and declaration details.">
+  <meta name="theme-color" content="#061a4d">
+  <link rel="icon" href="logo-b.png" type="image/png">
+  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="logo-b.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/easyfile-brand-tokens.css">
+  <link rel="stylesheet" href="assets/css/easyfile-site.css">
+  <link rel="stylesheet" href="assets/css/easyfile-footer.css">
+  <link rel="stylesheet" href="assets/css/easyfile-navigation.css">
+  <style>
+    :root{
+      --primary:#2563eb; --primary-dark:#1d4ed8; --page:#edf4ff; --surface:#fff;
+      --ink:#0f172a; --muted:#64748b; --border:#dbe6f5; --danger:#dc2626;
+      --success:#16a34a; --warning:#d97706; --navy:#061a4d;
+    }
+    html[data-theme="dark"]{
+      --page:#07101f; --surface:#0f172a; --ink:#e5e7eb; --muted:#9fb0c8;
+      --border:rgba(148,163,184,.22);
+    }
+    *{box-sizing:border-box}
+    body{font-family:Inter,system-ui,sans-serif;background:var(--page);color:var(--ink)}
+    .wrap{width:min(100% - 2rem, 96rem);margin:0 auto}
+    .hero{background:linear-gradient(135deg,#061a4d,#0b3ba8 58%,#2563eb);color:#fff;padding:2.25rem 0}
+    .hero-grid{display:grid;grid-template-columns:1fr auto;gap:1.5rem;align-items:center}
+    .eyebrow{font-size:.75rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#7dd3fc}
+    .hero h1{font-size:clamp(2rem,4vw,3.45rem);font-weight:900;letter-spacing:-.04em;margin:.35rem 0 .65rem}
+    .hero p{max-width:55rem;color:rgba(255,255,255,.82);line-height:1.65}
+    .hero-badge{display:grid;place-items:center;width:5.25rem;height:5.25rem;border-radius:1.35rem;background:#fff;color:#0b3ba8;font-size:2rem;box-shadow:0 22px 45px rgba(0,0,0,.22)}
+    .toolbar{display:flex;flex-wrap:wrap;gap:.65rem;padding:1rem 0 0}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.48rem;border-radius:.75rem;padding:.68rem .9rem;font-weight:800;border:1px solid transparent;transition:.15s;cursor:pointer}
+    .btn:hover{transform:translateY(-1px)}
+    .btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-dark)}
+    .btn-light{background:#fff;color:#0b3ba8;border-color:rgba(255,255,255,.45)}
+    .btn-outline{background:var(--surface);color:var(--ink);border-color:var(--border)}
+    .btn-success{background:var(--success);color:#fff}.btn-danger{background:var(--danger);color:#fff}
+    .layout{display:grid;grid-template-columns:minmax(0,1fr) 20rem;gap:1rem;padding:1rem 0 3rem}
+    .main-stack,.side-stack{display:grid;gap:1rem;align-content:start}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:1rem;box-shadow:0 12px 34px rgba(15,23,42,.06)}
+    .card-head{display:flex;justify-content:space-between;gap:1rem;align-items:center;padding:1rem 1.1rem;border-bottom:1px solid var(--border)}
+    .card-head h2{font-size:1rem;font-weight:900;margin:0}
+    .card-body{padding:1rem 1.1rem}
+    .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.85rem}
+    .grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.85rem}
+    .grid-4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.85rem}
+    label{display:block;font-size:.74rem;font-weight:850;color:var(--muted);margin-bottom:.32rem}
+    input,select,textarea{width:100%;border:1px solid var(--border);border-radius:.68rem;background:var(--surface);color:var(--ink);padding:.68rem .75rem;font:inherit}
+    textarea{resize:vertical}
+    input:focus,select:focus,textarea:focus{outline:none;border-color:rgba(37,99,235,.85);box-shadow:0 0 0 3px rgba(37,99,235,.14)}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+    .pill{display:inline-flex;align-items:center;gap:.35rem;border-radius:999px;padding:.3rem .62rem;font-size:.7rem;font-weight:900}
+    .pill-draft{background:#eef2ff;color:#3730a3}.pill-issued{background:#dbeafe;color:#1d4ed8}
+    .pill-transit{background:#fef3c7;color:#92400e}.pill-delivered{background:#dcfce7;color:#166534}
+    .help{font-size:.74rem;color:var(--muted);line-height:1.5;margin-top:.4rem}
+    .summary-row{display:flex;justify-content:space-between;gap:1rem;padding:.52rem 0;border-bottom:1px dashed var(--border);font-size:.84rem}
+    .summary-row:last-child{border-bottom:0}.summary-row strong{font-weight:900}
+    .table-wrap{overflow-x:auto}
+    table{width:100%;border-collapse:collapse;min-width:1180px}
+    th,td{border-bottom:1px solid var(--border);padding:.55rem;vertical-align:top}
+    th{background:rgba(148,163,184,.08);font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);text-align:left}
+    td input,td select{min-width:6rem;padding:.5rem .55rem}
+    .empty{padding:1.5rem;text-align:center;color:var(--muted)}
+    .validation{display:grid;gap:.45rem}
+    .validation-item{display:flex;align-items:flex-start;gap:.55rem;font-size:.79rem;line-height:1.45}
+    .ok{color:#15803d}.warn{color:#b45309}
+    .toast{position:fixed;right:1rem;bottom:1rem;z-index:3000;background:#0f172a;color:#fff;border-radius:.8rem;padding:.8rem 1rem;box-shadow:0 18px 45px rgba(0,0,0,.25);max-width:24rem;display:none}
+    .toast.show{display:block}
+    .history-list{display:grid;gap:.45rem;max-height:20rem;overflow:auto}
+    .history-item{display:grid;grid-template-columns:1fr auto;gap:.5rem;align-items:center;border:1px solid var(--border);border-radius:.7rem;padding:.65rem}
+    .history-item button{font-size:.72rem}
+    .danger-box{border:1px solid #fecaca;background:#fff1f2;color:#881337;border-radius:.8rem;padding:.8rem;font-size:.78rem;line-height:1.5}
+    html[data-theme="dark"] .danger-box{background:#2a0d13;border-color:#7f1d1d;color:#fecdd3}
+    .preview-modal{position:fixed;inset:0;z-index:2500;background:rgba(2,6,23,.72);display:none;align-items:center;justify-content:center;padding:1rem}
+    .preview-modal.open{display:flex}
+    .preview-shell{width:min(100%,70rem);max-height:94vh;overflow:auto;background:#fff;color:#0f172a;border-radius:1rem;box-shadow:0 30px 80px rgba(0,0,0,.35)}
+    .preview-actions{display:flex;justify-content:flex-end;gap:.5rem;padding:1rem;border-bottom:1px solid #e2e8f0;position:sticky;top:0;background:#fff;z-index:2}
+    .print-sheet{padding:2rem}
+    .print-header{display:flex;justify-content:space-between;gap:2rem;border-bottom:2px solid #0f172a;padding-bottom:1rem;margin-bottom:1rem}
+    .print-title{font-size:2rem;font-weight:900}.print-small{font-size:.76rem;line-height:1.45;color:#475569}
+    .print-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .print-box{border:1px solid #cbd5e1;border-radius:.5rem;padding:.75rem}
+    .print-box h3{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;margin:0 0 .4rem;color:#475569}
+    .print-table{width:100%;min-width:0;font-size:.72rem;margin-top:1rem}.print-table th,.print-table td{border:1px solid #cbd5e1;padding:.38rem}
+    .signature-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2rem}
+    .signature-line{border-top:1px solid #0f172a;padding-top:.35rem;font-size:.72rem}
+    @media(max-width:1100px){.layout{grid-template-columns:1fr}.side-stack{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:760px){.hero-grid,.grid-2,.grid-3,.grid-4,.side-stack,.print-grid,.signature-grid{grid-template-columns:1fr}.hero-badge{display:none}.layout{padding-top:.75rem}.toolbar{display:grid;grid-template-columns:1fr 1fr}}
+    @media print{
+      .easyfile-nav,.hero,.layout,.easyfile-footer,.preview-actions,.no-print{display:none!important}
+      body{background:#fff}
+      .preview-modal{display:block!important;position:static;background:#fff;padding:0}
+      .preview-shell{box-shadow:none;max-height:none;width:100%;border-radius:0}
+      .print-sheet{padding:0}
+    }
+  </style>
+  <script>
+    (function(){try{const stored=localStorage.getItem("easyfile:theme")||localStorage.getItem("easySuite.theme");const dark=stored?stored==="dark":matchMedia("(prefers-color-scheme: dark)").matches;document.documentElement.dataset.theme=dark?"dark":"light";document.documentElement.classList.toggle("dark",dark)}catch(_){}})();
+  </script>
+</head>
+<body class="easyfile-app">
+<!-- NAV_SYNC -->
+<div class="easyfile-nav no-print">
+  <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
+</div>
+
+<header class="hero no-print">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">Logistics & shipping documents</div>
+      <h1>Easy Bill of Lading</h1>
+      <p>Create a structured bill of lading for road, sea, air or multimodal freight. Capture shipper, consignee, carrier, routing, containers, cargo, weights, volume, freight terms, declarations and signatures, then save locally or print to PDF.</p>
+      <div class="toolbar">
+        <button class="btn btn-light" id="btnSeed"><i class="fa-solid fa-flask"></i> Seed demo</button>
+        <button class="btn btn-light" id="btnNew"><i class="fa-solid fa-plus"></i> New B/L</button>
+        <button class="btn btn-light" id="btnSave"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+        <button class="btn btn-light" id="btnPreview"><i class="fa-solid fa-eye"></i> Preview</button>
+        <button class="btn btn-light" id="btnPrint"><i class="fa-solid fa-print"></i> Print / PDF</button>
+      </div>
+    </div>
+    <div class="hero-badge" aria-hidden="true"><i class="fa-solid fa-ship"></i></div>
+  </div>
+</header>
+
+<main class="wrap layout">
+  <div class="main-stack">
+
+    <section class="card">
+      <div class="card-head"><h2><i class="fa-solid fa-file-signature text-blue-600 mr-2"></i>Bill of Lading Details</h2><span id="statusPill" class="pill pill-draft">DRAFT</span></div>
+      <div class="card-body">
+        <div class="grid-4">
+          <div><label for="bolNumber">B/L Number *</label><input id="bolNumber" class="mono" placeholder="BOL-2026-0001"></div>
+          <div><label for="shipmentRef">Shipment Reference</label><input id="shipmentRef" class="mono" placeholder="SO / PO / Booking ref"></div>
+          <div><label for="bookingNumber">Booking Number</label><input id="bookingNumber" class="mono" placeholder="Carrier booking"></div>
+          <div><label for="status">Status</label><select id="status"><option value="draft">Draft</option><option value="issued">Issued</option><option value="transit">In Transit</option><option value="delivered">Delivered</option></select></div>
+          <div><label for="issueDate">Issue Date *</label><input id="issueDate" type="date"></div>
+          <div><label for="shipDate">Shipment Date</label><input id="shipDate" type="date"></div>
+          <div><label for="mode">Transport Mode</label><select id="mode"><option>Sea</option><option>Road</option><option>Air</option><option>Rail</option><option>Multimodal</option></select></div>
+          <div><label for="incoterm">Incoterm</label><select id="incoterm"><option value="">Not specified</option><option>EXW</option><option>FCA</option><option>CPT</option><option>CIP</option><option>DAP</option><option>DPU</option><option>DDP</option><option>FAS</option><option>FOB</option><option>CFR</option><option>CIF</option></select></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><h2><i class="fa-solid fa-address-book text-blue-600 mr-2"></i>Parties</h2></div>
+      <div class="card-body grid-2">
+        <div>
+          <label>Shipper / Exporter *</label>
+          <input id="shipperName" placeholder="Shipper legal name">
+          <textarea id="shipperAddress" rows="4" placeholder="Street, city, province/state, postal code, country" class="mt-2"></textarea>
+          <div class="grid-2 mt-2"><input id="shipperEmail" type="email" placeholder="Email"><input id="shipperPhone" placeholder="Phone"></div>
+        </div>
+        <div>
+          <label>Consignee *</label>
+          <input id="consigneeName" placeholder="Consignee legal name">
+          <textarea id="consigneeAddress" rows="4" placeholder="Street, city, province/state, postal code, country" class="mt-2"></textarea>
+          <div class="grid-2 mt-2"><input id="consigneeEmail" type="email" placeholder="Email"><input id="consigneePhone" placeholder="Phone"></div>
+        </div>
+        <div>
+          <label>Notify Party</label>
+          <input id="notifyName" placeholder="Notify party name">
+          <textarea id="notifyAddress" rows="3" placeholder="Address" class="mt-2"></textarea>
+        </div>
+        <div>
+          <label>Carrier / Freight Forwarder *</label>
+          <input id="carrierName" placeholder="Carrier or forwarder">
+          <textarea id="carrierAddress" rows="3" placeholder="Address" class="mt-2"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><h2><i class="fa-solid fa-route text-blue-600 mr-2"></i>Routing & Transport</h2></div>
+      <div class="card-body">
+        <div class="grid-3">
+          <div><label>Place of Receipt</label><input id="placeReceipt" placeholder="Johannesburg, ZA"></div>
+          <div><label>Port / Place of Loading *</label><input id="portLoading" placeholder="Durban, ZA"></div>
+          <div><label>Port / Place of Discharge *</label><input id="portDischarge" placeholder="Maputo, MZ"></div>
+          <div><label>Final Destination</label><input id="finalDestination" placeholder="Destination city / terminal"></div>
+          <div><label>Vessel / Vehicle / Flight</label><input id="vessel" placeholder="Vessel, truck reg or flight"></div>
+          <div><label>Voyage / Trip Number</label><input id="voyage" placeholder="Voyage / trip / route"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2><i class="fa-solid fa-boxes-stacked text-blue-600 mr-2"></i>Cargo & Packages</h2>
+        <div class="flex flex-wrap gap-2 no-print">
+          <button class="btn btn-outline" id="btnImportCsv"><i class="fa-solid fa-file-import"></i> Import CSV</button>
+          <input id="csvFile" type="file" accept=".csv,text/csv" class="hidden">
+          <button class="btn btn-primary" id="btnAddCargo"><i class="fa-solid fa-plus"></i> Add cargo line</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table aria-label="Cargo lines">
+          <thead><tr>
+            <th>Marks / Nos.</th><th>Packages</th><th>Package Type</th><th>Description of Goods *</th><th>HS Code</th><th>Qty</th><th>Unit</th><th>Gross kg</th><th>Net kg</th><th>CBM</th><th>Dangerous Goods</th><th class="no-print">Action</th>
+          </tr></thead>
+          <tbody id="cargoBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><h2><i class="fa-solid fa-box text-blue-600 mr-2"></i>Container / Equipment</h2><button class="btn btn-primary no-print" id="btnAddContainer"><i class="fa-solid fa-plus"></i> Add container</button></div>
+      <div class="table-wrap">
+        <table style="min-width:850px">
+          <thead><tr><th>Container / Equipment No.</th><th>Seal No.</th><th>Type</th><th>Tare kg</th><th>Packages</th><th>Notes</th><th class="no-print">Action</th></tr></thead>
+          <tbody id="containerBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><h2><i class="fa-solid fa-scale-balanced text-blue-600 mr-2"></i>Freight, Instructions & Declarations</h2></div>
+      <div class="card-body">
+        <div class="grid-3">
+          <div><label>Freight Terms</label><select id="freightTerms"><option>Prepaid</option><option>Collect</option><option>Third Party</option></select></div>
+          <div><label>Number of Original B/Ls</label><input id="originals" type="number" min="0" step="1" value="3"></div>
+          <div><label>Declared Value</label><input id="declaredValue" placeholder="Optional value / currency"></div>
+        </div>
+        <div class="grid-2 mt-3">
+          <div><label>Handling Instructions</label><textarea id="handling" rows="5" placeholder="Temperature, loading, delivery, customs or handling instructions"></textarea></div>
+          <div><label>Clauses / Remarks</label><textarea id="remarks" rows="5" placeholder="Carrier remarks, document references, exceptions or conditions"></textarea></div>
+        </div>
+        <div class="mt-3 flex items-start gap-2">
+          <input id="shipperDeclaration" type="checkbox" style="width:auto;margin-top:.2rem">
+          <label for="shipperDeclaration" style="margin:0">The shipper confirms that the cargo description, package count, weights, dangerous-goods declarations and supporting particulars entered in this document are complete and accurate to the best of its knowledge.</label>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><h2><i class="fa-solid fa-pen-nib text-blue-600 mr-2"></i>Signatures & Issue</h2></div>
+      <div class="card-body grid-3">
+        <div><label>Shipper Representative</label><input id="shipperSignName" placeholder="Name"><input id="shipperSignDate" type="date" class="mt-2"></div>
+        <div><label>Carrier / Agent Representative</label><input id="carrierSignName" placeholder="Name"><input id="carrierSignDate" type="date" class="mt-2"></div>
+        <div><label>Place of Issue</label><input id="placeIssue" placeholder="City, country"><label class="mt-2">Issued By</label><input id="issuedBy" placeholder="Company / agent"></div>
+      </div>
+    </section>
+
+  </div>
+
+  <aside class="side-stack">
+    <section class="card">
+      <div class="card-head"><h2>Shipment Summary</h2></div>
+      <div class="card-body">
+        <div class="summary-row"><span>Cargo lines</span><strong id="sumLines">0</strong></div>
+        <div class="summary-row"><span>Total packages</span><strong id="sumPackages">0</strong></div>
+        <div class="summary-row"><span>Gross weight</span><strong id="sumGross">0.00 kg</strong></div>
+        <div class="summary-row"><span>Net weight</span><strong id="sumNet">0.00 kg</strong></div>
+        <div class="summary-row"><span>Total volume</span><strong id="sumCbm">0.000 CBM</strong></div>
+        <div class="summary-row"><span>Containers</span><strong id="sumContainers">0</strong></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><h2>Readiness Check</h2></div>
+      <div class="card-body"><div id="validationList" class="validation"></div></div>
+    </section>
+
+    <section class="card no-print">
+      <div class="card-head"><h2>Exports</h2></div>
+      <div class="card-body grid gap-2">
+        <button class="btn btn-outline w-full" id="btnCsv"><i class="fa-solid fa-file-csv"></i> Export cargo CSV</button>
+        <button class="btn btn-outline w-full" id="btnJson"><i class="fa-solid fa-code"></i> Export JSON backup</button>
+        <button class="btn btn-outline w-full" id="btnRestore"><i class="fa-solid fa-upload"></i> Restore JSON</button>
+        <input id="restoreFile" type="file" accept=".json,application/json" class="hidden">
+      </div>
+    </section>
+
+    <section class="card no-print">
+      <div class="card-head"><h2>Saved Bills</h2></div>
+      <div class="card-body">
+        <div id="historyList" class="history-list"></div>
+        <p class="help">Saved records stay in this browser unless you export a JSON backup.</p>
+      </div>
+    </section>
+
+    <div class="danger-box"><strong>Operational note:</strong> A bill of lading can have contractual, title and carriage implications. EasyFile generates a structured document but does not replace carrier-issued originals, legal review, customs requirements or dangerous-goods compliance obligations.</div>
+  </aside>
+</main>
+
+<footer class="easyfile-footer border-t border-adaptive no-print">
+  <div class="container mx-auto px-4 py-7 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+    <p class="muted-adaptive text-sm font-bold">EasyFile · Easy Bill of Lading</p>
+    <p class="muted-adaptive text-sm">Local-first · Autosave · Print-ready logistics documentation</p>
+  </div>
+</footer>
+
+<div id="previewModal" class="preview-modal" aria-hidden="true">
+  <div class="preview-shell">
+    <div class="preview-actions no-print">
+      <button class="btn btn-outline" id="btnClosePreview"><i class="fa-solid fa-xmark"></i> Close</button>
+      <button class="btn btn-primary" id="btnPrintPreview"><i class="fa-solid fa-print"></i> Print / Save PDF</button>
+    </div>
+    <div id="printSheet" class="print-sheet"></div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+"use strict";
+const STORE_KEY="easyfile.billoflading.draft.v1";
+const HISTORY_KEY="easyfile.billoflading.history.v1";
+const $=id=>document.getElementById(id);
+const fields=["bolNumber","shipmentRef","bookingNumber","status","issueDate","shipDate","mode","incoterm","shipperName","shipperAddress","shipperEmail","shipperPhone","consigneeName","consigneeAddress","consigneeEmail","consigneePhone","notifyName","notifyAddress","carrierName","carrierAddress","placeReceipt","portLoading","portDischarge","finalDestination","vessel","voyage","freightTerms","originals","declaredValue","handling","remarks","shipperSignName","shipperSignDate","carrierSignName","carrierSignDate","placeIssue","issuedBy"];
+let cargo=[];
+let containers=[];
+let autosaveTimer;
+
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));}
+function num(v){const n=Number(v);return Number.isFinite(n)?n:0}
+function uid(){return Math.random().toString(36).slice(2,9)}
+function today(){return new Date().toISOString().slice(0,10)}
+function toast(msg){$("toast").textContent=msg;$("toast").classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>$("toast").classList.remove("show"),2600)}
+function download(name,content,type="text/plain;charset=utf-8"){const blob=new Blob([content],{type});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},0)}
+function newBolNumber(){const d=new Date();const stamp=d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0");return "BOL-"+stamp+"-"+String(Math.floor(Math.random()*9000)+1000)}
+
+function collect(){
+  const data={version:1,updatedAt:new Date().toISOString(),cargo,containers,shipperDeclaration:$("shipperDeclaration").checked};
+  fields.forEach(id=>data[id]=$(id).value);
+  return data;
+}
+function apply(data={}){
+  fields.forEach(id=>{$(id).value=data[id]??""});
+  cargo=Array.isArray(data.cargo)?data.cargo:[];
+  containers=Array.isArray(data.containers)?data.containers:[];
+  $("shipperDeclaration").checked=Boolean(data.shipperDeclaration);
+  renderAll();
+}
+function persist(){localStorage.setItem(STORE_KEY,JSON.stringify(collect()));$("statusPill").title="Autosaved "+new Date().toLocaleTimeString()}
+function scheduleSave(){clearTimeout(autosaveTimer);autosaveTimer=setTimeout(persist,350)}
+function statusClass(v){return v==="issued"?"pill-issued":v==="transit"?"pill-transit":v==="delivered"?"pill-delivered":"pill-draft"}
+function renderStatus(){const v=$("status").value;$("statusPill").className="pill "+statusClass(v);$("statusPill").textContent=({draft:"DRAFT",issued:"ISSUED",transit:"IN TRANSIT",delivered:"DELIVERED"})[v]||v.toUpperCase()}
+
+function cargoRow(item){
+  const tr=document.createElement("tr");
+  tr.dataset.id=item.id;
+  tr.innerHTML=`
+    <td><input data-k="marks" value="${esc(item.marks)}" placeholder="Marks"></td>
+    <td><input data-k="packages" type="number" min="0" step="1" value="${num(item.packages)}"></td>
+    <td><input data-k="packageType" value="${esc(item.packageType)}" placeholder="Cartons"></td>
+    <td><input data-k="description" value="${esc(item.description)}" placeholder="Goods description"></td>
+    <td><input data-k="hsCode" value="${esc(item.hsCode)}" placeholder="HS code"></td>
+    <td><input data-k="qty" type="number" min="0" step="0.01" value="${num(item.qty)}"></td>
+    <td><input data-k="unit" value="${esc(item.unit)}" placeholder="pcs"></td>
+    <td><input data-k="grossKg" type="number" min="0" step="0.01" value="${num(item.grossKg)}"></td>
+    <td><input data-k="netKg" type="number" min="0" step="0.01" value="${num(item.netKg)}"></td>
+    <td><input data-k="cbm" type="number" min="0" step="0.001" value="${num(item.cbm)}"></td>
+    <td><select data-k="dangerous"><option ${item.dangerous==="No"?"selected":""}>No</option><option ${item.dangerous==="Yes"?"selected":""}>Yes</option></select></td>
+    <td class="no-print"><button class="btn btn-danger" data-remove-cargo="${item.id}" title="Remove cargo line"><i class="fa-solid fa-trash"></i></button></td>`;
+  tr.querySelectorAll("[data-k]").forEach(el=>el.addEventListener("input",()=>{item[el.dataset.k]=el.type==="number"?num(el.value):el.value;renderSummary();validate();scheduleSave()}));
+  tr.querySelector("[data-remove-cargo]").addEventListener("click",()=>{cargo=cargo.filter(x=>x.id!==item.id);renderCargo();renderSummary();validate();scheduleSave()});
+  return tr;
+}
+function renderCargo(){
+  const body=$("cargoBody");body.innerHTML="";
+  if(!cargo.length){body.innerHTML='<tr><td colspan="12" class="empty">No cargo lines yet. Add a cargo line or seed demo data.</td></tr>';return}
+  cargo.forEach(x=>body.appendChild(cargoRow(x)));
+}
+function addCargo(data={}){
+  cargo.push({id:uid(),marks:"",packages:0,packageType:"",description:"",hsCode:"",qty:0,unit:"",grossKg:0,netKg:0,cbm:0,dangerous:"No",...data});
+  renderCargo();renderSummary();validate();scheduleSave();
+}
+
+function containerRow(item){
+  const tr=document.createElement("tr");tr.dataset.id=item.id;
+  tr.innerHTML=`
+    <td><input data-k="number" class="mono" value="${esc(item.number)}" placeholder="MSCU1234567"></td>
+    <td><input data-k="seal" class="mono" value="${esc(item.seal)}" placeholder="Seal"></td>
+    <td><input data-k="type" value="${esc(item.type)}" placeholder="40HC / trailer"></td>
+    <td><input data-k="tareKg" type="number" min="0" step="0.01" value="${num(item.tareKg)}"></td>
+    <td><input data-k="packages" type="number" min="0" step="1" value="${num(item.packages)}"></td>
+    <td><input data-k="notes" value="${esc(item.notes)}" placeholder="Optional"></td>
+    <td class="no-print"><button class="btn btn-danger" data-remove-container="${item.id}"><i class="fa-solid fa-trash"></i></button></td>`;
+  tr.querySelectorAll("[data-k]").forEach(el=>el.addEventListener("input",()=>{item[el.dataset.k]=el.type==="number"?num(el.value):el.value;renderSummary();validate();scheduleSave()}));
+  tr.querySelector("[data-remove-container]").addEventListener("click",()=>{containers=containers.filter(x=>x.id!==item.id);renderContainers();renderSummary();validate();scheduleSave()});
+  return tr;
+}
+function renderContainers(){
+  const body=$("containerBody");body.innerHTML="";
+  if(!containers.length){body.innerHTML='<tr><td colspan="7" class="empty">No container or equipment records.</td></tr>';return}
+  containers.forEach(x=>body.appendChild(containerRow(x)));
+}
+function addContainer(data={}){containers.push({id:uid(),number:"",seal:"",type:"",tareKg:0,packages:0,notes:"",...data});renderContainers();renderSummary();validate();scheduleSave()}
+
+function renderSummary(){
+  $("sumLines").textContent=cargo.length;
+  $("sumPackages").textContent=cargo.reduce((a,x)=>a+num(x.packages),0);
+  $("sumGross").textContent=cargo.reduce((a,x)=>a+num(x.grossKg),0).toFixed(2)+" kg";
+  $("sumNet").textContent=cargo.reduce((a,x)=>a+num(x.netKg),0).toFixed(2)+" kg";
+  $("sumCbm").textContent=cargo.reduce((a,x)=>a+num(x.cbm),0).toFixed(3)+" CBM";
+  $("sumContainers").textContent=containers.length;
+}
+function validate(){
+  const checks=[
+    ["B/L number",Boolean($("bolNumber").value.trim())],
+    ["Issue date",Boolean($("issueDate").value)],
+    ["Shipper",Boolean($("shipperName").value.trim())],
+    ["Consignee",Boolean($("consigneeName").value.trim())],
+    ["Carrier / forwarder",Boolean($("carrierName").value.trim())],
+    ["Port/place of loading",Boolean($("portLoading").value.trim())],
+    ["Port/place of discharge",Boolean($("portDischarge").value.trim())],
+    ["At least one cargo line",cargo.length>0],
+    ["Every cargo line has a goods description",cargo.length>0&&cargo.every(x=>String(x.description||"").trim())],
+    ["Gross weight is not below net weight",cargo.every(x=>num(x.grossKg)>=num(x.netKg))],
+    ["Shipper declaration confirmed",$("shipperDeclaration").checked]
+  ];
+  $("validationList").innerHTML=checks.map(([label,ok])=>`<div class="validation-item ${ok?"ok":"warn"}"><i class="fa-solid ${ok?"fa-circle-check":"fa-triangle-exclamation"} mt-1"></i><span>${esc(label)}</span></div>`).join("");
+  return checks.every(x=>x[1]);
+}
+function renderAll(){renderStatus();renderCargo();renderContainers();renderSummary();validate();renderHistory()}
+
+function saveHistory(){
+  const d=collect();if(!d.bolNumber.trim()){toast("B/L number is required before saving.");return}
+  let hist=JSON.parse(localStorage.getItem(HISTORY_KEY)||"[]");
+  const idx=hist.findIndex(x=>x.bolNumber===d.bolNumber);
+  if(idx>=0)hist[idx]=d;else hist.unshift(d);
+  hist=hist.slice(0,30);localStorage.setItem(HISTORY_KEY,JSON.stringify(hist));persist();renderHistory();toast("Bill of lading saved locally.");
+}
+function renderHistory(){
+  const list=$("historyList");let hist=[];try{hist=JSON.parse(localStorage.getItem(HISTORY_KEY)||"[]")}catch(_){}
+  if(!hist.length){list.innerHTML='<p class="help">No saved bills yet.</p>';return}
+  list.innerHTML="";
+  hist.forEach((x,i)=>{
+    const row=document.createElement("div");row.className="history-item";
+    row.innerHTML=`<div><strong class="text-sm">${esc(x.bolNumber||"Untitled")}</strong><div class="help">${esc(x.consigneeName||"No consignee")} · ${esc(x.issueDate||"No date")}</div></div><div class="flex gap-1"><button class="btn btn-outline" data-load="${i}">Load</button><button class="btn btn-danger" data-delete="${i}">×</button></div>`;
+    row.querySelector("[data-load]").addEventListener("click",()=>{apply(hist[i]);persist();toast("Saved bill loaded.")});
+    row.querySelector("[data-delete]").addEventListener("click",()=>{if(confirm("Delete saved bill "+(hist[i].bolNumber||"")+"?")){hist.splice(i,1);localStorage.setItem(HISTORY_KEY,JSON.stringify(hist));renderHistory()}});
+    list.appendChild(row);
+  })
+}
+
+function clearAll(){
+  fields.forEach(id=>$(id).value="");
+  $("status").value="draft";$("mode").value="Sea";$("freightTerms").value="Prepaid";$("originals").value="3";
+  $("issueDate").value=today();$("shipperDeclaration").checked=false;
+  cargo=[];containers=[];$("bolNumber").value=newBolNumber();renderAll();persist();
+}
+function seedDemo(){
+  clearAll();
+  $("bolNumber").value="BOL-20261003-1001";$("shipmentRef").value="SO-2026-1842";$("bookingNumber").value="BK-DUR-88341";$("status").value="issued";$("issueDate").value="2026-10-03";$("shipDate").value="2026-10-05";$("mode").value="Sea";$("incoterm").value="CIF";
+  $("shipperName").value="Ubuntu Industrial Supplies (Pty) Ltd";$("shipperAddress").value="18 Forge Road\nJohannesburg, Gauteng 2001\nSouth Africa";$("shipperEmail").value="shipping@example.co.za";$("shipperPhone").value="+27 11 555 0100";
+  $("consigneeName").value="Maputo Engineering Lda";$("consigneeAddress").value="Av. das Industrias 221\nMaputo\nMozambique";$("consigneeEmail").value="receiving@example.co.mz";$("consigneePhone").value="+258 21 555 010";
+  $("notifyName").value="Maputo Engineering Lda - Imports";$("notifyAddress").value="Maputo, Mozambique";
+  $("carrierName").value="Southern Corridor Logistics";$("carrierAddress").value="Port of Durban\nKwaZulu-Natal\nSouth Africa";
+  $("placeReceipt").value="Johannesburg, ZA";$("portLoading").value="Durban, ZA";$("portDischarge").value="Maputo, MZ";$("finalDestination").value="Maputo Industrial Zone, MZ";$("vessel").value="MV Southern Star";$("voyage").value="SS-426";
+  $("freightTerms").value="Prepaid";$("originals").value="3";$("declaredValue").value="USD 48,500";
+  $("handling").value="Keep dry. Do not stack above two pallets. Deliver against consignee release instructions.";
+  $("remarks").value="Demo data only. Commercial invoice and packing list to accompany shipment.";
+  $("shipperDeclaration").checked=true;$("shipperSignName").value="N. Dlamini";$("shipperSignDate").value="2026-10-03";$("carrierSignName").value="T. Mokoena";$("carrierSignDate").value="2026-10-03";$("placeIssue").value="Johannesburg, South Africa";$("issuedBy").value="Southern Corridor Logistics";
+  cargo=[
+    {id:uid(),marks:"ME-001",packages:12,packageType:"Crates",description:"Industrial pump assemblies",hsCode:"8413.70",qty:12,unit:"pcs",grossKg:2840,netKg:2600,cbm:8.75,dangerous:"No"},
+    {id:uid(),marks:"ME-002",packages:4,packageType:"Pallets",description:"Control panels and accessories",hsCode:"8537.10",qty:4,unit:"sets",grossKg:960,netKg:820,cbm:3.2,dangerous:"No"}
+  ];
+  containers=[{id:uid(),number:"MSCU1234567",seal:"SCL883421",type:"20GP",tareKg:2250,packages:16,notes:"Shipper load and count"}];
+  renderAll();persist();toast("Demo shipment loaded.");
+}
+
+function csvCell(v){return '"'+String(v??"").replaceAll('"','""')+'"'}
+function exportCargoCsv(){
+  const head=["Marks","Packages","Package Type","Description","HS Code","Qty","Unit","Gross kg","Net kg","CBM","Dangerous Goods"];
+  const rows=cargo.map(x=>[x.marks,x.packages,x.packageType,x.description,x.hsCode,x.qty,x.unit,x.grossKg,x.netKg,x.cbm,x.dangerous].map(csvCell).join(","));
+  download(($("bolNumber").value||"bill-of-lading")+"-cargo.csv",[head.join(","),...rows].join("\n"),"text/csv;charset=utf-8");
+}
+function parseCsv(text){
+  const rows=[];let row=[],cell="",quoted=false;
+  for(let i=0;i<text.length;i++){const c=text[i],n=text[i+1];if(c==='"'&&quoted&&n==='"'){cell+='"';i++;continue}if(c==='"'){quoted=!quoted;continue}if(c===","&&!quoted){row.push(cell);cell="";continue}if((c==="\n"||c==="\r")&&!quoted){if(c==="\r"&&n==="\n")i++;row.push(cell);if(row.some(v=>String(v).trim()))rows.push(row);row=[];cell="";continue}cell+=c}row.push(cell);if(row.some(v=>String(v).trim()))rows.push(row);return rows
+}
+function importCsv(file){
+  const reader=new FileReader();reader.onload=()=>{
+    const rows=parseCsv(String(reader.result||""));if(rows.length<2){toast("CSV contains no cargo rows.");return}
+    const header=rows[0].map(x=>x.trim().toLowerCase());
+    const pick=(r,names)=>{const idx=header.findIndex(h=>names.includes(h));return idx>=0?r[idx]:""};
+    rows.slice(1).forEach(r=>addCargo({
+      marks:pick(r,["marks","marks / nos.","marks/nos"]),
+      packages:num(pick(r,["packages","package count"])),
+      packageType:pick(r,["package type","packagetype"]),
+      description:pick(r,["description","description of goods","goods"]),
+      hsCode:pick(r,["hs code","hscode"]),
+      qty:num(pick(r,["qty","quantity"])),
+      unit:pick(r,["unit","uom"]),
+      grossKg:num(pick(r,["gross kg","gross weight","gross"])),
+      netKg:num(pick(r,["net kg","net weight","net"])),
+      cbm:num(pick(r,["cbm","volume"])),
+      dangerous:pick(r,["dangerous goods","dangerous","dg"]).toLowerCase().startsWith("y")?"Yes":"No"
+    }));
+    toast((rows.length-1)+" cargo line(s) imported.");
+  };reader.readAsText(file)
+}
+
+function buildPrint(){
+  const d=collect();
+  const totals={packages:cargo.reduce((a,x)=>a+num(x.packages),0),gross:cargo.reduce((a,x)=>a+num(x.grossKg),0),net:cargo.reduce((a,x)=>a+num(x.netKg),0),cbm:cargo.reduce((a,x)=>a+num(x.cbm),0)};
+  $("printSheet").innerHTML=`
+    <div class="print-header">
+      <div><div class="print-title">BILL OF LADING</div><div class="print-small">EasyFile generated shipping document</div></div>
+      <div class="text-right"><div><strong>B/L No:</strong> <span class="mono">${esc(d.bolNumber)}</span></div><div class="print-small">Issue: ${esc(d.issueDate)} · Status: ${esc(d.status)}</div></div>
+    </div>
+    <div class="print-grid">
+      <div class="print-box"><h3>Shipper / Exporter</h3><strong>${esc(d.shipperName)}</strong><div class="print-small whitespace-pre-line">${esc(d.shipperAddress)}</div><div class="print-small">${esc(d.shipperEmail)} · ${esc(d.shipperPhone)}</div></div>
+      <div class="print-box"><h3>Consignee</h3><strong>${esc(d.consigneeName)}</strong><div class="print-small whitespace-pre-line">${esc(d.consigneeAddress)}</div><div class="print-small">${esc(d.consigneeEmail)} · ${esc(d.consigneePhone)}</div></div>
+      <div class="print-box"><h3>Notify Party</h3><strong>${esc(d.notifyName)}</strong><div class="print-small whitespace-pre-line">${esc(d.notifyAddress)}</div></div>
+      <div class="print-box"><h3>Carrier / Freight Forwarder</h3><strong>${esc(d.carrierName)}</strong><div class="print-small whitespace-pre-line">${esc(d.carrierAddress)}</div></div>
+    </div>
+    <div class="print-grid mt-4">
+      <div class="print-box"><h3>Shipment</h3><div class="print-small"><strong>Shipment ref:</strong> ${esc(d.shipmentRef)}<br><strong>Booking:</strong> ${esc(d.bookingNumber)}<br><strong>Mode:</strong> ${esc(d.mode)}<br><strong>Incoterm:</strong> ${esc(d.incoterm)}<br><strong>Ship date:</strong> ${esc(d.shipDate)}</div></div>
+      <div class="print-box"><h3>Routing</h3><div class="print-small"><strong>Receipt:</strong> ${esc(d.placeReceipt)}<br><strong>Loading:</strong> ${esc(d.portLoading)}<br><strong>Discharge:</strong> ${esc(d.portDischarge)}<br><strong>Destination:</strong> ${esc(d.finalDestination)}<br><strong>Vessel / Vehicle:</strong> ${esc(d.vessel)} · ${esc(d.voyage)}</div></div>
+    </div>
+    <table class="print-table">
+      <thead><tr><th>Marks</th><th>Packages</th><th>Type</th><th>Description</th><th>HS Code</th><th>Qty</th><th>Unit</th><th>Gross kg</th><th>Net kg</th><th>CBM</th><th>DG</th></tr></thead>
+      <tbody>${cargo.map(x=>`<tr><td>${esc(x.marks)}</td><td>${num(x.packages)}</td><td>${esc(x.packageType)}</td><td>${esc(x.description)}</td><td>${esc(x.hsCode)}</td><td>${num(x.qty)}</td><td>${esc(x.unit)}</td><td>${num(x.grossKg).toFixed(2)}</td><td>${num(x.netKg).toFixed(2)}</td><td>${num(x.cbm).toFixed(3)}</td><td>${esc(x.dangerous)}</td></tr>`).join("")}</tbody>
+      <tfoot><tr><th colspan="1">Totals</th><th>${totals.packages}</th><th colspan="5"></th><th>${totals.gross.toFixed(2)}</th><th>${totals.net.toFixed(2)}</th><th>${totals.cbm.toFixed(3)}</th><th></th></tr></tfoot>
+    </table>
+    ${containers.length?`<table class="print-table"><thead><tr><th>Container / Equipment</th><th>Seal</th><th>Type</th><th>Tare kg</th><th>Packages</th><th>Notes</th></tr></thead><tbody>${containers.map(x=>`<tr><td>${esc(x.number)}</td><td>${esc(x.seal)}</td><td>${esc(x.type)}</td><td>${num(x.tareKg).toFixed(2)}</td><td>${num(x.packages)}</td><td>${esc(x.notes)}</td></tr>`).join("")}</tbody></table>`:""}
+    <div class="print-grid mt-4">
+      <div class="print-box"><h3>Freight & Handling</h3><div class="print-small"><strong>Freight:</strong> ${esc(d.freightTerms)}<br><strong>Originals:</strong> ${esc(d.originals)}<br><strong>Declared value:</strong> ${esc(d.declaredValue)}<br><br><strong>Handling:</strong><br>${esc(d.handling)}</div></div>
+      <div class="print-box"><h3>Remarks & Declaration</h3><div class="print-small">${esc(d.remarks)}<br><br><strong>Shipper declaration:</strong> ${d.shipperDeclaration?"Confirmed":"Not confirmed"}<br><strong>Place of issue:</strong> ${esc(d.placeIssue)}<br><strong>Issued by:</strong> ${esc(d.issuedBy)}</div></div>
+    </div>
+    <div class="signature-grid">
+      <div class="signature-line">Shipper representative: ${esc(d.shipperSignName)} · ${esc(d.shipperSignDate)}</div>
+      <div class="signature-line">Carrier / agent representative: ${esc(d.carrierSignName)} · ${esc(d.carrierSignDate)}</div>
+    </div>
+    <p class="print-small mt-8">Generated by EasyFile. This document is a structured record and does not supersede carrier originals, applicable transport conventions, customs requirements or statutory dangerous-goods documentation.</p>`;
+}
+function openPreview(){buildPrint();$("previewModal").classList.add("open");$("previewModal").setAttribute("aria-hidden","false")}
+function closePreview(){$("previewModal").classList.remove("open");$("previewModal").setAttribute("aria-hidden","true")}
+function printDoc(){buildPrint();$("previewModal").classList.add("open");setTimeout(()=>window.print(),80)}
+
+fields.forEach(id=>$(id).addEventListener("input",()=>{renderStatus();renderSummary();validate();scheduleSave()}));
+$("shipperDeclaration").addEventListener("change",()=>{validate();scheduleSave()});
+$("btnAddCargo").addEventListener("click",()=>addCargo({packages:1,qty:1,dangerous:"No"}));
+$("btnAddContainer").addEventListener("click",()=>addContainer());
+$("btnSeed").addEventListener("click",seedDemo);
+$("btnNew").addEventListener("click",()=>{if(confirm("Start a new bill of lading? Current draft fields will be reset."))clearAll()});
+$("btnSave").addEventListener("click",saveHistory);
+$("btnPreview").addEventListener("click",openPreview);
+$("btnPrint").addEventListener("click",printDoc);
+$("btnClosePreview").addEventListener("click",closePreview);
+$("btnPrintPreview").addEventListener("click",()=>window.print());
+$("previewModal").addEventListener("click",e=>{if(e.target===$("previewModal"))closePreview()});
+$("btnCsv").addEventListener("click",exportCargoCsv);
+$("btnJson").addEventListener("click",()=>download(($("bolNumber").value||"bill-of-lading")+".json",JSON.stringify(collect(),null,2),"application/json"));
+$("btnRestore").addEventListener("click",()=>$("restoreFile").click());
+$("restoreFile").addEventListener("change",e=>{const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{apply(JSON.parse(r.result));persist();toast("Backup restored.")}catch(_){toast("Could not read that JSON backup.")}};r.readAsText(f);e.target.value=""});
+$("btnImportCsv").addEventListener("click",()=>$("csvFile").click());
+$("csvFile").addEventListener("change",e=>{const f=e.target.files?.[0];if(f)importCsv(f);e.target.value=""});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closePreview()});
+
+try{
+  const draft=JSON.parse(localStorage.getItem(STORE_KEY)||"null");
+  if(draft)apply(draft);else clearAll();
+}catch(_){clearAll()}
+if(!cargo.length)addCargo({packages:1,qty:1,dangerous:"No"});
+renderAll();
+</script>
+<script defer src="scripts/sync-nav.js"></script>
+</body>
+</html>
