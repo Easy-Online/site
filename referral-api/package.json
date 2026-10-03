@@ -1,12 +1,12 @@
 {
   "name": "easyfile-referral-api",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "private": true,
-  "description": "Server-authoritative EasyFile referral and Easy Save storage connector API.",
+  "description": "Server-authoritative EasyFile referral, Easy Form, and Easy Save storage connector API.",
   "main": "src/functions/*.js",
   "scripts": {
     "start": "func start",
-    "check": "node --check src/functions/referrals.js && node --check src/functions/storage.js && node --check src/storage/core.js && node --check src/storage/oauth.js && node --check src/storage/providers.js && node --test test/referrals.test.js test/storage.test.js"
+    "check": "node --check src/functions/referrals.js && node --check src/functions/storage.js && node --check src/functions/forms.js && node --check src/storage/core.js && node --check src/storage/oauth.js && node --check src/storage/providers.js && node --test test/referrals.test.js test/storage.test.js test/forms.test.js"
   },
   "engines": {
     "node": ">=20"
