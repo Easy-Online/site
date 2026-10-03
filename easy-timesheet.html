@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Easy Timesheet & Tracker | EasyFile</title>
+  <meta name="description" content="Track time, attendance, billable work, projects and job-card labour. Submit timesheets for approval and prepare approved time for payroll or invoicing.">
+  <meta name="theme-color" content="#061a4d">
+  <link rel="icon" href="icon.png" type="image/png">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/easyfile-brand-tokens.css">
+  <link rel="stylesheet" href="assets/css/easyfile-site.css">
+  <link rel="stylesheet" href="assets/css/easyfile-footer.css">
+  <link rel="stylesheet" href="assets/css/easyfile-navigation.css">
+  <style>
+    :root{--ts-primary:#2563eb;--ts-ink:#0f172a;--ts-muted:#64748b;--ts-border:#dbe5f1;--ts-bg:#f4f8ff;--ts-card:#fff;--ts-success:#16a34a;--ts-warning:#d97706;--ts-danger:#dc2626}
+    html[data-theme="dark"]{--ts-ink:#e5e7eb;--ts-muted:#9fb0c8;--ts-border:#243247;--ts-bg:#07101f;--ts-card:#0f172a}
+    body{font-family:Inter,system-ui,sans-serif;background:var(--ts-bg);color:var(--ts-ink)}
+    .ts-shell{width:min(100% - 2rem,92rem);margin:auto;padding:1.5rem 0 4rem}
+    .ts-card{background:var(--ts-card);border:1px solid var(--ts-border);border-radius:1rem;box-shadow:0 12px 34px rgba(15,23,42,.06)}
+    .ts-btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border-radius:.75rem;padding:.7rem 1rem;font-weight:800;border:1px solid transparent;transition:.16s}
+    .ts-btn:hover{transform:translateY(-1px)}
+    .ts-btn-primary{background:var(--ts-primary);color:#fff}.ts-btn-success{background:var(--ts-success);color:#fff}.ts-btn-danger{background:var(--ts-danger);color:#fff}
+    .ts-btn-outline{background:var(--ts-card);border-color:var(--ts-border);color:var(--ts-ink)}
+    .ts-label{display:block;font-size:.75rem;font-weight:900;color:var(--ts-muted);margin-bottom:.35rem;text-transform:uppercase;letter-spacing:.04em}
+    .ts-input{width:100%;border:1px solid var(--ts-border);border-radius:.75rem;padding:.7rem .8rem;background:var(--ts-card);color:var(--ts-ink)}
+    .ts-input:focus{outline:none;border-color:#60a5fa;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+    .ts-kpi{font-size:1.65rem;font-weight:900;line-height:1.05}.ts-subtle{color:var(--ts-muted)}
+    .ts-pill{display:inline-flex;align-items:center;border-radius:999px;padding:.22rem .58rem;font-size:.7rem;font-weight:900}
+    .pill-draft{background:#e0e7ff;color:#3730a3}.pill-submitted{background:#fef3c7;color:#92400e}.pill-approved{background:#dcfce7;color:#166534}.pill-rejected{background:#fee2e2;color:#991b1b}
+    .ts-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}.ts-table{min-width:980px;width:100%;font-size:.82rem}
+    .ts-table th{padding:.75rem;text-align:left;color:var(--ts-muted);background:rgba(148,163,184,.08);font-size:.72rem;text-transform:uppercase;letter-spacing:.04em}
+    .ts-table td{padding:.75rem;border-top:1px solid var(--ts-border);vertical-align:top}
+    .timer-display{font-variant-numeric:tabular-nums;font-size:clamp(2.3rem,7vw,4.7rem);font-weight:900;letter-spacing:-.05em}
+    .modal-backdrop{background:rgba(2,6,23,.7)}
+    @media print{.no-print,.easyfile-nav{display:none!important}.ts-shell{width:100%;padding:0}.ts-card{box-shadow:none;border:0}body{background:#fff!important;color:#111!important}}
+  </style>
+  <script>
+    (function(){try{const s=localStorage.getItem("easyfile:theme")||localStorage.getItem("easySuite.theme");const d=s?s==="dark":matchMedia("(prefers-color-scheme: dark)").matches;document.documentElement.dataset.theme=d?"dark":"light";document.documentElement.classList.toggle("dark",d)}catch(_){}})();
+  </script>
+</head>
+<body>
+  <main class="ts-shell">
+    <section class="mb-6">
+      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+        <div>
+          <div class="text-xs uppercase tracking-widest font-black text-blue-600">EasyFile Operations</div>
+          <h1 class="text-3xl md:text-4xl font-black mt-1">Easy Timesheet &amp; Tracker</h1>
+          <p class="ts-subtle mt-2 max-w-3xl">Track work once, then reuse approved time for job costing, payroll and invoicing. Location capture is optional and only occurs when the user explicitly requests it.</p>
+        </div>
+        <div class="flex flex-wrap gap-2 no-print">
+          <button id="btnSeed" class="ts-btn ts-btn-outline"><i class="fa-solid fa-flask"></i> Seed demo</button>
+          <button id="btnExportCsv" class="ts-btn ts-btn-outline"><i class="fa-solid fa-file-csv"></i> CSV</button>
+          <button id="btnExportJson" class="ts-btn ts-btn-outline"><i class="fa-solid fa-code"></i> JSON</button>
+          <button onclick="window.print()" class="ts-btn ts-btn-outline"><i class="fa-solid fa-print"></i> Print</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-6">
+      <div class="ts-card p-4"><div class="ts-label">Today</div><div id="kpiToday" class="ts-kpi">0h 00m</div></div>
+      <div class="ts-card p-4"><div class="ts-label">This week</div><div id="kpiWeek" class="ts-kpi">0h 00m</div></div>
+      <div class="ts-card p-4"><div class="ts-label">Billable</div><div id="kpiBillable" class="ts-kpi">0h 00m</div></div>
+      <div class="ts-card p-4"><div class="ts-label">Value</div><div id="kpiValue" class="ts-kpi">R0.00</div></div>
+      <div class="ts-card p-4 col-span-2 lg:col-span-1"><div class="ts-label">Pending approval</div><div id="kpiPending" class="ts-kpi">0</div></div>
+    </section>
+
+    <section class="grid lg:grid-cols-3 gap-5 mb-6">
+      <div class="ts-card p-5 lg:col-span-2">
+        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          <div>
+            <div class="ts-label">Live timer</div>
+            <div id="timerDisplay" class="timer-display">00:00:00</div>
+            <p id="timerState" class="ts-subtle text-sm mt-1">No timer running.</p>
+          </div>
+          <div class="flex gap-2 no-print">
+            <button id="btnStart" class="ts-btn ts-btn-success"><i class="fa-solid fa-play"></i> Start</button>
+            <button id="btnStop" class="ts-btn ts-btn-danger" disabled><i class="fa-solid fa-stop"></i> Stop</button>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-4 gap-3 mt-5">
+          <div><label class="ts-label" for="timerClient">Client</label><input id="timerClient" class="ts-input" placeholder="Client or internal"></div>
+          <div><label class="ts-label" for="timerProject">Project / Job</label><input id="timerProject" class="ts-input" placeholder="Project / JOB0001"></div>
+          <div><label class="ts-label" for="timerTask">Task</label><input id="timerTask" class="ts-input" placeholder="Implementation"></div>
+          <div><label class="ts-label" for="timerRate">Billable rate</label><input id="timerRate" class="ts-input" type="number" min="0" step="0.01" value="850"></div>
+        </div>
+        <div class="mt-3 flex flex-wrap items-center gap-4">
+          <label class="inline-flex items-center gap-2 font-bold text-sm"><input id="timerBillable" type="checkbox" checked> Billable</label>
+          <label class="inline-flex items-center gap-2 font-bold text-sm"><input id="timerLocation" type="checkbox"> Capture location when timer starts/stops</label>
+        </div>
+      </div>
+
+      <div class="ts-card p-5">
+        <div class="ts-label">Workflow</div>
+        <h2 class="font-black text-xl">One time record, multiple outputs</h2>
+        <div class="space-y-3 mt-4 text-sm">
+          <div class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 grid place-items-center font-black">1</span><span>Capture timer or manual entry</span></div>
+          <div class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-yellow-100 text-yellow-700 grid place-items-center font-black">2</span><span>Submit and approve</span></div>
+          <div class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-green-100 text-green-700 grid place-items-center font-black">3</span><span>Send approved time to payroll / invoice / job card</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ts-card p-5 mb-6 no-print">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+        <div><div class="ts-label">Manual entry</div><h2 class="font-black text-xl">Add time entry</h2></div>
+        <button id="btnAdd" class="ts-btn ts-btn-primary"><i class="fa-solid fa-plus"></i> Add entry</button>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-6 gap-3 mt-4">
+        <div><label class="ts-label">Date</label><input id="fDate" type="date" class="ts-input"></div>
+        <div><label class="ts-label">Employee</label><input id="fEmployee" class="ts-input" placeholder="Name"></div>
+        <div><label class="ts-label">Client</label><input id="fClient" class="ts-input" placeholder="Client"></div>
+        <div><label class="ts-label">Project / Job</label><input id="fProject" class="ts-input" placeholder="Project / Job"></div>
+        <div><label class="ts-label">Hours</label><input id="fHours" type="number" min=".01" step=".25" class="ts-input" value="1"></div>
+        <div><label class="ts-label">Rate</label><input id="fRate" type="number" min="0" step="0.01" class="ts-input" value="850"></div>
+      </div>
+      <div class="grid md:grid-cols-3 gap-3 mt-3">
+        <div><label class="ts-label">Task / activity</label><input id="fTask" class="ts-input" placeholder="Work performed"></div>
+        <div><label class="ts-label">Notes</label><input id="fNotes" class="ts-input" placeholder="Optional notes"></div>
+        <div class="flex items-end gap-4 pb-2"><label class="inline-flex items-center gap-2 font-bold text-sm"><input id="fBillable" type="checkbox" checked> Billable</label></div>
+      </div>
+    </section>
+
+    <section class="ts-card mb-6">
+      <div class="p-5 border-b" style="border-color:var(--ts-border)">
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+          <div><div class="ts-label">Timesheets</div><h2 class="font-black text-xl">Entries &amp; approvals</h2></div>
+          <div class="grid sm:grid-cols-3 gap-2 no-print">
+            <input id="filterQ" class="ts-input" placeholder="Search client, project, task">
+            <select id="filterStatus" class="ts-input"><option value="">All statuses</option><option>Draft</option><option>Submitted</option><option>Approved</option><option>Rejected</option></select>
+            <select id="filterBillable" class="ts-input"><option value="">Billable + non-billable</option><option value="yes">Billable</option><option value="no">Non-billable</option></select>
+          </div>
+        </div>
+      </div>
+      <div class="ts-table-wrap">
+        <table class="ts-table">
+          <thead><tr><th>Date</th><th>Employee</th><th>Client / Project</th><th>Task</th><th>Time</th><th>Rate / Value</th><th>Status</th><th class="no-print">Actions</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="grid lg:grid-cols-3 gap-5">
+      <div class="ts-card p-5">
+        <div class="ts-label">Payroll hand-off</div>
+        <h2 class="font-black text-lg">Approved hours</h2>
+        <p class="ts-subtle text-sm mt-2">Prepare approved hours for Easy Payroll. The payload remains local to this browser until another EasyFile module consumes it.</p>
+        <button id="btnPayroll" class="ts-btn ts-btn-outline mt-4 no-print w-full"><i class="fa-solid fa-money-check-dollar"></i> Prepare payroll data</button>
+      </div>
+      <div class="ts-card p-5">
+        <div class="ts-label">Invoice hand-off</div>
+        <h2 class="font-black text-lg">Billable approved time</h2>
+        <p class="ts-subtle text-sm mt-2">Prepare billable approved hours as invoice-ready line items grouped by client and project.</p>
+        <button id="btnInvoice" class="ts-btn ts-btn-outline mt-4 no-print w-full"><i class="fa-solid fa-file-invoice-dollar"></i> Prepare invoice data</button>
+      </div>
+      <div class="ts-card p-5">
+        <div class="ts-label">Job costing</div>
+        <h2 class="font-black text-lg">Project labour</h2>
+        <p class="ts-subtle text-sm mt-2">Prepare labour records for Easy Job Card and project profitability reporting.</p>
+        <button id="btnJob" class="ts-btn ts-btn-outline mt-4 no-print w-full"><i class="fa-solid fa-briefcase"></i> Prepare job-card data</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="fixed right-4 bottom-4 hidden z-50 no-print"><div class="bg-gray-900 text-white rounded-xl shadow-xl px-4 py-3 max-w-sm" id="toastText"></div></div>
+
+  <script>
+    const STORE="easy.timesheet.v1", TIMER="easy.timesheet.timer.v1";
+    let entries=load(STORE,[]), timer=load(TIMER,null), ticker=null;
+    const $=id=>document.getElementById(id);
+    const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
+    function load(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(_){return d}}
+    function save(){localStorage.setItem(STORE,JSON.stringify(entries))}
+    function toast(m){$("toastText").textContent=m;$("toast").classList.remove("hidden");setTimeout(()=>$("toast").classList.add("hidden"),2600)}
+    function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+    function money(n){return new Intl.NumberFormat("en-ZA",{style:"currency",currency:"ZAR"}).format(Number(n||0))}
+    function dur(h){const m=Math.round(Number(h||0)*60);return `${Math.floor(m/60)}h ${String(m%60).padStart(2,"0")}m`}
+    function localDate(d=new Date()){return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10)}
+    function weekStart(d=new Date()){const x=new Date(d);const day=(x.getDay()+6)%7;x.setDate(x.getDate()-day);x.setHours(0,0,0,0);return x}
+    function statusPill(s){return `<span class="ts-pill pill-${String(s).toLowerCase()}">${esc(s)}</span>`}
+    function locationPromise(){
+      return new Promise(resolve=>{
+        if(!navigator.geolocation){resolve(null);return}
+        navigator.geolocation.getCurrentPosition(
+          p=>resolve({lat:+p.coords.latitude.toFixed(6),lng:+p.coords.longitude.toFixed(6),accuracy:Math.round(p.coords.accuracy)}),
+          ()=>resolve(null),
+          {enableHighAccuracy:true,timeout:8000,maximumAge:60000}
+        );
+      });
+    }
+    function compute(){
+      const today=localDate(), ws=weekStart();
+      const todayH=entries.filter(e=>e.date===today).reduce((a,e)=>a+e.hours,0);
+      const weekH=entries.filter(e=>new Date(e.date+"T12:00:00")>=ws).reduce((a,e)=>a+e.hours,0);
+      const bill=entries.filter(e=>e.billable).reduce((a,e)=>a+e.hours,0);
+      const val=entries.filter(e=>e.billable).reduce((a,e)=>a+e.hours*e.rate,0);
+      $("kpiToday").textContent=dur(todayH);$("kpiWeek").textContent=dur(weekH);$("kpiBillable").textContent=dur(bill);$("kpiValue").textContent=money(val);$("kpiPending").textContent=entries.filter(e=>e.status==="Submitted").length;
+    }
+    function render(){
+      compute();
+      const q=$("filterQ").value.trim().toLowerCase(), st=$("filterStatus").value, bf=$("filterBillable").value;
+      const list=entries.filter(e=>{
+        const hay=`${e.employee} ${e.client} ${e.project} ${e.task} ${e.notes}`.toLowerCase();
+        return (!q||hay.includes(q))&&(!st||e.status===st)&&(!bf||(bf==="yes")===!!e.billable);
+      }).sort((a,b)=>(b.date+b.created).localeCompare(a.date+a.created));
+      $("rows").innerHTML=list.length?list.map(e=>`<tr>
+        <td>${esc(e.date)}</td>
+        <td><strong>${esc(e.employee||"—")}</strong></td>
+        <td><strong>${esc(e.client||"Internal")}</strong><div class="ts-subtle">${esc(e.project||"—")}</div></td>
+        <td>${esc(e.task||"—")}<div class="ts-subtle">${esc(e.notes||"")}</div>${e.location?'<div class="ts-subtle"><i class="fa-solid fa-location-dot"></i> location captured</div>':""}</td>
+        <td><strong>${dur(e.hours)}</strong><div class="ts-subtle">${e.billable?"Billable":"Non-billable"}</div></td>
+        <td>${money(e.rate)}/h<div class="ts-subtle">${money(e.hours*e.rate)}</div></td>
+        <td>${statusPill(e.status)}</td>
+        <td class="no-print"><div class="flex flex-wrap gap-1">
+          ${e.status==="Draft"?`<button class="ts-btn ts-btn-outline text-xs" data-action="submit" data-id="${e.id}">Submit</button>`:""}
+          ${e.status==="Submitted"?`<button class="ts-btn ts-btn-success text-xs" data-action="approve" data-id="${e.id}">Approve</button><button class="ts-btn ts-btn-outline text-xs" data-action="reject" data-id="${e.id}">Reject</button>`:""}
+          <button class="ts-btn ts-btn-outline text-xs" data-action="duplicate" data-id="${e.id}">Duplicate</button>
+          <button class="ts-btn ts-btn-outline text-xs" data-action="delete" data-id="${e.id}">Delete</button>
+        </div></td>
+      </tr>`).join(""):'<tr><td colspan="8" class="text-center ts-subtle p-8">No time entries found.</td></tr>';
+    }
+    function addEntry(data){
+      entries.push({id:uid(),created:new Date().toISOString(),date:localDate(),employee:"",client:"",project:"",task:"",notes:"",hours:0,rate:0,billable:true,status:"Draft",source:"manual",...data});
+      save();render();
+    }
+    async function startTimer(){
+      if(timer)return;
+      const location=$("timerLocation").checked?await locationPromise():null;
+      timer={startedAt:Date.now(),client:$("timerClient").value.trim(),project:$("timerProject").value.trim(),task:$("timerTask").value.trim(),rate:+$("timerRate").value||0,billable:$("timerBillable").checked,startLocation:location};
+      localStorage.setItem(TIMER,JSON.stringify(timer));syncTimer();toast("Timer started.");
+    }
+    async function stopTimer(){
+      if(!timer)return;
+      const end=Date.now(), hours=Math.max((end-timer.startedAt)/3600000,1/60), location=$("timerLocation").checked?await locationPromise():null;
+      addEntry({date:localDate(new Date(timer.startedAt)),client:timer.client,project:timer.project,task:timer.task,hours:+hours.toFixed(4),rate:timer.rate,billable:timer.billable,status:"Draft",source:"timer",location:{start:timer.startLocation||null,end:location||null}});
+      timer=null;localStorage.removeItem(TIMER);syncTimer();toast("Timer stopped and saved as a draft entry.");
+    }
+    function syncTimer(){
+      if(ticker){clearInterval(ticker);ticker=null}
+      const update=()=>{
+        if(!timer){$("timerDisplay").textContent="00:00:00";$("timerState").textContent="No timer running.";return}
+        const s=Math.floor((Date.now()-timer.startedAt)/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;
+        $("timerDisplay").textContent=[h,m,sec].map(x=>String(x).padStart(2,"0")).join(":");
+        $("timerState").textContent=[timer.client||"Internal",timer.project,timer.task].filter(Boolean).join(" • ");
+      };
+      update();
+      if(timer)ticker=setInterval(update,1000);
+      $("btnStart").disabled=!!timer;$("btnStop").disabled=!timer;
+    }
+    function csvCell(v){return '"'+String(v??"").replaceAll('"','""')+'"'}
+    function download(name,type,text){const b=new Blob([text],{type});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),0)}
+    function exportCSV(){const head=["Date","Employee","Client","ProjectJob","Task","Hours","Rate","Billable","Status","Notes"];const lines=entries.map(e=>[e.date,e.employee,e.client,e.project,e.task,e.hours,e.rate,e.billable?"Yes":"No",e.status,e.notes].map(csvCell).join(","));download("easy-timesheet.csv","text/csv;charset=utf-8",[head.join(","),...lines].join("\n"))}
+    function handoff(key,filter,label){const data=entries.filter(filter);localStorage.setItem(key,JSON.stringify({createdAt:new Date().toISOString(),entries:data}));toast(`${data.length} approved entr${data.length===1?"y":"ies"} prepared for ${label}.`)}
+    $("btnStart").addEventListener("click",startTimer);$("btnStop").addEventListener("click",stopTimer);
+    $("btnAdd").addEventListener("click",()=>{const h=+$("fHours").value;if(!h||h<=0){toast("Hours must be greater than zero.");return}addEntry({date:$("fDate").value||localDate(),employee:$("fEmployee").value.trim(),client:$("fClient").value.trim(),project:$("fProject").value.trim(),task:$("fTask").value.trim(),notes:$("fNotes").value.trim(),hours:h,rate:+$("fRate").value||0,billable:$("fBillable").checked});toast("Draft time entry added.")});
+    ["filterQ","filterStatus","filterBillable"].forEach(id=>$(id).addEventListener(id==="filterQ"?"input":"change",render));
+    $("rows").addEventListener("click",e=>{const b=e.target.closest("button[data-action]");if(!b)return;const x=entries.find(v=>v.id===b.dataset.id);if(!x)return;const a=b.dataset.action;if(a==="submit")x.status="Submitted";if(a==="approve")x.status="Approved";if(a==="reject")x.status="Rejected";if(a==="duplicate")addEntry({...x,id:undefined,created:undefined,status:"Draft"});if(a==="delete"&&confirm("Delete this time entry?"))entries=entries.filter(v=>v.id!==x.id);save();render()});
+    $("btnExportCsv").addEventListener("click",exportCSV);
+    $("btnExportJson").addEventListener("click",()=>download("easy-timesheet.json","application/json",JSON.stringify(entries,null,2)));
+    $("btnPayroll").addEventListener("click",()=>handoff("easy.timesheet.payroll.v1",e=>e.status==="Approved","Easy Payroll"));
+    $("btnInvoice").addEventListener("click",()=>handoff("easy.timesheet.invoice.v1",e=>e.status==="Approved"&&e.billable,"Easy Invoice"));
+    $("btnJob").addEventListener("click",()=>handoff("easy.timesheet.jobcard.v1",e=>e.status==="Approved"&&!!e.project,"Easy Job Card"));
+    $("btnSeed").addEventListener("click",()=>{if(entries.length&&!confirm("Add demo entries to existing data?"))return;const d=localDate(), y=new Date();y.setDate(y.getDate()-1);addEntry({date:d,employee:"Alex Nkosi",client:"Acme Services",project:"JOB-1042",task:"On-site implementation",hours:3.5,rate:950,billable:true,status:"Approved",notes:"Configured and tested equipment"});addEntry({date:d,employee:"Lerato Mokoena",client:"Internal",project:"EasyFile",task:"Product planning",hours:2,rate:0,billable:false,status:"Submitted"});addEntry({date:localDate(y),employee:"Alex Nkosi",client:"Acme Services",project:"JOB-1042",task:"Travel and preparation",hours:1.25,rate:650,billable:true,status:"Draft"});toast("Demo timesheet entries added.")});
+    $("fDate").value=localDate();syncTimer();render();
+  </script>
+  <script src="scripts/sync-nav.js" defer></script>
+</body>
+</html>
