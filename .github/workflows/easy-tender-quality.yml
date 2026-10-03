@@ -25,10 +25,15 @@ jobs:
           node-version: 24
       - name: JavaScript syntax and functional/load checks
         run: node tests/easy-tender-quality.mjs
-      - name: Static page smoke
+      - name: Install browser test runtime
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install chromium --with-deps
+      - name: Browser usability and rendering load test
         run: |
           python3 -m http.server 8080 >/tmp/easy-tender-http.log 2>&1 &
           pid=$!
           trap 'kill "$pid"' EXIT
           sleep 1
           curl --fail --silent --show-error http://127.0.0.1:8080/easy-tender.html | grep -q "Easy Tender"
+          node tests/easy-tender-ui.mjs
