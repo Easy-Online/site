@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Easy Affidavit & Power of Attorney | EasyFile</title>
+  <meta name="description" content="Create editable South African affidavits, general powers of attorney and special powers of attorney. Local-first, printable and export-ready.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://www.easyfile.co.za/easy-affidavit.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Easy Affidavit & Power of Attorney | EasyFile">
+  <meta property="og:description" content="Guided document builder for affidavits and powers of attorney with editable clauses, signatures and print-ready output.">
+  <meta property="og:url" content="https://www.easyfile.co.za/easy-affidavit.html">
+  <meta property="og:image" content="https://www.easyfile.co.za/logo-b.png">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/easyfile-brand-tokens.css">
+  <link rel="stylesheet" href="assets/css/easyfile-site.css">
+  <link rel="stylesheet" href="assets/css/easyfile-footer.css">
+  <link rel="stylesheet" href="assets/css/easyfile-navigation.css">
+
+  <style>
+    :root{
+      --legal:#2563eb;--ink:#0f172a;--muted:#64748b;--line:#dbe3ef;
+      --surface:#fff;--page:#f4f7fb;--ok:#15803d;--warn:#b45309;--bad:#b91c1c
+    }
+    *{box-sizing:border-box}
+    body{background:var(--page);color:var(--ink)}
+    .legal-wrap{width:min(100% - 2rem,92rem);margin:auto;padding:2rem 0 4rem}
+    .legal-card{background:var(--surface);border:1px solid var(--line);border-radius:1rem;box-shadow:0 12px 32px rgba(15,23,42,.06)}
+    .section-title{font-weight:900;font-size:1.05rem;display:flex;align-items:center;gap:.55rem}
+    .help{font-size:.78rem;color:var(--muted);line-height:1.5}
+    .label{font-size:.76rem;font-weight:900;color:#475569;display:block;margin-bottom:.35rem}
+    .field{width:100%;border:1px solid var(--line);border-radius:.7rem;padding:.68rem .78rem;background:#fff;color:#111827}
+    .field:focus{outline:none;border-color:#60a5fa;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;border-radius:.7rem;padding:.68rem .9rem;font-weight:850;border:1px solid transparent;transition:.15s}
+    .btn:hover{transform:translateY(-1px)}
+    .btn-primary{background:#2563eb;color:#fff}.btn-outline{background:#fff;border-color:var(--line);color:#0f172a}
+    .btn-success{background:#15803d;color:#fff}.btn-danger{background:#b91c1c;color:#fff}
+    .pill{display:inline-flex;align-items:center;gap:.35rem;border-radius:999px;padding:.28rem .58rem;font-size:.7rem;font-weight:900}
+    .pill-ok{background:#dcfce7;color:#166534}.pill-warn{background:#fef3c7;color:#92400e}.pill-info{background:#dbeafe;color:#1d4ed8}
+    .notice{border-radius:.8rem;padding:.85rem 1rem;font-size:.82rem;line-height:1.55}
+    .notice-blue{background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a}
+    .notice-amber{background:#fff7ed;border:1px solid #fed7aa;color:#7c2d12}
+    .notice-red{background:#fef2f2;border:1px solid #fecaca;color:#7f1d1d}
+    .grid-auto{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+    .check-row{display:grid;grid-template-columns:auto 1fr;gap:.7rem;align-items:start;padding:.8rem;border:1px solid var(--line);border-radius:.8rem;background:#f8fafc}
+    .fact-row{display:grid;grid-template-columns:2.5rem 1fr auto;gap:.6rem;align-items:start}
+    .fact-number{height:2.65rem;display:grid;place-items:center;border-radius:.65rem;background:#eff6ff;color:#1d4ed8;font-weight:900}
+    .preview-page{max-width:210mm;margin:auto;background:#fff;color:#111827;padding:18mm;box-shadow:0 16px 40px rgba(15,23,42,.12);font-family:Arial,sans-serif}
+    .preview-page h1{text-align:center;font-size:1.35rem;font-weight:900;text-transform:uppercase;margin:0 0 1.2rem}
+    .preview-page h2{font-size:1rem;font-weight:900;margin:1.2rem 0 .5rem}
+    .preview-page p,.preview-page li{font-size:.9rem;line-height:1.65}
+    .signature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2rem;margin-top:2.5rem}
+    .signature-line{border-top:1px solid #334155;padding-top:.4rem;font-size:.8rem}
+    .hidden-section{display:none!important}
+    .print-only{display:none}
+    @media print{
+      .no-print,.easyfile-nav,footer{display:none!important}
+      .print-only{display:block!important}
+      body{background:#fff}
+      .legal-wrap{width:100%;padding:0}
+      .legal-card{box-shadow:none;border:none}
+      #builderView{display:none!important}
+      #printDocument{display:block!important}
+      .preview-page{box-shadow:none;padding:12mm;max-width:none}
+      @page{size:A4;margin:10mm}
+    }
+    @media(max-width:700px){
+      .legal-wrap{width:min(100% - 1rem,92rem);padding-top:1rem}
+      .btn{width:100%}
+      .fact-row{grid-template-columns:2rem 1fr}.fact-row .remove-fact{grid-column:2}
+      .signature-grid{grid-template-columns:1fr}
+    }
+  </style>
+
+  <script>
+    (function(){
+      try{
+        const stored=localStorage.getItem("easyfile:theme")||localStorage.getItem("easySuite.theme");
+        const dark=stored?stored==="dark":matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.dataset.theme=dark?"dark":"light";
+        document.documentElement.classList.toggle("dark",dark);
+      }catch(_){}
+    })();
+  </script>
+
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"SoftwareApplication","name":"Easy Affidavit & Power of Attorney","applicationCategory":"BusinessApplication","operatingSystem":"Web","url":"https://www.easyfile.co.za/easy-affidavit.html","description":"Guided document builder for affidavits, general powers of attorney and special powers of attorney."}
+  </script>
+
+  <!-- EASYFILE_FAVICONS -->
+  <link rel="icon" href="logo-b.png" type="image/png">
+  <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
+  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="logo-b.png">
+</head>
+<body class="easyfile-app">
+<!-- NAV_SYNC -->
+<div class="easyfile-nav no-print">
+  <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
+</div>
+
+<main class="legal-wrap" id="main">
+  <div id="builderView">
+    <header class="mb-6">
+      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+        <div>
+          <div class="text-xs uppercase tracking-widest font-black text-blue-600">EasyFile Legal Documents</div>
+          <h1 class="text-3xl md:text-4xl font-black mt-1">Easy Affidavit & Power of Attorney</h1>
+          <p class="text-gray-600 mt-2 max-w-4xl">Build an affidavit, general power of attorney or special power of attorney using guided fields. Everything remains editable and is stored locally in your browser.</p>
+        </div>
+        <div class="flex flex-wrap gap-2 no-print">
+          <button class="btn btn-outline" id="btnSeed"><i class="fa-solid fa-wand-magic-sparkles"></i> Seed Demo</button>
+          <button class="btn btn-outline" id="btnSave"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+          <button class="btn btn-outline" id="btnLoad"><i class="fa-solid fa-folder-open"></i> Load</button>
+          <button class="btn btn-outline" id="btnReset"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+          <button class="btn btn-primary" id="btnPreview"><i class="fa-solid fa-eye"></i> Preview</button>
+          <button class="btn btn-success" id="btnPrint"><i class="fa-solid fa-print"></i> Print / PDF</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="notice notice-amber mb-5">
+      <strong>Legal drafting notice:</strong> This module provides editable document-generation assistance, not legal advice or legal representation. Requirements differ by purpose and institution. Before signing or relying on a document, verify the current South African requirements relevant to the transaction, including commissioning, witnesses, authority, identity checks, property or company formalities and any institution-specific wording.
+    </section>
+
+    <section class="legal-card p-5 mb-5 no-print">
+      <div class="flex flex-wrap justify-between gap-3">
+        <div>
+          <div class="section-title"><i class="fa-solid fa-scale-balanced text-blue-600"></i> Document setup</div>
+          <div class="help mt-1">Choose the document workflow and set its reference details.</div>
+        </div>
+        <span id="autosaveStatus" class="pill pill-info">Autosave on</span>
+      </div>
+      <div class="grid-auto mt-4">
+        <div>
+          <label class="label" for="docType">Document type</label>
+          <select id="docType" class="field">
+            <option value="affidavit">Affidavit</option>
+            <option value="poa-general">General Power of Attorney</option>
+            <option value="poa-special">Special Power of Attorney</option>
+          </select>
+        </div>
+        <div><label class="label" for="docNumber">Document reference</label><input id="docNumber" class="field" placeholder="AFF-2026-001"></div>
+        <div><label class="label" for="place">Place / city</label><input id="place" class="field" placeholder="Centurion, Gauteng"></div>
+        <div><label class="label" for="docDate">Document date</label><input id="docDate" type="date" class="field"></div>
+        <div><label class="label" for="jurisdiction">Jurisdiction</label><input id="jurisdiction" class="field" value="Republic of South Africa"></div>
+        <div><label class="label" for="status">Status</label><select id="status" class="field"><option>Draft</option><option>Ready for Signature</option><option>Signed</option><option>Superseded</option></select></div>
+      </div>
+    </section>
+
+    <section class="grid lg:grid-cols-2 gap-5 mb-5">
+      <div class="legal-card p-5">
+        <div class="section-title"><i class="fa-solid fa-user-pen text-blue-600"></i> <span id="primaryPartyTitle">Deponent</span></div>
+        <div class="space-y-3 mt-4">
+          <div><label class="label">Full legal name</label><input id="primaryName" class="field"></div>
+          <div class="grid md:grid-cols-2 gap-3">
+            <div><label class="label">ID / passport number</label><input id="primaryId" class="field"></div>
+            <div><label class="label">Occupation / capacity</label><input id="primaryCapacity" class="field"></div>
+          </div>
+          <div><label class="label">Physical address</label><textarea id="primaryAddress" rows="3" class="field"></textarea></div>
+          <div class="grid md:grid-cols-2 gap-3">
+            <div><label class="label">Email</label><input id="primaryEmail" type="email" class="field"></div>
+            <div><label class="label">Phone</label><input id="primaryPhone" class="field"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="legal-card p-5" id="agentCard">
+        <div class="section-title"><i class="fa-solid fa-user-shield text-blue-600"></i> Agent / Attorney</div>
+        <div class="space-y-3 mt-4">
+          <div><label class="label">Full legal name / entity</label><input id="agentName" class="field"></div>
+          <div class="grid md:grid-cols-2 gap-3">
+            <div><label class="label">ID / registration number</label><input id="agentId" class="field"></div>
+            <div><label class="label">Capacity / relationship</label><input id="agentCapacity" class="field"></div>
+          </div>
+          <div><label class="label">Physical address</label><textarea id="agentAddress" rows="3" class="field"></textarea></div>
+          <div class="grid md:grid-cols-2 gap-3">
+            <div><label class="label">Email</label><input id="agentEmail" type="email" class="field"></div>
+            <div><label class="label">Phone</label><input id="agentPhone" class="field"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="legal-card p-5 mb-5" id="affidavitSection">
+      <div class="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <div class="section-title"><i class="fa-solid fa-file-circle-check text-blue-600"></i> Affidavit statement</div>
+          <div class="help mt-1">Enter factual statements in numbered paragraphs. Keep facts within the deponent's personal knowledge unless clearly qualified.</div>
+        </div>
+        <button class="btn btn-outline no-print" id="btnAddFact"><i class="fa-solid fa-plus"></i> Add paragraph</button>
+      </div>
+      <div class="grid-auto mt-4">
+        <div><label class="label">Affidavit title / purpose</label><input id="affidavitTitle" class="field" placeholder="Affidavit regarding ..."></div>
+        <div><label class="label">Oath / affirmation</label><select id="oathType" class="field"><option value="oath">Oath</option><option value="affirmation">Solemn affirmation</option></select></div>
+      </div>
+      <div class="space-y-3 mt-4" id="factsList"></div>
+      <div class="mt-4 notice notice-blue">The affidavit is designed to be signed in the presence of an authorised Commissioner of Oaths. Do not pre-complete or represent the commissioning block as completed unless the commissioning actually occurred.</div>
+    </section>
+
+    <section class="legal-card p-5 mb-5 hidden-section" id="poaSection">
+      <div class="section-title"><i class="fa-solid fa-key text-blue-600"></i> Authority granted</div>
+      <p class="help mt-1">Select common authority categories, then tailor the exact authority. For a Special Power of Attorney, keep the authority narrow and transaction-specific.</p>
+      <div class="grid md:grid-cols-2 gap-3 mt-4" id="powersGrid">
+        <label class="check-row"><input type="checkbox" class="power-check mt-1" value="Represent me before government departments, municipalities, regulators and administrative bodies."><span><strong>Government & administration</strong><br><span class="help">Applications, submissions, collections and administrative dealings.</span></span></label>
+        <label class="check-row"><input type="checkbox" class="power-check mt-1" value="Sign, submit and receive documents connected with my business and contractual affairs, subject to any limitations stated in this instrument."><span><strong>Business & contracts</strong><br><span class="help">Business documents and contractual administration.</span></span></label>
+        <label class="check-row"><input type="checkbox" class="power-check mt-1" value="Deal with banking and payment administration only to the extent accepted by the relevant financial institution and stated in this instrument."><span><strong>Banking administration</strong><br><span class="help">Institution acceptance and mandate requirements may apply.</span></span></label>
+        <label class="check-row"><input type="checkbox" class="power-check mt-1" value="Deal with tax and revenue administration, submissions and correspondence to the extent lawfully permitted and accepted by the relevant authority."><span><strong>Tax / revenue administration</strong><br><span class="help">Authority-specific mandates may still be required.</span></span></label>
+        <label class="check-row"><input type="checkbox" class="power-check mt-1" value="Take steps regarding movable or immovable property only as specifically described in this instrument and subject to applicable formalities."><span><strong>Property matters</strong><br><span class="help">Property transactions can require additional formalities or prescribed documents.</span></span></label>
+        <label class="check-row"><input type="checkbox" class="power-check mt-1" value="Institute, defend, settle or administer legal and dispute-related matters only within the stated scope and subject to applicable procedural requirements."><span><strong>Legal / dispute administration</strong><br><span class="help">Court and practitioner mandates may require separate documents.</span></span></label>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4 mt-4">
+        <div><label class="label">Specific authority / transaction</label><textarea id="specificAuthority" rows="6" class="field" placeholder="Describe exactly what the agent may do, the asset/account/reference involved, limits and approvals required."></textarea></div>
+        <div><label class="label">Limitations / exclusions</label><textarea id="limitations" rows="6" class="field" placeholder="Actions the agent may not take; monetary caps; approval requirements; excluded accounts/assets."></textarea></div>
+      </div>
+      <div class="grid-auto mt-4">
+        <div><label class="label">Effective date</label><input id="effectiveDate" type="date" class="field"></div>
+        <div><label class="label">Expiry / termination date</label><input id="expiryDate" type="date" class="field"></div>
+        <div><label class="label">Revocation wording</label><select id="revocation" class="field"><option>Revocable by written notice</option><option>Ends on completion of the stated transaction</option><option>Ends on the expiry date above</option><option>Custom wording below</option></select></div>
+        <div><label class="label">Substitution / delegation</label><select id="delegation" class="field"><option value="no">Not permitted</option><option value="yes">Permitted only where lawful and expressly required</option></select></div>
+      </div>
+      <div class="mt-4 notice notice-red"><strong>High-impact transactions:</strong> do not assume a general POA is sufficient for land/property transfers, banking mandates, litigation, tax representation, company acts or transactions requiring prescribed or institution-specific authority. Confirm the exact formalities before use.</div>
+    </section>
+
+    <section class="legal-card p-5 mb-5" id="commissionerSection">
+      <div class="section-title"><i class="fa-solid fa-stamp text-blue-600"></i> Commissioner of Oaths</div>
+      <p class="help mt-1">Complete this section at commissioning. Fields are intentionally left blank in generated demo content.</p>
+      <div class="grid-auto mt-4">
+        <div><label class="label">Commissioner's full name</label><input id="commissionerName" class="field"></div>
+        <div><label class="label">Designation / office</label><input id="commissionerDesignation" class="field"></div>
+        <div><label class="label">Business / physical address</label><input id="commissionerAddress" class="field"></div>
+        <div><label class="label">Commissioned at</label><input id="commissionedAt" class="field"></div>
+        <div><label class="label">Commissioning date</label><input id="commissionedDate" type="date" class="field"></div>
+      </div>
+    </section>
+
+    <section class="legal-card p-5 mb-5">
+      <div class="section-title"><i class="fa-solid fa-paperclip text-blue-600"></i> Supporting information</div>
+      <div class="grid md:grid-cols-2 gap-4 mt-4">
+        <div><label class="label">Annexures / attachments</label><textarea id="annexures" rows="5" class="field" placeholder="Annexure A – copy of ID&#10;Annexure B – supporting record ..."></textarea></div>
+        <div><label class="label">Special notes / drafting instructions</label><textarea id="notes" rows="5" class="field" placeholder="Any additional wording, conditions, references or signing instructions."></textarea></div>
+      </div>
+    </section>
+
+    <section class="legal-card p-5 mb-5">
+      <div class="flex flex-wrap justify-between gap-3">
+        <div>
+          <div class="section-title"><i class="fa-solid fa-list-check text-blue-600"></i> Readiness check</div>
+          <p class="help mt-1">A drafting checklist only. It does not establish legal validity.</p>
+        </div>
+        <span id="readyBadge" class="pill pill-warn">Incomplete</span>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
+        <div class="rounded-xl bg-blue-50 p-4"><div class="help">Identity</div><div class="text-lg font-black text-blue-700" id="kpiIdentity">Missing</div></div>
+        <div class="rounded-xl bg-green-50 p-4"><div class="help">Core content</div><div class="text-lg font-black text-green-700" id="kpiContent">Missing</div></div>
+        <div class="rounded-xl bg-purple-50 p-4"><div class="help">Signing block</div><div class="text-lg font-black text-purple-700" id="kpiSigning">Ready</div></div>
+        <div class="rounded-xl bg-yellow-50 p-4"><div class="help">Reference</div><div class="text-lg font-black text-yellow-700" id="kpiReference">Missing</div></div>
+      </div>
+    </section>
+
+    <section class="legal-card p-5 mb-5">
+      <div class="section-title"><i class="fa-solid fa-signature text-blue-600"></i> Signing configuration</div>
+      <div class="grid-auto mt-4">
+        <div><label class="label">Witness 1</label><input id="witness1" class="field" placeholder="Leave blank until known"></div>
+        <div><label class="label">Witness 2</label><input id="witness2" class="field" placeholder="Leave blank until known"></div>
+        <div><label class="label">Signature place</label><input id="signaturePlace" class="field"></div>
+        <div><label class="label">Signature date</label><input id="signatureDate" type="date" class="field"></div>
+      </div>
+    </section>
+  </div>
+
+  <section id="printDocument" class="hidden print-only">
+    <div class="preview-page" id="previewPage"></div>
+  </section>
+
+  <div id="previewModal" class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center p-4 z-50 no-print">
+    <div class="bg-gray-100 rounded-2xl shadow-2xl w-full max-w-6xl max-h-screen overflow-y-auto">
+      <div class="sticky top-0 bg-white border-b p-4 flex flex-wrap justify-between gap-3 items-center z-10">
+        <div><div class="font-black text-lg">Document Preview</div><div class="help">Review the generated wording before printing or saving as PDF.</div></div>
+        <div class="flex gap-2">
+          <button class="btn btn-outline" id="btnClosePreview">Close</button>
+          <button class="btn btn-primary" id="btnPrintFromPreview"><i class="fa-solid fa-print"></i> Print / PDF</button>
+        </div>
+      </div>
+      <div class="p-4 md:p-8" id="modalPreviewHost"></div>
+    </div>
+  </div>
+</main>
+
+<footer class="easyfile-footer border-t border-adaptive">
+  <div class="container mx-auto px-4 py-7 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+    <p class="muted-adaptive text-sm font-bold">EasyFile · Simple. Fast. Professional.</p>
+    <p class="muted-adaptive text-sm">Local-first legal-document drafting workspace</p>
+  </div>
+</footer>
+
+<script>
+"use strict";
+const STORE_KEY="easyfile.legal.affidavit-poa.v1";
+const SAVED_KEY="easyfile.legal.affidavit-poa.saved.v1";
+const $=id=>document.getElementById(id);
+
+const FIELD_IDS=[
+  "docType","docNumber","place","docDate","jurisdiction","status",
+  "primaryName","primaryId","primaryCapacity","primaryAddress","primaryEmail","primaryPhone",
+  "agentName","agentId","agentCapacity","agentAddress","agentEmail","agentPhone",
+  "affidavitTitle","oathType","specificAuthority","limitations","effectiveDate","expiryDate","revocation","delegation",
+  "commissionerName","commissionerDesignation","commissionerAddress","commissionedAt","commissionedDate",
+  "annexures","notes","witness1","witness2","signaturePlace","signatureDate"
+];
+
+let facts=[];
+
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));}
+function val(id){return ($(id)?.value||"").trim();}
+function today(){return new Date().toISOString().slice(0,10);}
+function uid(prefix){return prefix+"-"+new Date().getFullYear()+"-"+String(Date.now()).slice(-6);}
+
+function snapshot(){
+  const data={};
+  FIELD_IDS.forEach(id=>data[id]=$(id)?.value??"");
+  data.facts=facts.map(x=>({...x}));
+  data.powers=[...document.querySelectorAll(".power-check:checked")].map(x=>x.value);
+  return data;
+}
+function applySnapshot(data={}){
+  FIELD_IDS.forEach(id=>{if($(id)&&Object.prototype.hasOwnProperty.call(data,id))$(id).value=data[id]??"";});
+  facts=Array.isArray(data.facts)?data.facts.map((x,i)=>({id:x.id||Date.now()+i,text:x.text||""})):[];
+  document.querySelectorAll(".power-check").forEach(c=>c.checked=(data.powers||[]).includes(c.value));
+  if(!facts.length) addFact("",false);
+  renderFacts(); updateMode(); updateReadiness(); renderPreview(); autosave();
+}
+function autosave(){
+  try{localStorage.setItem(STORE_KEY,JSON.stringify(snapshot()));$("autosaveStatus").textContent="Autosaved";setTimeout(()=>{$("autosaveStatus").textContent="Autosave on"},900);}catch(_){}
+}
+function loadAutosave(){
+  try{const raw=localStorage.getItem(STORE_KEY);if(raw){applySnapshot(JSON.parse(raw));return true;}}catch(_){}
+  return false;
+}
+function saveNamed(){
+  const data=snapshot();
+  try{
+    const saved=JSON.parse(localStorage.getItem(SAVED_KEY)||"[]");
+    saved.unshift({savedAt:new Date().toISOString(),name:data.docNumber||uid("DOC"),data});
+    localStorage.setItem(SAVED_KEY,JSON.stringify(saved.slice(0,20)));
+    alert("Saved locally in this browser.");
+  }catch(e){alert("Could not save this document locally.");}
+}
+function loadNamed(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(SAVED_KEY)||"[]");
+    if(!saved.length)return alert("No saved legal documents found in this browser.");
+    const choices=saved.map((x,i)=>`${i+1}. ${x.name} — ${new Date(x.savedAt).toLocaleString()}`).join("\n");
+    const answer=prompt("Choose a saved document number:\n\n"+choices,"1");
+    if(!answer)return;
+    const item=saved[Number(answer)-1];
+    if(!item)return alert("Invalid selection.");
+    applySnapshot(item.data);
+  }catch(_){alert("Could not load saved documents.");}
+}
+
+function addFact(text="",focus=true){
+  facts.push({id:Date.now()+Math.random(),text});
+  renderFacts();
+  if(focus)document.querySelector("#factsList textarea:last-of-type")?.focus();
+  autosave();
+}
+function renderFacts(){
+  $("factsList").innerHTML=facts.map((f,i)=>`
+    <div class="fact-row">
+      <div class="fact-number">${i+1}</div>
+      <textarea class="field fact-text" rows="3" data-fact-id="${f.id}" placeholder="State one clear fact or allegation per paragraph.">${esc(f.text)}</textarea>
+      <button type="button" class="btn btn-outline remove-fact no-print" data-remove-fact="${f.id}" aria-label="Remove paragraph"><i class="fa-solid fa-trash text-red-600"></i></button>
+    </div>`).join("");
+  document.querySelectorAll(".fact-text").forEach(t=>t.addEventListener("input",()=>{
+    const item=facts.find(x=>String(x.id)===String(t.dataset.factId));if(item)item.text=t.value;autosave();updateReadiness();renderPreview();
+  }));
+  document.querySelectorAll("[data-remove-fact]").forEach(b=>b.addEventListener("click",()=>{
+    if(facts.length===1){facts[0].text="";}else facts=facts.filter(x=>String(x.id)!==String(b.dataset.removeFact));
+    renderFacts();autosave();updateReadiness();renderPreview();
+  }));
+}
+
+function updateMode(){
+  const type=val("docType");
+  const affidavit=type==="affidavit";
+  $("affidavitSection").classList.toggle("hidden-section",!affidavit);
+  $("commissionerSection").classList.toggle("hidden-section",!affidavit);
+  $("poaSection").classList.toggle("hidden-section",affidavit);
+  $("agentCard").classList.toggle("hidden-section",affidavit);
+  $("primaryPartyTitle").textContent=affidavit?"Deponent":"Principal / Grantor";
+  if(!val("docNumber"))$("docNumber").value=uid(affidavit?"AFF":type==="poa-general"?"GPOA":"SPOA");
+  if(!val("signaturePlace"))$("signaturePlace").value=val("place");
+}
+
+function formatDate(s){
+  if(!s)return "________________";
+  const d=new Date(s+"T00:00:00");
+  return d.toLocaleDateString("en-ZA",{day:"2-digit",month:"long",year:"numeric"});
+}
+function addressBlock(s){return esc(s).replace(/\n/g,"<br>");}
+function selectedPowers(){return [...document.querySelectorAll(".power-check:checked")].map(x=>x.value);}
+
+function renderAffidavit(){
+  const oath=val("oathType")==="affirmation"?"solemnly affirm":"make oath and state";
+  const commissionerTitle=val("commissionerName")?esc(val("commissionerName")):"____________________________";
+  const title=val("affidavitTitle")||"Affidavit";
+  const factHtml=facts.filter(f=>f.text.trim()).map((f,i)=>`<li>${esc(f.text)}</li>`).join("");
+  return `
+    <h1>${esc(title)}</h1>
+    <p><strong>Document reference:</strong> ${esc(val("docNumber")||"—")}</p>
+    <p>I, the undersigned, <strong>${esc(val("primaryName")||"[DEONENT FULL NAME]")}</strong>, ID/Passport number <strong>${esc(val("primaryId")||"[ID / PASSPORT]")}</strong>, residing at ${addressBlock(val("primaryAddress")||"[ADDRESS]")}, ${oath} as follows:</p>
+    <ol style="padding-left:1.35rem">${factHtml||"<li>[Add the factual statement(s) supporting this affidavit.]</li>"}</ol>
+    ${val("annexures")?`<h2>Annexures</h2><p style="white-space:pre-line">${esc(val("annexures"))}</p>`:""}
+    ${val("notes")?`<h2>Additional statement</h2><p style="white-space:pre-line">${esc(val("notes"))}</p>`:""}
+    <p>I confirm that I understand the contents of this affidavit, that the contents are true and correct to the best of my knowledge and belief, and that I have no objection to taking the prescribed oath or affirmation.</p>
+    <div class="signature-grid">
+      <div><div class="signature-line"><strong>DEPONENT</strong><br>${esc(val("primaryName")||"Name: __________________")}</div></div>
+      <div><div class="signature-line"><strong>DATE / PLACE</strong><br>${formatDate(val("signatureDate")||val("docDate"))} · ${esc(val("signaturePlace")||val("place")||"________________")}</div></div>
+    </div>
+    <h2>Commissioner of Oaths</h2>
+    <p>I certify that the deponent has acknowledged understanding the contents of this affidavit and that the oath / affirmation was administered in my presence at ${esc(val("commissionedAt")||"________________")} on ${formatDate(val("commissionedDate"))}.</p>
+    <div class="signature-grid">
+      <div><div class="signature-line"><strong>COMMISSIONER OF OATHS</strong><br>${commissionerTitle}</div></div>
+      <div><div class="signature-line"><strong>DESIGNATION / ADDRESS</strong><br>${esc(val("commissionerDesignation")||"________________")}<br>${esc(val("commissionerAddress")||"________________")}</div></div>
+    </div>`;
+}
+function renderPoa(){
+  const special=val("docType")==="poa-special";
+  const title=special?"Special Power of Attorney":"General Power of Attorney";
+  const powers=selectedPowers();
+  const list=[...powers];
+  if(val("specificAuthority"))list.push(val("specificAuthority"));
+  const authorityHtml=list.length?list.map(x=>`<li>${esc(x)}</li>`).join(""):"<li>[Specify the authority being granted.]</li>";
+  const expiry=val("expiryDate")?` and will end on ${formatDate(val("expiryDate"))}`:"";
+  return `
+    <h1>${title}</h1>
+    <p><strong>Document reference:</strong> ${esc(val("docNumber")||"—")}</p>
+    <p>I, <strong>${esc(val("primaryName")||"[PRINCIPAL FULL NAME]")}</strong>, ID/Passport number <strong>${esc(val("primaryId")||"[ID / PASSPORT]")}</strong>, of ${addressBlock(val("primaryAddress")||"[ADDRESS]")}, hereby appoint <strong>${esc(val("agentName")||"[AGENT FULL NAME]")}</strong>, ID/Registration number <strong>${esc(val("agentId")||"[ID / REGISTRATION]")}</strong>, as my agent to act for me within the authority set out below.</p>
+    <h2>Authority</h2>
+    <ol style="padding-left:1.35rem">${authorityHtml}</ol>
+    ${val("limitations")?`<h2>Limitations and exclusions</h2><p style="white-space:pre-line">${esc(val("limitations"))}</p>`:""}
+    <h2>Duration and revocation</h2>
+    <p>This authority takes effect on ${formatDate(val("effectiveDate")||val("docDate"))}${expiry}. Revocation basis: ${esc(val("revocation")||"Revocable by written notice")}. Delegation or substitution: ${val("delegation")==="yes"?"permitted only where lawful and expressly required":"not permitted"}.</p>
+    ${val("annexures")?`<h2>Annexures</h2><p style="white-space:pre-line">${esc(val("annexures"))}</p>`:""}
+    ${val("notes")?`<h2>Special conditions</h2><p style="white-space:pre-line">${esc(val("notes"))}</p>`:""}
+    <p>The agent must act within this instrument and any applicable law, prescribed form, institutional mandate or transaction-specific requirement. This instrument does not override requirements imposed by a bank, court, regulator, deeds office, revenue authority, company, public body or other institution.</p>
+    <div class="signature-grid">
+      <div><div class="signature-line"><strong>PRINCIPAL / GRANTOR</strong><br>${esc(val("primaryName")||"Name: __________________")}</div></div>
+      <div><div class="signature-line"><strong>AGENT / ATTORNEY</strong><br>${esc(val("agentName")||"Name: __________________")}</div></div>
+      <div><div class="signature-line"><strong>WITNESS 1</strong><br>${esc(val("witness1")||"Name: __________________")}</div></div>
+      <div><div class="signature-line"><strong>WITNESS 2</strong><br>${esc(val("witness2")||"Name: __________________")}</div></div>
+    </div>
+    <p style="margin-top:2rem"><strong>Signed at:</strong> ${esc(val("signaturePlace")||val("place")||"________________")} &nbsp;&nbsp; <strong>Date:</strong> ${formatDate(val("signatureDate")||val("docDate"))}</p>`;
+}
+function renderPreview(){
+  const content=val("docType")==="affidavit"?renderAffidavit():renderPoa();
+  const jurisdiction=`<p style="text-align:center;font-size:.75rem;color:#64748b;margin-top:-.7rem">${esc(val("jurisdiction")||"Republic of South Africa")} · Status: ${esc(val("status")||"Draft")}</p>`;
+  $("previewPage").innerHTML=content.replace("</h1>","</h1>"+jurisdiction);
+}
+function openPreview(){
+  renderPreview();
+  $("modalPreviewHost").innerHTML=`<div class="preview-page">${$("previewPage").innerHTML}</div>`;
+  $("previewModal").classList.remove("hidden");$("previewModal").classList.add("flex");
+}
+function closePreview(){$("previewModal").classList.add("hidden");$("previewModal").classList.remove("flex");}
+
+function updateReadiness(){
+  const affidavit=val("docType")==="affidavit";
+  const identity=Boolean(val("primaryName")&&val("primaryId"));
+  const content=affidavit?facts.some(f=>f.text.trim()):Boolean(val("agentName")&&(selectedPowers().length||val("specificAuthority")));
+  const reference=Boolean(val("docNumber")&&val("docDate"));
+  $("kpiIdentity").textContent=identity?"Ready":"Missing";
+  $("kpiContent").textContent=content?"Ready":"Missing";
+  $("kpiReference").textContent=reference?"Ready":"Missing";
+  $("kpiSigning").textContent=affidavit?"Commissioning required":"Signature fields ready";
+  const ready=identity&&content&&reference;
+  $("readyBadge").textContent=ready?"Draft complete":"Incomplete";
+  $("readyBadge").className="pill "+(ready?"pill-ok":"pill-warn");
+}
+
+function seedDemo(){
+  const type=val("docType");
+  $("docDate").value=today();$("signatureDate").value=today();$("place").value="Centurion, Gauteng";$("signaturePlace").value="Centurion, Gauteng";
+  $("primaryName").value="Nomsa Example";$("primaryId").value="9001010000000";$("primaryCapacity").value=type==="affidavit"?"Business owner":"Principal";
+  $("primaryAddress").value="10 Example Street\nCenturion\nGauteng";
+  $("primaryEmail").value="nomsa@example.co.za";$("primaryPhone").value="+27 12 555 0100";
+  $("annexures").value="Annexure A – Supporting identification / reference document";
+  if(type==="affidavit"){
+    $("docNumber").value=uid("AFF");$("affidavitTitle").value="Affidavit confirming business records";
+    facts=[
+      {id:Date.now()+1,text:"I am an adult and the information stated in this affidavit is within my personal knowledge unless indicated otherwise."},
+      {id:Date.now()+2,text:"I make this affidavit to confirm the business record described in Annexure A for administrative purposes."},
+      {id:Date.now()+3,text:"The attached record is, to the best of my knowledge, a true copy of the document kept in the ordinary course of business."}
+    ];
+  }else{
+    $("docNumber").value=uid(type==="poa-special"?"SPOA":"GPOA");
+    $("agentName").value="Thabo Example";$("agentId").value="8802020000000";$("agentCapacity").value="Authorised agent";
+    $("agentAddress").value="20 Sample Avenue\nPretoria\nGauteng";$("agentEmail").value="thabo@example.co.za";$("agentPhone").value="+27 12 555 0200";
+    $("effectiveDate").value=today();
+    $("specificAuthority").value=type==="poa-special"
+      ?"To submit, collect and sign administrative documents relating specifically to reference REF-001, and to receive correspondence regarding that matter."
+      :"To carry out the selected administrative and business acts on my behalf, subject to the limitations in this instrument.";
+    $("limitations").value="The agent may not borrow money, dispose of immovable property, change ownership of assets, or bind me to obligations exceeding R25,000 without my separate written approval.";
+    document.querySelectorAll(".power-check").forEach((c,i)=>c.checked=i<2);
+  }
+  renderFacts();updateMode();updateReadiness();renderPreview();autosave();
+}
+
+function resetAll(){
+  if(!confirm("Clear the current draft from this browser?"))return;
+  localStorage.removeItem(STORE_KEY);
+  FIELD_IDS.forEach(id=>{if($(id))$(id).value="";});
+  $("docType").value="affidavit";$("jurisdiction").value="Republic of South Africa";$("status").value="Draft";$("oathType").value="oath";$("revocation").selectedIndex=0;$("delegation").value="no";
+  document.querySelectorAll(".power-check").forEach(c=>c.checked=false);
+  facts=[];addFact("",false);$("docDate").value=today();updateMode();updateReadiness();renderPreview();autosave();
+}
+
+$("btnAddFact").addEventListener("click",()=>addFact(""));
+$("docType").addEventListener("change",()=>{updateMode();updateReadiness();renderPreview();autosave();});
+$("btnSeed").addEventListener("click",seedDemo);
+$("btnSave").addEventListener("click",saveNamed);
+$("btnLoad").addEventListener("click",loadNamed);
+$("btnReset").addEventListener("click",resetAll);
+$("btnPreview").addEventListener("click",openPreview);
+$("btnClosePreview").addEventListener("click",closePreview);
+$("btnPrint").addEventListener("click",()=>{renderPreview();window.print();});
+$("btnPrintFromPreview").addEventListener("click",()=>{renderPreview();window.print();});
+$("previewModal").addEventListener("click",e=>{if(e.target===$("previewModal"))closePreview();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closePreview();});
+FIELD_IDS.forEach(id=>$(id)?.addEventListener("input",()=>{updateReadiness();renderPreview();autosave();}));
+document.querySelectorAll(".power-check").forEach(c=>c.addEventListener("change",()=>{updateReadiness();renderPreview();autosave();}));
+
+if(!loadAutosave()){
+  facts=[];addFact("",false);$("docDate").value=today();updateMode();updateReadiness();renderPreview();autosave();
+}
+</script>
+<script defer src="scripts/sync-nav.js"></script>
+</body>
+</html>
