@@ -44,6 +44,7 @@
 
     { name: "Job Card", href: "easy-job-card.html", icon: "fa-briefcase", group: "Operations", description: "Track service and repair work" },
     { name: "Payroll", href: "easy-payroll.html", icon: "fa-money-bill-wave", group: "Operations", description: "Prepare payroll summaries" },
+    { name: "Timesheet & Tracker", href: "easy-timesheet.html", icon: "fa-clock", group: "Operations", description: "Track time, billable work, approvals and labour hand-offs to payroll, invoices and job cards", landing: true },
     { name: "Inventory", href: "easy-inventory.html", icon: "fa-boxes-stacked", group: "Operations", description: "Track stock and movements" },
     { name: "CRM", href: "easy-crm.html", icon: "fa-users", group: "Operations", description: "Manage customer relationships" },
     { name: "SLA", href: "easy-sla.html", icon: "fa-stopwatch", group: "Operations", description: "Define service commitments, track response and resolution targets, and monitor SLA performance", landing: true },
@@ -297,8 +298,7 @@
         article.innerHTML = `
           <div class="module-card-icon"><i class="fa-solid ${item.icon}" aria-hidden="true"></i></div>
           <h3>Easy ${escapeHtml(item.name)}</h3>
-          <p>${escapeHtml(item.description)}</p>
-          <div class="module-tags"><span class="module-tag">documents</span><span class="module-tag">shared</span></div>
+          <p>${escapeHtml(item.description)}</p>          <div class="module-tags"><span class="module-tag">documents</span><span class="module-tag">shared</span></div>
           <a class="module-card-link" href="${item.href}">Open module <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>`;
         grid.appendChild(article);
       });
