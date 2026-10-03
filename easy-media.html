@@ -13,8 +13,8 @@
   <link rel="stylesheet" href="assets/css/easyfile-site.css">
   <link rel="stylesheet" href="assets/css/easyfile-footer.css">
   <link rel="stylesheet" href="assets/css/easyfile-navigation.css">
-  <link rel="icon" href="logo-b.png" type="image/png">
-  <link rel="apple-touch-icon" href="logo-b.png">
+  
+  
   <style>
     :root{--m-bg:#edf4ff;--m-card:#fff;--m-border:#dbe6f5;--m-text:#0f172a;--m-muted:#64748b;--m-blue:#2563eb;--m-shadow:0 18px 45px rgba(15,23,42,.08)}
     html[data-theme="dark"]{--m-bg:#07101f;--m-card:#0f172a;--m-border:#26354d;--m-text:#e5e7eb;--m-muted:#9fb0c8;--m-blue:#60a5fa;--m-shadow:0 20px 50px rgba(0,0,0,.28)}
@@ -34,8 +34,17 @@
     @media(max-width:960px){.m-hero,.m-preview-grid{grid-template-columns:1fr}.m-providers,.m-actions,.m-convert-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
     @media(max-width:620px){.m-shell{width:min(100% - 1rem,92rem);padding-top:.7rem}.m-tabs,.m-row{display:grid;grid-template-columns:1fr}.m-tab,.m-btn,.m-row .m-input{width:100%}.m-providers,.m-actions,.m-convert-grid{grid-template-columns:1fr}.m-stage{min-height:16rem}.m-panel,.m-preview,.m-history{padding:.8rem}}
   </style>
+  <!-- EASYFILE_FAVICONS -->
+  <link rel="icon" href="logo-b.png" type="image/png">
+  <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
+  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="logo-b.png">
 </head>
 <body class="easyfile-app">
+<!-- NAV_SYNC -->
+<div class="easyfile-nav no-print">
+  <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
+</div>
 <div class="easyfile-nav no-print"><a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a></div>
 <main class="m-shell">
   <section class="m-card m-hero">
