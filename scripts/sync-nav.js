@@ -28,6 +28,7 @@
     { name: "Media", href: "easy-media.html", icon: "fa-photo-film", group: "Documents", description: "Import, preview, download and convert authorised media from links or local files", landing: true },
     { name: "Enterprise Converter", href: "easy-converter-enterprise.html", icon: "fa-right-left", group: "Documents", description: "Advanced file conversion workflows for larger business datasets", landing: true },
     { name: "Contracts", href: "easy-contracts.html", icon: "fa-file-contract", group: "Documents", description: "Create and manage business contracts and agreements", landing: true },
+    { name: "NDA & Non-Circumvention", href: "easy-nda-non-circumvention.html", icon: "fa-user-shield", group: "Documents", description: "Create NDAs, non-circumvention agreements and combined NCNDAs with guided clauses and print-ready output", landing: true },
     { name: "Affidavit & POA", href: "easy-affidavit.html", icon: "fa-scale-balanced", group: "Documents", description: "Create affidavits, general powers of attorney and special powers of attorney", landing: true },
     { name: "SOW", href: "easy-sow.html", icon: "fa-file-signature", group: "Documents", description: "Create structured statements of work with scope, deliverables, milestones, commercials, acceptance and sign-off", landing: true },
     { name: "Landing Page", href: "easy-landing-page.html", icon: "fa-window-maximize", group: "Documents", description: "Build branded landing pages for campaigns and business offers", landing: true },
