@@ -42,7 +42,7 @@
     { name: "Job Card", href: "easy-job-card.html", icon: "fa-briefcase", group: "Operations", description: "Track service and repair work" },
     { name: "Payroll", href: "easy-payroll.html", icon: "fa-money-bill-wave", group: "Operations", description: "Prepare payroll summaries" },
     { name: "Inventory", href: "easy-inventory.html", icon: "fa-boxes-stacked", group: "Operations", description: "Track stock and movements" },
-    { name: "CRM", href: "easy-crm.html", icon: "fa-users", group: "Operations", description: "Manage customer relationships" },
+    { name: "CRM", href: "easy-crm.html", icon: "fa-users", group: "Operations", description: "Manage customer relationships" },\n    { name: "SLA", href: "easy-sla.html", icon: "fa-stopwatch", group: "Operations", description: "Define service commitments, track response and resolution targets, and monitor SLA performance", landing: true },
     { name: "POS", href: "easy-pos.html", icon: "fa-cash-register", group: "Operations", description: "Record point-of-sale transactions and daily sales", landing: true },
     { name: "Projects", href: "easy-projects.html", icon: "fa-diagram-project", group: "Operations", description: "Plan and track projects, tasks and delivery", landing: true },
     { name: "Assets", href: "easy-asset-management.html", icon: "fa-screwdriver-wrench", group: "Operations", description: "Maintain the asset register" },
