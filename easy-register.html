@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Easy Register | Attendance, Access & Training Registers</title>
+  <meta name="description" content="Create mobile-friendly access, attendance, training, event and compliance registers with check-in/out, signatures, QR tokens, custom fields, emergency roll call and local-first privacy controls.">
+  <meta name="theme-color" content="#061a4d">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/easyfile-brand-tokens.css">
+  <link rel="stylesheet" href="assets/css/easyfile-site.css">
+  <link rel="stylesheet" href="assets/css/easyfile-footer.css">
+  <link rel="stylesheet" href="assets/css/easyfile-navigation.css">
+  <link rel="stylesheet" href="assets/css/easy-register.css">
+  <script>
+    (function () {
+      try {
+        const stored = localStorage.getItem("easyfile:theme") || localStorage.getItem("easySuite.theme");
+        const dark = stored ? stored === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.dataset.theme = dark ? "dark" : "light";
+        document.documentElement.classList.toggle("dark", dark);
+      } catch (_) {}
+    })();
+  </script>
+</head>
+<body class="easyfile-app min-h-screen flex flex-col">
+  <main class="easyfile-main register-shell" id="main-content">
+    <section class="register-hero no-print">
+      <div>
+        <p class="register-eyebrow">Universal people register</p>
+        <h1>Easy Register</h1>
+        <p class="register-hero-copy">One register engine for access control, class attendance, training, courses, events, visitors, contractors, staff and compliance evidence.</p>
+        <div class="register-hero-badges">
+          <span><i class="fa-solid fa-mobile-screen-button"></i> Mobile first</span>
+          <span><i class="fa-solid fa-shield-halved"></i> POPIA-aware</span>
+          <span><i class="fa-solid fa-wifi-slash"></i> Local-first</span>
+          <span><i class="fa-solid fa-qrcode"></i> QR-ready</span>
+        </div>
+      </div>
+      <div class="register-hero-actions">
+        <button class="register-btn register-btn-primary" id="btnNewRegister"><i class="fa-solid fa-plus"></i> New register</button>
+        <button class="register-btn register-btn-secondary" id="btnSeedDemo"><i class="fa-solid fa-flask"></i> Seed demo</button>
+      </div>
+    </section>
+
+    <section class="register-kpis" aria-label="Register summary">
+      <article class="register-kpi"><span>Registers</span><strong id="kpiRegisters">0</strong><small>saved locally</small></article>
+      <article class="register-kpi"><span>Today</span><strong id="kpiToday">0</strong><small>check-ins</small></article>
+      <article class="register-kpi"><span>On site</span><strong id="kpiOnSite">0</strong><small>not checked out</small></article>
+      <article class="register-kpi"><span>Exceptions</span><strong id="kpiExceptions">0</strong><small>need attention</small></article>
+    </section>
+
+    <section class="register-toolbar no-print">
+      <div class="register-search-wrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input id="globalSearch" type="search" placeholder="Search names, companies, IDs, courses, notes..." autocomplete="off">
+      </div>
+      <select id="registerFilter" aria-label="Filter by register"></select>
+      <select id="statusFilter" aria-label="Filter by status">
+        <option value="">All statuses</option>
+        <option value="present">Present / on site</option>
+        <option value="completed">Checked out / completed</option>
+        <option value="late">Late</option>
+        <option value="exception">Exceptions</option>
+      </select>
+      <button class="register-btn register-btn-secondary" id="btnQuickCheckIn"><i class="fa-solid fa-user-plus"></i> Quick check-in</button>
+      <button class="register-btn register-btn-secondary" id="btnEmergency"><i class="fa-solid fa-triangle-exclamation"></i> Roll call</button>
+    </section>
+
+    <section class="register-layout">
+      <aside class="register-sidebar no-print">
+        <div class="register-card">
+          <div class="register-card-heading">
+            <div><p class="register-eyebrow">Workspace</p><h2>Registers</h2></div>
+            <button class="register-icon-btn" id="btnAddRegisterSide" title="Create register"><i class="fa-solid fa-plus"></i></button>
+          </div>
+          <div id="registerList" class="register-list"></div>
+        </div>
+
+        <div class="register-card">
+          <div class="register-card-heading">
+            <div><p class="register-eyebrow">Active register</p><h2>Actions</h2></div>
+          </div>
+          <div class="register-action-stack">
+            <button class="register-btn register-btn-primary" id="btnOpenCheckIn"><i class="fa-solid fa-right-to-bracket"></i> Check in / register</button>
+            <button class="register-btn register-btn-secondary" id="btnBulkOut"><i class="fa-solid fa-person-walking-arrow-right"></i> Close open entries</button>
+            <button class="register-btn register-btn-secondary" id="btnShare"><i class="fa-solid fa-share-nodes"></i> Share / QR</button>
+            <button class="register-btn register-btn-secondary" id="btnExportCsv"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+            <button class="register-btn register-btn-secondary" id="btnExportJson"><i class="fa-solid fa-code"></i> Backup JSON</button>
+            <button class="register-btn register-btn-secondary" id="btnPrint"><i class="fa-solid fa-print"></i> Print register</button>
+          </div>
+        </div>
+
+        <div class="register-card register-privacy-card">
+          <div class="register-card-heading">
+            <div><p class="register-eyebrow">Privacy</p><h2>Privacy mode</h2></div>
+            <label class="register-switch">
+              <input type="checkbox" id="privacyMode">
+              <span></span>
+            </label>
+          </div>
+          <p>Mask phone, email and identity values on shared screens while retaining the local record.</p>
+        </div>
+      </aside>
+
+      <section class="register-main-panel">
+        <article class="register-card register-overview">
+          <div class="register-overview-top">
+            <div>
+              <p class="register-eyebrow" id="activeTypeLabel">No register selected</p>
+              <h2 id="activeRegisterName">Create your first register</h2>
+              <p id="activeRegisterMeta" class="register-muted">Choose a template and configure what evidence you need.</p>
+            </div>
+            <div class="register-overview-actions no-print">
+              <button class="register-icon-btn" id="btnEditRegister" title="Edit active register"><i class="fa-solid fa-pen"></i></button>
+              <button class="register-icon-btn" id="btnDuplicateRegister" title="Duplicate active register"><i class="fa-solid fa-copy"></i></button>
+              <button class="register-icon-btn register-danger" id="btnDeleteRegister" title="Delete active register"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+
+          <div class="register-mini-stats">
+            <div><span>Total entries</span><strong id="statTotal">0</strong></div>
+            <div><span>Present</span><strong id="statPresent">0</strong></div>
+            <div><span>Completed</span><strong id="statCompleted">0</strong></div>
+            <div><span>Attendance</span><strong id="statAttendance">0%</strong></div>
+          </div>
+        </article>
+
+        <article class="register-card register-table-card">
+          <div class="register-card-heading register-table-heading">
+            <div><p class="register-eyebrow">Live register</p><h2>Entries</h2></div>
+            <div class="register-table-tools no-print">
+              <button class="register-btn register-btn-secondary register-btn-compact" id="btnColumns"><i class="fa-solid fa-table-columns"></i> Fields</button>
+              <button class="register-btn register-btn-secondary register-btn-compact" id="btnImportCsv"><i class="fa-solid fa-file-import"></i> Import CSV</button>
+              <input id="csvInput" type="file" accept=".csv,text/csv" hidden>
+            </div>
+          </div>
+          <div class="register-table-wrap">
+            <table class="register-table">
+              <thead id="entryHead"></thead>
+              <tbody id="entryBody"></tbody>
+            </table>
+          </div>
+          <div id="emptyState" class="register-empty">
+            <i class="fa-solid fa-clipboard-list"></i>
+            <h3>No entries yet</h3>
+            <p>Start with a quick check-in, import a CSV, or seed demo data.</p>
+          </div>
+        </article>
+
+        <article class="register-card register-insights no-print">
+          <div class="register-card-heading"><div><p class="register-eyebrow">Operational view</p><h2>What needs attention</h2></div></div>
+          <div id="exceptionList" class="register-exception-list"></div>
+        </article>
+      </section>
+    </section>
+  </main>
+
+  <footer class="easyfile-footer no-print">
+    <div class="container mx-auto px-4 py-7 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+      <p class="text-sm font-bold">EasyFile · Simple. Fast. Professional.</p>
+      <p class="text-sm">Easy Register · Local-first records · Mobile-friendly check-in</p>
+    </div>
+  </footer>
+
+  <div class="register-modal" id="registerModal" hidden>
+    <div class="register-modal-backdrop" data-close-modal="registerModal"></div>
+    <div class="register-dialog register-dialog-wide" role="dialog" aria-modal="true" aria-labelledby="registerModalTitle">
+      <div class="register-dialog-header">
+        <div><p class="register-eyebrow">Register builder</p><h2 id="registerModalTitle">New register</h2></div>
+        <button class="register-icon-btn" data-close-modal="registerModal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="registerForm" class="register-form">
+        <input type="hidden" id="registerId">
+        <div class="register-template-grid" id="templateGrid" aria-label="Register templates"></div>
+        <div class="register-form-grid">
+          <label><span>Register name *</span><input id="registerName" required maxlength="80" placeholder="e.g. Main Gate Visitor Register"></label>
+          <label><span>Location / room</span><input id="registerLocation" maxlength="100" placeholder="e.g. Centurion Office – Reception"></label>
+          <label><span>Start date</span><input id="registerStart" type="date"></label>
+          <label><span>End date</span><input id="registerEnd" type="date"></label>
+          <label><span>Expected participants</span><input id="registerExpected" type="number" min="0" max="100000" step="1" placeholder="0"></label>
+          <label><span>Owner / facilitator</span><input id="registerOwner" maxlength="100" placeholder="Security, trainer or organiser"></label>
+        </div>
+        <div class="register-form-grid">
+          <label class="register-checkbox-row"><input type="checkbox" id="reqSignature"><span>Require signature</span></label>
+          <label class="register-checkbox-row"><input type="checkbox" id="reqId"><span>Capture ID / passport</span></label>
+          <label class="register-checkbox-row"><input type="checkbox" id="reqCompany"><span>Capture company / organisation</span></label>
+          <label class="register-checkbox-row"><input type="checkbox" id="reqHost"><span>Capture host / facilitator</span></label>
+          <label class="register-checkbox-row"><input type="checkbox" id="reqReason"><span>Capture purpose / reason</span></label>
+          <label class="register-checkbox-row"><input type="checkbox" id="reqVehicle"><span>Capture vehicle registration</span></label>
+          <label class="register-checkbox-row"><input type="checkbox" id="autoCheckout"><span>Auto-checkout at session end</span></label>
+          <label class="register-checkbox-row"><input type="checkbox" id="requireConsent" checked><span>Require privacy acknowledgement</span></label>
+        </div>
+        <div class="register-custom-fields">
+          <div class="register-card-heading"><div><p class="register-eyebrow">Flexible evidence</p><h3>Custom fields</h3></div><button type="button" class="register-btn register-btn-secondary register-btn-compact" id="btnAddField"><i class="fa-solid fa-plus"></i> Add field</button></div>
+          <div id="customFieldBuilder"></div>
+        </div>
+        <label><span>Privacy / attendance notice</span><textarea id="registerNotice" rows="3" maxlength="500" placeholder="Explain why the information is collected and how it will be used."></textarea></label>
+        <div class="register-dialog-actions">
+          <button type="button" class="register-btn register-btn-secondary" data-close-modal="registerModal">Cancel</button>
+          <button type="submit" class="register-btn register-btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save register</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="register-modal" id="entryModal" hidden>
+    <div class="register-modal-backdrop" data-close-modal="entryModal"></div>
+    <div class="register-dialog register-dialog-wide" role="dialog" aria-modal="true" aria-labelledby="entryModalTitle">
+      <div class="register-dialog-header">
+        <div><p class="register-eyebrow">Entry / attendance</p><h2 id="entryModalTitle">Check in</h2></div>
+        <button class="register-icon-btn" data-close-modal="entryModal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="entryForm" class="register-form">
+        <input type="hidden" id="entryId">
+        <div class="register-form-grid">
+          <label><span>Full name *</span><input id="entryName" required maxlength="120" autocomplete="name"></label>
+          <label><span>Mobile</span><input id="entryPhone" maxlength="40" inputmode="tel" autocomplete="tel"></label>
+          <label><span>Email</span><input id="entryEmail" type="email" maxlength="120" autocomplete="email"></label>
+          <label id="entryCompanyWrap"><span>Company / organisation</span><input id="entryCompany" maxlength="120"></label>
+          <label id="entryIdWrap"><span>ID / passport</span><input id="entryIdentity" maxlength="80" autocomplete="off"></label>
+          <label id="entryHostWrap"><span>Host / facilitator</span><input id="entryHost" maxlength="120"></label>
+          <label id="entryReasonWrap"><span>Purpose / reason</span><input id="entryReason" maxlength="160"></label>
+          <label id="entryVehicleWrap"><span>Vehicle registration</span><input id="entryVehicle" maxlength="40" autocapitalize="characters"></label>
+          <label><span>Check-in time</span><input id="entryIn" type="datetime-local"></label>
+          <label><span>Status</span><select id="entryStatus"><option value="present">Present / checked in</option><option value="completed">Completed / checked out</option><option value="late">Late</option><option value="exception">Exception</option></select></label>
+        </div>
+        <div id="customEntryFields" class="register-form-grid"></div>
+        <label><span>Notes</span><textarea id="entryNotes" rows="3" maxlength="500"></textarea></label>
+
+        <section id="signatureSection" class="register-signature-section">
+          <div class="register-card-heading"><div><p class="register-eyebrow">Evidence</p><h3>Signature</h3></div><button type="button" class="register-btn register-btn-secondary register-btn-compact" id="btnClearSignature">Clear</button></div>
+          <canvas id="signatureCanvas" width="760" height="180" aria-label="Signature pad"></canvas>
+          <p class="register-muted">Sign using a finger, mouse or stylus. Signature data remains in the local register export.</p>
+        </section>
+
+        <label id="consentWrap" class="register-checkbox-row register-consent">
+          <input type="checkbox" id="entryConsent">
+          <span id="consentText">I acknowledge the purpose of this register and consent to the information being recorded for that purpose.</span>
+        </label>
+
+        <div class="register-dialog-actions">
+          <button type="button" class="register-btn register-btn-secondary" data-close-modal="entryModal">Cancel</button>
+          <button type="submit" class="register-btn register-btn-primary"><i class="fa-solid fa-check"></i> Save entry</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="register-modal" id="shareModal" hidden>
+    <div class="register-modal-backdrop" data-close-modal="shareModal"></div>
+    <div class="register-dialog" role="dialog" aria-modal="true" aria-labelledby="shareModalTitle">
+      <div class="register-dialog-header">
+        <div><p class="register-eyebrow">Self check-in</p><h2 id="shareModalTitle">Share register</h2></div>
+        <button class="register-icon-btn" data-close-modal="shareModal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="register-form">
+        <div class="register-qr-box" id="qrBox"><i class="fa-solid fa-qrcode"></i></div>
+        <label><span>Register code</span><div class="register-copy-row"><input id="shareCode" readonly><button type="button" class="register-btn register-btn-secondary" id="btnCopyCode">Copy</button></div></label>
+        <label><span>Self check-in link</span><div class="register-copy-row"><input id="shareLink" readonly><button type="button" class="register-btn register-btn-secondary" id="btnCopyLink">Copy</button></div></label>
+        <p class="register-muted">The QR/link identifies the register. Because Easy Register is local-first, the device opening the link stores its own submission unless a connected backend is enabled later. For a shared gate or classroom tablet, use this page on the same device.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="register-modal" id="rollCallModal" hidden>
+    <div class="register-modal-backdrop" data-close-modal="rollCallModal"></div>
+    <div class="register-dialog register-dialog-wide" role="dialog" aria-modal="true" aria-labelledby="rollCallTitle">
+      <div class="register-dialog-header">
+        <div><p class="register-eyebrow">Emergency mode</p><h2 id="rollCallTitle">Live roll call</h2></div>
+        <button class="register-icon-btn" data-close-modal="rollCallModal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="register-form">
+        <div class="register-alert"><i class="fa-solid fa-triangle-exclamation"></i><div><strong>People currently marked present</strong><p>Use this as a rapid reconciliation aid. Confirm physically; do not treat the digital list as the sole source of truth during an emergency.</p></div></div>
+        <div id="rollCallList" class="register-rollcall-list"></div>
+        <div class="register-dialog-actions">
+          <button type="button" class="register-btn register-btn-secondary" id="btnPrintRollCall"><i class="fa-solid fa-print"></i> Print roll call</button>
+          <button type="button" class="register-btn register-btn-primary" data-close-modal="rollCallModal">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="registerToast" class="register-toast" hidden role="status" aria-live="polite"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+  <script defer src="assets/js/easy-register.js"></script>
+  <script defer src="scripts/sync-nav.js"></script>
+</body>
+</html>
