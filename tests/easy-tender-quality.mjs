@@ -5,7 +5,7 @@ import { performance } from "node:perf_hooks";
 
 const html = fs.readFileSync("easy-tender.html","utf8");
 for (const id of ["fileInput","reqRows","taskList","questionList","riskList","gateList","vaultList","qualificationGates","documentRegister"]) {
-  assert.match(html,new RegExp('id=["\\']'+id+'["\\']'),"Missing required UI id: "+id);
+  assert.match(html,new RegExp("id=[\\\"']"+id+"[\\\"']"),"Missing required UI id: "+id);
 }
 assert.match(html,/multiple accept=/,"Tender pack upload must accept multiple files");
 assert.match(html,/Submission Gate/,"Submission gate UI missing");
