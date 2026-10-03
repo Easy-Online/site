@@ -31,6 +31,7 @@
     { name: "Landing Page", href: "easy-landing-page.html", icon: "fa-window-maximize", group: "Documents", description: "Build branded landing pages for campaigns and business offers", landing: true },
     { name: "Type", href: "easy-type.html", icon: "fa-wand-magic-sparkles", group: "Documents", description: "AI-assisted writing, grammar checking, reusable snippets and smart form completion", landing: true },
     { name: "Form", href: "easy-form.html", icon: "fa-list-check", group: "Documents", description: "AI-assisted form builder with response collection, review, analytics and export", landing: true },
+    { name: "Tender", href: "easy-tender.html", icon: "fa-file-circle-check", group: "Documents", description: "Analyse tenders, RFQs and RFPs into compliance matrices, evidence packs, action plans and submission checklists", landing: true },
 
     { name: "Expenses", href: "easy-expenses.html", icon: "fa-wallet", group: "Finance", description: "Capture, categorise and review business expenses", landing: true },
     { name: "Cash Flow", href: "easy-cashflow.html", icon: "fa-chart-line", group: "Finance", description: "Track cash inflows, outflows and running balances", landing: true },
