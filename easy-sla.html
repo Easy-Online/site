@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Easy SLA | Service Level Agreement Manager | EasyFile</title>
+  <meta name="description" content="Define service level agreements, track response and resolution targets, monitor breach risk, and report SLA performance with Easy SLA.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/easyfile-brand-tokens.css">
+  <link rel="stylesheet" href="assets/css/easyfile-site.css">
+  <link rel="stylesheet" href="assets/css/easyfile-footer.css">
+  <link rel="stylesheet" href="assets/css/easyfile-navigation.css">
+  <link rel="icon" href="logo-b.png" type="image/png">
+  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="logo-b.png">
+  <style>
+    :root{--sla-bg:#f5f8ff;--sla-card:#fff;--sla-border:#dbe6f5;--sla-text:#0f172a;--sla-muted:#64748b;--sla-blue:#2563eb;--sla-red:#dc2626;--sla-amber:#d97706;--sla-green:#16a34a}
+    html[data-theme="dark"]{--sla-bg:#07101f;--sla-card:#0f172a;--sla-border:#26364d;--sla-text:#e5e7eb;--sla-muted:#9fb0c8}
+    body{background:var(--sla-bg);color:var(--sla-text)}
+    .sla-card{background:var(--sla-card);border:1px solid var(--sla-border);border-radius:1rem;box-shadow:0 12px 34px rgba(15,23,42,.06)}
+    .sla-btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;border:1px solid var(--sla-border);border-radius:.75rem;padding:.68rem .9rem;font-weight:800;background:var(--sla-card);color:var(--sla-text)}
+    .sla-btn-primary{background:var(--sla-blue);border-color:var(--sla-blue);color:#fff}.sla-btn-danger{background:var(--sla-red);border-color:var(--sla-red);color:#fff}
+    .sla-label{display:block;font-size:.75rem;font-weight:800;color:var(--sla-muted);margin-bottom:.35rem}.sla-field{width:100%;border:1px solid var(--sla-border);border-radius:.75rem;padding:.7rem .8rem;background:var(--sla-card);color:var(--sla-text)}
+    .sla-kpi{font-size:1.75rem;font-weight:900}.sla-muted{color:var(--sla-muted)}
+    .pill{display:inline-flex;align-items:center;border-radius:999px;padding:.24rem .58rem;font-size:.72rem;font-weight:900}.pill-ok{background:#dcfce7;color:#166534}.pill-risk{background:#fef3c7;color:#92400e}.pill-breach{background:#fee2e2;color:#991b1b}.pill-neutral{background:#e2e8f0;color:#334155}
+    .table-wrap{overflow:auto;-webkit-overflow-scrolling:touch}.table-wrap table{min-width:1050px}.modal-bg{background:rgba(2,6,23,.68)}
+    .progress{height:.5rem;border-radius:999px;background:#e2e8f0;overflow:hidden}.progress>span{display:block;height:100%;background:#2563eb}
+    @media print{.no-print,.easyfile-nav{display:none!important}body{background:#fff!important}.sla-card{box-shadow:none!important;border:1px solid #ddd!important}}
+  </style>
+</head>
+<body class="easyfile-app min-h-screen">
+  <div class="easyfile-nav no-print">
+    <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
+  </div>
+
+  <main class="container mx-auto px-4 py-6 md:py-8 max-w-7xl">
+    <section class="sla-card p-5 md:p-7 mb-6">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+        <div>
+          <div class="flex items-center gap-3">
+            <div class="h-12 w-12 rounded-xl bg-blue-600 text-white grid place-items-center text-xl"><i class="fa-solid fa-stopwatch"></i></div>
+            <div><h1 class="text-3xl font-black">Easy SLA</h1><p class="text-sm sla-muted">Service Level Agreement Manager</p></div>
+          </div>
+          <p class="mt-3 max-w-3xl sla-muted">Define customer service commitments, track incidents against response and resolution targets, identify breach risk early, and produce a clear SLA performance record.</p>
+        </div>
+        <div class="flex flex-wrap gap-2 no-print">
+          <button class="sla-btn sla-btn-primary" id="btnNew"><i class="fa-solid fa-plus"></i> New ticket</button>
+          <button class="sla-btn" id="btnSeed"><i class="fa-solid fa-flask"></i> Seed demo</button>
+          <button class="sla-btn" id="btnExport"><i class="fa-solid fa-file-csv"></i> CSV</button>
+          <button class="sla-btn" id="btnBackup"><i class="fa-solid fa-download"></i> JSON</button>
+          <button class="sla-btn" id="btnPrint"><i class="fa-solid fa-print"></i> Print</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid grid-cols-2 lg:grid-cols-6 gap-4 mb-6">
+      <div class="sla-card p-4"><div class="text-xs font-black sla-muted">OPEN</div><div id="kOpen" class="sla-kpi text-blue-600">0</div></div>
+      <div class="sla-card p-4"><div class="text-xs font-black sla-muted">AT RISK</div><div id="kRisk" class="sla-kpi text-yellow-600">0</div></div>
+      <div class="sla-card p-4"><div class="text-xs font-black sla-muted">BREACHED</div><div id="kBreached" class="sla-kpi text-red-600">0</div></div>
+      <div class="sla-card p-4"><div class="text-xs font-black sla-muted">MET SLA</div><div id="kMet" class="sla-kpi text-green-600">0</div></div>
+      <div class="sla-card p-4"><div class="text-xs font-black sla-muted">COMPLIANCE</div><div id="kCompliance" class="sla-kpi">100%</div></div>
+      <div class="sla-card p-4"><div class="text-xs font-black sla-muted">AVG RESOLUTION</div><div id="kResolution" class="sla-kpi">0h</div></div>
+    </section>
+
+    <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+      <section class="xl:col-span-8 space-y-6">
+        <div class="sla-card p-4 no-print">
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+            <div class="md:col-span-2"><label class="sla-label">Search</label><input id="filterQ" class="sla-field" placeholder="Ticket, customer, service, owner..."></div>
+            <div><label class="sla-label">Status</label><select id="filterStatus" class="sla-field"><option value="">All</option><option>Open</option><option>In Progress</option><option>Pending Customer</option><option>Resolved</option><option>Closed</option></select></div>
+            <div><label class="sla-label">Priority</label><select id="filterPriority" class="sla-field"><option value="">All</option><option>P1 Critical</option><option>P2 High</option><option>P3 Medium</option><option>P4 Low</option></select></div>
+            <div class="flex items-end"><button id="btnClearFilters" class="sla-btn w-full">Clear</button></div>
+          </div>
+        </div>
+
+        <div class="sla-card overflow-hidden">
+          <div class="p-5 border-b" style="border-color:var(--sla-border)"><h2 class="text-xl font-black">SLA ticket register</h2><p class="text-sm sla-muted mt-1">Live status is recalculated from each ticket's response and resolution commitments.</p></div>
+          <div class="table-wrap">
+            <table class="w-full text-sm">
+              <thead><tr class="text-left" style="background:rgba(148,163,184,.08)"><th class="p-3">Ticket</th><th class="p-3">Customer / service</th><th class="p-3">Priority</th><th class="p-3">Status</th><th class="p-3">Response</th><th class="p-3">Resolution</th><th class="p-3">SLA state</th><th class="p-3 no-print">Actions</th></tr></thead>
+              <tbody id="ticketRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <aside class="xl:col-span-4 space-y-6">
+        <div class="sla-card p-5">
+          <div class="flex items-center justify-between"><div><h2 class="text-xl font-black">SLA policies</h2><p class="text-sm sla-muted mt-1">Response / resolution targets in business hours.</p></div><button id="btnPolicy" class="sla-btn no-print"><i class="fa-solid fa-gear"></i></button></div>
+          <div id="policyList" class="mt-4 space-y-3"></div>
+        </div>
+
+        <div class="sla-card p-5">
+          <h2 class="text-xl font-black">Breach watch</h2>
+          <p class="text-sm sla-muted mt-1">Open work consuming 75% or more of its resolution target.</p>
+          <div id="breachWatch" class="mt-4 space-y-3"></div>
+        </div>
+
+        <div class="sla-card p-5">
+          <h2 class="text-xl font-black">Data & privacy</h2>
+          <div class="mt-3 space-y-2 text-sm sla-muted">
+            <p><i class="fa-solid fa-database text-blue-600 mr-2"></i>Records autosave to this browser using LocalStorage.</p>
+            <p><i class="fa-solid fa-file-export text-green-600 mr-2"></i>Export CSV for reporting or JSON for backup/restore workflows.</p>
+            <p><i class="fa-solid fa-triangle-exclamation text-yellow-600 mr-2"></i>Timers are operational aids; contractual SLA interpretation remains your responsibility.</p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="easyfile-footer border-t border-adaptive mt-8">
+    <div class="container mx-auto px-4 py-6 flex flex-col sm:flex-row gap-2 sm:justify-between"><p class="text-sm font-bold sla-muted">Easy SLA · EasyFile</p><p class="text-sm sla-muted">Local-first service delivery tracking</p></div>
+  </footer>
+
+  <div id="ticketModal" class="fixed inset-0 hidden items-center justify-center p-4 z-50 modal-bg no-print">
+    <div class="sla-card w-full max-w-3xl max-h-screen overflow-y-auto p-5 md:p-6">
+      <div class="flex items-start justify-between gap-3"><div><h3 id="modalTitle" class="text-2xl font-black">New SLA ticket</h3><p class="text-sm sla-muted">Capture service commitment and operational timestamps.</p></div><button class="sla-btn" data-close-ticket><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
+        <div><label class="sla-label">Ticket number</label><input id="fTicket" class="sla-field" placeholder="INC-0001"></div>
+        <div><label class="sla-label">Customer</label><input id="fCustomer" class="sla-field" placeholder="Customer / account"></div>
+        <div><label class="sla-label">Service</label><input id="fService" class="sla-field" placeholder="Managed IT / Hosting / Support"></div>
+        <div><label class="sla-label">Owner</label><input id="fOwner" class="sla-field" placeholder="Assigned engineer / team"></div>
+        <div><label class="sla-label">Priority</label><select id="fPriority" class="sla-field"><option>P1 Critical</option><option>P2 High</option><option selected>P3 Medium</option><option>P4 Low</option></select></div>
+        <div><label class="sla-label">Status</label><select id="fStatus" class="sla-field"><option>Open</option><option>In Progress</option><option>Pending Customer</option><option>Resolved</option><option>Closed</option></select></div>
+        <div><label class="sla-label">Opened</label><input id="fOpened" type="datetime-local" class="sla-field"></div>
+        <div><label class="sla-label">First response</label><input id="fResponded" type="datetime-local" class="sla-field"></div>
+        <div><label class="sla-label">Resolved</label><input id="fResolved" type="datetime-local" class="sla-field"></div>
+        <div><label class="sla-label">SLA policy</label><select id="fPolicy" class="sla-field"></select></div>
+        <div class="md:col-span-2"><label class="sla-label">Summary</label><input id="fSummary" class="sla-field" placeholder="Short incident or request summary"></div>
+        <div class="md:col-span-2"><label class="sla-label">Notes</label><textarea id="fNotes" rows="4" class="sla-field" placeholder="Escalations, customer updates, dependencies..."></textarea></div>
+      </div>
+      <div class="mt-5 flex flex-wrap justify-end gap-2"><button class="sla-btn" data-close-ticket>Cancel</button><button id="btnSaveTicket" class="sla-btn sla-btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save ticket</button></div>
+    </div>
+  </div>
+
+  <div id="policyModal" class="fixed inset-0 hidden items-center justify-center p-4 z-50 modal-bg no-print">
+    <div class="sla-card w-full max-w-2xl p-5 md:p-6">
+      <div class="flex items-center justify-between"><div><h3 class="text-2xl font-black">SLA policy targets</h3><p class="text-sm sla-muted">Configure response and resolution hours per priority.</p></div><button class="sla-btn" data-close-policy><i class="fa-solid fa-xmark"></i></button></div>
+      <div id="policyEditor" class="mt-5 space-y-3"></div>
+      <div class="mt-5 flex justify-end gap-2"><button class="sla-btn" id="btnResetPolicies">Defaults</button><button class="sla-btn sla-btn-primary" id="btnSavePolicies">Save policies</button></div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  'use strict';
+  var STORE='easy.sla.tickets.v1', POLICY='easy.sla.policies.v1';
+  var defaults=[
+    {id:'standard',name:'Standard Support',targets:{'P1 Critical':[0.5,4],'P2 High':[1,8],'P3 Medium':[4,24],'P4 Low':[8,72]}},
+    {id:'premium',name:'Premium 24x7',targets:{'P1 Critical':[0.25,2],'P2 High':[0.5,4],'P3 Medium':[2,12],'P4 Low':[4,24]}}
+  ];
+  var tickets=load(STORE,[]), policies=load(POLICY,defaults), editId=null;
+  function $(id){return document.getElementById(id)}
+  function load(k,f){try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(f))}catch(e){return f}}
+  function persist(){localStorage.setItem(STORE,JSON.stringify(tickets));localStorage.setItem(POLICY,JSON.stringify(policies))}
+  function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]})}
+  function dt(v){if(!v)return null;var d=new Date(v);return isNaN(d)?null:d}
+  function hours(a,b){return Math.max(0,(b-a)/36e5)}
+  function fmtHours(h){if(h==null||!isFinite(h))return '-';return h<1?Math.round(h*60)+'m':h.toFixed(h<10?1:0)+'h'}
+  function localInput(d){var x=new Date(d.getTime()-d.getTimezoneOffset()*60000);return x.toISOString().slice(0,16)}
+  function policyFor(t){return policies.find(function(p){return p.id===t.policyId})||policies[0]}
+  function metrics(t){
+    var p=policyFor(t), target=(p.targets&&p.targets[t.priority])||[4,24], opened=dt(t.opened)||new Date(), now=new Date(), responded=dt(t.responded), resolved=dt(t.resolved);
+    var responseElapsed=hours(opened,responded||now), resolutionElapsed=hours(opened,resolved||now), responsePct=target[0]?responseElapsed/target[0]:0, resolutionPct=target[1]?resolutionElapsed/target[1]:0;
+    var closed=['Resolved','Closed'].indexOf(t.status)>=0;
+    var responseMet=!!responded&&responseElapsed<=target[0], resolutionMet=closed&&!!resolved&&resolutionElapsed<=target[1];
+    var breached=responsePct>1||resolutionPct>1||(responded&&responseElapsed>target[0])||(resolved&&resolutionElapsed>target[1]);
+    var risk=!closed&&!breached&&resolutionPct>=.75;
+    var state=breached?'Breached':risk?'At risk':closed&&responseMet&&resolutionMet?'Met':'Active';
+    return {policy:p,target:target,responseElapsed:responseElapsed,resolutionElapsed:resolutionElapsed,responsePct:responsePct,resolutionPct:resolutionPct,responseMet:responseMet,resolutionMet:resolutionMet,breached:breached,risk:risk,state:state}
+  }
+  function statePill(m){var c=m.state==='Breached'?'pill-breach':m.state==='At risk'?'pill-risk':m.state==='Met'?'pill-ok':'pill-neutral';return '<span class="pill '+c+'">'+m.state+'</span>'}
+  function progress(p){var v=Math.max(0,Math.min(100,Math.round(p*100)));return '<div class="progress mt-1"><span style="width:'+v+'%"></span></div>'}
+  function render(){
+    var q=$('filterQ').value.toLowerCase().trim(), st=$('filterStatus').value, pr=$('filterPriority').value;
+    var filtered=tickets.filter(function(t){var hay=(t.ticket+' '+t.customer+' '+t.service+' '+t.owner+' '+t.summary).toLowerCase();return (!q||hay.indexOf(q)>=0)&&(!st||t.status===st)&&(!pr||t.priority===pr)});
+    $('ticketRows').innerHTML=filtered.length?filtered.map(function(t){var m=metrics(t);return '<tr class="border-t" style="border-color:var(--sla-border)"><td class="p-3"><div class="font-black">'+esc(t.ticket)+'</div><div class="text-xs sla-muted">'+esc(t.summary)+'</div></td><td class="p-3"><div class="font-bold">'+esc(t.customer)+'</div><div class="text-xs sla-muted">'+esc(t.service)+'</div></td><td class="p-3">'+esc(t.priority)+'</td><td class="p-3">'+esc(t.status)+'</td><td class="p-3"><div>'+fmtHours(m.responseElapsed)+' / '+fmtHours(m.target[0])+'</div>'+progress(m.responsePct)+'</td><td class="p-3"><div>'+fmtHours(m.resolutionElapsed)+' / '+fmtHours(m.target[1])+'</div>'+progress(m.resolutionPct)+'</td><td class="p-3">'+statePill(m)+'</td><td class="p-3 no-print"><div class="flex gap-2"><button class="sla-btn" data-edit="'+esc(t.id)+'">Edit</button><button class="sla-btn" data-delete="'+esc(t.id)+'"><i class="fa-solid fa-trash"></i></button></div></td></tr>'}).join(''):'<tr><td colspan="8" class="p-8 text-center sla-muted">No SLA tickets found.</td></tr>';
+    document.querySelectorAll('[data-edit]').forEach(function(b){b.onclick=function(){openTicket(b.getAttribute('data-edit'))}});
+    document.querySelectorAll('[data-delete]').forEach(function(b){b.onclick=function(){removeTicket(b.getAttribute('data-delete'))}});
+    renderKpis();renderPolicies();renderWatch();
+  }
+  function renderKpis(){
+    var ms=tickets.map(metrics), open=tickets.filter(function(t){return ['Resolved','Closed'].indexOf(t.status)<0}).length, breached=ms.filter(function(m){return m.breached}).length, risk=ms.filter(function(m){return m.risk}).length, completed=tickets.map(function(t,i){return {t:t,m:ms[i]}}).filter(function(x){return ['Resolved','Closed'].indexOf(x.t.status)>=0}), met=completed.filter(function(x){return x.m.responseMet&&x.m.resolutionMet}).length;
+    $('kOpen').textContent=open;$('kRisk').textContent=risk;$('kBreached').textContent=breached;$('kMet').textContent=met;$('kCompliance').textContent=(completed.length?Math.round(met/completed.length*100):100)+'%';
+    var resolved=completed.filter(function(x){return x.t.resolved}), avg=resolved.length?resolved.reduce(function(a,x){return a+x.m.resolutionElapsed},0)/resolved.length:0;$('kResolution').textContent=fmtHours(avg);
+  }
+  function renderPolicies(){
+    $('policyList').innerHTML=policies.map(function(p){return '<div class="border rounded-xl p-3" style="border-color:var(--sla-border)"><div class="font-black">'+esc(p.name)+'</div><div class="grid grid-cols-2 gap-2 mt-2 text-xs sla-muted">'+Object.keys(p.targets).map(function(k){var v=p.targets[k];return '<div><strong>'+esc(k)+'</strong><br>'+fmtHours(v[0])+' / '+fmtHours(v[1])+'</div>'}).join('')+'</div></div>'}).join('');
+  }
+  function renderWatch(){
+    var list=tickets.map(function(t){return {t:t,m:metrics(t)}}).filter(function(x){return ['Resolved','Closed'].indexOf(x.t.status)<0&&(x.m.risk||x.m.breached)}).sort(function(a,b){return b.m.resolutionPct-a.m.resolutionPct}).slice(0,6);
+    $('breachWatch').innerHTML=list.length?list.map(function(x){return '<div class="border rounded-xl p-3" style="border-color:var(--sla-border)"><div class="flex justify-between gap-2"><div><div class="font-black">'+esc(x.t.ticket)+'</div><div class="text-xs sla-muted">'+esc(x.t.customer)+'</div></div>'+statePill(x.m)+'</div><div class="text-xs mt-2 sla-muted">'+Math.round(x.m.resolutionPct*100)+'% of resolution target used</div>'+progress(x.m.resolutionPct)+'</div>'}).join(''):'<p class="text-sm sla-muted">No tickets are currently at risk.</p>';
+  }
+  function fillPolicySelect(selected){$('fPolicy').innerHTML=policies.map(function(p){return '<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>'}).join('');$('fPolicy').value=selected||policies[0].id}
+  function openTicket(id){
+    editId=id||null;var t=id?tickets.find(function(x){return x.id===id}):null;
+    $('modalTitle').textContent=t?'Edit SLA ticket':'New SLA ticket';fillPolicySelect(t&&t.policyId);
+    $('fTicket').value=t?t.ticket:'INC-'+String(Date.now()).slice(-6);$('fCustomer').value=t?t.customer:'';$('fService').value=t?t.service:'';$('fOwner').value=t?t.owner:'';$('fPriority').value=t?t.priority:'P3 Medium';$('fStatus').value=t?t.status:'Open';$('fOpened').value=t?t.opened:localInput(new Date());$('fResponded').value=t?t.responded||'':'';$('fResolved').value=t?t.resolved||'':'';$('fSummary').value=t?t.summary:'';$('fNotes').value=t?t.notes:'';
+    $('ticketModal').classList.remove('hidden');$('ticketModal').classList.add('flex');
+  }
+  function closeTicket(){$('ticketModal').classList.add('hidden');$('ticketModal').classList.remove('flex')}
+  function saveTicket(){
+    var ticket=$('fTicket').value.trim(),customer=$('fCustomer').value.trim(),summary=$('fSummary').value.trim();if(!ticket||!customer||!summary){alert('Ticket number, customer and summary are required.');return}
+    var item={id:editId||('sla-'+Date.now()),ticket:ticket,customer:customer,service:$('fService').value.trim(),owner:$('fOwner').value.trim(),priority:$('fPriority').value,status:$('fStatus').value,opened:$('fOpened').value,responded:$('fResponded').value,resolved:$('fResolved').value,policyId:$('fPolicy').value,summary:summary,notes:$('fNotes').value.trim()};
+    if(editId){tickets=tickets.map(function(x){return x.id===editId?item:x})}else{tickets.unshift(item)}persist();closeTicket();render();
+  }
+  function removeTicket(id){if(!confirm('Delete this SLA ticket?'))return;tickets=tickets.filter(function(x){return x.id!==id});persist();render()}
+  function openPolicies(){
+    $('policyEditor').innerHTML=policies.map(function(p,pi){return '<div class="border rounded-xl p-3" style="border-color:var(--sla-border)"><div class="font-black mb-2">'+esc(p.name)+'</div><div class="grid grid-cols-1 sm:grid-cols-4 gap-2">'+Object.keys(p.targets).map(function(k){var v=p.targets[k];return '<div><div class="text-xs font-bold">'+esc(k)+'</div><div class="grid grid-cols-2 gap-1 mt-1"><input class="sla-field" type="number" step=".25" min=".25" data-p="'+pi+'" data-k="'+esc(k)+'" data-i="0" value="'+v[0]+'" title="Response hours"><input class="sla-field" type="number" step=".25" min=".25" data-p="'+pi+'" data-k="'+esc(k)+'" data-i="1" value="'+v[1]+'" title="Resolution hours"></div></div>'}).join('')+'</div></div>'}).join('');
+    $('policyModal').classList.remove('hidden');$('policyModal').classList.add('flex');
+  }
+  function closePolicies(){$('policyModal').classList.add('hidden');$('policyModal').classList.remove('flex')}
+  function savePolicies(){document.querySelectorAll('#policyEditor input').forEach(function(i){var p=Number(i.getAttribute('data-p')),k=i.getAttribute('data-k'),idx=Number(i.getAttribute('data-i'));policies[p].targets[k][idx]=Math.max(.25,Number(i.value)||.25)});persist();closePolicies();render()}
+  function seed(){
+    var now=Date.now(), iso=function(h){return localInput(new Date(now-h*36e5))};
+    tickets=[
+      {id:'demo1',ticket:'INC-1042',customer:'Acme Retail',service:'Managed Network',owner:'NOC Team',priority:'P1 Critical',status:'In Progress',opened:iso(1.6),responded:iso(1.45),resolved:'',policyId:'premium',summary:'Primary WAN circuit unavailable',notes:'Carrier engaged; failover active.'},
+      {id:'demo2',ticket:'REQ-2091',customer:'Ubuntu Legal',service:'Microsoft 365 Support',owner:'Service Desk',priority:'P3 Medium',status:'Resolved',opened:iso(18),responded:iso(17.2),resolved:iso(6),policyId:'standard',summary:'New user onboarding request',notes:'Account created and access confirmed.'},
+      {id:'demo3',ticket:'INC-1088',customer:'Northstar Logistics',service:'Endpoint Support',owner:'Desktop Team',priority:'P2 High',status:'In Progress',opened:iso(6.8),responded:iso(6.2),resolved:'',policyId:'standard',summary:'Warehouse workstations cannot print labels',notes:'Print server investigation in progress.'},
+      {id:'demo4',ticket:'INC-0994',customer:'Greenline Foods',service:'ERP Support',owner:'Applications',priority:'P2 High',status:'Closed',opened:iso(60),responded:iso(58.5),resolved:iso(49),policyId:'standard',summary:'ERP batch posting error',notes:'Resolved after correcting invalid master data.'}
+    ];persist();render();
+  }
+  function exportCSV(){
+    var rows=[['Ticket','Customer','Service','Owner','Priority','Status','Opened','Responded','Resolved','Policy','Summary','SLA State']];
+    tickets.forEach(function(t){rows.push([t.ticket,t.customer,t.service,t.owner,t.priority,t.status,t.opened,t.responded,t.resolved,policyFor(t).name,t.summary,metrics(t).state])});
+    var csv=rows.map(function(r){return r.map(function(v){return '"'+String(v||'').replace(/"/g,'""')+'"'}).join(',')}).join('\n');download('easy-sla.csv',csv,'text/csv');
+  }
+  function download(name,data,type){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:type}));a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},0)}
+  function backup(){download('easy-sla-backup.json',JSON.stringify({version:1,exportedAt:new Date().toISOString(),policies:policies,tickets:tickets},null,2),'application/json')}
+  $('btnNew').onclick=function(){openTicket()};$('btnSeed').onclick=seed;$('btnExport').onclick=exportCSV;$('btnBackup').onclick=backup;$('btnPrint').onclick=function(){window.print()};$('btnPolicy').onclick=openPolicies;$('btnSaveTicket').onclick=saveTicket;$('btnSavePolicies').onclick=savePolicies;
+  $('btnResetPolicies').onclick=function(){policies=JSON.parse(JSON.stringify(defaults));openPolicies()};
+  document.querySelectorAll('[data-close-ticket]').forEach(function(b){b.onclick=closeTicket});document.querySelectorAll('[data-close-policy]').forEach(function(b){b.onclick=closePolicies});
+  ['filterQ','filterStatus','filterPriority'].forEach(function(id){$(id).addEventListener('input',render);$(id).addEventListener('change',render)});$('btnClearFilters').onclick=function(){$('filterQ').value='';$('filterStatus').value='';$('filterPriority').value='';render()};
+  setInterval(render,60000);render();
+})();
+</script>
+<script defer src="scripts/sync-nav.js"></script>
+</body>
+</html>
