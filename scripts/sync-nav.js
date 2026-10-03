@@ -27,6 +27,7 @@
     { name: "Converter", href: "easy-converter.html", icon: "fa-arrows-rotate", group: "Documents", description: "Convert business files and structured data between supported formats", landing: true },
     { name: "Enterprise Converter", href: "easy-converter-enterprise.html", icon: "fa-right-left", group: "Documents", description: "Advanced file conversion workflows for larger business datasets", landing: true },
     { name: "Contracts", href: "easy-contracts.html", icon: "fa-file-contract", group: "Documents", description: "Create and manage business contracts and agreements", landing: true },
+    { name: "SOW", href: "easy-sow.html", icon: "fa-file-signature", group: "Documents", description: "Create structured statements of work with scope, deliverables, milestones, commercials, acceptance and sign-off", landing: true },
     { name: "Landing Page", href: "easy-landing-page.html", icon: "fa-window-maximize", group: "Documents", description: "Build branded landing pages for campaigns and business offers", landing: true },
     { name: "Type", href: "easy-type.html", icon: "fa-wand-magic-sparkles", group: "Documents", description: "AI-assisted writing, grammar checking, reusable snippets and smart form completion", landing: true },
     { name: "Form", href: "easy-form.html", icon: "fa-list-check", group: "Documents", description: "AI-assisted form builder with response collection, review, analytics and export", landing: true },
