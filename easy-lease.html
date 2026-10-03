@@ -39,6 +39,7 @@
     @media print{.no-print,.easyfile-nav{display:none!important}.print-only{display:block!important}body{background:#fff}.lease-wrap{width:100%;padding:0}.lease-card{box-shadow:none;border:none}.print-break{break-before:page}.field{border:0;padding:0;background:transparent}.screen-only{display:none!important}}
     @media(max-width:700px){.lease-wrap{width:min(100% - 1rem,92rem);padding-top:1rem}.btn{width:100%}}
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"SoftwareApplication","name":"Easy Lease","applicationCategory":"BusinessApplication","operatingSystem":"Web","url":"https://www.easyfile.co.za/easy-lease.html","description":"Lease and rental agreement builder focused on South African property rentals and adaptable to vehicles, devices, equipment and other assets."}
   </script>
@@ -254,10 +255,10 @@ Annexure C – House rules or usage rules (if applicable)</textarea></div>
   function money(n){return new Intl.NumberFormat("en-ZA",{style:"currency",currency:"ZAR"}).format(Number(n||0))}
   function dateVal(d){return d?new Date(d+"T00:00:00"):null}
   function monthsBetween(a,b){if(!a||!b||b<a)return 0;return Math.max(0,(b.getFullYear()-a.getFullYear())*12+(b.getMonth()-a.getMonth())+(b.getDate()>=a.getDate()?0:-1))}
-  function serialize(){const data={};ids.forEach(id=>data[id]=$(id)?.value??"");data.cpaCheck=$("cpaCheck").checked;data.clauses={};clauseDefs.forEach(([id])=>data.clauses[id]=$("clause_"+id)?.checked??true);data.savedAt=new Date().toISOString();return data}
-  function hydrate(data){if(!data)return;ids.forEach(id=>{if($(id)&&data[id]!==undefined)$(id).value=data[id]});$("cpaCheck").checked=!!data.cpaCheck;clauseDefs.forEach(([id])=>{if($("clause_"+id))$("clause_"+id).checked=data.clauses?.[id]!==false});renderAll()}
+  function serialize(){const data={};ids.forEach(id=>data[id]=$(id)?.value??"");data.cpaCheck=$("cpaCheck").checked;data.clauses={};data.clauseText={};clauseDefs.forEach(([id])=>{data.clauses[id]=$("clause_"+id)?.checked??true;data.clauseText[id]=$("clauseText_"+id)?.value??""});data.savedAt=new Date().toISOString();return data}
+  function hydrate(data){if(!data)return;ids.forEach(id=>{if($(id)&&data[id]!==undefined)$(id).value=data[id]});$("cpaCheck").checked=!!data.cpaCheck;clauseDefs.forEach(([id])=>{if($("clause_"+id))$("clause_"+id).checked=data.clauses?.[id]!==false;if($("clauseText_"+id)&&data.clauseText?.[id]!==undefined)$("clauseText_"+id).value=data.clauseText[id]});renderAll()}
   function persist(){try{localStorage.setItem(DRAFT_KEY,JSON.stringify(serialize()));$("autosaveStatus").textContent="Autosaved "+new Date().toLocaleTimeString("en-ZA",{hour:"2-digit",minute:"2-digit"})}catch(_){}}
-  function renderClauses(){ $("clauseGrid").innerHTML=clauseDefs.map(([id,title,text])=>`<label class="clause-row"><input id="clause_${id}" type="checkbox" checked class="mt-1"><span><strong>${title}</strong><textarea id="clauseText_${id}" rows="3" class="field mt-2">${text}</textarea></span></label>`).join(""); clauseDefs.forEach(([id])=>$("clause_"+id).addEventListener("change",persist)); }
+  function renderClauses(){ $("clauseGrid").innerHTML=clauseDefs.map(([id,title,text])=>`<label class="clause-row"><input id="clause_${id}" type="checkbox" checked class="mt-1"><span><strong>${title}</strong><textarea id="clauseText_${id}" rows="3" class="field mt-2">${text}</textarea></span></label>`).join(""); clauseDefs.forEach(([id])=>{$("clause_"+id).addEventListener("change",persist);$("clauseText_"+id).addEventListener("input",persist)}); }
   function applyType(){const t=typeData[$("leaseType").value]||typeData.general;$("assetTypeBadge").textContent=t.badge;$("assetLabel").textContent=t.label;$("assetHelp").textContent=t.help;if(!$("permittedUse").dataset.edited)$("permittedUse").value=t.use;$("propertySection").style.display=["property","commercial"].includes($("leaseType").value)?"block":"none"}
   function calc(){const a=dateVal($("startDate").value),b=dateVal($("endDate").value),m=monthsBetween(a,b);$("kpiTerm").textContent=m?m+" months":"—";$("kpiRent").textContent=money($("rent").value);$("kpiDeposit").textContent=money($("deposit").value);$("kpiTotal").textContent=money(m*Number($("rent").value||0));$("sigLessor").textContent=$("lessorName").value;$("sigLessee").textContent=$("lesseeName").value;flags(m)}
   function flags(months){const arr=[];if(["property","commercial"].includes($("leaseType").value)&&!Number($("deposit").value||0))arr.push(["warn","No deposit entered","Confirm whether no deposit is intended."]);if($("leaseType").value==="property"&&!$("incomingInspection").value)arr.push(["warn","Incoming inspection not scheduled","A signed condition record helps protect both parties."]);if($("cpaCheck").checked&&months>24)arr.push(["warn","Fixed term exceeds 24 months","If CPA section 14 and its regulations apply, review the longer term and document the basis/benefit."]);if(!$("startDate").value||!$("endDate").value)arr.push(["warn","Term incomplete","Add start and end dates for a fixed-term agreement."]);if(!arr.length)arr.push(["ok","Draft checks complete","No obvious drafting gaps detected by the basic checks."]);$("complianceFlags").innerHTML=arr.map(([s,t,d])=>`<div class="notice ${s==="ok"?"notice-blue":"notice-amber"}"><strong>${t}:</strong> ${d}</div>`).join("")}
@@ -268,12 +269,53 @@ Annexure C – House rules or usage rules (if applicable)</textarea></div>
   function loadList(){try{return JSON.parse(localStorage.getItem(LIST_KEY)||"[]")}catch{return[]}}
   function renderSaved(){const list=loadList();$("savedBody").innerHTML=list.length?list.map((x,i)=>`<tr><td>${new Date(x.savedAt).toLocaleString("en-ZA")}</td><td>${esc(x.agreementNo||"Draft")}</td><td>${esc(x.lesseeName||"—")}</td><td>${esc((x.assetDescription||"").split("\n")[0]||"—")}</td><td>${esc(x.status||"Draft")}</td><td><button class="text-blue-600 font-bold" data-load="${i}">Load</button> · <button class="text-red-600 font-bold" data-del="${i}">Delete</button></td></tr>`).join(""):'<tr><td colspan="6" class="help">No saved lease records yet.</td></tr>';document.querySelectorAll("[data-load]").forEach(b=>b.onclick=()=>hydrate(list[Number(b.dataset.load)]));document.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{list.splice(Number(b.dataset.del),1);localStorage.setItem(LIST_KEY,JSON.stringify(list));renderSaved()})}
   function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
-  function download(name,type,text){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),0)}
-  function exportJson(){download(($("agreementNo").value||"easy-lease")+".json","application/json",JSON.stringify(serialize(),null,2))}
-  function exportCsv(){const d=serialize(),rows=[["Field","Value"],...Object.entries(d).filter(([k,v])=>typeof v!=="object").map(([k,v])=>[k,v])];download(($("agreementNo").value||"easy-lease")+".csv","text/csv;charset=utf-8","\uFEFF"+rows.map(r=>r.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\n"))}
+  function fileBase(){return ($("agreementNo").value||"easy-lease").replace(/[^a-z0-9._-]+/gi,"-")}
+  async function deliverBlob(blob,name){
+    try{
+      const file=new File([blob],name,{type:blob.type||"application/octet-stream"});
+      if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+        await navigator.share({files:[file],title:name});
+        return true;
+      }
+    }catch(err){if(err?.name==="AbortError")return false}
+    const url=URL.createObjectURL(blob),a=document.createElement("a");
+    a.href=url;a.download=name;a.rel="noopener";a.style.display="none";
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),30000);
+    return true;
+  }
+  function leaseExportClone(){
+    const clone=$("main").cloneNode(true);
+    clone.querySelectorAll(".no-print,button,script,#easyfileModuleActions").forEach(n=>n.remove());
+    clone.querySelectorAll("input,select,textarea").forEach(control=>{
+      const value=control.tagName==="SELECT"?(control.options[control.selectedIndex]?.textContent||control.value):(control.type==="checkbox"||control.type==="radio")?(control.checked?"Yes":"No"):control.value;
+      const replacement=document.createElement(control.tagName==="TEXTAREA"?"div":"span");
+      replacement.textContent=value||"";replacement.style.whiteSpace="pre-wrap";replacement.style.display="block";replacement.style.padding="4px 0";control.replaceWith(replacement);
+    });
+    return clone;
+  }
+  async function exportJson(){await deliverBlob(new Blob([JSON.stringify(serialize(),null,2)],{type:"application/json;charset=utf-8"}),fileBase()+".json")}
+  async function exportCsv(){const d=serialize(),rows=[["Field","Value"],...Object.entries(d).filter(([k,v])=>typeof v!=="object").map(([k,v])=>[k,v])];const text="\uFEFF"+rows.map(r=>r.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\n");await deliverBlob(new Blob([text],{type:"text/csv;charset=utf-8"}),fileBase()+".csv")}
+  async function exportWord(){const doc=`<!doctype html><html><head><meta charset="utf-8"><title>${esc($("agreementNo").value||"Lease Agreement")}</title><style>body{font-family:Arial,sans-serif;color:#111827;padding:24px;line-height:1.45}table{width:100%;border-collapse:collapse}th,td{border:1px solid #d1d5db;padding:8px;text-align:left}.lease-card{margin-bottom:18px}.help{color:#64748b}</style></head><body>${leaseExportClone().innerHTML}</body></html>`;await deliverBlob(new Blob(["\uFEFF",doc],{type:"application/msword"}),fileBase()+".doc")}
+  async function exportExcel(){const d=serialize();const rows=Object.entries(d).filter(([k,v])=>typeof v!=="object").map(([k,v])=>`<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join("");const html=`<!doctype html><html><head><meta charset="utf-8"></head><body><table><tr><th>Field</th><th>Value</th></tr>${rows}</table></body></html>`;await deliverBlob(new Blob(["\uFEFF",html],{type:"application/vnd.ms-excel"}),fileBase()+".xls")}
+  async function exportPdf(){
+    const content=leaseExportClone();
+    if(typeof html2pdf==="undefined"){window.print();return}
+    const host=document.createElement("div");host.style.background="#fff";host.style.padding="12px";host.appendChild(content);document.body.appendChild(host);
+    try{
+      const blob=await html2pdf().set({margin:[8,8,8,8],filename:fileBase()+".pdf",image:{type:"jpeg",quality:.96},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:"mm",format:"a4",orientation:"portrait"},pagebreak:{mode:["css","legacy"]}}).from(host).outputPdf("blob");
+      await deliverBlob(blob,fileBase()+".pdf");
+    }finally{host.remove()}
+  }
   function reset(){if(!confirm("Reset the current lease draft? Saved lease records will remain."))return;localStorage.removeItem(DRAFT_KEY);location.reload()}
-  function wire(){document.querySelectorAll("input,select,textarea").forEach(el=>{el.addEventListener("input",()=>{if(el.id==="permittedUse")el.dataset.edited="1";calc();persist()});el.addEventListener("change",()=>{renderAll();persist()})});$("btnSeed").onclick=seed;$("btnSaveLease").onclick=saveRecord;$("btnLoadLease").onclick=()=>{const list=loadList();if(list[0])hydrate(list[0]);else alert("No saved lease records found.")};$("btnPrint").onclick=()=>window.print();$("btnSchedule").onclick=schedule;$("btnExportJson").onclick=exportJson;$("btnExportCsv").onclick=exportCsv;$("btnReset").onclick=reset}
+  function wire(){document.querySelectorAll("input,select,textarea").forEach(el=>{el.addEventListener("input",()=>{if(el.id==="permittedUse")el.dataset.edited="1";calc();persist()});el.addEventListener("change",()=>{renderAll();persist()})});$("btnSeed").onclick=seed;$("btnSaveLease").onclick=saveRecord;$("btnLoadLease").onclick=()=>{const list=loadList();if(list[0])hydrate(list[0]);else alert("No saved lease records found.")};$("btnPrint").onclick=exportPdf;$("btnSchedule").onclick=schedule;$("btnExportJson").onclick=exportJson;$("btnExportCsv").onclick=exportCsv;$("btnReset").onclick=reset}
   function init(){renderClauses();let draft=null;try{draft=JSON.parse(localStorage.getItem(DRAFT_KEY)||"null")}catch{}if(draft)hydrate(draft);else{const now=new Date();$("agreementNo").value="LEASE-"+now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+String(now.getDate()).padStart(2,"0")+"-001";$("startDate").value=now.toISOString().slice(0,10);const e=new Date(now);e.setFullYear(e.getFullYear()+1);e.setDate(e.getDate()-1);$("endDate").value=e.toISOString().slice(0,10);$("occupationDate").value=$("startDate").value;renderAll()}wire();persist()}
+  window.saveDraft=saveRecord;
+  window.exportPDF=exportPdf;
+  window.exportPdf=exportPdf;
+  window.exportWord=exportWord;
+  window.exportExcel=exportExcel;
+  window.exportCSV=exportCsv;
   init();
 })();
 </script>
