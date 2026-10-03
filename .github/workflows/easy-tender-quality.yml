@@ -6,11 +6,13 @@ on:
     paths:
       - "easy-tender.html"
       - "tests/easy-tender-quality.mjs"
+      - "tests/easy-tender-ui.mjs"
       - ".github/workflows/easy-tender-quality.yml"
   pull_request:
     paths:
       - "easy-tender.html"
       - "tests/easy-tender-quality.mjs"
+      - "tests/easy-tender-ui.mjs"
 
 permissions:
   contents: read
