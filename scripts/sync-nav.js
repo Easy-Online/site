@@ -12,6 +12,7 @@
   const MODULES = Object.freeze([
     { name: "Home", href: "index.html", icon: "fa-house", group: "General", description: "EasyFile landing page" },
     { name: "Company Profile", href: "easy-company-profile.html", icon: "fa-building", group: "General", description: "Manage shared company identity, branding and document defaults", landing: true },
+    { name: "Partners", href: "partners.html", icon: "fa-handshake", group: "General", description: "Apply as an EasyFile affiliate, reseller or solution partner and manage channel opportunities", landing: true },
     { name: "Quote", href: "easy-quote.html", icon: "fa-file-lines", group: "Documents", description: "Create customer quotations" },
     { name: "Invoice", href: "easy-invoice.html", icon: "fa-file-invoice-dollar", group: "Documents", description: "Create and manage invoices" },
     { name: "Invoice View", href: "easy-invoice-view.html", icon: "fa-file-invoice", group: "Documents", description: "Read-only shared invoice view" },
@@ -148,6 +149,7 @@
           <a class="easyfile-nav-link" href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i>Home</a>
           <a class="easyfile-nav-link" href="index.html#modules"><i class="fa-solid fa-table-cells-large" aria-hidden="true"></i>Modules</a>
           <a class="easyfile-nav-link" href="easy-bank-statement-converter.html"><i class="fa-solid fa-building-columns" aria-hidden="true"></i>Bank converter</a>
+          <a class="easyfile-nav-link" href="partners.html"><i class="fa-solid fa-handshake" aria-hidden="true"></i>Partners</a>
           <a class="easyfile-nav-link" href="about.html"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>About</a>
         </div>
         <div class="easyfile-nav-tools">
