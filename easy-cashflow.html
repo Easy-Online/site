@@ -4,34 +4,36 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9270041066336676" crossorigin="anonymous"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EasyCashflow – Dashboard</title>
-  <meta name="description" content="Cashflow overview: receivables, payables, VAT, inventory value (reads local data)." />
-  
-  
+  <title>Easy Cash Flow | Forecast & Cash Management</title>
+  <meta name="description" content="Track actual and planned cash movements, forecast balances, monitor runway and liquidity risk, and consolidate EasyFile finance data." />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-/* EasyFile Add-ons */
-:root{
-  --primary:#2563eb; --primary2:#1d4ed8; --bg:#f5f7fb; --card:#ffffff;
-  --text:#0f172a; --muted:#64748b; --border:#e2e8f0;
-  --danger:#dc2626; --success:#16a34a;
-}
-body{background:var(--bg); color:var(--text);}
-.card{background:var(--card); border:1px solid var(--border); border-radius:14px; box-shadow:0 10px 25px rgba(2,6,23,.05);}
-.btn{display:inline-flex; align-items:center; justify-content:center; gap:.5rem; padding:.65rem 1rem; border-radius:10px; font-weight:800; transition: all .15s ease; border:1px solid transparent;}
-.btn:hover{transform:translateY(-1px);}
-.btn-primary{background:var(--primary); color:#fff;}
-.btn-primary:hover{background:var(--primary2);}
-.btn-outline{background:#fff; border-color:var(--border); color:var(--text);}
-.btn-outline:hover{border-color:#cbd5e1; background:#f8fafc;}
-.btn-danger{background:var(--danger); color:#fff;}
-.mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;}
-.responsive-table{overflow-x:auto; -webkit-overflow-scrolling:touch;}
-.toast{position:fixed; right:16px; bottom:16px; z-index:9999;}
-.toast>div{background:rgba(2,6,23,.92); color:#fff; border-radius:12px; padding:12px 14px; max-width:360px;}
-@media print{ .no-print{display:none !important;} body{background:#fff !important;} .card{box-shadow:none !important; border:none !important;} }
-
+    :root{
+      --primary:#2563eb; --primary2:#1d4ed8; --bg:#f5f7fb; --card:#ffffff;
+      --text:#0f172a; --muted:#64748b; --border:#e2e8f0;
+      --danger:#dc2626; --success:#16a34a; --warning:#d97706;
+    }
+    body{background:var(--bg); color:var(--text);}
+    .card{background:var(--card); border:1px solid var(--border); border-radius:14px; box-shadow:0 10px 25px rgba(2,6,23,.05);}
+    .btn{display:inline-flex; align-items:center; justify-content:center; gap:.5rem; padding:.65rem 1rem; border-radius:10px; font-weight:800; transition:.15s; border:1px solid transparent;}
+    .btn:hover{transform:translateY(-1px);}
+    .btn-primary{background:var(--primary); color:#fff;}
+    .btn-primary:hover{background:var(--primary2);}
+    .btn-outline{background:#fff; border-color:var(--border); color:var(--text);}
+    .btn-outline:hover{background:#f8fafc; border-color:#cbd5e1;}
+    .btn-success{background:var(--success); color:#fff;}
+    .btn-danger{background:var(--danger); color:#fff;}
+    .pill{display:inline-flex; align-items:center; padding:.2rem .55rem; border-radius:999px; font-weight:800; font-size:.72rem;}
+    .pill-in{background:#dcfce7;color:#166534}.pill-out{background:#fee2e2;color:#991b1b}
+    .pill-plan{background:#eef2ff;color:#3730a3}.pill-actual{background:#e0f2fe;color:#075985}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;}
+    .responsive-table{overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .toast{position:fixed;right:16px;bottom:16px;z-index:9999}.toast>div{background:rgba(2,6,23,.94);color:#fff;border-radius:12px;padding:12px 14px;max-width:360px}
+    .modal-backdrop{background:rgba(2,6,23,.65)}
+    .bar-track{height:10px;background:#e2e8f0;border-radius:999px;overflow:hidden}.bar-fill{height:100%;border-radius:999px;background:#2563eb}
+    input:focus,textarea:focus,select:focus{outline:none!important;border-color:rgba(37,99,235,.8)!important;box-shadow:0 0 0 3px rgba(37,99,235,.15)!important}
+    @media print{.no-print{display:none!important}body{background:#fff!important}.card{box-shadow:none!important}main{max-width:none!important}}
   </style>
   <!-- EASYFILE_FAVICONS -->
   <link rel="icon" href="logo-b.png" type="image/png">
@@ -44,181 +46,279 @@ body{background:var(--bg); color:var(--text);}
 <div class="easyfile-nav no-print">
   <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
 </div>
+
 <main class="container mx-auto px-4 py-8">
-  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
+  <div class="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-4 mb-6">
     <div>
-      <h1 class="text-3xl font-extrabold text-slate-900">EasyCashflow – Dashboard</h1>
-      <p class="text-sm text-slate-600 mt-1">Cashflow overview: receivables, payables, VAT, inventory value (reads local data).</p>
-      <p class="text-xs text-slate-500 mt-1 mono">Store key: easy.cashflow.v1</p>
+      <h1 class="text-3xl font-extrabold text-slate-900">Easy Cash Flow</h1>
+      <p class="text-sm text-slate-600 mt-1">Track actual and planned cash movement, forecast liquidity, and identify cash gaps before they happen.</p>
+      <p class="text-xs text-slate-500 mt-1 mono">Local-first store: easy.cashflow.v2</p>
     </div>
     <div class="flex flex-wrap gap-2 no-print">
-      <button class="btn btn-outline" id="btnSeed"><i class="fa-solid fa-seedling"></i> Seed Demo</button>
-      <button class="btn btn-outline" id="btnImport"><i class="fa-solid fa-file-import"></i> Import JSON</button>
-      <input id="fileJson" type="file" class="hidden" accept="application/json,.json" />
+      <button class="btn btn-primary" id="btnAdd"><i class="fa-solid fa-plus"></i> Add movement</button>
+      <button class="btn btn-outline" id="btnSeed"><i class="fa-solid fa-seedling"></i> Seed demo</button>
+      <button class="btn btn-outline" id="btnSync"><i class="fa-solid fa-rotate"></i> Sync EasyFile</button>
+      <button class="btn btn-outline" id="btnImport"><i class="fa-solid fa-file-import"></i> Import</button>
+      <input id="fileImport" type="file" class="hidden" accept=".json,.csv,application/json,text/csv">
       <button class="btn btn-outline" id="btnExport"><i class="fa-solid fa-file-export"></i> Export</button>
       <button class="btn btn-outline" onclick="window.print()"><i class="fa-solid fa-print"></i> Print</button>
     </div>
   </div>
 
-
-<section class="card p-5 mb-6">
-  <div class="flex items-center justify-between gap-3">
-    <div>
-      <h2 class="text-lg font-black text-slate-900">Cashflow KPIs</h2>
-      <p class="text-xs text-slate-500">Reads local invoice/expense/inventory data where available.</p>
+  <section class="card p-5 mb-6 no-print">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+      <div>
+        <label class="text-xs font-black text-slate-600">Opening balance</label>
+        <input id="openingBalance" type="number" step="0.01" class="w-full border border-gray-200 rounded-lg px-3 py-2" value="0">
+      </div>
+      <div>
+        <label class="text-xs font-black text-slate-600">Forecast horizon</label>
+        <select id="forecastMonths" class="w-full border border-gray-200 rounded-lg px-3 py-2">
+          <option value="3">3 months</option><option value="6" selected>6 months</option><option value="12">12 months</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-xs font-black text-slate-600">Scenario</label>
+        <select id="scenario" class="w-full border border-gray-200 rounded-lg px-3 py-2">
+          <option value="0.80">Conservative (80% planned inflows)</option>
+          <option value="1" selected>Base (100%)</option>
+          <option value="1.15">Optimistic (115%)</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-xs font-black text-slate-600">Low-cash alert</label>
+        <input id="alertThreshold" type="number" step="0.01" class="w-full border border-gray-200 rounded-lg px-3 py-2" value="25000">
+      </div>
+      <button id="btnApplySettings" class="btn btn-primary"><i class="fa-solid fa-calculator"></i> Recalculate</button>
     </div>
-    <div class="flex gap-2 no-print">
-      <button class="btn btn-outline" id="btnRefresh"><i class="fa-solid fa-rotate"></i> Refresh</button>
-      <button class="btn btn-outline" id="btnExportReport"><i class="fa-solid fa-file-export"></i> Export Report</button>
-    </div>
-  </div>
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
-    <div class="card p-4"><div class="text-xs text-slate-500 font-black">Receivables</div><div id="k1" class="text-2xl font-black text-blue-700 mt-1">R0.00</div></div>
-    <div class="card p-4"><div class="text-xs text-slate-500 font-black">Expenses (This Month)</div><div id="k2" class="text-2xl font-black text-rose-700 mt-1">R0.00</div></div>
-    <div class="card p-4"><div class="text-xs text-slate-500 font-black">VAT Net</div><div id="k3" class="text-2xl font-black text-indigo-700 mt-1">R0.00</div></div>
-    <div class="card p-4"><div class="text-xs text-slate-500 font-black">Inventory Value</div><div id="k4" class="text-2xl font-black text-emerald-700 mt-1">R0.00</div></div>
-  </div>
-</section>
+  </section>
 
+  <section class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-6 gap-4 mb-6">
+    <div class="card p-4"><div class="text-xs text-slate-500 font-black">CURRENT CASH</div><div id="kCurrent" class="text-2xl font-black text-blue-700 mt-1">R0.00</div><div id="kCurrentSub" class="text-xs text-slate-500 mt-1">Opening + actuals</div></div>
+    <div class="card p-4"><div class="text-xs text-slate-500 font-black">30-DAY INFLOWS</div><div id="kIn30" class="text-2xl font-black text-emerald-700 mt-1">R0.00</div><div class="text-xs text-slate-500 mt-1">Actual + planned</div></div>
+    <div class="card p-4"><div class="text-xs text-slate-500 font-black">30-DAY OUTFLOWS</div><div id="kOut30" class="text-2xl font-black text-rose-700 mt-1">R0.00</div><div class="text-xs text-slate-500 mt-1">Actual + planned</div></div>
+    <div class="card p-4"><div class="text-xs text-slate-500 font-black">30-DAY NET</div><div id="kNet30" class="text-2xl font-black mt-1">R0.00</div><div class="text-xs text-slate-500 mt-1">Inflows - outflows</div></div>
+    <div class="card p-4"><div class="text-xs text-slate-500 font-black">LOWEST FORECAST</div><div id="kLow" class="text-2xl font-black text-amber-700 mt-1">R0.00</div><div id="kLowSub" class="text-xs text-slate-500 mt-1">Projected minimum</div></div>
+    <div class="card p-4"><div class="text-xs text-slate-500 font-black">RUNWAY</div><div id="kRunway" class="text-2xl font-black text-indigo-700 mt-1">—</div><div class="text-xs text-slate-500 mt-1">Based on avg. monthly outflow</div></div>
+  </section>
+
+  <div id="riskBanner" class="hidden mb-6 rounded-xl border px-4 py-3 text-sm font-bold"></div>
+
+  <section class="card p-5 mb-6">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 mb-4">
+      <div>
+        <h2 class="text-lg font-black text-slate-900">Cash forecast</h2>
+        <p class="text-xs text-slate-500">Monthly closing balance based on actual and planned movements. Planned inflows are adjusted by the selected scenario.</p>
+      </div>
+      <div id="forecastRange" class="text-xs text-slate-500 mono"></div>
+    </div>
+    <div id="forecastChart" class="space-y-3"></div>
+    <div class="responsive-table mt-5">
+      <table class="min-w-full text-sm">
+        <thead class="bg-gray-50 text-slate-600"><tr><th class="p-3 text-left">Month</th><th class="p-3 text-right">Inflows</th><th class="p-3 text-right">Outflows</th><th class="p-3 text-right">Net</th><th class="p-3 text-right">Closing balance</th></tr></thead>
+        <tbody id="forecastRows" class="divide-y divide-gray-100"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card p-5 mb-6 no-print">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+      <div><label class="text-xs font-black text-slate-600">Search</label><input id="q" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Description, category, reference..."></div>
+      <div><label class="text-xs font-black text-slate-600">Type</label><select id="fType" class="w-full border border-gray-200 rounded-lg px-3 py-2"><option value="">All</option><option value="in">Inflow</option><option value="out">Outflow</option></select></div>
+      <div><label class="text-xs font-black text-slate-600">Status</label><select id="fStatus" class="w-full border border-gray-200 rounded-lg px-3 py-2"><option value="">All</option><option value="actual">Actual</option><option value="planned">Planned</option></select></div>
+      <div><label class="text-xs font-black text-slate-600">From</label><input id="fFrom" type="date" class="w-full border border-gray-200 rounded-lg px-3 py-2"></div>
+      <div><label class="text-xs font-black text-slate-600">To</label><input id="fTo" type="date" class="w-full border border-gray-200 rounded-lg px-3 py-2"></div>
+    </div>
+    <div class="flex flex-wrap gap-2 mt-3">
+      <button class="btn btn-outline" id="btnClearFilters">Clear filters</button>
+      <button class="btn btn-outline" id="btnExportCSV"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+      <button class="btn btn-outline" id="btnBackup"><i class="fa-solid fa-download"></i> Backup JSON</button>
+      <button class="btn btn-danger" id="btnClearData"><i class="fa-solid fa-trash"></i> Clear cashflow data</button>
+    </div>
+  </section>
+
+  <section class="card p-0 overflow-hidden">
+    <div class="p-5 flex items-center justify-between gap-3">
+      <div><h2 class="text-lg font-black text-slate-900">Cash movements</h2><p class="text-xs text-slate-500">Actuals affect current cash; planned entries feed the forecast.</p></div>
+      <div id="movementCount" class="text-xs text-slate-500 mono">0 movements</div>
+    </div>
+    <div class="responsive-table">
+      <table class="min-w-full text-sm">
+        <thead class="bg-gray-50 text-slate-600"><tr><th class="p-3 text-left">Date</th><th class="p-3 text-left">Description</th><th class="p-3 text-left">Category</th><th class="p-3 text-left">Type</th><th class="p-3 text-left">Status</th><th class="p-3 text-right">Amount</th><th class="p-3 text-left">Reference</th><th class="p-3 text-center no-print">Actions</th></tr></thead>
+        <tbody id="movementRows" class="divide-y divide-gray-100"></tbody>
+      </table>
+    </div>
+  </section>
 </main>
 
+<div id="movementModal" class="fixed inset-0 hidden items-center justify-center p-4 z-50 no-print">
+  <div class="modal-backdrop absolute inset-0"></div>
+  <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-5">
+    <div class="flex items-start justify-between gap-3">
+      <div><h3 id="modalTitle" class="text-xl font-black text-slate-900">Add cash movement</h3><p class="text-xs text-slate-500">Use planned for expected future cash and actual once money has moved.</p></div>
+      <button id="btnCloseModal" class="text-slate-500 hover:text-slate-900 text-xl font-black">×</button>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
+      <div><label class="text-xs font-black text-slate-600">Date</label><input id="mDate" type="date" class="w-full border border-gray-200 rounded-lg px-3 py-2"></div>
+      <div><label class="text-xs font-black text-slate-600">Amount</label><input id="mAmount" type="number" min="0" step="0.01" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="0.00"></div>
+      <div class="md:col-span-2"><label class="text-xs font-black text-slate-600">Description</label><input id="mDescription" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Customer payment, rent, salaries..."></div>
+      <div><label class="text-xs font-black text-slate-600">Category</label><input id="mCategory" list="categoryList" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Sales / Payroll / Rent"></div>
+      <div><label class="text-xs font-black text-slate-600">Reference</label><input id="mReference" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="INV-001 / EFT / Contract"></div>
+      <div><label class="text-xs font-black text-slate-600">Type</label><select id="mType" class="w-full border border-gray-200 rounded-lg px-3 py-2"><option value="in">Inflow</option><option value="out">Outflow</option></select></div>
+      <div><label class="text-xs font-black text-slate-600">Status</label><select id="mStatus" class="w-full border border-gray-200 rounded-lg px-3 py-2"><option value="actual">Actual</option><option value="planned">Planned</option></select></div>
+      <div><label class="text-xs font-black text-slate-600">Repeat</label><select id="mRepeat" class="w-full border border-gray-200 rounded-lg px-3 py-2"><option value="none">No repeat</option><option value="monthly">Monthly</option><option value="weekly">Weekly</option></select></div>
+      <div><label class="text-xs font-black text-slate-600">Repeat count</label><input id="mRepeatCount" type="number" min="1" max="52" value="1" class="w-full border border-gray-200 rounded-lg px-3 py-2"></div>
+      <div class="md:col-span-2"><label class="text-xs font-black text-slate-600">Notes</label><textarea id="mNotes" rows="2" class="w-full border border-gray-200 rounded-lg px-3 py-2" placeholder="Optional notes"></textarea></div>
+    </div>
+    <div class="flex justify-end gap-2 mt-5"><button class="btn btn-outline" id="btnCancelModal">Cancel</button><button class="btn btn-primary" id="btnSaveMovement">Save movement</button></div>
+  </div>
+</div>
+
+<datalist id="categoryList"><option>Sales</option><option>Customer payment</option><option>Other income</option><option>Payroll</option><option>Rent</option><option>Supplier</option><option>Utilities</option><option>Tax / VAT</option><option>Marketing</option><option>Software</option><option>Travel</option><option>Loan</option><option>Capital expense</option></datalist>
 <div class="toast hidden" id="toast"><div id="toastMsg"></div></div>
 
 <script>
+const STORE_KEY="easy.cashflow.v2";
+const SETTINGS_KEY="easy.cashflow.settings.v1";
+const el=(id)=>document.getElementById(id);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+function loadJSON(key,fallback){try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(fallback));}catch{return fallback}}
+function saveJSON(key,value){localStorage.setItem(key,JSON.stringify(value))}
+function escapeHtml(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
+function money(n){return new Intl.NumberFormat("en-ZA",{style:"currency",currency:"ZAR",minimumFractionDigits:2}).format(Number(n||0))}
+function isoDate(d){const x=new Date(d);return x.toISOString().slice(0,10)}
+function today(){return isoDate(new Date())}
+function addDays(date,n){const d=new Date(date+"T00:00:00");d.setDate(d.getDate()+n);return isoDate(d)}
+function addMonths(date,n){const d=new Date(date+"T00:00:00");d.setMonth(d.getMonth()+n);return isoDate(d)}
+function monthKey(date){return String(date||"").slice(0,7)}
+function monthLabel(key){const d=new Date(key+"-01T00:00:00");return d.toLocaleDateString("en-ZA",{month:"short",year:"numeric"})}
+function toast(msg){el("toastMsg").textContent=msg;el("toast").classList.remove("hidden");setTimeout(()=>el("toast").classList.add("hidden"),2600)}
+function saveAs(blob,name){const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(url);a.remove()},0)}
+function csvEscape(v){const s=String(v??"");return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s}
+function parseCSV(text){const rows=[];let row=[],cell="",q=false;for(let i=0;i<text.length;i++){const c=text[i],n=text[i+1];if(c==='"'&&q&&n==='"'){cell+='"';i++}else if(c==='"'){q=!q}else if(c===","&&!q){row.push(cell);cell=""}else if((c==="\n"||c==="\r")&&!q){if(c==="\r"&&n==="\n")i++;row.push(cell);if(row.some(x=>x.trim()!==""))rows.push(row);row=[];cell=""}else cell+=c}row.push(cell);if(row.some(x=>x.trim()!==""))rows.push(row);return rows}
+let movements=loadJSON(STORE_KEY,[]);
+let settings=loadJSON(SETTINGS_KEY,{openingBalance:0,forecastMonths:6,scenario:1,alertThreshold:25000});
+let editingId=null;
 
-const $$ = (id) => document.getElementById(id);
-
-function escapeHtml(str){
-  return String(str || "").replace(/[&<>"']/g, m => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
-  }[m]));
+function persist(){saveJSON(STORE_KEY,movements)}
+function persistSettings(){
+  settings={openingBalance:Number(el("openingBalance").value||0),forecastMonths:Number(el("forecastMonths").value||6),scenario:Number(el("scenario").value||1),alertThreshold:Number(el("alertThreshold").value||0)};
+  saveJSON(SETTINGS_KEY,settings)
 }
+function applySettingsToUI(){el("openingBalance").value=settings.openingBalance;el("forecastMonths").value=String(settings.forecastMonths);el("scenario").value=String(settings.scenario);el("alertThreshold").value=settings.alertThreshold}
 
-function saveAs(blob, filename){
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.style.display = "none";
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(()=>{ document.body.removeChild(a); URL.revokeObjectURL(url); }, 0);
+function actualBalance(){
+  return Number(settings.openingBalance||0)+movements.filter(x=>x.status==="actual").reduce((s,x)=>s+(x.type==="in"?1:-1)*Number(x.amount||0),0)
 }
-
-function toast(msg){
-  $$("toastMsg").textContent = msg;
-  $$("toast").classList.remove("hidden");
-  setTimeout(()=> $$("toast").classList.add("hidden"), 2500);
+function periodTotals(days=30){
+  const start=today(),end=addDays(start,days);
+  return movements.filter(x=>x.date>=start&&x.date<=end).reduce((a,x)=>{let amount=Number(x.amount||0);if(x.status==="planned"&&x.type==="in")amount*=settings.scenario;if(x.type==="in")a.in+=amount;else a.out+=amount;return a},{in:0,out:0})
 }
-
-function nowISO(){ return new Date().toISOString(); }
-
-function csvEscape(v){
-  const s = String(v ?? "");
-  if(/[",\n]/.test(s)) return '"' + s.replace(/"/g,'""') + '"';
-  return s;
-}
-function toCSV(rows, headers){
-  const head = headers.join(",");
-  const body = rows.map(r => headers.map(h => csvEscape(r[h])).join(",")).join("\n");
-  return head + "\n" + body + "\n";
-}
-function downloadJSON(data, filename){
-  saveAs(new Blob([JSON.stringify(data,null,2)], {type:"application/json"}), filename);
-}
-function downloadCSV(rows, headers, filename){
-  saveAs(new Blob([toCSV(rows, headers)], {type:"text/csv"}), filename);
-}
-function loadStore(key, fallback){
-  try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); }
-  catch { return fallback; }
-}
-function saveStore(key, data){
-  localStorage.setItem(key, JSON.stringify(data));
-}
-
-
-const STORE_KEY = "easy.cashflow.v1";
-let data = loadStore(STORE_KEY, []);
-function persist(){ saveStore(STORE_KEY, data); }
-
-function importJSONFile(file){
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    try {
-      const parsed = JSON.parse(reader.result);
-      if(!Array.isArray(parsed)) throw new Error("Expected an array");
-      data = parsed;
-      persist();
-      render();
-      toast("Imported " + data.length + " rows");
-    } catch(e) {
-      console.error(e);
-      toast("Import failed");
-    }
-  };
-  reader.readAsText(file);
-}
-
-$("btnImport").addEventListener("click", ()=> $("fileJson").click());
-$("fileJson").addEventListener("change", (e)=> importJSONFile(e.target.files[0]));
-$("btnExport").addEventListener("click", ()=> exportAll());
-$("btnSeed").addEventListener("click", ()=> seed());
-
-function exportAll(){ downloadJSON(data, "easy-cashflow.json"); }
-
-
-function money(n){ const x=Number(n||0); return "R"+x.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,","); }
-function detectKey(prefixes){
-  for(const k of Object.keys(localStorage)){
-    for(const p of prefixes){ if(k===p || k.startsWith(p)) return k; }
+function buildForecast(){
+  const months=[];const now=new Date();let running=actualBalance();
+  for(let i=0;i<settings.forecastMonths;i++){
+    const d=new Date(now.getFullYear(),now.getMonth()+i,1);const key=d.toISOString().slice(0,7);
+    let inflow=0,outflow=0;
+    movements.filter(x=>x.status==="planned"&&monthKey(x.date)===key).forEach(x=>{let a=Number(x.amount||0);if(x.type==="in"){a*=settings.scenario;inflow+=a}else outflow+=a});
+    running+=inflow-outflow;months.push({key,inflow,outflow,net:inflow-outflow,closing:running});
   }
-  return null;
+  return months
 }
-function loadMaybe(key){ if(!key) return []; try{return JSON.parse(localStorage.getItem(key)||"[]");}catch{return [];} }
-function sumReceivables(inv){
-  return (Array.isArray(inv)?inv:[]).reduce((a,r)=>{
-    const status=String(r.invoiceStatus||r.status||"").toLowerCase();
-    const grand=Number(r.grand||r.total||r.amount||0);
-    const paid=Number(r.paid||r.amountPaid||0);
-    const bal=Number(r.balance||Math.max(0,grand-paid)||0);
-    if(status.includes("paid")) return a;
-    return a+bal;
-  },0);
+function avgMonthlyOutflow(){
+  const cutoff=addDays(today(),-90);const total=movements.filter(x=>x.status==="actual"&&x.type==="out"&&x.date>=cutoff&&x.date<=today()).reduce((s,x)=>s+Number(x.amount||0),0);
+  return total/3
 }
-function sumVatOut(inv){ return (Array.isArray(inv)?inv:[]).reduce((a,r)=>a+Number(r.vat||r.vatTotal||0),0); }
-function sumVatIn(exp){ return (Array.isArray(exp)?exp:[]).reduce((a,r)=>a+Number(r.vatAmt||r.vat||0),0); }
-function expThisMonth(exp){
-  const now=new Date(); const ym=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0");
-  return (Array.isArray(exp)?exp:[]).reduce((a,r)=> (String(r.date||r.ts||"").slice(0,7)===ym)? a+Number(r.amountIncl||r.amount||0):a,0);
+function renderKPIs(){
+  const current=actualBalance(),t=periodTotals(30),forecast=buildForecast(),lowest=forecast.length?Math.min(...forecast.map(x=>x.closing)):current,avgOut=avgMonthlyOutflow();
+  el("kCurrent").textContent=money(current);el("kIn30").textContent=money(t.in);el("kOut30").textContent=money(t.out);el("kNet30").textContent=money(t.in-t.out);
+  el("kNet30").className="text-2xl font-black mt-1 "+(t.in-t.out>=0?"text-emerald-700":"text-rose-700");
+  el("kLow").textContent=money(lowest);const lowMonth=forecast.find(x=>x.closing===lowest);el("kLowSub").textContent=lowMonth?"Lowest in "+monthLabel(lowMonth.key):"Projected minimum";
+  el("kRunway").textContent=avgOut>0?(current/avgOut).toFixed(1)+" mo":"—";
+  const banner=el("riskBanner");
+  if(lowest<0){banner.className="mb-6 rounded-xl border border-red-200 bg-red-50 text-red-800 px-4 py-3 text-sm font-bold";banner.textContent="Cash gap warning: the forecast drops below zero. Review collections, planned payments, or financing dates.";banner.classList.remove("hidden")}
+  else if(lowest<settings.alertThreshold){banner.className="mb-6 rounded-xl border border-amber-200 bg-amber-50 text-amber-800 px-4 py-3 text-sm font-bold";banner.textContent="Low-cash warning: forecast minimum is below your alert threshold of "+money(settings.alertThreshold)+".";banner.classList.remove("hidden")}
+  else banner.classList.add("hidden")
 }
-function invValue(inv){ return (Array.isArray(inv)?inv:[]).reduce((a,r)=> a+(Number(r.stock||0)*Number(r.cost||0)),0); }
+function renderForecast(){
+  const f=buildForecast(),rows=el("forecastRows"),chart=el("forecastChart");rows.innerHTML="";chart.innerHTML="";
+  const max=Math.max(1,...f.map(x=>Math.max(Math.abs(x.closing),x.inflow,x.outflow)));
+  f.forEach(x=>{
+    const tr=document.createElement("tr");tr.innerHTML='<td class="p-3 font-bold">'+monthLabel(x.key)+'</td><td class="p-3 text-right text-emerald-700 mono">'+money(x.inflow)+'</td><td class="p-3 text-right text-rose-700 mono">'+money(x.outflow)+'</td><td class="p-3 text-right mono '+(x.net>=0?"text-emerald-700":"text-rose-700")+'">'+money(x.net)+'</td><td class="p-3 text-right font-black mono '+(x.closing>=0?"text-slate-900":"text-red-700")+'">'+money(x.closing)+'</td>';rows.appendChild(tr);
+    const item=document.createElement("div");const width=Math.min(100,Math.abs(x.closing)/max*100);item.innerHTML='<div class="flex justify-between text-xs mb-1"><span class="font-bold">'+monthLabel(x.key)+'</span><span class="mono">'+money(x.closing)+'</span></div><div class="bar-track"><div class="bar-fill" style="width:'+width+'%;background:'+(x.closing<0?"#dc2626":"#2563eb")+'"></div></div>';chart.appendChild(item)
+  });
+  if(f.length)el("forecastRange").textContent=monthLabel(f[0].key)+" → "+monthLabel(f[f.length-1].key)
+}
+function filteredMovements(){
+  const q=el("q").value.trim().toLowerCase(),type=el("fType").value,status=el("fStatus").value,from=el("fFrom").value,to=el("fTo").value;
+  return movements.filter(x=>{const hay=(x.description+" "+x.category+" "+(x.reference||"")+" "+(x.notes||"")).toLowerCase();return(!q||hay.includes(q))&&(!type||x.type===type)&&(!status||x.status===status)&&(!from||x.date>=from)&&(!to||x.date<=to)}).sort((a,b)=>b.date.localeCompare(a.date)||String(b.createdAt||"").localeCompare(String(a.createdAt||"")))
+}
+function renderMovements(){
+  const list=filteredMovements(),tb=el("movementRows");tb.innerHTML="";el("movementCount").textContent=list.length+" movement"+(list.length===1?"":"s");
+  if(!list.length){tb.innerHTML='<tr><td colspan="8" class="p-8 text-center text-slate-500">No cash movements found. Add a movement or seed demo data.</td></tr>';return}
+  list.forEach(x=>{const tr=document.createElement("tr");tr.innerHTML='<td class="p-3 mono">'+escapeHtml(x.date)+'</td><td class="p-3"><div class="font-bold">'+escapeHtml(x.description)+'</div>'+(x.notes?'<div class="text-xs text-slate-500 mt-1">'+escapeHtml(x.notes)+'</div>':'')+'</td><td class="p-3">'+escapeHtml(x.category||"")+'</td><td class="p-3"><span class="pill '+(x.type==="in"?"pill-in":"pill-out")+'">'+(x.type==="in"?"INFLOW":"OUTFLOW")+'</span></td><td class="p-3"><span class="pill '+(x.status==="actual"?"pill-actual":"pill-plan")+'">'+x.status.toUpperCase()+'</span></td><td class="p-3 text-right font-black mono '+(x.type==="in"?"text-emerald-700":"text-rose-700")+'">'+(x.type==="in"?"+":"-")+money(x.amount)+'</td><td class="p-3 mono text-xs">'+escapeHtml(x.reference||"")+'</td><td class="p-3 text-center no-print"><div class="flex flex-wrap justify-center gap-2"><button class="btn btn-outline" data-edit="'+x.id+'">Edit</button>'+(x.status==="planned"?'<button class="btn btn-success" data-actual="'+x.id+'">Mark actual</button>':'')+'<button class="btn btn-danger" data-delete="'+x.id+'">Delete</button></div></td>';tb.appendChild(tr)});
+  tb.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>openEdit(b.dataset.edit));tb.querySelectorAll("[data-actual]").forEach(b=>b.onclick=()=>markActual(b.dataset.actual));tb.querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>removeMovement(b.dataset.delete))
+}
+function render(){persistSettings();renderKPIs();renderForecast();renderMovements()}
 
-function refresh(){
-  const invKey=detectKey(["easy.invoice.v2","easyinv","easy.invoice"]);
-  const inv=loadMaybe(invKey);
-  const exp=loadMaybe("easy.expenses.v1");
-  const invt=loadMaybe("easy.inventory.v2");
-  const k1=sumReceivables(inv);
-  const k2=expThisMonth(exp);
-  const k3=sumVatOut(inv)-sumVatIn(exp);
-  const k4=invValue(invt);
-  $$("k1").textContent=money(k1);
-  $$("k2").textContent=money(k2);
-  $$("k3").textContent=money(k3);
-  $$("k4").textContent=money(k4);
+function openModal(){el("movementModal").classList.remove("hidden");el("movementModal").classList.add("flex")}
+function closeModal(){el("movementModal").classList.add("hidden");el("movementModal").classList.remove("flex");editingId=null}
+function clearMovementForm(){el("mDate").value=today();el("mAmount").value="";el("mDescription").value="";el("mCategory").value="";el("mReference").value="";el("mType").value="in";el("mStatus").value="actual";el("mRepeat").value="none";el("mRepeatCount").value="1";el("mNotes").value=""}
+function openAdd(){editingId=null;el("modalTitle").textContent="Add cash movement";clearMovementForm();openModal()}
+function openEdit(id){const x=movements.find(m=>m.id===id);if(!x)return;editingId=id;el("modalTitle").textContent="Edit cash movement";el("mDate").value=x.date;el("mAmount").value=x.amount;el("mDescription").value=x.description;el("mCategory").value=x.category||"";el("mReference").value=x.reference||"";el("mType").value=x.type;el("mStatus").value=x.status;el("mRepeat").value="none";el("mRepeatCount").value="1";el("mNotes").value=x.notes||"";openModal()}
+function saveMovement(){
+  const amount=Number(el("mAmount").value||0),description=el("mDescription").value.trim(),date=el("mDate").value;
+  if(!date||!description||amount<=0){toast("Date, description and an amount greater than zero are required.");return}
+  const base={date,amount,description,category:el("mCategory").value.trim(),reference:el("mReference").value.trim(),type:el("mType").value,status:el("mStatus").value,notes:el("mNotes").value.trim()};
+  if(editingId){const i=movements.findIndex(x=>x.id===editingId);if(i>=0)movements[i]={...movements[i],...base,updatedAt:new Date().toISOString()}}
+  else{
+    const repeat=el("mRepeat").value,count=Math.max(1,Math.min(52,Number(el("mRepeatCount").value||1)));
+    for(let i=0;i<count;i++){let d=date;if(repeat==="monthly")d=addMonths(date,i);if(repeat==="weekly")d=addDays(date,i*7);movements.push({id:uid(),...base,date:d,createdAt:new Date().toISOString()})}
+  }
+  persist();closeModal();render();toast(editingId?"Movement updated":"Movement saved")
 }
-function seed(){ toast("Seed Invoices/Expenses/Inventory for meaningful KPIs."); }
-function exportAll(){
-  const report={generatedAt:nowISO(), receivables:$$("k1").textContent, expensesThisMonth:$$("k2").textContent, vatNet:$$("k3").textContent, inventoryValue:$$("k4").textContent};
-  downloadJSON(report,"easy-cashflow-report.json");
-}
-$$("btnRefresh").addEventListener("click", ()=>{refresh(); toast("Refreshed");});
-$$("btnExportReport").addEventListener("click", exportAll);
-function render(){ refresh(); }
+function markActual(id){const x=movements.find(m=>m.id===id);if(!x)return;x.status="actual";x.actualAt=new Date().toISOString();persist();render();toast("Marked actual")}
+function removeMovement(id){const x=movements.find(m=>m.id===id);if(!x)return;if(!confirm("Delete "+x.description+"?"))return;movements=movements.filter(m=>m.id!==id);persist();render();toast("Movement deleted")}
 
-render();
+function seed(){
+  if(movements.length&&!confirm("Add demo movements to your existing cashflow data?"))return;
+  const d=today();const sample=[
+    {date:addDays(d,-20),description:"Opening customer receipts",category:"Customer payment",type:"in",status:"actual",amount:85000,reference:"BANK"},
+    {date:addDays(d,-15),description:"Monthly office rent",category:"Rent",type:"out",status:"actual",amount:18500,reference:"LEASE"},
+    {date:addDays(d,-12),description:"Payroll",category:"Payroll",type:"out",status:"actual",amount:62000,reference:"PAYROLL"},
+    {date:addDays(d,-5),description:"Client project payment",category:"Sales",type:"in",status:"actual",amount:120000,reference:"INV-1042"},
+    {date:addDays(d,7),description:"Expected enterprise invoice payment",category:"Customer payment",type:"in",status:"planned",amount:145000,reference:"INV-1051"},
+    {date:addDays(d,10),description:"Cloud supplier payment",category:"Supplier",type:"out",status:"planned",amount:43000,reference:"SUP-882"},
+    {date:addDays(d,18),description:"VAT payment",category:"Tax / VAT",type:"out",status:"planned",amount:27500,reference:"VAT"},
+    {date:addDays(d,28),description:"Payroll",category:"Payroll",type:"out",status:"planned",amount:65000,reference:"PAYROLL"},
+    {date:addMonths(d,2),description:"Annual software renewal",category:"Software",type:"out",status:"planned",amount:38000,reference:"RENEWAL"},
+    {date:addMonths(d,2),description:"Training delivery collection",category:"Sales",type:"in",status:"planned",amount:98000,reference:"INV-1068"}
+  ].map(x=>({id:uid(),...x,createdAt:new Date().toISOString()}));
+  movements.push(...sample);if(Number(settings.openingBalance||0)===0){settings.openingBalance=75000;saveJSON(SETTINGS_KEY,settings);applySettingsToUI()}persist();render();toast("Demo cashflow seeded")
+}
+function detectKey(prefixes){for(const k of Object.keys(localStorage))for(const p of prefixes)if(k===p||k.startsWith(p))return k;return null}
+function syncEasyFile(){
+  let added=0;const existingRefs=new Set(movements.map(x=>x.reference).filter(Boolean));
+  const invoiceKey=detectKey(["easy.invoice.v2","easy.invoice","easyinv"]);const invoices=loadJSON(invoiceKey||"__none__",[]);
+  if(Array.isArray(invoices))invoices.forEach(inv=>{const ref=inv.invoiceNumber||inv.number||inv.id;if(!ref||existingRefs.has(String(ref)))return;const status=String(inv.invoiceStatus||inv.status||"").toLowerCase();const grand=Number(inv.grand||inv.total||inv.amount||0),paid=Number(inv.paid||inv.amountPaid||0),bal=Number(inv.balance??Math.max(0,grand-paid));if(bal<=0)return;movements.push({id:uid(),date:inv.dueDate||inv.invoiceDate||today(),description:"Invoice receivable: "+(inv.clientName||inv.customer||ref),category:"Customer payment",reference:String(ref),type:"in",status:status.includes("paid")?"actual":"planned",amount:bal,notes:"Imported from Easy Invoice",createdAt:new Date().toISOString()});existingRefs.add(String(ref));added++});
+  const expenses=loadJSON("easy.expenses.v1",[]);if(Array.isArray(expenses))expenses.forEach((ex,i)=>{const ref=String(ex.reference||ex.receiptNo||("EXP-"+(ex.id||i)));if(existingRefs.has(ref))return;const amount=Number(ex.amountIncl||ex.amount||ex.total||0);if(amount<=0)return;movements.push({id:uid(),date:ex.date||String(ex.ts||today()).slice(0,10),description:ex.description||ex.supplier||"Expense",category:ex.category||"Expense",reference:ref,type:"out",status:"actual",amount,notes:"Imported from Easy Expenses",createdAt:new Date().toISOString()});existingRefs.add(ref);added++});
+  persist();render();toast(added?("Synced "+added+" movement"+(added===1?"":"s")):"No new EasyFile finance movements found")
+}
+function exportJSON(){saveAs(new Blob([JSON.stringify({version:2,exportedAt:new Date().toISOString(),settings,movements},null,2)],{type:"application/json"}),"easy-cashflow-backup.json")}
+function exportCSV(){
+  const headers=["date","description","category","type","status","amount","reference","notes"];const lines=[headers.join(","),...movements.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(x=>headers.map(h=>csvEscape(x[h])).join(","))].join("\n");
+  saveAs(new Blob([lines],{type:"text/csv;charset=utf-8"}),"easy-cashflow.csv")
+}
+function importFile(file){
+  if(!file)return;const reader=new FileReader();reader.onload=()=>{try{if(file.name.toLowerCase().endsWith(".csv")){const rows=parseCSV(reader.result);if(rows.length<2)throw new Error("No rows");const headers=rows[0].map(x=>x.trim());let count=0;rows.slice(1).forEach(r=>{const o={};headers.forEach((h,i)=>o[h]=r[i]??"");const amount=Number(o.amount||0);if(!o.date||!o.description||amount<=0)return;movements.push({id:uid(),date:o.date,description:o.description,category:o.category||"",type:o.type==="out"?"out":"in",status:o.status==="planned"?"planned":"actual",amount,reference:o.reference||"",notes:o.notes||"",createdAt:new Date().toISOString()});count++});persist();render();toast("Imported "+count+" CSV rows")}else{const parsed=JSON.parse(reader.result);if(Array.isArray(parsed))movements=parsed;else if(Array.isArray(parsed.movements)){movements=parsed.movements;if(parsed.settings){settings={...settings,...parsed.settings};saveJSON(SETTINGS_KEY,settings);applySettingsToUI()}}else throw new Error("Unsupported JSON");persist();render();toast("Cashflow data imported")}}catch(e){console.error(e);toast("Import failed: check file format")}};reader.readAsText(file)
+}
+
+el("btnAdd").onclick=openAdd;el("btnSeed").onclick=seed;el("btnSync").onclick=syncEasyFile;el("btnApplySettings").onclick=()=>{persistSettings();render();toast("Forecast recalculated")};
+el("btnImport").onclick=()=>el("fileImport").click();el("fileImport").onchange=e=>{importFile(e.target.files[0]);e.target.value=""};el("btnExport").onclick=exportJSON;el("btnBackup").onclick=exportJSON;el("btnExportCSV").onclick=exportCSV;
+el("btnCloseModal").onclick=closeModal;el("btnCancelModal").onclick=closeModal;el("btnSaveMovement").onclick=saveMovement;
+["q","fType","fStatus","fFrom","fTo"].forEach(id=>el(id).addEventListener(id==="q"?"input":"change",renderMovements));
+el("btnClearFilters").onclick=()=>{["q","fType","fStatus","fFrom","fTo"].forEach(id=>el(id).value="");renderMovements()};
+el("btnClearData").onclick=()=>{if(!confirm("Clear all Easy Cash Flow movements? This does not delete Invoice, Expenses or Inventory data."))return;movements=[];persist();render();toast("Cashflow data cleared")};
+applySettingsToUI();render();
 </script>
 <script defer src="scripts/sync-nav.js"></script>
 </body>
