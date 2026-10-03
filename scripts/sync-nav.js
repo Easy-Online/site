@@ -48,6 +48,7 @@
     { name: "SLA", href: "easy-sla.html", icon: "fa-stopwatch", group: "Operations", description: "Define service commitments, track response and resolution targets, and monitor SLA performance", landing: true },
     { name: "POS", href: "easy-pos.html", icon: "fa-cash-register", group: "Operations", description: "Record point-of-sale transactions and daily sales", landing: true },
     { name: "Projects", href: "easy-projects.html", icon: "fa-diagram-project", group: "Operations", description: "Plan and track projects, tasks and delivery", landing: true },
+    { name: "Lease", href: "easy-lease.html", icon: "fa-key", group: "Operations", description: "Create and manage property and asset lease agreements", landing: true },
     { name: "Assets", href: "easy-asset-management.html", icon: "fa-screwdriver-wrench", group: "Operations", description: "Maintain the asset register" },
     { name: "Asset Register", href: "easy-assets-register.html", icon: "fa-list-check", group: "Operations", description: "Maintain a structured business asset register", landing: true },
     { name: "Inspections", href: "easy-site-inspection.html", icon: "fa-clipboard-check", group: "Operations", description: "Capture site inspection records" },
