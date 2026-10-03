@@ -23,7 +23,7 @@ The product is designed for small businesses, independent professionals and oper
 | Purchase orders | Inventory |
 | Sales orders | CRM |
 | Receipts | Asset management |
-| Statements | Site inspections |
+| Statements | Site inspections |\n| Easy Register |
 | PDF bank statement converter | Referral access dashboard |
 
 ## Easy Bank Statement Converter
