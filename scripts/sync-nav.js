@@ -36,6 +36,7 @@
     { name: "Tender", href: "easy-tender.html", icon: "fa-file-circle-check", group: "Documents", description: "Analyse tenders, RFQs and RFPs into compliance matrices, evidence packs, action plans and submission checklists", landing: true },
 
     { name: "Expenses", href: "easy-expenses.html", icon: "fa-wallet", group: "Finance", description: "Capture, categorise and review business expenses", landing: true },
+    { name: "Fuel Logbook", href: "easy-fuel-logbook.html", icon: "fa-gas-pump", group: "Operations", description: "Track fuel, mileage, business travel, vehicle efficiency and running cost", landing: true },
     { name: "Cash Flow", href: "easy-cashflow.html", icon: "fa-chart-line", group: "Finance", description: "Track cash inflows, outflows and running balances", landing: true },
     { name: "VAT", href: "easy-vat.html", icon: "fa-calculator", group: "Finance", description: "Prepare and review VAT calculations", landing: true },
     { name: "Budgets", href: "easy-budgets.html", icon: "fa-chart-pie", group: "Finance", description: "Build and monitor business budgets", landing: true },
