@@ -273,7 +273,7 @@ function saveMovement(){
     const repeat=el("mRepeat").value,count=Math.max(1,Math.min(52,Number(el("mRepeatCount").value||1)));
     for(let i=0;i<count;i++){let d=date;if(repeat==="monthly")d=addMonths(date,i);if(repeat==="weekly")d=addDays(date,i*7);movements.push({id:uid(),...base,date:d,createdAt:new Date().toISOString()})}
   }
-  persist();closeModal();render();toast(editingId?"Movement updated":"Movement saved")
+  const wasEditing=Boolean(editingId);persist();closeModal();render();toast(wasEditing?"Movement updated":"Movement saved")
 }
 function markActual(id){const x=movements.find(m=>m.id===id);if(!x)return;x.status="actual";x.actualAt=new Date().toISOString();persist();render();toast("Marked actual")}
 function removeMovement(id){const x=movements.find(m=>m.id===id);if(!x)return;if(!confirm("Delete "+x.description+"?"))return;movements=movements.filter(m=>m.id!==id);persist();render();toast("Movement deleted")}
