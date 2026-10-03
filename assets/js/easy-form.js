@@ -1,14 +1,24 @@
 (function(){"use strict";
 const $=id=>document.getElementById(id);
-const FORM_KEY="easy.form.forms.v1",RESPONSE_KEY="easy.form.responses.v1",DRAFT_KEY="easy.form.draft.v1";
-let forms=read(FORM_KEY,[]),responses=read(RESPONSE_KEY,[]),current=null;
+const FORM_KEY="easy.form.forms.v1",RESPONSE_KEY="easy.form.responses.v1",DRAFT_KEY="easy.form.draft.v1",OWNER_KEY="easy.form.owner-token.v1";
+const API_BASE="https://easyfile-referrals-prod-za.azurewebsites.net/api/easy-form";
+let forms=read(FORM_KEY,[]),responses=read(RESPONSE_KEY,[]),current=null,published=false,publicMode=false;
+let ownerToken=read(OWNER_KEY,"");
+if(!ownerToken){ownerToken=(window.crypto&&crypto.randomUUID?crypto.randomUUID()+crypto.randomUUID():uid("owner")+uid("owner"));write(OWNER_KEY,ownerToken)}
 
 function read(k,f){try{const v=JSON.parse(localStorage.getItem(k)||JSON.stringify(f));return v??f}catch(_){return f}}
-function write(k,v){localStorage.setItem(k,JSON.stringify(v))}
+function write(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(_){return false}}
 function uid(prefix){if(window.crypto&&crypto.randomUUID)return prefix+"-"+crypto.randomUUID();return prefix+"-"+Date.now()+"-"+Math.random().toString(16).slice(2)}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
 function now(){return new Date().toISOString()}
-function toast(msg){$("aiStatus").textContent=msg;clearTimeout(toast.t);toast.t=setTimeout(()=>$("aiStatus").textContent="Local generation is available immediately.",2600)}
+function toast(msg){if($("aiStatus"))$("aiStatus").textContent=msg;clearTimeout(toast.t);toast.t=setTimeout(()=>{if($("aiStatus"))$("aiStatus").textContent="Local generation is available immediately."},2600)}
+function shareUrl(){return location.origin+location.pathname+"?form="+encodeURIComponent(current.id)}
+function apiHeaders(owner=false){const h={"Content-Type":"application/json"};if(owner)h["X-EasyForm-Owner-Token"]=ownerToken;return h}
+async function api(path,options={}){const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),12000);try{const r=await fetch(API_BASE+path,{...options,signal:controller.signal});let data={};try{data=await r.json()}catch(_){data={}}if(!r.ok)throw new Error(data.message||data.error||("HTTP "+r.status));return data}finally{clearTimeout(timer)}}
+function setPublishState(isPublished,message){published=!!isPublished;const status=$("publishStatus"),link=$("shareUrl");if(status)status.textContent=message||(published?"Published online and ready to collect responses.":"Draft is stored in this browser until you publish it online.");if(link){link.textContent=published?shareUrl():"Not published";link.href=published?shareUrl():"#"}}
+async function publishForm(){fromUI();if(!current.fields.length)return toast("Add at least one question before publishing.");$("publishStatus").textContent="Publishing form…";try{await api("/forms",{method:"POST",headers:{...apiHeaders(true),"X-EasyForm-Owner-Token":ownerToken},body:JSON.stringify({...current,ownerToken})});saveLocal();setPublishState(true);toast("Form published online.");return true}catch(error){setPublishState(false,"Publish failed: "+error.message);toast("Could not publish online.");return false}}
+async function copyShareLink(){if(!published){const ok=await publishForm();if(!ok)return}try{await navigator.clipboard.writeText(shareUrl());toast("Share link copied.")}catch(_){prompt("Copy this share link:",shareUrl())}}
+async function loadRemoteForm(id){$("publishStatus").textContent="Loading published form…";const data=await api("/forms/"+encodeURIComponent(id));current={...blankForm(),...data.form,id:data.form.id,fields:Array.isArray(data.form.fields)?data.form.fields:[]};publicMode=true;setPublishState(true,"Published form loaded. Responses are submitted securely online.");toUI();document.querySelectorAll(".ef-tab").forEach(x=>x.setAttribute("aria-selected",String(x.dataset.tab==="preview")));document.querySelectorAll(".ef-view").forEach(v=>v.classList.add("hidden"));$("view-preview").classList.remove("hidden");document.querySelectorAll("#btnSaveForm,#btnPublishForm,#btnCopyShareLink,#btnNewForm,#btnSeed,#btnExportForm").forEach(el=>{if(el)el.classList.add("hidden")})}
 function download(name,blob){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),0)}
 function csv(v){const s=String(v??"");return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s}
 
@@ -85,21 +95,23 @@ function collectResponse(){
  current.fields.forEach(f=>{answers[f.id]=f.type==="checkbox"?fd.getAll(f.id):f.type==="consent"?(fd.get(f.id)||"No"):(fd.get(f.id)||"")});
  return{id:uid("resp"),formId:current.id,formTitle:current.title,status:"New",answers,submittedAt:now(),reviewedAt:null,reviewNote:""};
 }
-function submitResponse(){const r=collectResponse();if(!r)return;responses.unshift(r);write(RESPONSE_KEY,responses);renderResponses();renderKpis();$("responseForm").reset();$("submitMessage").textContent=current.settings?.confirmationMessage||"Thank you. Your response has been received.";$("submitMessage").classList.remove("hidden")}
+async function submitResponse(){const r=collectResponse();if(!r)return;const button=$("btnSubmitResponse");if(button)button.disabled=true;try{if(publicMode||published){await api("/forms/"+encodeURIComponent(current.id)+"/responses",{method:"POST",headers:apiHeaders(false),body:JSON.stringify({answers:r.answers,respondentEmail:r.answers?._respondentEmail||""})})}else{responses.unshift(r);write(RESPONSE_KEY,responses);renderResponses();renderKpis()}$("responseForm").reset();$("submitMessage").textContent=current.settings?.confirmationMessage||"Thank you. Your response has been received.";$("submitMessage").classList.remove("hidden")}catch(error){$("submitMessage").textContent="Submission failed: "+error.message;$("submitMessage").classList.remove("hidden")}finally{if(button)button.disabled=false}}
 function answerText(r){return current.fields.map(f=>{const v=r.answers?.[f.id];return f.label+": "+(Array.isArray(v)?v.join("; "):String(v??""))}).join(" | ")+" "+(r.answers?._respondentEmail||"")}
+async function refreshResponses(){if(!published||publicMode)return;try{const data=await api("/forms/"+encodeURIComponent(current.id)+"/responses",{headers:apiHeaders(true)});responses=(responses||[]).filter(r=>r.formId!==current.id).concat(data.responses||[]);write(RESPONSE_KEY,responses);renderResponses();renderKpis();toast("Responses refreshed.")}catch(error){toast("Could not refresh responses: "+error.message)}}
 function renderResponses(){
  const host=$("responseList"),q=($("responseSearch").value||"").toLowerCase(),status=$("responseStatusFilter").value;
  const list=responses.filter(r=>r.formId===current.id).filter(r=>(!status||r.status===status)&&(!q||answerText(r).toLowerCase().includes(q)));
  if(!list.length){host.innerHTML='<div class="ef-empty">No responses match this view.</div>';return}
  host.innerHTML=list.map(r=>'<article class="ef-field-card"><div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3"><div><div class="flex flex-wrap items-center gap-2"><strong>'+esc(r.status)+'</strong><span class="ef-pill">'+esc(new Date(r.submittedAt).toLocaleString("en-ZA"))+'</span></div><div class="mt-3 space-y-1 text-sm">'+current.fields.map(f=>'<div><span class="font-bold">'+esc(f.label)+':</span> '+esc(Array.isArray(r.answers?.[f.id])?r.answers[f.id].join(", "):r.answers?.[f.id]||"—")+'</div>').join("")+(r.answers?._respondentEmail?'<div><span class="font-bold">Respondent email:</span> '+esc(r.answers._respondentEmail)+'</div>':'')+'</div><div class="mt-3"><input class="ef-field" data-note="'+r.id+'" value="'+esc(r.reviewNote||"")+'" placeholder="Reviewer note"></div></div><div class="flex flex-wrap gap-2 no-print"><button class="ef-btn ef-btn-soft" data-status="'+r.id+'" data-next="Reviewed"><i class="fa-solid fa-check"></i> Reviewed</button><button class="ef-btn ef-btn-soft" data-status="'+r.id+'" data-next="Flagged"><i class="fa-solid fa-flag"></i> Flag</button><button class="ef-btn ef-btn-soft" data-delete-response="'+r.id+'"><i class="fa-solid fa-trash text-red-600"></i></button></div></div></article>').join("");
- host.querySelectorAll("[data-status]").forEach(b=>b.onclick=()=>{const r=responses.find(x=>x.id===b.dataset.status);if(!r)return;r.status=b.dataset.next;r.reviewedAt=now();write(RESPONSE_KEY,responses);renderResponses();renderKpis()});
- host.querySelectorAll("[data-note]").forEach(i=>i.onchange=()=>{const r=responses.find(x=>x.id===i.dataset.note);if(!r)return;r.reviewNote=i.value;write(RESPONSE_KEY,responses)});
- host.querySelectorAll("[data-delete-response]").forEach(b=>b.onclick=()=>{if(!confirm("Delete this response?"))return;responses=responses.filter(x=>x.id!==b.dataset.deleteResponse);write(RESPONSE_KEY,responses);renderResponses();renderKpis()});
+ host.querySelectorAll("[data-status]").forEach(b=>b.onclick=async()=>{const r=responses.find(x=>x.id===b.dataset.status);if(!r)return;r.status=b.dataset.next;r.reviewedAt=now();write(RESPONSE_KEY,responses);renderResponses();renderKpis();if(published){try{await api("/forms/"+encodeURIComponent(current.id)+"/responses/"+encodeURIComponent(r.id),{method:"PATCH",headers:apiHeaders(true),body:JSON.stringify({status:r.status,reviewNote:r.reviewNote||""})})}catch(error){toast("Server update failed: "+error.message)}}});
+ host.querySelectorAll("[data-note]").forEach(i=>i.onchange=async()=>{const r=responses.find(x=>x.id===i.dataset.note);if(!r)return;r.reviewNote=i.value;write(RESPONSE_KEY,responses);if(published){try{await api("/forms/"+encodeURIComponent(current.id)+"/responses/"+encodeURIComponent(r.id),{method:"PATCH",headers:apiHeaders(true),body:JSON.stringify({status:r.status,reviewNote:r.reviewNote})})}catch(error){toast("Server note update failed: "+error.message)}}});
+ host.querySelectorAll("[data-delete-response]").forEach(b=>b.onclick=async()=>{if(!confirm("Delete this response?"))return;const id=b.dataset.deleteResponse;if(published){try{await api("/forms/"+encodeURIComponent(current.id)+"/responses/"+encodeURIComponent(id),{method:"DELETE",headers:apiHeaders(true)})}catch(error){return toast("Server delete failed: "+error.message)}}responses=responses.filter(x=>x.id!==id);write(RESPONSE_KEY,responses);renderResponses();renderKpis()});
 }
 function renderKpis(){const mine=responses.filter(r=>r.formId===current.id);$("kpiForms").textContent=forms.length;$("kpiResponses").textContent=mine.length;$("kpiReviewed").textContent=mine.filter(r=>r.status==="Reviewed").length;$("kpiFlagged").textContent=mine.filter(r=>r.status==="Flagged").length}
 function renderSaved(){const s=$("savedForms");s.innerHTML=forms.length?forms.map(f=>'<option value="'+f.id+'">'+esc(f.title)+'</option>').join(""):'<option value="">No saved forms</option>';if(forms.some(f=>f.id===current.id))s.value=current.id}
 
-function saveForm(){fromUI();const i=forms.findIndex(f=>f.id===current.id);if(i>=0)forms[i]=JSON.parse(JSON.stringify(current));else forms.unshift(JSON.parse(JSON.stringify(current)));write(FORM_KEY,forms);renderSaved();renderKpis();toast("Form saved locally.")}
+function saveLocal(){const i=forms.findIndex(f=>f.id===current.id);if(i>=0)forms[i]=JSON.parse(JSON.stringify(current));else forms.unshift(JSON.parse(JSON.stringify(current)));write(FORM_KEY,forms);renderSaved();renderKpis()}
+function saveForm(){fromUI();saveLocal();toast("Draft saved locally.")}
 function loadForm(){const f=forms.find(x=>x.id===$("savedForms").value);if(!f)return;current=JSON.parse(JSON.stringify(f));toUI();toast("Form loaded.")}
 function deleteForm(){const id=$("savedForms").value;if(!id)return;if(!confirm("Delete this saved form? Existing responses will be retained."))return;forms=forms.filter(f=>f.id!==id);write(FORM_KEY,forms);renderSaved();renderKpis();toast("Saved form deleted.")}
 function newForm(){if(!confirm("Start a new form? Save the current form first if needed."))return;current=blankForm();current.fields=[makeField("text","Full name"),makeField("email","Email address")];toUI()}
@@ -144,10 +156,12 @@ $("btnAddField").onclick=()=>{current.fields.push(makeField($("newFieldType").va
 ["formTitle","formCategory","formDescription","settingAnonymous","settingOneResponse","settingConfirm","settingCollectEmail","confirmationMessage","responseOwner","retentionDays"].forEach(id=>$(id).addEventListener("input",()=>{fromUI();renderPreview()}));
 $("btnSubmitResponse").onclick=submitResponse;$("btnClearResponse").onclick=()=>{$("responseForm").reset();$("submitMessage").classList.add("hidden")};
 $("responseSearch").oninput=renderResponses;$("responseStatusFilter").onchange=renderResponses;
-$("btnSaveForm").onclick=saveForm;$("btnLoadForm").onclick=loadForm;$("btnDeleteForm").onclick=deleteForm;$("btnNewForm").onclick=newForm;$("btnSeed").onclick=seed;$("btnAiGenerate").onclick=aiGenerate;$("btnAiReview").onclick=aiReview;
+$("btnSaveForm").onclick=saveForm;$("btnPublishForm").onclick=publishForm;$("btnCopyShareLink").onclick=copyShareLink;$("btnRefreshResponses").onclick=refreshResponses;$("btnLoadForm").onclick=loadForm;$("btnDeleteForm").onclick=deleteForm;$("btnNewForm").onclick=newForm;$("btnSeed").onclick=seed;$("btnAiGenerate").onclick=aiGenerate;$("btnAiReview").onclick=aiReview;
 $("btnExportForm").onclick=()=>{fromUI();download("easy-form-"+current.id+".json",new Blob([JSON.stringify(current,null,2)],{type:"application/json"}))};
 $("btnExportResponsesCsv").onclick=()=>exportResponses("csv");$("btnExportResponsesJson").onclick=()=>exportResponses("json");
 $("btnCopySchema").onclick=async()=>{const txt=JSON.stringify(schema(),null,2);try{await navigator.clipboard.writeText(txt);toast("JSON Schema copied.")}catch(_){download("easy-form-schema.json",new Blob([txt],{type:"application/json"}));toast("Schema downloaded.")}};
 
-current=read(DRAFT_KEY,null)||forms[0]||blankForm();if(!current.fields)current.fields=[];toUI();
+current=read(DRAFT_KEY,null)||forms[0]||blankForm();if(!current.fields)current.fields=[];toUI();setPublishState(false);
+const requestedForm=new URLSearchParams(location.search).get("form");
+if(requestedForm){loadRemoteForm(requestedForm).catch(error=>{setPublishState(false,"Could not load published form: "+error.message);toast("Published form could not be loaded.")})}
 })();
