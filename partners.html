@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>EasyFile Partners | Reseller & Affiliate Programme</title>
+  <meta name="description" content="Apply to join the EasyFile partner programme as a referral affiliate, reseller or solution partner. Register opportunities, plan partner revenue and track onboarding in one workspace.">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="theme-color" content="#061a4d">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/easyfile-brand-tokens.css">
+  <link rel="stylesheet" href="assets/css/easyfile-site.css">
+  <link rel="stylesheet" href="assets/css/easyfile-footer.css">
+  <link rel="stylesheet" href="assets/css/easyfile-referrals.css">
+  <link rel="stylesheet" href="assets/css/easyfile-navigation.css">
+  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
+  <link rel="apple-touch-icon" href="logo-b.png">
+  <style>
+    :root{--p-blue:#2563eb;--p-deep:#061a4d;--p-ink:#0f172a;--p-muted:#64748b;--p-surface:#fff;--p-bg:#edf4ff;--p-border:#dbe6f5}
+    html[data-theme="dark"]{--p-ink:#e5e7eb;--p-muted:#9fb0c8;--p-surface:#0f172a;--p-bg:#07101f;--p-border:rgba(148,163,184,.22)}
+    *{box-sizing:border-box} body.easyfile-app{font-family:Inter,system-ui,sans-serif;background:var(--p-bg);color:var(--p-ink)}
+    .partner-hero{background:linear-gradient(135deg,#061a4d,#0b3ba8 58%,#2563eb);color:#fff;padding:clamp(3rem,7vw,6rem) 1rem;overflow:hidden;position:relative}
+    .partner-hero:after{content:"";position:absolute;width:32rem;height:32rem;border-radius:999px;right:-12rem;top:-14rem;background:rgba(56,189,248,.18)}
+    .partner-shell{width:min(100% - 2rem,92rem);margin:auto;position:relative;z-index:1}
+    .hero-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(19rem,.85fr);gap:3rem;align-items:center}
+    .eyebrow{font-size:.78rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#7dd3fc}
+    h1{font-size:clamp(2.7rem,6vw,5.4rem);line-height:.95;letter-spacing:-.055em;font-weight:900;margin:.5rem 0 1rem}
+    .hero-copy{font-size:clamp(1rem,1.5vw,1.25rem);line-height:1.7;color:rgba(255,255,255,.84);max-width:52rem}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.6rem}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:2.9rem;border-radius:.8rem;padding:.75rem 1rem;font-weight:900;border:1px solid transparent;cursor:pointer;text-decoration:none}
+    .btn-primary{background:#fff;color:#0b3ba8}.btn-blue{background:#2563eb;color:#fff}.btn-outline{border-color:var(--p-border);background:var(--p-surface);color:var(--p-ink)}
+    .hero-card,.card{border:1px solid var(--p-border);border-radius:1.25rem;background:var(--p-surface);box-shadow:0 18px 46px rgba(15,23,42,.10)}
+    .hero-card{padding:1.4rem;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.18);color:#fff;backdrop-filter:blur(12px)}
+    .hero-card ul{display:grid;gap:.9rem;margin-top:1rem}.hero-card li{display:flex;gap:.65rem;align-items:flex-start;color:rgba(255,255,255,.85)}
+    .hero-card i{color:#7dd3fc;margin-top:.2rem}
+    main{width:min(100% - 2rem,92rem);margin:auto;padding:3rem 0 5rem}
+    .section-head{max-width:52rem;margin-bottom:1.4rem}.section-head h2{font-size:clamp(1.8rem,3vw,2.7rem);font-weight:900;letter-spacing:-.035em;margin:.3rem 0}.muted{color:var(--p-muted)}
+    .track-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}.track{padding:1.35rem}.track-icon{width:3rem;height:3rem;display:grid;place-items:center;border-radius:.9rem;background:#eff6ff;color:#2563eb;font-size:1.25rem}
+    .track h3{font-size:1.15rem;font-weight:900;margin:.9rem 0 .45rem}.track p{color:var(--p-muted);line-height:1.6;font-size:.9rem}.track ul{margin:.8rem 0 0;padding-left:1.1rem;color:var(--p-muted);font-size:.86rem;line-height:1.7}
+    .workspace{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(20rem,.85fr);gap:1rem;margin-top:3.5rem;align-items:start}.card{padding:1.35rem}
+    .tabs{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem}.tab{border:1px solid var(--p-border);border-radius:.7rem;padding:.65rem .9rem;background:var(--p-surface);color:var(--p-ink);font-weight:850;cursor:pointer}.tab.is-active{background:#2563eb;color:#fff;border-color:#2563eb}
+    .panel[hidden]{display:none}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.9rem}.field{display:grid;gap:.35rem}.field.full{grid-column:1/-1}
+    label{font-size:.78rem;font-weight:900;color:var(--p-muted)} input,select,textarea{width:100%;border:1px solid var(--p-border);border-radius:.75rem;padding:.72rem .8rem;background:var(--p-surface);color:var(--p-ink);font:inherit}
+    input:focus,select:focus,textarea:focus{outline:none;border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.14)}
+    .check-row{display:flex;gap:.65rem;align-items:flex-start}.check-row input{width:auto;margin-top:.2rem}.check-row label{font-weight:700;line-height:1.5}
+    .action-row{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1rem}.status{margin-top:1rem;border-radius:.8rem;padding:.8rem 1rem;font-size:.84rem;font-weight:750}.status.info{background:#eff6ff;color:#1e40af}.status.success{background:#ecfdf5;color:#166534}.status.error{background:#fef2f2;color:#991b1b}
+    .kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}.kpi{border:1px solid var(--p-border);border-radius:.9rem;padding:1rem}.kpi small{display:block;color:var(--p-muted);font-weight:850}.kpi strong{display:block;font-size:1.5rem;margin-top:.2rem}
+    .calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:1rem}.calc-result{margin-top:1rem;border-radius:1rem;padding:1rem;background:#061a4d;color:#fff}.calc-result strong{font-size:1.65rem}.fine{font-size:.75rem;line-height:1.55;color:var(--p-muted)}
+    .checklist{display:grid;gap:.65rem;margin-top:1rem}.checkitem{display:flex;align-items:center;gap:.7rem;border:1px solid var(--p-border);border-radius:.8rem;padding:.8rem}.checkitem input{width:auto}
+    .deal-table{width:100%;border-collapse:collapse;margin-top:1rem;font-size:.82rem}.deal-table th,.deal-table td{padding:.7rem;border-bottom:1px solid var(--p-border);text-align:left}.deal-table th{color:var(--p-muted);font-size:.72rem;text-transform:uppercase}
+    .note{margin-top:3rem;border:1px solid #f6cf70;border-radius:1rem;padding:1rem 1.1rem;background:#fff8df;color:#713f12;font-size:.84rem;line-height:1.6}
+    html[data-theme="dark"] .track-icon{background:#172554} html[data-theme="dark"] .note{background:#2b1c05;color:#fde68a;border-color:rgba(245,158,11,.35)}
+    @media(max-width:950px){.hero-grid,.workspace{grid-template-columns:1fr}.track-grid{grid-template-columns:1fr}.hero-card{max-width:40rem}.workspace aside{order:-1}}
+    @media(max-width:640px){.form-grid,.calc-grid,.kpis{grid-template-columns:1fr}.hero-actions,.action-row{display:grid}.btn{width:100%}}
+  </style>
+</head>
+<body class="easyfile-app">
+  <div class="easyfile-nav no-print"><a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a></div>
+
+  <header class="partner-hero">
+    <div class="partner-shell hero-grid">
+      <section>
+        <p class="eyebrow">EasyFile Partner Network</p>
+        <h1>Grow with EasyFile.</h1>
+        <p class="hero-copy">Refer customers, resell EasyFile solutions or deliver implementation services. The partner programme gives channel partners a structured path to register opportunities, build recurring customer relationships and expand EasyFile into new markets.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#apply"><i class="fa-solid fa-handshake"></i>Apply to become a partner</a>
+          <a class="btn" style="border-color:rgba(255,255,255,.3);color:#fff;background:rgba(255,255,255,.08)" href="#workspace"><i class="fa-solid fa-chart-line"></i>Preview partner workspace</a>
+        </div>
+      </section>
+      <aside class="hero-card">
+        <p class="eyebrow">Designed for channel growth</p>
+        <ul>
+          <li><i class="fa-solid fa-check"></i><span>Three routes: referral affiliate, reseller and solution/implementation partner.</span></li>
+          <li><i class="fa-solid fa-check"></i><span>Opportunity registration with customer, market, product and value information.</span></li>
+          <li><i class="fa-solid fa-check"></i><span>Local-first application drafts and portable JSON/CSV exports.</span></li>
+          <li><i class="fa-solid fa-check"></i><span>Commercial terms remain subject to an approved partner agreement.</span></li>
+        </ul>
+      </aside>
+    </div>
+  </header>
+
+  <main>
+    <section aria-labelledby="paths-title">
+      <div class="section-head">
+        <p class="eyebrow" style="color:#2563eb">Choose your route</p>
+        <h2 id="paths-title">One programme, three partner motions.</h2>
+        <p class="muted">Start with the model that matches how you sell. Approved partners can expand their scope as their pipeline and delivery capability grow.</p>
+      </div>
+      <div class="track-grid">
+        <article class="card track"><div class="track-icon"><i class="fa-solid fa-link"></i></div><h3>Referral Affiliate</h3><p>Introduce qualified organisations and keep a clean record of referrals without taking responsibility for delivery.</p><ul><li>Referral registration</li><li>Campaign/source tracking</li><li>Status visibility</li><li>Commercial reward subject to agreement</li></ul></article>
+        <article class="card track"><div class="track-icon"><i class="fa-solid fa-store"></i></div><h3>Authorized Reseller</h3><p>Own the customer relationship, build EasyFile into your commercial offering and register sales opportunities.</p><ul><li>Deal registration</li><li>Sales enablement</li><li>Co-selling support</li><li>Reseller pricing subject to approval</li></ul></article>
+        <article class="card track"><div class="track-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div><h3>Solution Partner</h3><p>Combine EasyFile with onboarding, migration, workflow design, training, integrations and managed services.</p><ul><li>Services-led opportunities</li><li>Implementation capability profile</li><li>Joint solution planning</li><li>Multi-market delivery support</li></ul></article>
+      </div>
+    </section>
+
+    <section id="workspace" class="workspace">
+      <div class="card">
+        <div class="tabs" role="tablist" aria-label="Partner workspace">
+          <button class="tab is-active" type="button" data-tab="apply">Partner application</button>
+          <button class="tab" type="button" data-tab="deals">Deal registration</button>
+          <button class="tab" type="button" data-tab="onboarding">Onboarding</button>
+        </div>
+
+        <section id="apply" class="panel" data-panel="apply">
+          <h2 class="text-2xl font-black">Partner registration</h2>
+          <p class="muted mt-2">Complete the profile below. Your draft is saved only in this browser until you export or submit it to a configured intake service.</p>
+          <form id="partnerForm" class="mt-5" novalidate>
+            <div class="form-grid">
+              <div class="field"><label for="company">Company / trading name *</label><input id="company" name="company" required autocomplete="organization"></div>
+              <div class="field"><label for="country">Primary country *</label><input id="country" name="country" required value="South Africa" autocomplete="country-name"></div>
+              <div class="field"><label for="contact">Primary contact *</label><input id="contact" name="contact" required autocomplete="name"></div>
+              <div class="field"><label for="email">Business email *</label><input id="email" name="email" type="email" required autocomplete="email"></div>
+              <div class="field"><label for="phone">Phone / WhatsApp</label><input id="phone" name="phone" autocomplete="tel"></div>
+              <div class="field"><label for="website">Website</label><input id="website" name="website" type="url" placeholder="https://"></div>
+              <div class="field"><label for="partnerType">Partner route *</label><select id="partnerType" name="partnerType" required><option value="">Choose one</option><option>Referral Affiliate</option><option>Authorized Reseller</option><option>Solution / Implementation Partner</option><option>Distributor / Aggregator</option></select></div>
+              <div class="field"><label for="markets">Markets / territories</label><input id="markets" name="markets" placeholder="South Africa, Botswana, Rwanda…"></div>
+              <div class="field"><label for="customerType">Primary customer segment</label><select id="customerType" name="customerType"><option>SME / small business</option><option>Mid-market</option><option>Enterprise</option><option>Public sector</option><option>Accounting / bookkeeping firms</option><option>Mixed portfolio</option></select></div>
+              <div class="field"><label for="pipeline">Estimated monthly opportunity value (ZAR)</label><input id="pipeline" name="pipeline" type="number" min="0" step="1000" placeholder="50000"></div>
+              <div class="field full"><label for="capabilities">Sales, implementation or industry capabilities</label><textarea id="capabilities" name="capabilities" rows="4" placeholder="Describe your customer base, industries, sales channels, implementation skills, integrations, training or managed services."></textarea></div>
+              <div class="field full"><label for="interest">EasyFile products / use cases of interest</label><textarea id="interest" name="interest" rows="3" placeholder="Invoices, bank statement conversion, expenses, CRM, payroll, document workflows, integrations…"></textarea></div>
+              <div class="field full check-row"><input id="truth" name="truth" type="checkbox" required><label for="truth">I confirm that the information supplied is accurate and that submitting an application does not itself create reseller, agency, exclusivity or commission rights.</label></div>
+              <div class="field full check-row"><input id="privacy" name="privacy" type="checkbox" required><label for="privacy">I consent to EasyFile using these details to assess and administer a prospective partner relationship.</label></div>
+            </div>
+            <div class="action-row">
+              <button class="btn btn-blue" type="submit"><i class="fa-solid fa-paper-plane"></i>Prepare application</button>
+              <button class="btn btn-outline" type="button" id="saveDraft"><i class="fa-solid fa-floppy-disk"></i>Save draft</button>
+              <button class="btn btn-outline" type="button" id="clearDraft"><i class="fa-solid fa-rotate-left"></i>Clear</button>
+            </div>
+            <div id="formStatus" class="status info">No application has been prepared yet.</div>
+          </form>
+        </section>
+
+        <section class="panel" data-panel="deals" hidden>
+          <h2 class="text-2xl font-black">Deal registration workspace</h2>
+          <p class="muted mt-2">Use this lightweight register to capture partner opportunities locally and export them as CSV. It is a browser-side workspace, not a shared CRM.</p>
+          <div class="form-grid mt-5">
+            <div class="field"><label for="dealCustomer">Customer / prospect</label><input id="dealCustomer"></div>
+            <div class="field"><label for="dealCountry">Country</label><input id="dealCountry" value="South Africa"></div>
+            <div class="field"><label for="dealSolution">EasyFile solution</label><input id="dealSolution" placeholder="Easy Invoice + CRM"></div>
+            <div class="field"><label for="dealValue">Estimated value (ZAR)</label><input id="dealValue" type="number" min="0" step="1000"></div>
+          </div>
+          <div class="action-row"><button class="btn btn-blue" type="button" id="addDeal"><i class="fa-solid fa-plus"></i>Add opportunity</button><button class="btn btn-outline" type="button" id="exportDeals"><i class="fa-solid fa-file-csv"></i>Export CSV</button></div>
+          <div style="overflow:auto"><table class="deal-table"><thead><tr><th>Ref</th><th>Customer</th><th>Country</th><th>Solution</th><th>Value</th><th></th></tr></thead><tbody id="dealRows"></tbody></table></div>
+        </section>
+
+        <section class="panel" data-panel="onboarding" hidden>
+          <h2 class="text-2xl font-black">Partner onboarding checklist</h2>
+          <p class="muted mt-2">Track readiness for commercial activation. The checklist is stored in this browser.</p>
+          <div class="checklist" id="checklist">
+            <label class="checkitem"><input type="checkbox" data-check="profile"> Company and primary-contact profile completed</label>
+            <label class="checkitem"><input type="checkbox" data-check="agreement"> Partner agreement reviewed and signed</label>
+            <label class="checkitem"><input type="checkbox" data-check="commercials"> Commercial model and territory confirmed</label>
+            <label class="checkitem"><input type="checkbox" data-check="enablement"> Product and sales enablement completed</label>
+            <label class="checkitem"><input type="checkbox" data-check="branding"> Brand and marketing usage guidance accepted</label>
+            <label class="checkitem"><input type="checkbox" data-check="firstdeal"> First opportunity registered</label>
+          </div>
+        </section>
+      </div>
+
+      <aside class="card">
+        <p class="eyebrow" style="color:#2563eb">Partner planning</p>
+        <h2 class="text-xl font-black mt-1">Channel snapshot</h2>
+        <div class="kpis mt-4">
+          <div class="kpi"><small>Saved deals</small><strong id="kpiDeals">0</strong></div>
+          <div class="kpi"><small>Pipeline</small><strong id="kpiPipeline">R0</strong></div>
+          <div class="kpi"><small>Onboarding</small><strong id="kpiOnboarding">0%</strong></div>
+          <div class="kpi"><small>Application</small><strong id="kpiApplication">Draft</strong></div>
+        </div>
+        <h3 class="font-black mt-6">Commercial scenario calculator</h3>
+        <p class="fine mt-1">For planning only. Enter an assumed percentage from your proposed commercial agreement; this does not represent an EasyFile rate or commitment.</p>
+        <div class="calc-grid">
+          <div class="field"><label for="calcRevenue">Customer revenue</label><input id="calcRevenue" type="number" min="0" step="1000" value="50000"></div>
+          <div class="field"><label for="calcRate">Assumed partner %</label><input id="calcRate" type="number" min="0" max="100" step=".1" value="10"></div>
+        </div>
+        <div class="calc-result"><span class="text-sm">Illustrative partner value</span><br><strong id="calcResult">R5,000.00</strong></div>
+      </aside>
+    </section>
+
+    <aside class="note"><strong>Programme status:</strong> Application approval, reseller authorization, territories, customer ownership, discounts, referral rewards, commissions, payment timing and marketing rights are governed by the final written partner agreement. This page does not by itself create a contractual partner relationship.</aside>
+  </main>
+
+  <footer class="easyfile-footer border-t border-adaptive">
+    <div class="container mx-auto px-4 py-7 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+      <p class="muted-adaptive text-sm font-bold">EasyFile Partner Network</p>
+      <p class="muted-adaptive text-sm">Referral · Reseller · Solution delivery</p>
+    </div>
+  </footer>
+
+<script>
+(function(){
+  "use strict";
+  const APP_KEY="easyfile.partner.application.v1", DEAL_KEY="easyfile.partner.deals.v1", CHECK_KEY="easyfile.partner.onboarding.v1";
+  const $=id=>document.getElementById(id);
+  const money=n=>new Intl.NumberFormat("en-ZA",{style:"currency",currency:"ZAR",maximumFractionDigits:2}).format(Number(n)||0);
+  const load=(k,f)=>{try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(f))}catch(_){return f}};
+  const save=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+  const fields=["company","country","contact","email","phone","website","partnerType","markets","customerType","pipeline","capabilities","interest","truth","privacy"];
+  function collect(){
+    const d={};
+    fields.forEach(id=>{const el=$(id);d[id]=el.type==="checkbox"?el.checked:el.value.trim()});
+    d.updatedAt=new Date().toISOString(); return d;
+  }
+  function populate(d){if(!d)return;fields.forEach(id=>{const el=$(id);if(!el||d[id]===undefined)return;if(el.type==="checkbox")el.checked=!!d[id];else el.value=d[id]})}
+  function applicationRef(){return "EFP-"+new Date().toISOString().slice(0,10).replaceAll("-","")+"-"+Math.random().toString(36).slice(2,7).toUpperCase()}
+  function download(name,text,type){const b=new Blob([text],{type});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},0)}
+  function setStatus(msg,kind="info"){const s=$("formStatus");s.className="status "+kind;s.textContent=msg}
+  $("partnerForm").addEventListener("input",()=>{save(APP_KEY,collect());updateKPIs()});
+  $("saveDraft").addEventListener("click",()=>{save(APP_KEY,collect());setStatus("Draft saved in this browser.","success");updateKPIs()});
+  $("clearDraft").addEventListener("click",()=>{if(!confirm("Clear the saved partner application draft?"))return;localStorage.removeItem(APP_KEY);$("partnerForm").reset();$("country").value="South Africa";setStatus("Draft cleared.","info");updateKPIs()});
+  $("partnerForm").addEventListener("submit",e=>{
+    e.preventDefault();
+    if(!$("partnerForm").reportValidity()){setStatus("Complete the required fields before preparing the application.","error");return}
+    const d=collect(); d.applicationRef=applicationRef(); d.status="Prepared"; d.preparedAt=new Date().toISOString(); save(APP_KEY,d);
+    download(d.applicationRef+".json",JSON.stringify(d,null,2),"application/json");
+    setStatus("Application "+d.applicationRef+" prepared and downloaded. A secure server-side intake endpoint is not configured on this static site, so no data was transmitted.","success"); updateKPIs();
+  });
+
+  document.querySelectorAll("[data-tab]").forEach(btn=>btn.addEventListener("click",()=>{
+    document.querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("is-active",x===btn));
+    document.querySelectorAll("[data-panel]").forEach(p=>p.hidden=p.dataset.panel!==btn.dataset.tab);
+  }));
+
+  let deals=load(DEAL_KEY,[]);
+  function renderDeals(){
+    const tb=$("dealRows");
+    tb.innerHTML=deals.length?deals.map((d,i)=>'<tr><td>'+d.ref+'</td><td>'+esc(d.customer)+'</td><td>'+esc(d.country)+'</td><td>'+esc(d.solution)+'</td><td>'+money(d.value)+'</td><td><button type="button" data-del="'+i+'" class="text-red-600 font-bold">Remove</button></td></tr>').join(""):'<tr><td colspan="6" class="muted">No opportunities registered locally.</td></tr>';
+    tb.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click",()=>{deals.splice(Number(b.dataset.del),1);save(DEAL_KEY,deals);renderDeals();updateKPIs()}));
+  }
+  function esc(v){return String(v||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
+  $("addDeal").addEventListener("click",()=>{
+    const customer=$("dealCustomer").value.trim(), country=$("dealCountry").value.trim(), solution=$("dealSolution").value.trim(), value=Number($("dealValue").value||0);
+    if(!customer||!solution){alert("Customer and EasyFile solution are required.");return}
+    deals.unshift({ref:"DR-"+Date.now().toString().slice(-8),customer,country,solution,value,createdAt:new Date().toISOString()});save(DEAL_KEY,deals);
+    ["dealCustomer","dealSolution","dealValue"].forEach(id=>$(id).value="");renderDeals();updateKPIs();
+  });
+  $("exportDeals").addEventListener("click",()=>{
+    const rows=[["Reference","Customer","Country","Solution","Value","Created"],...deals.map(d=>[d.ref,d.customer,d.country,d.solution,d.value,d.createdAt])];
+    const csv=rows.map(r=>r.map(v=>'"'+String(v??"").replaceAll('"','""')+'"').join(",")).join("\n");download("easyfile-partner-deals.csv",csv,"text/csv;charset=utf-8");
+  });
+
+  const checks=load(CHECK_KEY,{});
+  document.querySelectorAll("[data-check]").forEach(c=>{c.checked=!!checks[c.dataset.check];c.addEventListener("change",()=>{checks[c.dataset.check]=c.checked;save(CHECK_KEY,checks);updateKPIs()})});
+  function updateCalc(){ $("calcResult").textContent=money(Number($("calcRevenue").value||0)*(Number($("calcRate").value||0)/100)) }
+  $("calcRevenue").addEventListener("input",updateCalc);$("calcRate").addEventListener("input",updateCalc);
+
+  function updateKPIs(){
+    $("kpiDeals").textContent=String(deals.length);
+    $("kpiPipeline").textContent=money(deals.reduce((s,d)=>s+Number(d.value||0),0)).replace(".00","");
+    const all=[...document.querySelectorAll("[data-check]")], done=all.filter(x=>x.checked).length;
+    $("kpiOnboarding").textContent=Math.round(done/Math.max(1,all.length)*100)+"%";
+    const app=load(APP_KEY,null); $("kpiApplication").textContent=app?.status==="Prepared"?"Prepared":app?.company?"Draft":"New";
+  }
+
+  populate(load(APP_KEY,null)); renderDeals(); updateCalc(); updateKPIs();
+})();
+</script>
+<script defer src="scripts/sync-nav.js"></script>
+</body>
+</html>
