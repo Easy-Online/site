@@ -8,8 +8,8 @@ try{
   page.on("pageerror",e=>errors.push(String(e)));
   await page.goto("http://127.0.0.1:8080/easy-tender.html",{waitUntil:"domcontentloaded"});
   await page.getByRole("button",{name:"Seed Demo Tender"}).click();
-  const req=Number((await page.locator("#kReq").textContent())||0);
-  assert.ok(req>=8,"Seed demo did not populate requirements");
+  const req=Number((await page.locator("#kDocs").textContent())||0);
+  assert.ok(req>=5,"Seed demo did not populate submission pack");
   await page.getByRole("button",{name:"Submission Gate"}).click();
   await page.locator("#gateView.active").waitFor();
   assert.match(await page.locator("#gateSummary").innerText(),/blocker|READY/i);
@@ -29,14 +29,16 @@ try{
 
   const renderMs=await page.evaluate(()=>{
     const sample=Array.from({length:180},(_,i)=>({id:"load"+i,text:"Mandatory requirement "+i,category:"General",mandatory:true,status:"missing",owner:"",evidence:"",source:"Synthetic"}));
+    const docs=Array.from({length:30},(_,i)=>({id:"doc"+i,type:"Schedule",title:"Submission item "+i,mandatory:true,conditional:false,status:"missing",owner:"",fileName:"",response:"",notes:"",source:"Synthetic",detail:""}));
     const t=performance.now();
     state.requirements=sample;
+    state.submissionItems=docs;
     renderAll();
     return performance.now()-t;
   });
   assert.ok(renderMs<1200,"Rendering 180 requirements exceeded 1.2s: "+renderMs.toFixed(1)+"ms");
   assert.equal(errors.length,0,"Browser page errors: "+errors.join(" | "));
-  console.log(JSON.stringify({status:"PASS",seedRequirements:req,desktopOverflow,mobileOverflow,render180Ms:Number(renderMs.toFixed(1)),pageErrors:errors.length},null,2));
+  console.log(JSON.stringify({status:"PASS",seedSubmissionItems:req,desktopOverflow,mobileOverflow,render180Ms:Number(renderMs.toFixed(1)),pageErrors:errors.length},null,2));
 }finally{
   await browser.close();
 }
