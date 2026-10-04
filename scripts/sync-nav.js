@@ -50,6 +50,7 @@
     { name: "Payroll", href: "easy-payroll.html", icon: "fa-money-bill-wave", group: "Operations", description: "Prepare payroll summaries" },
     { name: "Inventory", href: "easy-inventory.html", icon: "fa-boxes-stacked", group: "Operations", description: "Track stock and movements" },
     { name: "CRM", href: "easy-crm.html", icon: "fa-users", group: "Operations", description: "Manage customer relationships" },
+    { name: "Agent", href: "easy-agent.html", icon: "fa-user-tie", group: "Operations", description: "Onboard and manage sales agents, assignments, targets, compliance and commission readiness", landing: true },
     { name: "SLA", href: "easy-sla.html", icon: "fa-stopwatch", group: "Operations", description: "Define service commitments, track response and resolution targets, and monitor SLA performance", landing: true },
     { name: "POS", href: "easy-pos.html", icon: "fa-cash-register", group: "Operations", description: "Record point-of-sale transactions and daily sales", landing: true },
     { name: "Projects", href: "easy-projects.html", icon: "fa-diagram-project", group: "Operations", description: "Plan and track projects, tasks and delivery", landing: true },
