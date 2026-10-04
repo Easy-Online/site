@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Easy Logistics | Bookings & Distribution</title>
+  <meta name="description" content="Create logistics bookings, assign carriers and vehicles, track distribution, capture proof of delivery and export operational records.">
+  <link rel="icon" href="icon.png" type="image/png">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/easyfile-brand-tokens.css">
+  <link rel="stylesheet" href="assets/css/easyfile-site.css">
+  <link rel="stylesheet" href="assets/css/easyfile-navigation.css">
+  <style>
+    :root{--primary:#2563eb;--primary2:#1d4ed8;--ink:#0f172a;--muted:#64748b;--border:#dbe3ef;--surface:#fff;--page:#f4f7fb;--danger:#dc2626;--success:#16a34a;--warning:#d97706}
+    body{background:var(--page);color:var(--ink)}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:0 10px 30px rgba(15,23,42,.06)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;border-radius:10px;padding:.65rem .95rem;font-weight:800;border:1px solid transparent;transition:.15s}
+    .btn:hover{transform:translateY(-1px)}
+    .btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary2)}
+    .btn-outline{background:#fff;border-color:var(--border);color:var(--ink)}
+    .btn-success{background:var(--success);color:#fff}.btn-danger{background:var(--danger);color:#fff}
+    .field{width:100%;border:1px solid var(--border);border-radius:10px;padding:.68rem .75rem;background:#fff;color:#0f172a}
+    .field:focus{outline:none;border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+    .label{display:block;font-size:.72rem;font-weight:900;color:#475569;margin-bottom:.35rem;text-transform:uppercase;letter-spacing:.035em}
+    .pill{display:inline-flex;align-items:center;border-radius:999px;padding:.24rem .6rem;font-size:.7rem;font-weight:900;white-space:nowrap}
+    .s-booked{background:#e0e7ff;color:#3730a3}.s-collected{background:#dbeafe;color:#1d4ed8}.s-transit{background:#fef3c7;color:#92400e}.s-out{background:#ffedd5;color:#9a3412}.s-delivered{background:#dcfce7;color:#166534}.s-cancelled{background:#fee2e2;color:#991b1b}
+    .modal-bg{background:rgba(2,6,23,.68)}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+    .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .kpi-value{font-size:1.75rem;line-height:1;font-weight:900}
+    .timeline{border-left:2px solid #dbeafe;padding-left:1rem}
+    .timeline-item{position:relative;margin:.8rem 0}.timeline-item:before{content:"";position:absolute;left:-1.36rem;top:.25rem;width:.65rem;height:.65rem;border-radius:999px;background:#2563eb}
+    @media print{.no-print,nav{display:none!important}body{background:#fff!important}.card{box-shadow:none!important}}
+  </style>
+</head>
+<body class="min-h-screen">
+  <nav class="bg-blue-600 text-white py-4 no-print">
+    <div class="container mx-auto px-4 flex flex-wrap items-center gap-4">
+      <a href="index.html" class="font-black text-xl mr-4">Easy&nbsp;File</a>
+      <a href="easy-inventory.html" class="hover:underline">Inventory</a>
+      <a href="easy-sales-order.html" class="hover:underline">Sales Order</a>
+      <a href="easy-purchase-order.html" class="hover:underline">Purchase Order</a>
+      <a href="easy-logistics.html" class="underline font-extrabold">Logistics</a>
+      <a href="easy-invoice.html" class="hover:underline">Invoice</a>
+    </div>
+  </nav>
+
+  <main class="container mx-auto px-4 py-6 md:py-8">
+    <section class="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-4 mb-6">
+      <div>
+        <div class="text-xs font-black tracking-widest uppercase text-blue-600">Operations</div>
+        <h1 class="text-3xl md:text-4xl font-black text-slate-900 mt-1">Easy Logistics</h1>
+        <p class="text-slate-600 mt-2 max-w-3xl">Book collections and deliveries, assign transport resources, monitor distribution status, capture proof of delivery and keep a local audit trail.</p>
+      </div>
+      <div class="flex flex-wrap gap-2 no-print">
+        <button id="btnSeed" class="btn btn-outline"><i class="fa-solid fa-wand-magic-sparkles"></i> Seed Demo</button>
+        <button id="btnExport" class="btn btn-outline"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+        <button id="btnBackup" class="btn btn-outline"><i class="fa-solid fa-download"></i> Backup JSON</button>
+        <label class="btn btn-outline cursor-pointer"><i class="fa-solid fa-upload"></i> Restore<input id="restoreFile" type="file" accept=".json,application/json" class="hidden"></label>
+        <button id="btnNew" class="btn btn-primary"><i class="fa-solid fa-plus"></i> New Booking</button>
+      </div>
+    </section>
+
+    <section class="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-6">
+      <div class="card p-4"><div class="text-xs font-black text-slate-500">TOTAL BOOKINGS</div><div id="kTotal" class="kpi-value text-blue-700 mt-2">0</div></div>
+      <div class="card p-4"><div class="text-xs font-black text-slate-500">IN TRANSIT</div><div id="kTransit" class="kpi-value text-amber-600 mt-2">0</div></div>
+      <div class="card p-4"><div class="text-xs font-black text-slate-500">DELIVERED</div><div id="kDelivered" class="kpi-value text-green-700 mt-2">0</div></div>
+      <div class="card p-4"><div class="text-xs font-black text-slate-500">TOTAL WEIGHT</div><div id="kWeight" class="kpi-value text-indigo-700 mt-2">0 kg</div></div>
+      <div class="card p-4 col-span-2 lg:col-span-1"><div class="text-xs font-black text-slate-500">BILLABLE</div><div id="kRevenue" class="kpi-value text-emerald-700 mt-2">R0.00</div></div>
+    </section>
+
+    <section class="card p-4 mb-6 no-print">
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+        <div class="md:col-span-2"><label class="label">Search</label><input id="q" class="field" placeholder="Booking, customer, route, carrier, tracking..."></div>
+        <div><label class="label">Status</label><select id="fStatus" class="field"><option value="">All statuses</option><option>Booked</option><option>Collected</option><option>In Transit</option><option>Out for Delivery</option><option>Delivered</option><option>Cancelled</option></select></div>
+        <div><label class="label">Service</label><select id="fService" class="field"><option value="">All services</option><option>Courier</option><option>Last Mile</option><option>Road Freight</option><option>Linehaul</option><option>Air Freight</option><option>Warehouse Transfer</option><option>Dedicated Vehicle</option></select></div>
+        <div class="flex items-end"><button id="btnClearFilters" class="btn btn-outline w-full">Clear Filters</button></div>
+      </div>
+    </section>
+
+    <section class="card overflow-hidden">
+      <div class="table-wrap">
+        <table class="min-w-full text-sm">
+          <thead class="bg-slate-50 text-slate-600">
+            <tr>
+              <th class="p-3 text-left">Booking</th><th class="p-3 text-left">Customer / Service</th><th class="p-3 text-left">Route</th><th class="p-3 text-left">Carrier / Driver</th><th class="p-3 text-right">Weight</th><th class="p-3 text-right">Charge</th><th class="p-3 text-left">Status</th><th class="p-3 text-left">ETA</th><th class="p-3 text-center no-print">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="rows" class="divide-y divide-slate-100"></tbody>
+        </table>
+      </div>
+      <div class="p-4 border-t border-slate-100 text-xs text-slate-500">All records are stored locally in this browser unless you export or back them up.</div>
+    </section>
+  </main>
+
+  <div id="bookingModal" class="fixed inset-0 hidden items-center justify-center p-3 md:p-6 z-50 no-print">
+    <div class="modal-bg absolute inset-0"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-screen overflow-y-auto">
+      <div class="sticky top-0 z-10 bg-white border-b border-slate-200 p-4 flex items-center justify-between">
+        <div><h2 id="modalTitle" class="text-xl font-black">New Logistics Booking</h2><p class="text-xs text-slate-500">Complete the booking, route, load and transport details.</p></div>
+        <button id="btnClose" class="text-2xl text-slate-500">&times;</button>
+      </div>
+      <form id="bookingForm" class="p-4 md:p-6 space-y-6">
+        <input type="hidden" id="editId">
+        <section>
+          <h3 class="font-black text-slate-900 mb-3">Booking & customer</h3>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <div><label class="label">Booking #</label><input id="bookingNo" class="field mono" required></div>
+            <div><label class="label">Booking date</label><input id="bookingDate" type="date" class="field"></div>
+            <div><label class="label">Service</label><select id="service" class="field"><option>Courier</option><option>Last Mile</option><option>Road Freight</option><option>Linehaul</option><option>Air Freight</option><option>Warehouse Transfer</option><option>Dedicated Vehicle</option></select></div>
+            <div><label class="label">Priority</label><select id="priority" class="field"><option>Normal</option><option>Express</option><option>Urgent</option></select></div>
+            <div class="md:col-span-2"><label class="label">Customer / account</label><input id="customer" class="field" required placeholder="Customer or company name"></div>
+            <div><label class="label">Contact</label><input id="contact" class="field" placeholder="Contact person"></div>
+            <div><label class="label">Phone / email</label><input id="contactInfo" class="field" placeholder="+27... / email"></div>
+            <div><label class="label">Linked document</label><input id="linkedDoc" class="field mono" placeholder="SO / PO / INV / Job ref"></div>
+            <div><label class="label">Tracking #</label><input id="trackingNo" class="field mono" placeholder="Carrier tracking / AWB"></div>
+            <div><label class="label">Customer reference</label><input id="customerRef" class="field mono" placeholder="Customer PO / ref"></div>
+            <div><label class="label">Status</label><select id="status" class="field"><option>Booked</option><option>Collected</option><option>In Transit</option><option>Out for Delivery</option><option>Delivered</option><option>Cancelled</option></select></div>
+          </div>
+        </section>
+
+        <section>
+          <h3 class="font-black text-slate-900 mb-3">Collection & delivery</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="space-y-3"><div><label class="label">Collection address</label><textarea id="pickupAddress" rows="3" class="field" required></textarea></div><div class="grid grid-cols-2 gap-3"><div><label class="label">Collection date</label><input id="pickupDate" type="date" class="field"></div><div><label class="label">Collection window</label><input id="pickupWindow" class="field" placeholder="08:00–11:00"></div></div></div>
+            <div class="space-y-3"><div><label class="label">Delivery address</label><textarea id="deliveryAddress" rows="3" class="field" required></textarea></div><div class="grid grid-cols-2 gap-3"><div><label class="label">Delivery / ETA date</label><input id="deliveryDate" type="date" class="field"></div><div><label class="label">Delivery window</label><input id="deliveryWindow" class="field" placeholder="13:00–16:00"></div></div></div>
+          </div>
+        </section>
+
+        <section>
+          <h3 class="font-black text-slate-900 mb-3">Load details</h3>
+          <div class="grid grid-cols-2 md:grid-cols-6 gap-3">
+            <div class="md:col-span-2"><label class="label">Goods description</label><input id="goods" class="field" required placeholder="Cartons, equipment, documents..."></div>
+            <div><label class="label">Packages</label><input id="packages" type="number" min="1" step="1" class="field" value="1"></div>
+            <div><label class="label">Weight (kg)</label><input id="weight" type="number" min="0" step="0.01" class="field" value="0"></div>
+            <div><label class="label">Volume (m³)</label><input id="volume" type="number" min="0" step="0.001" class="field" value="0"></div>
+            <div><label class="label">Declared value (R)</label><input id="declaredValue" type="number" min="0" step="0.01" class="field" value="0"></div>
+            <div><label class="label">Handling</label><select id="handling" class="field"><option>Standard</option><option>Fragile</option><option>Keep Upright</option><option>Temperature Sensitive</option><option>High Value</option><option>Hazardous / Regulated</option></select></div>
+            <div class="md:col-span-5"><label class="label">Special instructions</label><input id="instructions" class="field" placeholder="Access, loading, security, reference or handling instructions"></div>
+          </div>
+        </section>
+
+        <section>
+          <h3 class="font-black text-slate-900 mb-3">Transport assignment & commercial</h3>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <div><label class="label">Carrier / transporter</label><input id="carrier" class="field" placeholder="Carrier name"></div>
+            <div><label class="label">Driver</label><input id="driver" class="field" placeholder="Driver name"></div>
+            <div><label class="label">Driver phone</label><input id="driverPhone" class="field" placeholder="+27..."></div>
+            <div><label class="label">Vehicle / registration</label><input id="vehicle" class="field" placeholder="Truck / van / registration"></div>
+            <div><label class="label">Carrier cost (R)</label><input id="carrierCost" type="number" min="0" step="0.01" class="field" value="0"></div>
+            <div><label class="label">Customer charge (R)</label><input id="customerCharge" type="number" min="0" step="0.01" class="field" value="0"></div>
+            <div><label class="label">Payment status</label><select id="paymentStatus" class="field"><option>Unbilled</option><option>Ready to Bill</option><option>Invoiced</option><option>Paid</option></select></div>
+            <div><label class="label">Distribution zone</label><input id="zone" class="field" placeholder="Gauteng / Route / Hub"></div>
+          </div>
+        </section>
+
+        <section>
+          <h3 class="font-black text-slate-900 mb-3">Proof of delivery</h3>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <div><label class="label">Received by</label><input id="receivedBy" class="field"></div>
+            <div><label class="label">POD date/time</label><input id="podDate" type="datetime-local" class="field"></div>
+            <div class="md:col-span-2"><label class="label">POD / delivery note</label><input id="podNote" class="field" placeholder="Condition, signature reference, exceptions"></div>
+          </div>
+        </section>
+
+        <div class="flex flex-wrap justify-end gap-2 border-t border-slate-200 pt-4">
+          <button type="button" id="btnCancel" class="btn btn-outline">Cancel</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save Booking</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="detailModal" class="fixed inset-0 hidden items-center justify-center p-3 md:p-6 z-50 no-print">
+    <div class="modal-bg absolute inset-0"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-screen overflow-y-auto">
+      <div class="p-4 border-b flex justify-between items-start"><div><h2 class="text-xl font-black">Booking Detail</h2><div id="detailSub" class="text-xs text-slate-500"></div></div><button id="detailClose" class="text-2xl text-slate-500">&times;</button></div>
+      <div id="detailContent" class="p-5"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="fixed bottom-4 right-4 hidden z-50 bg-slate-900 text-white rounded-xl px-4 py-3 shadow-xl text-sm"></div>
+
+<script>
+const STORE_KEY = "easy.logistics.bookings.v1";
+const $ = function(id){ return document.getElementById(id); };
+let bookings = load();
+function load(){ try{return JSON.parse(localStorage.getItem(STORE_KEY)||"[]");}catch(e){return [];} }
+function persist(){ localStorage.setItem(STORE_KEY,JSON.stringify(bookings)); }
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"})[c];});}
+function money(n){return new Intl.NumberFormat("en-ZA",{style:"currency",currency:"ZAR"}).format(Number(n||0));}
+function today(){return new Date().toISOString().slice(0,10);}
+function newNo(){var d=new Date();return "LOG-"+d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0")+"-"+String(Math.floor(1000+Math.random()*9000));}
+function toast(msg){$("toast").textContent=msg;$("toast").classList.remove("hidden");setTimeout(function(){$("toast").classList.add("hidden");},2600);}
+function statusClass(s){return {"Booked":"s-booked","Collected":"s-collected","In Transit":"s-transit","Out for Delivery":"s-out","Delivered":"s-delivered","Cancelled":"s-cancelled"}[s]||"s-booked";}
+function badge(s){return '<span class="pill '+statusClass(s)+'">'+esc(s)+'</span>';}
+function addEvent(b,note){b.history=b.history||[];b.history.unshift({ts:new Date().toISOString(),note:note});}
+function field(id){return $(id).value;}
+function num(id){return Number($(id).value||0);}
+function openBooking(id){
+  $("bookingForm").reset();$("editId").value="";
+  $("bookingNo").value=newNo();$("bookingDate").value=today();$("pickupDate").value=today();$("packages").value=1;$("weight").value=0;$("volume").value=0;$("declaredValue").value=0;$("carrierCost").value=0;$("customerCharge").value=0;
+  $("modalTitle").textContent="New Logistics Booking";
+  if(id){
+    var b=bookings.find(function(x){return x.id===id;}); if(!b)return;
+    $("editId").value=b.id;$("modalTitle").textContent="Edit "+b.bookingNo;
+    ["bookingNo","bookingDate","service","priority","customer","contact","contactInfo","linkedDoc","trackingNo","customerRef","status","pickupAddress","pickupDate","pickupWindow","deliveryAddress","deliveryDate","deliveryWindow","goods","packages","weight","volume","declaredValue","handling","instructions","carrier","driver","driverPhone","vehicle","carrierCost","customerCharge","paymentStatus","zone","receivedBy","podDate","podNote"].forEach(function(k){ if($(k))$(k).value=b[k]==null?"":b[k]; });
+  }
+  $("bookingModal").classList.remove("hidden");$("bookingModal").classList.add("flex");
+}
+function closeBooking(){$("bookingModal").classList.add("hidden");$("bookingModal").classList.remove("flex");}
+function readForm(){
+  var b={};
+  ["bookingNo","bookingDate","service","priority","customer","contact","contactInfo","linkedDoc","trackingNo","customerRef","status","pickupAddress","pickupDate","pickupWindow","deliveryAddress","deliveryDate","deliveryWindow","goods","handling","instructions","carrier","driver","driverPhone","vehicle","paymentStatus","zone","receivedBy","podDate","podNote"].forEach(function(k){b[k]=field(k);});
+  ["packages","weight","volume","declaredValue","carrierCost","customerCharge"].forEach(function(k){b[k]=num(k);});
+  return b;
+}
+function saveBooking(e){
+  e.preventDefault();var rec=readForm();var id=$("editId").value;
+  if(!rec.bookingNo.trim()||!rec.customer.trim()||!rec.pickupAddress.trim()||!rec.deliveryAddress.trim()||!rec.goods.trim()){toast("Complete the required booking fields.");return;}
+  if(id){
+    var i=bookings.findIndex(function(x){return x.id===id;}); if(i<0)return;
+    var old=bookings[i], oldStatus=old.status; rec.id=id;rec.createdAt=old.createdAt;rec.history=old.history||[];
+    if(oldStatus!==rec.status)addEvent(rec,"Status changed from "+oldStatus+" to "+rec.status);
+    else addEvent(rec,"Booking updated");
+    bookings[i]=rec;
+  }else{
+    rec.id=String(Date.now());rec.createdAt=new Date().toISOString();rec.history=[];addEvent(rec,"Booking created");
+    bookings.unshift(rec);
+  }
+  persist();closeBooking();render();toast("Booking saved.");
+}
+function removeBooking(id){var b=bookings.find(function(x){return x.id===id;});if(!b)return;if(!confirm("Delete "+b.bookingNo+"?"))return;bookings=bookings.filter(function(x){return x.id!==id;});persist();render();toast("Booking deleted.");}
+function duplicateBooking(id){var b=bookings.find(function(x){return x.id===id;});if(!b)return;var c=JSON.parse(JSON.stringify(b));c.id=String(Date.now());c.bookingNo=newNo();c.status="Booked";c.bookingDate=today();c.receivedBy="";c.podDate="";c.podNote="";c.history=[];addEvent(c,"Booking duplicated from "+b.bookingNo);bookings.unshift(c);persist();render();toast("Booking duplicated.");}
+function advanceStatus(id){var seq=["Booked","Collected","In Transit","Out for Delivery","Delivered"];var b=bookings.find(function(x){return x.id===id;});if(!b||b.status==="Cancelled"||b.status==="Delivered")return;var i=seq.indexOf(b.status);var next=seq[Math.min(i+1,seq.length-1)];var old=b.status;b.status=next;if(next==="Delivered"&&!b.podDate)b.podDate=new Date().toISOString().slice(0,16);addEvent(b,"Status changed from "+old+" to "+next);persist();render();toast("Status updated to "+next+".");}
+function routeLink(b){return "https://www.google.com/maps/dir/?api=1&origin="+encodeURIComponent(b.pickupAddress)+"&destination="+encodeURIComponent(b.deliveryAddress);}
+function showDetail(id){
+  var b=bookings.find(function(x){return x.id===id;});if(!b)return;$("detailSub").textContent=b.bookingNo+" • "+b.customer;
+  var margin=Number(b.customerCharge||0)-Number(b.carrierCost||0);
+  var hist=(b.history||[]).map(function(h){return '<div class="timeline-item"><div class="font-bold text-sm">'+esc(h.note)+'</div><div class="text-xs text-slate-500">'+new Date(h.ts).toLocaleString()+'</div></div>';}).join("");
+  $("detailContent").innerHTML='<div class="grid md:grid-cols-2 gap-5"><div class="space-y-4"><div class="card p-4"><div class="flex justify-between gap-3"><div><div class="text-xs font-black text-slate-500">STATUS</div><div class="mt-1">'+badge(b.status)+'</div></div><div class="text-right"><div class="text-xs font-black text-slate-500">SERVICE</div><div class="font-black">'+esc(b.service)+'</div></div></div><div class="mt-4 text-sm"><div><strong>Tracking:</strong> '+esc(b.trackingNo||"-")+'</div><div><strong>Linked:</strong> '+esc(b.linkedDoc||"-")+'</div><div><strong>Customer ref:</strong> '+esc(b.customerRef||"-")+'</div></div></div><div class="card p-4"><h3 class="font-black mb-2">Route</h3><div class="text-sm"><strong>Collect:</strong><br>'+esc(b.pickupAddress)+'<br><span class="text-slate-500">'+esc(b.pickupDate||"")+" "+esc(b.pickupWindow||"")+'</span></div><div class="text-sm mt-3"><strong>Deliver:</strong><br>'+esc(b.deliveryAddress)+'<br><span class="text-slate-500">'+esc(b.deliveryDate||"")+" "+esc(b.deliveryWindow||"")+'</span></div><a class="btn btn-outline mt-3" target="_blank" rel="noopener" href="'+routeLink(b)+'"><i class="fa-solid fa-route"></i> Open Route</a></div><div class="card p-4"><h3 class="font-black mb-2">Load</h3><div class="text-sm">'+esc(b.goods)+'<br>'+esc(b.packages)+' package(s) • '+esc(b.weight)+' kg • '+esc(b.volume)+' m³<br><strong>Handling:</strong> '+esc(b.handling||"-")+'<br><strong>Declared value:</strong> '+money(b.declaredValue)+'</div></div></div><div class="space-y-4"><div class="card p-4"><h3 class="font-black mb-2">Transport assignment</h3><div class="text-sm"><strong>Carrier:</strong> '+esc(b.carrier||"-")+'<br><strong>Driver:</strong> '+esc(b.driver||"-")+' '+esc(b.driverPhone||"")+'<br><strong>Vehicle:</strong> '+esc(b.vehicle||"-")+'<br><strong>Zone:</strong> '+esc(b.zone||"-")+'</div></div><div class="card p-4"><h3 class="font-black mb-2">Commercial</h3><div class="grid grid-cols-3 gap-2 text-sm"><div><div class="text-xs text-slate-500">COST</div><strong>'+money(b.carrierCost)+'</strong></div><div><div class="text-xs text-slate-500">CHARGE</div><strong>'+money(b.customerCharge)+'</strong></div><div><div class="text-xs text-slate-500">MARGIN</div><strong>'+money(margin)+'</strong></div></div><div class="mt-2 text-xs text-slate-500">'+esc(b.paymentStatus||"")+'</div></div><div class="card p-4"><h3 class="font-black mb-2">Proof of delivery</h3><div class="text-sm"><strong>Received by:</strong> '+esc(b.receivedBy||"-")+'<br><strong>POD time:</strong> '+esc(b.podDate||"-")+'<br><strong>Note:</strong> '+esc(b.podNote||"-")+'</div></div><div class="card p-4"><h3 class="font-black mb-2">Activity</h3><div class="timeline">'+(hist||'<div class="text-sm text-slate-500">No activity yet.</div>')+'</div></div></div></div>';
+  $("detailModal").classList.remove("hidden");$("detailModal").classList.add("flex");
+}
+function closeDetail(){$("detailModal").classList.add("hidden");$("detailModal").classList.remove("flex");}
+function render(){
+  var q=field("q").toLowerCase().trim(),fs=field("fStatus"),fv=field("fService");
+  var list=bookings.filter(function(b){var hay=[b.bookingNo,b.customer,b.pickupAddress,b.deliveryAddress,b.carrier,b.driver,b.trackingNo,b.goods,b.customerRef,b.linkedDoc].join(" ").toLowerCase();return(!q||hay.indexOf(q)>=0)&&(!fs||b.status===fs)&&(!fv||b.service===fv);});
+  $("rows").innerHTML=list.length?list.map(function(b){return '<tr><td class="p-3"><div class="font-black mono">'+esc(b.bookingNo)+'</div><div class="text-xs text-slate-500">'+esc(b.bookingDate||"")+'</div></td><td class="p-3"><div class="font-bold">'+esc(b.customer)+'</div><div class="text-xs text-slate-500">'+esc(b.service)+' • '+esc(b.priority)+'</div></td><td class="p-3 max-w-xs"><div class="truncate"><strong>From:</strong> '+esc(b.pickupAddress)+'</div><div class="truncate"><strong>To:</strong> '+esc(b.deliveryAddress)+'</div></td><td class="p-3"><div>'+esc(b.carrier||"-")+'</div><div class="text-xs text-slate-500">'+esc(b.driver||"")+' '+esc(b.vehicle||"")+'</div></td><td class="p-3 text-right mono">'+Number(b.weight||0).toFixed(2)+' kg</td><td class="p-3 text-right mono">'+money(b.customerCharge)+'</td><td class="p-3">'+badge(b.status)+'</td><td class="p-3">'+esc(b.deliveryDate||"-")+'</td><td class="p-3 no-print"><div class="flex justify-center flex-wrap gap-1"><button class="btn btn-outline" data-view="'+b.id+'" title="View"><i class="fa-solid fa-eye"></i></button><button class="btn btn-outline" data-edit="'+b.id+'" title="Edit"><i class="fa-solid fa-pen"></i></button><button class="btn btn-outline" data-next="'+b.id+'" title="Advance status"><i class="fa-solid fa-forward-step"></i></button><button class="btn btn-outline" data-copy="'+b.id+'" title="Duplicate"><i class="fa-solid fa-copy"></i></button><button class="btn btn-danger" data-del="'+b.id+'" title="Delete"><i class="fa-solid fa-trash"></i></button></div></td></tr>';}).join(""):'<tr><td colspan="9" class="p-8 text-center text-slate-500">No logistics bookings found.</td></tr>';
+  $("kTotal").textContent=bookings.length;$("kTransit").textContent=bookings.filter(function(b){return b.status==="In Transit"||b.status==="Out for Delivery";}).length;$("kDelivered").textContent=bookings.filter(function(b){return b.status==="Delivered";}).length;$("kWeight").textContent=bookings.reduce(function(a,b){return a+Number(b.weight||0);},0).toFixed(1)+" kg";$("kRevenue").textContent=money(bookings.reduce(function(a,b){return a+Number(b.customerCharge||0);},0));
+  document.querySelectorAll("[data-view]").forEach(function(x){x.onclick=function(){showDetail(x.getAttribute("data-view"));};});
+  document.querySelectorAll("[data-edit]").forEach(function(x){x.onclick=function(){openBooking(x.getAttribute("data-edit"));};});
+  document.querySelectorAll("[data-next]").forEach(function(x){x.onclick=function(){advanceStatus(x.getAttribute("data-next"));};});
+  document.querySelectorAll("[data-copy]").forEach(function(x){x.onclick=function(){duplicateBooking(x.getAttribute("data-copy"));};});
+  document.querySelectorAll("[data-del]").forEach(function(x){x.onclick=function(){removeBooking(x.getAttribute("data-del"));};});
+}
+function exportCSV(){
+  var cols=["BookingNo","Date","Customer","Service","Status","Pickup","Delivery","ETA","Goods","Packages","WeightKg","VolumeM3","Carrier","Driver","Vehicle","TrackingNo","CarrierCost","CustomerCharge","PaymentStatus","ReceivedBy","PODDate"];
+  var lines=[cols.join(",")].concat(bookings.map(function(b){return cols.map(function(c){var map={BookingNo:"bookingNo",Date:"bookingDate",Customer:"customer",Service:"service",Status:"status",Pickup:"pickupAddress",Delivery:"deliveryAddress",ETA:"deliveryDate",Goods:"goods",Packages:"packages",WeightKg:"weight",VolumeM3:"volume",Carrier:"carrier",Driver:"driver",Vehicle:"vehicle",TrackingNo:"trackingNo",CarrierCost:"carrierCost",CustomerCharge:"customerCharge",PaymentStatus:"paymentStatus",ReceivedBy:"receivedBy",PODDate:"podDate"};return '"'+String(b[map[c]]==null?"":b[map[c]]).replace(/"/g,'""')+'"';}).join(",");}));
+  download("easy-logistics.csv",lines.join("\n"),"text/csv");
+}
+function download(name,data,type){var blob=new Blob([data],{type:type});var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},0);}
+function backup(){download("easy-logistics-backup.json",JSON.stringify(bookings,null,2),"application/json");}
+function restore(file){if(!file)return;var r=new FileReader();r.onload=function(){try{var d=JSON.parse(r.result);if(!Array.isArray(d))throw new Error();bookings=d;persist();render();toast("Backup restored.");}catch(e){toast("Invalid logistics backup.");}};r.readAsText(file);}
+function seed(){
+  var demo=[
+    {id:"demo1",bookingNo:"LOG-DEMO-1001",bookingDate:today(),service:"Road Freight",priority:"Normal",customer:"Ubuntu Office Supplies",contact:"Naledi M.",contactInfo:"+27 11 555 0101",linkedDoc:"SO-20418",trackingNo:"TRK100204",customerRef:"PO-77821",status:"In Transit",pickupAddress:"Midrand, Gauteng",pickupDate:today(),pickupWindow:"08:00–10:00",deliveryAddress:"Bloemfontein, Free State",deliveryDate:today(),deliveryWindow:"15:00–18:00",goods:"12 cartons office equipment",packages:12,weight:186.5,volume:2.1,declaredValue:48000,handling:"Standard",instructions:"Call customer 30 minutes before delivery",carrier:"Demo Transport",driver:"Thabo N.",driverPhone:"+27 82 555 0112",vehicle:"CA 123-456",carrierCost:3250,customerCharge:4450,paymentStatus:"Ready to Bill",zone:"JHB–BFN",receivedBy:"",podDate:"",podNote:"",history:[]},
+    {id:"demo2",bookingNo:"LOG-DEMO-1002",bookingDate:today(),service:"Last Mile",priority:"Express",customer:"Mokoena Retail",contact:"J. Mokoena",contactInfo:"+27 83 555 0167",linkedDoc:"INV-9088",trackingNo:"LM778190",customerRef:"WEB-4419",status:"Delivered",pickupAddress:"Sandton, Gauteng",pickupDate:today(),pickupWindow:"09:00–10:00",deliveryAddress:"Randburg, Gauteng",deliveryDate:today(),deliveryWindow:"11:00–13:00",goods:"2 parcels",packages:2,weight:8.2,volume:.04,declaredValue:5600,handling:"Fragile",instructions:"Reception delivery",carrier:"Easy Local Fleet",driver:"Lerato K.",driverPhone:"+27 71 555 0188",vehicle:"GP 45 XY ZN",carrierCost:180,customerCharge:350,paymentStatus:"Invoiced",zone:"Johannesburg North",receivedBy:"S. Molefe",podDate:new Date().toISOString().slice(0,16),podNote:"Delivered in good condition",history:[]}
+  ];
+  demo.forEach(function(d){if(!bookings.some(function(b){return b.bookingNo===d.bookingNo;})){addEvent(d,"Demo booking created");bookings.push(d);}});persist();render();toast("Demo logistics data added.");
+}
+$("btnNew").onclick=function(){openBooking();};$("btnClose").onclick=closeBooking;$("btnCancel").onclick=closeBooking;$("bookingForm").onsubmit=saveBooking;
+$("bookingModal").onclick=function(e){if(e.target===$("bookingModal"))closeBooking();};$("detailClose").onclick=closeDetail;$("detailModal").onclick=function(e){if(e.target===$("detailModal"))closeDetail();};
+["q","fStatus","fService"].forEach(function(id){$(id).addEventListener("input",render);$(id).addEventListener("change",render);});
+$("btnClearFilters").onclick=function(){$("q").value="";$("fStatus").value="";$("fService").value="";render();};$("btnSeed").onclick=seed;$("btnExport").onclick=exportCSV;$("btnBackup").onclick=backup;$("restoreFile").onchange=function(e){restore(e.target.files[0]);e.target.value="";};
+render();
+</script>
+<script defer src="scripts/sync-nav.js"></script>
+</body>
+</html>
