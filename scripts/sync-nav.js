@@ -50,6 +50,7 @@
     { name: "Payroll", href: "easy-payroll.html", icon: "fa-money-bill-wave", group: "Operations", description: "Prepare payroll summaries" },
     { name: "Inventory", href: "easy-inventory.html", icon: "fa-boxes-stacked", group: "Operations", description: "Track stock and movements" },
     { name: "CRM", href: "easy-crm.html", icon: "fa-users", group: "Operations", description: "Manage customer relationships" },
+    { name: "Connect", href: "easy-connect.html", icon: "fa-arrow-right-arrow-left", group: "Operations", description: "Connect Shopify commerce to EasyFile and Microsoft Dynamics 365 / Business Central", landing: true },
     { name: "Agent", href: "easy-agent.html", icon: "fa-user-tie", group: "Operations", description: "Onboard and manage sales agents, assignments, targets, compliance and commission readiness", landing: true },
     { name: "SLA", href: "easy-sla.html", icon: "fa-stopwatch", group: "Operations", description: "Define service commitments, track response and resolution targets, and monitor SLA performance", landing: true },
     { name: "POS", href: "easy-pos.html", icon: "fa-cash-register", group: "Operations", description: "Record point-of-sale transactions and daily sales", landing: true },
