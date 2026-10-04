@@ -48,7 +48,7 @@
 
     { name: "Job Card", href: "easy-job-card.html", icon: "fa-briefcase", group: "Operations", description: "Track service and repair work" },
     { name: "Payroll", href: "easy-payroll.html", icon: "fa-money-bill-wave", group: "Operations", description: "Prepare payroll summaries" },
-    { name: "Inventory", href: "easy-inventory.html", icon: "fa-boxes-stacked", group: "Operations", description: "Track stock and movements" },
+    { name: "Inventory", href: "easy-inventory.html", icon: "fa-boxes-stacked", group: "Operations", description: "Track stock and movements" },\n    { name: "Logistics", href: "easy-logistics.html", icon: "fa-truck-fast", group: "Operations", description: "Manage logistics bookings, distribution and proof of delivery", landing: true },
     { name: "CRM", href: "easy-crm.html", icon: "fa-users", group: "Operations", description: "Manage customer relationships" },
     { name: "Connect", href: "easy-connect.html", icon: "fa-arrow-right-arrow-left", group: "Operations", description: "Connect Shopify commerce to EasyFile and Microsoft Dynamics 365 / Business Central", landing: true },
     { name: "Agent", href: "easy-agent.html", icon: "fa-user-tie", group: "Operations", description: "Onboard and manage sales agents, assignments, targets, compliance and commission readiness", landing: true },
