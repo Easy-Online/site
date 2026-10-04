@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Easy Agent | Sales Agent Lifecycle & Performance</title>
+  <meta name="description" content="Onboard, manage and monitor sales agents, assignments, targets, compliance and commission readiness in EasyFile.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/easyfile-brand-tokens.css">
+  <link rel="stylesheet" href="assets/css/easyfile-site.css">
+  <link rel="stylesheet" href="assets/css/easyfile-footer.css">
+  <link rel="stylesheet" href="assets/css/easyfile-navigation.css">
+  <style>
+    :root{--ea-blue:#2563eb;--ea-navy:#061a4d;--ea-border:#dbe6f5;--ea-muted:#64748b;--ea-bg:#edf4ff;--ea-card:#fff;--ea-text:#0f172a;--ea-success:#16a34a;--ea-warn:#f59e0b;--ea-danger:#dc2626}
+    html[data-theme="dark"]{--ea-bg:#07101f;--ea-card:#0f172a;--ea-text:#e5e7eb;--ea-muted:#9fb0c8;--ea-border:rgba(148,163,184,.22)}
+    body{font-family:Inter,system-ui,sans-serif;background:var(--ea-bg);color:var(--ea-text)}
+    .ea-shell{width:min(100% - 2rem,96rem);margin:auto;padding:2rem 0 4rem}
+    .ea-hero{background:linear-gradient(135deg,#061a4d,#0b3ba8 58%,#2563eb);color:#fff;border-radius:1.6rem;padding:1.6rem;box-shadow:0 22px 60px rgba(2,12,45,.18)}
+    .ea-card{background:var(--ea-card);border:1px solid var(--ea-border);border-radius:1.1rem;box-shadow:0 12px 34px rgba(15,23,42,.06)}
+    .ea-btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:2.75rem;border-radius:.75rem;padding:.68rem .95rem;font-weight:800;border:1px solid transparent;transition:.15s}
+    .ea-btn:hover{transform:translateY(-1px)}
+    .ea-btn-primary{background:var(--ea-blue);color:white}.ea-btn-secondary{background:var(--ea-card);color:var(--ea-text);border-color:var(--ea-border)}.ea-btn-danger{background:var(--ea-danger);color:white}
+    .ea-kpi{padding:1.1rem}.ea-kpi small{color:var(--ea-muted);font-weight:800;text-transform:uppercase;letter-spacing:.06em}.ea-kpi strong{display:block;font-size:1.75rem;margin-top:.25rem}
+    .ea-tabs{display:flex;gap:.45rem;overflow:auto;padding:.4rem}.ea-tab{white-space:nowrap;border-radius:.7rem;padding:.65rem .85rem;font-weight:800;color:var(--ea-muted)}.ea-tab.active{background:#eff6ff;color:#1d4ed8}
+    html[data-theme="dark"] .ea-tab.active{background:#172554;color:#93c5fd}
+    .ea-panel{display:none}.ea-panel.active{display:block}
+    .ea-input,.ea-select,.ea-textarea{width:100%;border:1px solid var(--ea-border);background:var(--ea-card);color:var(--ea-text);border-radius:.75rem;padding:.72rem .8rem}.ea-input:focus,.ea-select:focus,.ea-textarea:focus{outline:none;border-color:#60a5fa;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+    .ea-label{display:block;font-size:.78rem;font-weight:800;color:var(--ea-muted);margin-bottom:.35rem}
+    .ea-table-wrap{overflow:auto}.ea-table{width:100%;min-width:900px;border-collapse:collapse}.ea-table th,.ea-table td{padding:.85rem .75rem;border-bottom:1px solid var(--ea-border);font-size:.86rem}.ea-table th{text-align:left;color:var(--ea-muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.05em}
+    .badge{display:inline-flex;align-items:center;border-radius:999px;padding:.25rem .55rem;font-size:.72rem;font-weight:900}.b-active{background:#dcfce7;color:#166534}.b-training{background:#dbeafe;color:#1d4ed8}.b-vetting{background:#fef3c7;color:#92400e}.b-suspended{background:#fee2e2;color:#991b1b}.b-applicant{background:#f3e8ff;color:#7e22ce}.b-offboarded{background:#e5e7eb;color:#374151}
+    .progress{height:.55rem;background:#e5e7eb;border-radius:999px;overflow:hidden}.progress>span{display:block;height:100%;background:linear-gradient(90deg,#2563eb,#38bdf8)}
+    .metric-pos{color:#15803d}.metric-neg{color:#b91c1c}.muted{color:var(--ea-muted)}
+    .modal{position:fixed;inset:0;background:rgba(2,6,23,.68);display:none;align-items:center;justify-content:center;padding:1rem;z-index:2000}.modal.open{display:flex}.modal-card{width:min(100%,58rem);max-height:92vh;overflow:auto;background:var(--ea-card);border-radius:1.2rem;border:1px solid var(--ea-border);padding:1.2rem}
+    .toast{position:fixed;right:1rem;bottom:1rem;z-index:2500;background:#0f172a;color:#fff;border-radius:.85rem;padding:.8rem 1rem;box-shadow:0 15px 35px rgba(0,0,0,.25);display:none}.toast.show{display:block}
+    @media(max-width:760px){.ea-shell{width:min(100% - 1rem,96rem);padding-top:1rem}.ea-hero{padding:1.15rem}.ea-actions{display:grid!important;grid-template-columns:1fr 1fr;width:100%}.ea-actions .ea-btn{width:100%}}
+  </style>
+</head>
+<body class="easyfile-app">
+  <div class="easyfile-nav no-print"><a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a></div>
+
+  <main class="ea-shell easyfile-main">
+    <section class="ea-hero">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+        <div>
+          <p class="text-blue-200 text-xs font-black uppercase tracking-widest">Sales workforce operations</p>
+          <h1 class="text-3xl md:text-4xl font-black mt-2">Easy Agent</h1>
+          <p class="mt-3 text-blue-100 max-w-3xl">Onboard sales agents, track compliance, assign customers and opportunities, monitor targets and expose commission-ready performance data without turning the CRM into an HR system.</p>
+        </div>
+        <div class="ea-actions flex flex-wrap gap-2">
+          <button id="btnSeed" class="ea-btn ea-btn-secondary"><i class="fa-solid fa-flask"></i>Seed demo</button>
+          <button id="btnExport" class="ea-btn ea-btn-secondary"><i class="fa-solid fa-file-csv"></i>Export CSV</button>
+          <button id="btnBackup" class="ea-btn ea-btn-secondary"><i class="fa-solid fa-download"></i>Backup</button>
+          <button id="btnAddAgent" class="ea-btn ea-btn-primary"><i class="fa-solid fa-user-plus"></i>Add agent</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid grid-cols-2 lg:grid-cols-6 gap-3 mt-5">
+      <div class="ea-card ea-kpi"><small>Total agents</small><strong id="kpiAgents">0</strong></div>
+      <div class="ea-card ea-kpi"><small>Active</small><strong id="kpiActive">0</strong></div>
+      <div class="ea-card ea-kpi"><small>Onboarding</small><strong id="kpiOnboarding">0</strong></div>
+      <div class="ea-card ea-kpi"><small>Target attainment</small><strong id="kpiTarget">0%</strong></div>
+      <div class="ea-card ea-kpi"><small>Revenue</small><strong id="kpiRevenue">R0</strong></div>
+      <div class="ea-card ea-kpi"><small>Est. commission</small><strong id="kpiCommission">R0</strong></div>
+    </section>
+
+    <section class="ea-card mt-5">
+      <div class="ea-tabs" role="tablist" aria-label="Easy Agent sections">
+        <button class="ea-tab active" data-tab="dashboard"><i class="fa-solid fa-gauge-high mr-1"></i>Dashboard</button>
+        <button class="ea-tab" data-tab="agents"><i class="fa-solid fa-users mr-1"></i>Agents</button>
+        <button class="ea-tab" data-tab="onboarding"><i class="fa-solid fa-list-check mr-1"></i>Onboarding</button>
+        <button class="ea-tab" data-tab="assignments"><i class="fa-solid fa-user-tag mr-1"></i>Assignments</button>
+        <button class="ea-tab" data-tab="performance"><i class="fa-solid fa-chart-column mr-1"></i>Performance</button>
+        <button class="ea-tab" data-tab="commission"><i class="fa-solid fa-coins mr-1"></i>Commission readiness</button>
+      </div>
+    </section>
+
+    <section id="panel-dashboard" class="ea-panel active mt-5">
+      <div class="grid lg:grid-cols-3 gap-4">
+        <article class="ea-card p-5 lg:col-span-2">
+          <div class="flex items-center justify-between gap-3 mb-4"><div><h2 class="text-xl font-black">Sales team overview</h2><p class="text-sm muted">Current performance and next actions.</p></div><a href="easy-crm.html" class="ea-btn ea-btn-secondary"><i class="fa-solid fa-arrow-up-right-from-square"></i>Open CRM</a></div>
+          <div id="topAgents" class="space-y-3"></div>
+        </article>
+        <article class="ea-card p-5"><h2 class="text-xl font-black">Attention required</h2><p class="text-sm muted mt-1">Compliance and performance flags.</p><div id="attentionList" class="mt-4 space-y-3"></div></article>
+      </div>
+    </section>
+
+    <section id="panel-agents" class="ea-panel mt-5">
+      <div class="ea-card p-4 mb-4 grid md:grid-cols-4 gap-3">
+        <div class="md:col-span-2"><label class="ea-label">Search</label><input id="agentSearch" class="ea-input" placeholder="Name, email, team, territory, agent ID"></div>
+        <div><label class="ea-label">Status</label><select id="agentStatusFilter" class="ea-select"><option value="">All statuses</option><option>Applicant</option><option>Vetting</option><option>Training</option><option>Active</option><option>Suspended</option><option>Offboarded</option></select></div>
+        <div><label class="ea-label">Team</label><select id="agentTeamFilter" class="ea-select"><option value="">All teams</option></select></div>
+      </div>
+      <div class="ea-card ea-table-wrap"><table class="ea-table"><thead><tr><th>Agent</th><th>Status</th><th>Team</th><th>Territory</th><th>Onboarding</th><th>Revenue</th><th>Target</th><th>Actions</th></tr></thead><tbody id="agentsBody"></tbody></table></div>
+    </section>
+
+    <section id="panel-onboarding" class="ea-panel mt-5"><div id="onboardingGrid" class="grid md:grid-cols-2 xl:grid-cols-3 gap-4"></div></section>
+
+    <section id="panel-assignments" class="ea-panel mt-5">
+      <div class="ea-card p-5 mb-4"><div class="flex flex-col md:flex-row md:items-end gap-3"><div class="flex-1"><label class="ea-label">Agent</label><select id="assignAgent" class="ea-select"></select></div><div class="flex-1"><label class="ea-label">Customer / opportunity</label><input id="assignAccount" class="ea-input" placeholder="e.g. Acme Ltd - M365 rollout"></div><div><label class="ea-label">Value (ZAR)</label><input id="assignValue" class="ea-input" type="number" min="0" step="0.01" value="0"></div><button id="btnAssign" class="ea-btn ea-btn-primary"><i class="fa-solid fa-plus"></i>Add assignment</button></div></div>
+      <div class="ea-card ea-table-wrap"><table class="ea-table"><thead><tr><th>Assigned</th><th>Agent</th><th>Customer / opportunity</th><th>Value</th><th>Status</th><th>Actions</th></tr></thead><tbody id="assignmentsBody"></tbody></table></div>
+    </section>
+
+    <section id="panel-performance" class="ea-panel mt-5"><div id="performanceGrid" class="grid md:grid-cols-2 xl:grid-cols-3 gap-4"></div></section>
+
+    <section id="panel-commission" class="ea-panel mt-5">
+      <div class="ea-card p-5 mb-4"><h2 class="text-xl font-black">Commission readiness</h2><p class="text-sm muted mt-1">Easy Agent shows estimated commission based on tracked revenue and each agent's rate. Final approvals, exceptions and payouts should live in a dedicated Easy Commissions module.</p></div>
+      <div class="ea-card ea-table-wrap"><table class="ea-table"><thead><tr><th>Agent</th><th>Revenue</th><th>Rate</th><th>Estimated</th><th>Readiness</th><th>Reason</th></tr></thead><tbody id="commissionBody"></tbody></table></div>
+    </section>
+  </main>
+
+  <div id="agentModal" class="modal" aria-hidden="true"><div class="modal-card">
+    <div class="flex items-center justify-between gap-3"><div><h2 id="modalTitle" class="text-2xl font-black">Add agent</h2><p class="text-sm muted">Create or update the agent master record.</p></div><button id="btnCloseModal" class="ea-btn ea-btn-secondary"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3 mt-5">
+      <div><label class="ea-label">Full name *</label><input id="fName" class="ea-input"></div>
+      <div><label class="ea-label">Email</label><input id="fEmail" type="email" class="ea-input"></div>
+      <div><label class="ea-label">Phone</label><input id="fPhone" class="ea-input" placeholder="+27..."></div>
+      <div><label class="ea-label">Status</label><select id="fStatus" class="ea-select"><option>Applicant</option><option>Vetting</option><option>Training</option><option>Active</option><option>Suspended</option><option>Offboarded</option></select></div>
+      <div><label class="ea-label">Team</label><input id="fTeam" class="ea-input" placeholder="Enterprise Sales"></div>
+      <div><label class="ea-label">Territory</label><input id="fTerritory" class="ea-input" placeholder="Gauteng"></div>
+      <div><label class="ea-label">Monthly target (ZAR)</label><input id="fTarget" class="ea-input" type="number" min="0" value="0"></div>
+      <div><label class="ea-label">Revenue to date (ZAR)</label><input id="fRevenue" class="ea-input" type="number" min="0" value="0"></div>
+      <div><label class="ea-label">Commission rate %</label><input id="fRate" class="ea-input" type="number" min="0" max="100" step="0.01" value="0"></div>
+      <div class="lg:col-span-3"><label class="ea-label">Products / authorisations</label><input id="fProducts" class="ea-input" placeholder="Microsoft 365, Azure, Security"></div>
+      <div class="lg:col-span-3"><label class="ea-label">Notes</label><textarea id="fNotes" rows="3" class="ea-textarea"></textarea></div>
+    </div>
+    <div class="mt-5"><p class="ea-label">Onboarding checklist</p><div class="grid md:grid-cols-2 lg:grid-cols-3 gap-2">
+      <label class="ea-card p-3"><input id="cIdentity" type="checkbox" class="mr-2">Identity verified</label><label class="ea-card p-3"><input id="cContract" type="checkbox" class="mr-2">Contract accepted</label><label class="ea-card p-3"><input id="cBank" type="checkbox" class="mr-2">Bank details verified</label><label class="ea-card p-3"><input id="cTraining" type="checkbox" class="mr-2">Training completed</label><label class="ea-card p-3"><input id="cCompliance" type="checkbox" class="mr-2">Compliance approved</label><label class="ea-card p-3"><input id="cProducts" type="checkbox" class="mr-2">Product authorisation</label>
+    </div></div>
+    <input id="fId" type="hidden"><div class="flex flex-wrap justify-end gap-2 mt-5"><button id="btnDeleteAgent" class="ea-btn ea-btn-danger hidden"><i class="fa-solid fa-trash"></i>Delete</button><button id="btnCancelModal" class="ea-btn ea-btn-secondary">Cancel</button><button id="btnSaveAgent" class="ea-btn ea-btn-primary"><i class="fa-solid fa-floppy-disk"></i>Save agent</button></div>
+  </div></div>
+  <div id="toast" class="toast"></div>
+
+  <footer class="easyfile-footer border-t border-adaptive no-print"><div class="container mx-auto px-4 py-7 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between"><p class="muted-adaptive text-sm font-bold">EasyFile · Easy Agent</p><p class="muted-adaptive text-sm">Local-first agent lifecycle and performance management</p></div></footer>
+
+<script>
+"use strict";
+const AGENT_KEY="easyfile.agent.agents.v1", ASSIGN_KEY="easyfile.agent.assignments.v1";
+let agents=load(AGENT_KEY,[]), assignments=load(ASSIGN_KEY,[]);
+const $=id=>document.getElementById(id);
+function load(key,fallback){try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(fallback))}catch{return fallback}}
+function save(){localStorage.setItem(AGENT_KEY,JSON.stringify(agents));localStorage.setItem(ASSIGN_KEY,JSON.stringify(assignments))}
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function money(n){return new Intl.NumberFormat("en-ZA",{style:"currency",currency:"ZAR",maximumFractionDigits:0}).format(Number(n)||0)}
+function toast(msg){$("toast").textContent=msg;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),2400)}
+function statusBadge(s){return '<span class="badge b-'+String(s).toLowerCase()+'">'+esc(s)+'</span>'}
+function onboardingPct(a){const c=a.checklist||{};const vals=[c.identity,c.contract,c.bank,c.training,c.compliance,c.products];return Math.round(vals.filter(Boolean).length/vals.length*100)}
+function commission(a){return (Number(a.revenue)||0)*(Number(a.rate)||0)/100}
+function seed(){agents=[
+{id:"AGT-1001",name:"Naledi Mokoena",email:"naledi@example.co.za",phone:"+27 82 555 1101",status:"Active",team:"Enterprise Sales",territory:"Gauteng",target:180000,revenue:214500,rate:8,products:"Microsoft 365, Azure",notes:"Strategic accounts",checklist:{identity:true,contract:true,bank:true,training:true,compliance:true,products:true}},
+{id:"AGT-1002",name:"Thabo Nkosi",email:"thabo@example.co.za",phone:"+27 72 555 1102",status:"Training",team:"SMB Growth",territory:"KwaZulu-Natal",target:120000,revenue:48500,rate:6.5,products:"Microsoft 365",notes:"Completing onboarding",checklist:{identity:true,contract:true,bank:true,training:false,compliance:true,products:false}},
+{id:"AGT-1003",name:"Aisha Khan",email:"aisha@example.co.za",phone:"+27 83 555 1103",status:"Active",team:"Cloud & Security",territory:"Western Cape",target:200000,revenue:176000,rate:9,products:"Azure, Security",notes:"Security specialist",checklist:{identity:true,contract:true,bank:true,training:true,compliance:true,products:true}},
+{id:"AGT-1004",name:"Kabelo Dlamini",email:"kabelo@example.co.za",phone:"+27 79 555 1104",status:"Vetting",team:"SMB Growth",territory:"North West",target:90000,revenue:0,rate:5,products:"",notes:"Awaiting verification",checklist:{identity:true,contract:false,bank:false,training:false,compliance:false,products:false}}
+]; assignments=[
+{id:Date.now()+1,agentId:"AGT-1001",account:"Contoso SA - Microsoft 365 renewal",value:85000,status:"Qualified",date:new Date().toISOString()},
+{id:Date.now()+2,agentId:"AGT-1003",account:"Fabrikam - Azure migration",value:160000,status:"Proposal",date:new Date().toISOString()},
+{id:Date.now()+3,agentId:"AGT-1002",account:"Adventure Works - Business Premium",value:42000,status:"Discovery",date:new Date().toISOString()}
+]; save(); render(); toast("Demo data loaded")}
+function render(){renderKPIs();renderTeams();renderAgents();renderOnboarding();renderAssignments();renderPerformance();renderCommission();renderDashboard();renderAssignOptions()}
+function renderKPIs(){const total=agents.length,active=agents.filter(a=>a.status==="Active").length,onboarding=agents.filter(a=>!["Active","Suspended","Offboarded"].includes(a.status)).length;const rev=agents.reduce((s,a)=>s+(+a.revenue||0),0),target=agents.reduce((s,a)=>s+(+a.target||0),0),comm=agents.reduce((s,a)=>s+commission(a),0);$("kpiAgents").textContent=total;$("kpiActive").textContent=active;$("kpiOnboarding").textContent=onboarding;$("kpiTarget").textContent=target?Math.round(rev/target*100)+"%":"0%";$("kpiRevenue").textContent=money(rev);$("kpiCommission").textContent=money(comm)}
+function renderTeams(){const cur=$("agentTeamFilter").value;const teams=[...new Set(agents.map(a=>a.team).filter(Boolean))].sort();$("agentTeamFilter").innerHTML='<option value="">All teams</option>'+teams.map(t=>'<option>'+esc(t)+'</option>').join("");$("agentTeamFilter").value=teams.includes(cur)?cur:""}
+function filteredAgents(){const q=$("agentSearch")?.value.toLowerCase().trim()||"",s=$("agentStatusFilter")?.value||"",t=$("agentTeamFilter")?.value||"";return agents.filter(a=>{const hay=(a.id+" "+a.name+" "+a.email+" "+a.team+" "+a.territory).toLowerCase();return(!q||hay.includes(q))&&(!s||a.status===s)&&(!t||a.team===t)})}
+function renderAgents(){const list=filteredAgents();$("agentsBody").innerHTML=list.length?list.map(a=>{const p=onboardingPct(a),att=a.target?Math.round((a.revenue/a.target)*100):0;return '<tr><td><strong>'+esc(a.name)+'</strong><div class="muted text-xs">'+esc(a.id)+' · '+esc(a.email||"")+'</div></td><td>'+statusBadge(a.status)+'</td><td>'+esc(a.team||"-")+'</td><td>'+esc(a.territory||"-")+'</td><td><div class="progress"><span style="width:'+p+'%"></span></div><div class="text-xs muted mt-1">'+p+'%</div></td><td>'+money(a.revenue)+'</td><td><strong class="'+(att>=100?'metric-pos':att<50?'metric-neg':'')+'">'+att+'%</strong></td><td><button class="ea-btn ea-btn-secondary" data-edit="'+a.id+'">Edit</button></td></tr>'}).join(""):'<tr><td colspan="8" class="text-center muted py-8">No agents found.</td></tr>';document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>openAgent(b.dataset.edit))}
+function renderOnboarding(){$("onboardingGrid").innerHTML=agents.map(a=>{const p=onboardingPct(a);return '<article class="ea-card p-5"><div class="flex items-start justify-between gap-3"><div><h3 class="font-black">'+esc(a.name)+'</h3><p class="text-xs muted">'+esc(a.id)+' · '+esc(a.status)+'</p></div><strong>'+p+'%</strong></div><div class="progress mt-3"><span style="width:'+p+'%"></span></div><div class="grid grid-cols-2 gap-2 mt-4 text-xs">'+Object.entries({identity:"Identity",contract:"Contract",bank:"Bank",training:"Training",compliance:"Compliance",products:"Products"}).map(([k,label])=>'<div>'+(a.checklist?.[k]?'<i class="fa-solid fa-circle-check text-green-600"></i>':'<i class="fa-regular fa-circle text-gray-400"></i>')+' '+label+'</div>').join("")+'</div><button class="ea-btn ea-btn-secondary w-full mt-4" data-edit="'+a.id+'">Update onboarding</button></article>'}).join("");document.querySelectorAll("#onboardingGrid [data-edit]").forEach(b=>b.onclick=()=>openAgent(b.dataset.edit))}
+function renderAssignOptions(){$("assignAgent").innerHTML=agents.filter(a=>a.status==="Active").map(a=>'<option value="'+a.id+'">'+esc(a.name)+' ('+esc(a.id)+')</option>').join("")||'<option value="">No active agents</option>'}
+function renderAssignments(){$("assignmentsBody").innerHTML=assignments.length?assignments.slice().reverse().map(x=>{const a=agents.find(y=>y.id===x.agentId);return '<tr><td>'+new Date(x.date).toLocaleDateString("en-ZA")+'</td><td>'+esc(a?.name||x.agentId)+'</td><td><strong>'+esc(x.account)+'</strong></td><td>'+money(x.value)+'</td><td><select class="ea-select" data-assign-status="'+x.id+'"><option '+(x.status==='Discovery'?'selected':'')+'>Discovery</option><option '+(x.status==='Qualified'?'selected':'')+'>Qualified</option><option '+(x.status==='Proposal'?'selected':'')+'>Proposal</option><option '+(x.status==='Won'?'selected':'')+'>Won</option><option '+(x.status==='Lost'?'selected':'')+'>Lost</option></select></td><td><button class="ea-btn ea-btn-danger" data-del-assign="'+x.id+'"><i class="fa-solid fa-trash"></i></button></td></tr>'}).join(""):'<tr><td colspan="6" class="text-center muted py-8">No assignments yet.</td></tr>';document.querySelectorAll("[data-assign-status]").forEach(s=>s.onchange=()=>{const x=assignments.find(a=>String(a.id)===s.dataset.assignStatus);if(x){x.status=s.value;save();renderDashboard();toast("Assignment updated")}});document.querySelectorAll("[data-del-assign]").forEach(b=>b.onclick=()=>{assignments=assignments.filter(x=>String(x.id)!==b.dataset.delAssign);save();render();toast("Assignment removed")})}
+function renderPerformance(){$("performanceGrid").innerHTML=agents.filter(a=>a.status==="Active").map(a=>{const att=a.target?Math.round(a.revenue/a.target*100):0;return '<article class="ea-card p-5"><div class="flex items-center justify-between"><div><h3 class="font-black">'+esc(a.name)+'</h3><p class="text-xs muted">'+esc(a.team)+' · '+esc(a.territory)+'</p></div><span class="badge '+(att>=100?'b-active':att>=70?'b-training':'b-vetting')+'">'+att+'% target</span></div><div class="mt-4"><div class="flex justify-between text-sm"><span>Revenue</span><strong>'+money(a.revenue)+'</strong></div><div class="flex justify-between text-sm mt-2"><span>Target</span><strong>'+money(a.target)+'</strong></div><div class="progress mt-3"><span style="width:'+Math.min(att,100)+'%"></span></div><div class="flex justify-between text-sm mt-4"><span>Estimated commission</span><strong>'+money(commission(a))+'</strong></div></div></article>'}).join("")}
+function renderCommission(){$("commissionBody").innerHTML=agents.map(a=>{const p=onboardingPct(a),ready=a.status==="Active"&&p===100;return '<tr><td><strong>'+esc(a.name)+'</strong><div class="text-xs muted">'+esc(a.id)+'</div></td><td>'+money(a.revenue)+'</td><td>'+Number(a.rate||0).toFixed(2)+'%</td><td><strong>'+money(commission(a))+'</strong></td><td>'+(ready?'<span class="badge b-active">Ready</span>':'<span class="badge b-vetting">Hold</span>')+'</td><td>'+(ready?'Agent active and onboarding complete':a.status!=="Active"?'Status is '+esc(a.status):'Onboarding '+p+'% complete')+'</td></tr>'}).join("")}
+function renderDashboard(){const ranked=agents.filter(a=>a.status==="Active").slice().sort((a,b)=>(b.revenue/b.target||0)-(a.revenue/a.target||0)).slice(0,4);$("topAgents").innerHTML=ranked.length?ranked.map(a=>{const att=a.target?Math.round(a.revenue/a.target*100):0;return '<div class="ea-card p-4"><div class="flex justify-between gap-3"><div><strong>'+esc(a.name)+'</strong><div class="text-xs muted">'+esc(a.team)+' · '+money(a.revenue)+' revenue</div></div><strong>'+att+'%</strong></div><div class="progress mt-3"><span style="width:'+Math.min(att,100)+'%"></span></div></div>'}).join(""):'<p class="muted">No active agents yet.</p>';const flags=[];agents.forEach(a=>{const p=onboardingPct(a);if(a.status!=="Offboarded"&&p<100)flags.push(a.name+": onboarding "+p+"% complete");if(a.status==="Active"&&a.target&&a.revenue/a.target<.5)flags.push(a.name+": below 50% of target")});$("attentionList").innerHTML=flags.length?flags.slice(0,8).map(f=>'<div class="ea-card p-3 text-sm"><i class="fa-solid fa-triangle-exclamation text-yellow-500 mr-2"></i>'+esc(f)+'</div>').join(""):'<div class="ea-card p-3 text-sm"><i class="fa-solid fa-circle-check text-green-600 mr-2"></i>No immediate flags.</div>'}
+function openAgent(id){const a=agents.find(x=>x.id===id);$("fId").value=a?.id||"";$("modalTitle").textContent=a?"Edit agent":"Add agent";$("fName").value=a?.name||"";$("fEmail").value=a?.email||"";$("fPhone").value=a?.phone||"";$("fStatus").value=a?.status||"Applicant";$("fTeam").value=a?.team||"";$("fTerritory").value=a?.territory||"";$("fTarget").value=a?.target||0;$("fRevenue").value=a?.revenue||0;$("fRate").value=a?.rate||0;$("fProducts").value=a?.products||"";$("fNotes").value=a?.notes||"";$("cIdentity").checked=!!a?.checklist?.identity;$("cContract").checked=!!a?.checklist?.contract;$("cBank").checked=!!a?.checklist?.bank;$("cTraining").checked=!!a?.checklist?.training;$("cCompliance").checked=!!a?.checklist?.compliance;$("cProducts").checked=!!a?.checklist?.products;$("btnDeleteAgent").classList.toggle("hidden",!a);$("agentModal").classList.add("open");$("agentModal").setAttribute("aria-hidden","false")}
+function closeAgent(){$("agentModal").classList.remove("open");$("agentModal").setAttribute("aria-hidden","true")}
+function saveAgent(){const name=$("fName").value.trim();if(!name){toast("Full name is required");return}const id=$("fId").value||("AGT-"+String(Date.now()).slice(-6));const rec={id,name,email:$("fEmail").value.trim(),phone:$("fPhone").value.trim(),status:$("fStatus").value,team:$("fTeam").value.trim(),territory:$("fTerritory").value.trim(),target:+$("fTarget").value||0,revenue:+$("fRevenue").value||0,rate:+$("fRate").value||0,products:$("fProducts").value.trim(),notes:$("fNotes").value.trim(),checklist:{identity:$("cIdentity").checked,contract:$("cContract").checked,bank:$("cBank").checked,training:$("cTraining").checked,compliance:$("cCompliance").checked,products:$("cProducts").checked}};const i=agents.findIndex(a=>a.id===id);if(i>=0)agents[i]=rec;else agents.push(rec);save();closeAgent();render();toast(i>=0?"Agent updated":"Agent created")}
+function deleteAgent(){const id=$("fId").value;if(!id)return;if(!confirm("Delete this agent and keep historical assignments?"))return;agents=agents.filter(a=>a.id!==id);save();closeAgent();render();toast("Agent deleted")}
+function addAssignment(){const agentId=$("assignAgent").value,account=$("assignAccount").value.trim(),value=+$("assignValue").value||0;if(!agentId||!account){toast("Choose an active agent and enter a customer/opportunity");return}assignments.push({id:Date.now(),agentId,account,value,status:"Discovery",date:new Date().toISOString()});$("assignAccount").value="";$("assignValue").value=0;save();render();toast("Assignment added")}
+function exportCSV(){const rows=[["Agent ID","Name","Email","Phone","Status","Team","Territory","Target","Revenue","Commission Rate","Onboarding %"],...agents.map(a=>[a.id,a.name,a.email,a.phone,a.status,a.team,a.territory,a.target,a.revenue,a.rate,onboardingPct(a)])];const csv=rows.map(r=>r.map(v=>'"'+String(v??"").replaceAll('"','""')+'"').join(",")).join("\n");download("easy-agent.csv",csv,"text/csv")}
+function backup(){download("easy-agent-backup.json",JSON.stringify({version:1,exportedAt:new Date().toISOString(),agents,assignments},null,2),"application/json")}
+function download(name,content,type){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},0)}
+document.querySelectorAll(".ea-tab").forEach(t=>t.onclick=()=>{document.querySelectorAll(".ea-tab").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".ea-panel").forEach(x=>x.classList.remove("active"));t.classList.add("active");$("panel-"+t.dataset.tab).classList.add("active")});
+$("btnSeed").onclick=()=>{if(agents.length&&!confirm("Replace current Easy Agent data with demo data?"))return;seed()};$("btnAddAgent").onclick=()=>openAgent();$("btnSaveAgent").onclick=saveAgent;$("btnDeleteAgent").onclick=deleteAgent;$("btnCloseModal").onclick=closeAgent;$("btnCancelModal").onclick=closeAgent;$("agentModal").addEventListener("click",e=>{if(e.target===$("agentModal"))closeAgent()});$("agentSearch").oninput=renderAgents;$("agentStatusFilter").onchange=renderAgents;$("agentTeamFilter").onchange=renderAgents;$("btnAssign").onclick=addAssignment;$("btnExport").onclick=exportCSV;$("btnBackup").onclick=backup;
+render();
+</script>
+<script defer src="scripts/sync-nav.js"></script>
+</body>
+</html>
