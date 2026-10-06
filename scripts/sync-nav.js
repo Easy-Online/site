@@ -34,6 +34,7 @@
     { name: "SOW", href: "easy-sow.html", icon: "fa-file-signature", group: "Documents", description: "Create structured statements of work with scope, deliverables, milestones, commercials, acceptance and sign-off", landing: true },
     { name: "Landing Page", href: "easy-landing-page.html", icon: "fa-window-maximize", group: "Documents", description: "Build branded landing pages for campaigns and business offers", landing: true },
     { name: "Type", href: "easy-type.html", icon: "fa-wand-magic-sparkles", group: "Documents", description: "AI-assisted writing, grammar checking, reusable snippets and smart form completion", landing: true },
+    { name: "Minutes", href: "easy-minutes.html", icon: "fa-microphone-lines", group: "Documents", description: "Capture transcripts and generate structured meeting minutes, decisions and action items", landing: true },
     { name: "Form", href: "easy-form.html", icon: "fa-list-check", group: "Documents", description: "AI-assisted form builder with response collection, review, analytics and export", landing: true },
     { name: "Tender", href: "easy-tender.html", icon: "fa-file-circle-check", group: "Documents", description: "Analyse tenders, RFQs and RFPs into compliance matrices, evidence packs, action plans and submission checklists", landing: true },
 
