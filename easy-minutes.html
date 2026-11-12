@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Easy Minutes | AI-assisted meeting minutes | EasyFile</title>
+  <meta name="description" content="Capture, transcribe, summarise and export structured meeting minutes, decisions and action items with Easy Minutes.">
+  <meta name="theme-color" content="#061a4d">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/easyfile-brand-tokens.css">
+  <link rel="stylesheet" href="assets/css/easyfile-site.css">
+  <link rel="stylesheet" href="assets/css/easyfile-footer.css">
+  <link rel="stylesheet" href="assets/css/easyfile-navigation.css">
+  <style>
+    :root{--m-bg:#eff6ff;--m-card:#fff;--m-ink:#0f172a;--m-muted:#64748b;--m-border:#dbe6f5;--m-blue:#2563eb;--m-navy:#061a4d;--m-green:#16a34a;--m-amber:#d97706;--m-red:#dc2626}
+    html[data-theme="dark"]{--m-bg:#07101f;--m-card:#0f172a;--m-ink:#e5e7eb;--m-muted:#9fb0c8;--m-border:rgba(148,163,184,.22)}
+    body{background:var(--m-bg);color:var(--m-ink)}
+    .minutes-shell{width:min(100% - 2rem,96rem);margin:auto;padding:2rem 0 4rem}
+    .hero{background:linear-gradient(135deg,#061a4d,#0b3ba8 58%,#2563eb);color:#fff;border-radius:1.5rem;padding:clamp(1.5rem,4vw,3rem);box-shadow:0 24px 60px rgba(2,12,45,.22)}
+    .hero-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(18rem,.8fr);gap:2rem;align-items:center}
+    .eyebrow{font-size:.76rem;font-weight:900;letter-spacing:.11em;text-transform:uppercase;color:#93c5fd}
+    .hero h1{font-size:clamp(2.6rem,6vw,5.2rem);font-weight:900;letter-spacing:-.055em;line-height:.95;margin:.55rem 0}
+    .hero p{color:#dbeafe;line-height:1.65;max-width:54rem}
+    .flow{display:grid;gap:.7rem}.flow-item{display:flex;gap:.8rem;align-items:center;border:1px solid rgba(255,255,255,.18);border-radius:1rem;padding:.8rem 1rem;background:rgba(255,255,255,.09)}
+    .flow-item span{width:2rem;height:2rem;display:grid;place-items:center;border-radius:.7rem;background:#fff;color:#0b3ba8;font-weight:900;flex:0 0 auto}
+    .card{background:var(--m-card);border:1px solid var(--m-border);border-radius:1.2rem;box-shadow:0 14px 38px rgba(15,23,42,.06)}
+    .section-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem;align-items:center;padding:1.1rem 1.2rem;border-bottom:1px solid var(--m-border)}
+    .section-body{padding:1.2rem}.label{display:block;margin-bottom:.35rem;font-size:.72rem;font-weight:900;color:var(--m-muted);text-transform:uppercase;letter-spacing:.055em}
+    .field{width:100%;border:1px solid var(--m-border);border-radius:.8rem;padding:.7rem .8rem;background:var(--m-card);color:var(--m-ink)}
+    .field:focus{outline:none;border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.14)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:2.65rem;border-radius:.8rem;padding:.65rem .95rem;font-weight:900;border:1px solid transparent}
+    .btn-primary{background:#2563eb;color:#fff}.btn-success{background:#16a34a;color:#fff}.btn-danger{background:#dc2626;color:#fff}
+    .btn-outline{border-color:var(--m-border);background:var(--m-card);color:var(--m-ink)}.btn:disabled{opacity:.5;cursor:not-allowed}
+    .badge{display:inline-flex;align-items:center;gap:.35rem;border-radius:999px;padding:.25rem .55rem;font-size:.7rem;font-weight:900}
+    .badge-blue{background:#dbeafe;color:#1d4ed8}.badge-green{background:#dcfce7;color:#166534}.badge-amber{background:#fef3c7;color:#92400e}.badge-gray{background:#e2e8f0;color:#334155}
+    .provider-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem}
+    .provider{border:1px solid var(--m-border);border-radius:1rem;padding:1rem}.provider i{font-size:1.4rem;color:#2563eb}.provider h3{font-weight:900;margin:.65rem 0 .25rem}.provider p{font-size:.8rem;color:var(--m-muted);line-height:1.45}
+    .workspace{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:1rem}.stack{display:grid;gap:1rem}
+    .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.8rem}.kpi{padding:1rem}.kpi strong{display:block;font-size:1.65rem}
+    .transcript{min-height:22rem;resize:vertical}.minutes-preview{min-height:22rem;white-space:pre-wrap;line-height:1.65}
+    .list-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.75rem;align-items:start;border-bottom:1px solid var(--m-border);padding:.7rem 0}
+    .history-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1rem;padding:.8rem 0;border-bottom:1px solid var(--m-border)}
+    .notice{border-radius:.9rem;padding:.85rem 1rem;font-size:.82rem;line-height:1.55;background:#eff6ff;color:#1e3a8a}
+    html[data-theme="dark"] .notice{background:rgba(37,99,235,.12);color:#bfdbfe}
+    .toast{position:fixed;right:1rem;bottom:1rem;z-index:1500;display:none;max-width:28rem;border-radius:.9rem;padding:.85rem 1rem;background:#0f172a;color:#fff;box-shadow:0 18px 44px rgba(0,0,0,.24)}.toast.show{display:block}
+    @media(max-width:1000px){.hero-grid,.workspace{grid-template-columns:1fr}.provider-grid{grid-template-columns:1fr 1fr}.kpis{grid-template-columns:1fr 1fr}}
+    @media(max-width:620px){.minutes-shell{width:min(100% - 1rem,96rem)}.provider-grid{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}}
+    @media print{.no-print,.easyfile-nav{display:none!important}body{background:#fff}.card{box-shadow:none}.minutes-shell{width:100%;padding:0}.hero{box-shadow:none;color:#000;background:#fff;border:0;padding:0}.hero p,.eyebrow,.flow{display:none}.workspace{display:block}.workspace>div:first-child{display:none}.minutes-preview{min-height:0}}
+  </style>
+  <link rel="icon" href="logo-b.png" type="image/png">
+  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="logo-b.png">
+</head>
+<body>
+<div class="easyfile-nav no-print"></div>
+<main class="minutes-shell" id="main-content">
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow"><i class="fa-solid fa-microphone-lines"></i> Meeting intelligence workspace</div>
+        <h1>Easy Minutes</h1>
+        <p>Capture a meeting, import or paste a transcript, then turn the conversation into structured minutes, decisions, actions and follow-ups. Your working data stays in this browser unless you deliberately export it or connect a provider.</p>
+      </div>
+      <div class="flow">
+        <div class="flow-item"><span>1</span><strong>Capture or import the conversation</strong></div>
+        <div class="flow-item"><span>2</span><strong>Review transcript and meeting context</strong></div>
+        <div class="flow-item"><span>3</span><strong>Generate, edit and distribute minutes</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="kpis mt-4">
+    <div class="card kpi"><span class="label">Transcript words</span><strong id="kWords">0</strong></div>
+    <div class="card kpi"><span class="label">Decisions</span><strong id="kDecisions">0</strong></div>
+    <div class="card kpi"><span class="label">Actions</span><strong id="kActions">0</strong></div>
+    <div class="card kpi"><span class="label">Saved meetings</span><strong id="kMeetings">0</strong></div>
+  </section>
+
+  <section class="card mt-4 no-print">
+    <div class="section-head"><div><h2 class="font-black text-lg">Meeting platforms</h2><p class="text-sm" style="color:var(--m-muted)">Designed for collaboration connectors without pretending a provider is connected.</p></div><span class="badge badge-blue">Connector-ready</span></div>
+    <div class="section-body">
+      <div class="provider-grid">
+        <div class="provider"><i class="fa-brands fa-microsoft"></i><h3>Microsoft Teams</h3><p>Future connector: meeting metadata, recording/transcript retrieval, attendees and follow-up publishing through Microsoft Graph.</p><span class="badge badge-amber mt-3">Requires OAuth connector</span></div>
+        <div class="provider"><i class="fa-solid fa-video"></i><h3>Google Meet</h3><p>Future connector: calendar/meeting context and transcript artifacts through Google Workspace APIs where available.</p><span class="badge badge-amber mt-3">Requires OAuth connector</span></div>
+        <div class="provider"><i class="fa-solid fa-camera-video"></i><h3>Zoom</h3><p>Future connector: cloud recording/transcript ingestion and participant context using Zoom APIs and webhooks.</p><span class="badge badge-amber mt-3">Requires OAuth connector</span></div>
+      </div>
+      <div class="notice mt-4"><strong>Privacy control:</strong> recording and transcription should only be used where participants have been informed and applicable consent, employment, contractual and privacy requirements are satisfied.</div>
+    </div>
+  </section>
+
+  <div class="workspace mt-4">
+    <div class="stack no-print">
+      <section class="card">
+        <div class="section-head"><div><h2 class="font-black">Meeting details</h2><p class="text-sm" style="color:var(--m-muted)">Context used to structure the minutes.</p></div><button class="btn btn-outline" id="btnSeed"><i class="fa-solid fa-flask"></i> Seed demo</button></div>
+        <div class="section-body grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="md:col-span-2"><label class="label">Meeting title</label><input id="title" class="field" placeholder="Weekly project review"></div>
+          <div><label class="label">Date</label><input id="meetingDate" class="field" type="date"></div>
+          <div><label class="label">Time</label><input id="meetingTime" class="field" type="time"></div>
+          <div class="md:col-span-2"><label class="label">Location / link</label><input id="location" class="field" placeholder="Teams / Meet / Zoom / Boardroom"></div>
+          <div class="md:col-span-2"><label class="label">Chair / facilitator</label><input id="chair" class="field" placeholder="Chairperson"></div>
+          <div class="md:col-span-2"><label class="label">Attendees</label><textarea id="attendees" class="field" rows="3" placeholder="One per line or comma-separated"></textarea></div>
+          <div class="md:col-span-2"><label class="label">Agenda</label><textarea id="agenda" class="field" rows="4" placeholder="Agenda items, one per line"></textarea></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head"><div><h2 class="font-black">Capture & transcript</h2><p class="text-sm" style="color:var(--m-muted)">Use browser speech recognition where supported, record audio locally, or import text.</p></div><span id="captureState" class="badge badge-gray">Idle</span></div>
+        <div class="section-body">
+          <div class="flex flex-wrap gap-2">
+            <button class="btn btn-primary" id="btnLive"><i class="fa-solid fa-microphone"></i> Start live transcript</button>
+            <button class="btn btn-outline" id="btnRecord"><i class="fa-solid fa-circle"></i> Record audio</button>
+            <button class="btn btn-outline" id="btnImport"><i class="fa-solid fa-file-arrow-up"></i> Import transcript</button>
+            <input id="transcriptFile" type="file" class="hidden" accept=".txt,.md,.csv,text/plain,text/markdown,text/csv">
+            <button class="btn btn-outline" id="btnClearTranscript"><i class="fa-solid fa-eraser"></i> Clear</button>
+          </div>
+          <audio id="audioPreview" controls class="w-full mt-3 hidden"></audio>
+          <p class="text-xs mt-3" style="color:var(--m-muted)">Live transcription depends on browser Web Speech API support. Uploaded audio/video is retained only for local playback in this MVP; cloud transcription requires a server-side speech connector.</p>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head"><div><h2 class="font-black">Transcript</h2><p class="text-sm" style="color:var(--m-muted)">Correct names, terminology and speaker wording before generating minutes.</p></div><input id="transcriptSearch" class="field" style="max-width:15rem" placeholder="Find in transcript"></div>
+        <div class="section-body"><textarea id="transcript" class="field transcript" placeholder="Live transcript or imported text appears here…"></textarea><div id="searchStatus" class="text-xs mt-2" style="color:var(--m-muted)"></div></div>
+      </section>
+    </div>
+
+    <div class="stack">
+      <section class="card">
+        <div class="section-head"><div><h2 class="font-black">AI-assisted minutes</h2><p class="text-sm" style="color:var(--m-muted)">Local structured assist now; external LLM connector can replace the engine later.</p></div><div class="flex flex-wrap gap-2 no-print"><button class="btn btn-primary" id="btnGenerate"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate minutes</button><button class="btn btn-outline" id="btnSave"><i class="fa-solid fa-floppy-disk"></i> Save</button></div></div>
+        <div class="section-body">
+          <label class="label">Minutes output</label>
+          <textarea id="minutes" class="field minutes-preview" placeholder="Generated minutes will appear here…"></textarea>
+          <div class="flex flex-wrap gap-2 mt-3 no-print">
+            <button class="btn btn-outline" id="btnCopy"><i class="fa-regular fa-copy"></i> Copy</button>
+            <button class="btn btn-outline" id="btnTxt"><i class="fa-solid fa-file-lines"></i> TXT</button>
+            <button class="btn btn-outline" id="btnJson"><i class="fa-solid fa-code"></i> JSON</button>
+            <button class="btn btn-outline" id="btnCsv"><i class="fa-solid fa-file-csv"></i> Actions CSV</button>
+            <button class="btn btn-outline" id="btnPrint"><i class="fa-solid fa-print"></i> Print / PDF</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head"><div><h2 class="font-black">Extracted intelligence</h2><p class="text-sm" style="color:var(--m-muted)">Review before distribution.</p></div></div>
+        <div class="section-body">
+          <h3 class="font-black">Decisions</h3><div id="decisions" class="mt-1"></div>
+          <h3 class="font-black mt-5">Action items</h3><div id="actions" class="mt-1"></div>
+          <h3 class="font-black mt-5">Risks / blockers</h3><div id="risks" class="mt-1"></div>
+        </div>
+      </section>
+
+      <section class="card no-print">
+        <div class="section-head"><div><h2 class="font-black">Meeting history</h2><p class="text-sm" style="color:var(--m-muted)">Stored locally in this browser.</p></div><button class="btn btn-outline" id="btnExportAll">Backup JSON</button></div>
+        <div class="section-body" id="history"></div>
+      </section>
+    </div>
+  </div>
+</main>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const STORE="easy.minutes.v1";
+let meetings=load();
+let recognition=null, recognizing=false, recorder=null, chunks=[], audioUrl=null;
+
+function load(){try{const x=JSON.parse(localStorage.getItem(STORE)||"[]");return Array.isArray(x)?x:[]}catch{return[]}}
+function persist(){localStorage.setItem(STORE,JSON.stringify(meetings));renderHistory();renderKPIs()}
+function toast(msg){const e=$("toast");e.textContent=msg;e.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("show"),2800)}
+function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
+function words(){return ($("transcript").value.trim().match(/\S+/g)||[]).length}
+function linesFrom(v){return String(v||"").split(/\n|,/).map(s=>s.trim()).filter(Boolean)}
+function download(name,content,type="text/plain"){const b=new Blob([content],{type});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},0)}
+function nowDate(){return new Date().toISOString().slice(0,10)}
+function filename(){return (($("title").value||"meeting-minutes").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""))||"meeting-minutes"}
+
+function sentenceList(text){
+  return String(text||"").replace(/\r/g," ").split(/(?<=[.!?])\s+|\n+/).map(s=>s.trim()).filter(s=>s.length>3);
+}
+function unique(arr){const seen=new Set();return arr.filter(x=>{const k=x.toLowerCase();if(seen.has(k))return false;seen.add(k);return true})}
+function extractIntelligence(text){
+  const sentences=sentenceList(text);
+  const decisions=unique(sentences.filter(s=>/\b(decided|decision|agreed|approved|confirmed|resolved|we will|will proceed|selected)\b/i.test(s))).slice(0,12);
+  const actions=unique(sentences.filter(s=>/\b(action|todo|to-do|follow up|follow-up|must|needs? to|will send|will prepare|will update|will contact|owner|due|deadline)\b/i.test(s))).slice(0,18);
+  const risks=unique(sentences.filter(s=>/\b(risk|blocker|blocked|issue|concern|delay|dependency|problem|challenge|constraint|pending)\b/i.test(s))).slice(0,12);
+  const summaryCandidates=sentences.filter(s=>s.length>35 && !actions.includes(s) && !risks.includes(s));
+  return {decisions,actions,risks,summary:summaryCandidates.slice(0,6)};
+}
+function parseAction(s){
+  let owner="",due="";
+  const ownerMatch=s.match(/(?:owner|assigned to)\s*[:\-]?\s*([A-Z][A-Za-z .'-]{1,40})/i);
+  const dueMatch=s.match(/(?:due|deadline|by)\s*[:\-]?\s*([A-Za-z0-9 ,\/-]{3,30})/i);
+  if(ownerMatch)owner=ownerMatch[1].trim();
+  if(dueMatch)due=dueMatch[1].trim();
+  return {text:s,owner,due,status:"Open"};
+}
+function generate(){
+  const text=$("transcript").value.trim();
+  if(!text){toast("Add or capture a transcript first.");return}
+  const intel=extractIntelligence(text);
+  const attendees=linesFrom($("attendees").value);
+  const agenda=linesFrom($("agenda").value);
+  const title=$("title").value.trim()||"Meeting";
+  const date=$("meetingDate").value||nowDate();
+  const summary=intel.summary.length?intel.summary.join(" "):"No concise summary could be derived automatically. Review the transcript and add the key discussion points.";
+  const out=[
+    title.toUpperCase(),
+    "=".repeat(Math.min(72,title.length)),
+    "",
+    "Date: "+date,
+    "Time: "+($("meetingTime").value||"Not specified"),
+    "Location / platform: "+($("location").value||"Not specified"),
+    "Chair: "+($("chair").value||"Not specified"),
+    "Attendees: "+(attendees.join(", ")||"Not specified"),
+    "",
+    "AGENDA",
+    agenda.length?agenda.map((x,i)=>`${i+1}. ${x}`).join("\n"):"No agenda captured.",
+    "",
+    "EXECUTIVE SUMMARY",
+    summary,
+    "",
+    "DECISIONS",
+    intel.decisions.length?intel.decisions.map((x,i)=>`${i+1}. ${x}`).join("\n"):"No explicit decisions detected.",
+    "",
+    "ACTION ITEMS",
+    intel.actions.length?intel.actions.map((x,i)=>`${i+1}. ${x}`).join("\n"):"No explicit action items detected.",
+    "",
+    "RISKS / BLOCKERS",
+    intel.risks.length?intel.risks.map((x,i)=>`${i+1}. ${x}`).join("\n"):"No explicit risks or blockers detected.",
+    "",
+    "NOTES",
+    "Generated from the transcript using Easy Minutes local structured assist. Review names, ownership, dates and decisions before circulation."
+  ].join("\n");
+  $("minutes").value=out;
+  renderIntel(intel);
+  window._easyMinutesIntel=intel;
+  renderKPIs();
+  toast("Draft minutes generated. Review before distribution.");
+}
+function renderIntel(intel){
+  const empty='<p class="text-sm" style="color:var(--m-muted)">None detected.</p>';
+  $("decisions").innerHTML=intel.decisions.length?intel.decisions.map(x=>`<div class="list-row"><span>${escapeHtml(x)}</span><span class="badge badge-green">Decision</span></div>`).join(""):empty;
+  $("actions").innerHTML=intel.actions.length?intel.actions.map(x=>`<div class="list-row"><span>${escapeHtml(x)}</span><span class="badge badge-blue">Action</span></div>`).join(""):empty;
+  $("risks").innerHTML=intel.risks.length?intel.risks.map(x=>`<div class="list-row"><span>${escapeHtml(x)}</span><span class="badge badge-amber">Review</span></div>`).join(""):empty;
+}
+function snapshot(){
+  const intel=window._easyMinutesIntel||extractIntelligence($("transcript").value);
+  return {id:Date.now(),savedAt:new Date().toISOString(),title:$("title").value||"Untitled meeting",date:$("meetingDate").value,time:$("meetingTime").value,location:$("location").value,chair:$("chair").value,attendees:linesFrom($("attendees").value),agenda:linesFrom($("agenda").value),transcript:$("transcript").value,minutes:$("minutes").value,intelligence:{...intel,actions:intel.actions.map(parseAction)}};
+}
+function saveMeeting(){const rec=snapshot();meetings.unshift(rec);meetings=meetings.slice(0,50);persist();toast("Meeting saved locally.")}
+function loadMeeting(id){const m=meetings.find(x=>x.id===id);if(!m)return;$("title").value=m.title||"";$("meetingDate").value=m.date||"";$("meetingTime").value=m.time||"";$("location").value=m.location||"";$("chair").value=m.chair||"";$("attendees").value=(m.attendees||[]).join("\n");$("agenda").value=(m.agenda||[]).join("\n");$("transcript").value=m.transcript||"";$("minutes").value=m.minutes||"";const intel={decisions:m.intelligence?.decisions||[],actions:(m.intelligence?.actions||[]).map(a=>typeof a==="string"?a:a.text),risks:m.intelligence?.risks||[],summary:m.intelligence?.summary||[]};window._easyMinutesIntel=intel;renderIntel(intel);renderKPIs();toast("Meeting loaded.")}
+function removeMeeting(id){if(!confirm("Delete this saved meeting?"))return;meetings=meetings.filter(x=>x.id!==id);persist()}
+function renderHistory(){const box=$("history");if(!meetings.length){box.innerHTML='<p class="text-sm" style="color:var(--m-muted)">No meetings saved yet.</p>';return}box.innerHTML=meetings.map(m=>`<div class="history-row"><div><strong>${escapeHtml(m.title)}</strong><div class="text-xs" style="color:var(--m-muted)">${escapeHtml(m.date||"")} · saved ${new Date(m.savedAt).toLocaleString("en-ZA")}</div></div><div class="flex gap-2"><button class="btn btn-outline" onclick="loadMeeting(${m.id})">Load</button><button class="btn btn-outline" onclick="removeMeeting(${m.id})">Delete</button></div></div>`).join("")}
+function renderKPIs(){const intel=window._easyMinutesIntel||extractIntelligence($("transcript").value);$("kWords").textContent=words();$("kDecisions").textContent=intel.decisions.length;$("kActions").textContent=intel.actions.length;$("kMeetings").textContent=meetings.length}
+
+function initSpeech(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){$("btnLive").disabled=true;$("btnLive").title="Live browser speech recognition is not supported here";return}
+  recognition=new SR();recognition.continuous=true;recognition.interimResults=true;recognition.lang="en-ZA";
+  let finalText="";
+  recognition.onstart=()=>{recognizing=true;$("captureState").className="badge badge-green";$("captureState").textContent="Listening";$("btnLive").innerHTML='<i class="fa-solid fa-stop"></i> Stop live transcript'};
+  recognition.onresult=e=>{let interim="";for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript;if(e.results[i].isFinal)finalText+=t.trim()+"\n";else interim+=t}const base=$("transcript").dataset.base||"";$("transcript").value=base+finalText+(interim?interim:"");renderKPIs()};
+  recognition.onerror=e=>toast("Speech recognition: "+e.error);
+  recognition.onend=()=>{recognizing=false;$("transcript").dataset.base=$("transcript").value.trim()+"\n";$("captureState").className="badge badge-gray";$("captureState").textContent="Idle";$("btnLive").innerHTML='<i class="fa-solid fa-microphone"></i> Start live transcript'};
+}
+async function toggleSpeech(){if(!recognition){toast("Live speech recognition is not supported by this browser.");return}if(recognizing){recognition.stop();return}$("transcript").dataset.base=$("transcript").value?$("transcript").value.trim()+"\n":"";recognition.start()}
+async function toggleRecord(){
+  if(recorder&&recorder.state==="recording"){recorder.stop();return}
+  if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){toast("Audio recording is not supported by this browser.");return}
+  try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});chunks=[];recorder=new MediaRecorder(stream);recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};recorder.onstop=()=>{stream.getTracks().forEach(t=>t.stop());const blob=new Blob(chunks,{type:recorder.mimeType||"audio/webm"});if(audioUrl)URL.revokeObjectURL(audioUrl);audioUrl=URL.createObjectURL(blob);$("audioPreview").src=audioUrl;$("audioPreview").classList.remove("hidden");$("btnRecord").innerHTML='<i class="fa-solid fa-circle"></i> Record audio';$("captureState").className="badge badge-gray";$("captureState").textContent="Recorded locally";toast("Recording captured locally. Add a transcript manually or use a speech connector for file transcription.")};recorder.start();$("btnRecord").innerHTML='<i class="fa-solid fa-stop"></i> Stop recording';$("captureState").className="badge badge-green";$("captureState").textContent="Recording"}catch(e){toast("Microphone access failed: "+e.message)}
+}
+function importTranscript(file){if(!file)return;const r=new FileReader();r.onload=()=>{$("transcript").value=String(r.result||"");renderKPIs();toast("Transcript imported.")};r.readAsText(file)}
+function searchTranscript(){const q=$("transcriptSearch").value.trim();if(!q){$("searchStatus").textContent="";return}const text=$("transcript").value.toLowerCase(),needle=q.toLowerCase();let count=0,pos=0;while((pos=text.indexOf(needle,pos))>=0){count++;pos+=needle.length}$("searchStatus").textContent=`${count} match${count===1?"":"es"} for “${q}”`}
+function seed(){
+  $("title").value="EasyFile Product Review";$("meetingDate").value=nowDate();$("meetingTime").value="09:00";$("location").value="Microsoft Teams";$("chair").value="Raydo";$("attendees").value="Raydo\nMaria\nDevelopment Team";$("agenda").value="Review Easy Minutes MVP\nConfirm integration priorities\nAssign launch actions";
+  $("transcript").value="Raydo opened the meeting and reviewed the Easy Minutes concept. The team agreed that the first release will support local transcript capture, structured minutes and exports. Decision: Microsoft Teams, Google Meet and Zoom will be displayed as connector-ready integrations and will not claim to be connected until OAuth services are deployed. Maria will prepare launch messaging by Friday. The development team needs to validate mobile microphone behaviour and browser compatibility. Risk: browser speech recognition availability differs by browser and device. Action: owner Maria - prepare launch copy by Friday. Action: owner Development Team - test live transcription on supported browsers before release.";
+  generate();toast("Demo meeting loaded.");
+}
+function exportActionsCsv(){const intel=window._easyMinutesIntel||extractIntelligence($("transcript").value);const rows=[["Action","Owner","Due","Status"],...intel.actions.map(x=>{const a=parseAction(x);return[a.text,a.owner,a.due,a.status]})];const csv=rows.map(r=>r.map(v=>'"'+String(v||"").replaceAll('"','""')+'"').join(",")).join("\n");download(filename()+"-actions.csv",csv,"text/csv;charset=utf-8")}
+function exportJson(){download(filename()+".json",JSON.stringify(snapshot(),null,2),"application/json")}
+function exportTxt(){download(filename()+".txt",$("minutes").value||"","text/plain;charset=utf-8")}
+function backup(){download("easy-minutes-backup.json",JSON.stringify(meetings,null,2),"application/json")}
+
+$("btnGenerate").onclick=generate;$("btnSave").onclick=saveMeeting;$("btnSeed").onclick=seed;
+$("btnLive").onclick=toggleSpeech;$("btnRecord").onclick=toggleRecord;
+$("btnImport").onclick=()=>$("transcriptFile").click();$("transcriptFile").onchange=e=>importTranscript(e.target.files?.[0]);
+$("btnClearTranscript").onclick=()=>{if(confirm("Clear the transcript?")){$("transcript").value="";window._easyMinutesIntel=null;renderIntel({decisions:[],actions:[],risks:[]});renderKPIs()}};
+$("transcript").addEventListener("input",()=>{window._easyMinutesIntel=null;renderKPIs()});$("transcriptSearch").addEventListener("input",searchTranscript);
+$("btnCopy").onclick=async()=>{try{await navigator.clipboard.writeText($("minutes").value);toast("Minutes copied.")}catch{toast("Clipboard access was blocked.")}};
+$("btnTxt").onclick=exportTxt;$("btnJson").onclick=exportJson;$("btnCsv").onclick=exportActionsCsv;$("btnPrint").onclick=()=>window.print();$("btnExportAll").onclick=backup;
+document.addEventListener("DOMContentLoaded",()=>{$("meetingDate").value=nowDate();initSpeech();renderHistory();renderKPIs();renderIntel({decisions:[],actions:[],risks:[]})});
+</script>
+<script src="scripts/sync-nav.js" defer></script>
+</body>
+</html>

@@ -130,6 +130,17 @@
       secondaryPattern: /audit\s*list|btnauditlist/i,
       printLabel: "Print Asset Register"
     },
+    "easy-lease.html": {
+      id: "lease",
+      noun: "Lease Agreement",
+      newLabel: "New Lease",
+      newIcon: "fa-key",
+      newPattern: /new\s*lease|btnreset/i,
+      secondaryLabel: "Seed Demo",
+      secondaryIcon: "fa-wand-magic-sparkles",
+      secondaryPattern: /seed\s*demo|btnseed/i,
+      printLabel: "Print Lease Agreement"
+    },
     "easy-site-inspection.html": {
       id: "site-inspection",
       noun: "Site Inspection",

@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link rel="stylesheet" href="assets/css/easyfile-brand-tokens.css"><link rel="stylesheet" href="assets/css/easyfile-site.css"><link rel="stylesheet" href="assets/css/easyfile-footer.css"><link rel="stylesheet" href="assets/css/easyfile-navigation.css">
-<link rel="icon" href="logo-b.png" type="image/png"><link rel="apple-touch-icon" href="logo-b.png">
+
 <style>
 :root{--et-border:#dbe6f5;--et-muted:#64748b;--et-card:#fff;--et-bg:#f5f8ff;--et-ink:#0f172a;--et-blue:#2563eb}
 html[data-theme="dark"]{--et-border:#26364d;--et-muted:#9fb0c8;--et-card:#0f172a;--et-bg:#07101f;--et-ink:#e5e7eb}
@@ -16,8 +16,17 @@ body{background:var(--et-bg);color:var(--et-ink)}.et-card{background:var(--et-ca
 .et-btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;border-radius:.75rem;padding:.68rem .9rem;font-weight:800;border:1px solid var(--et-border)}.et-btn-primary{background:var(--et-blue);border-color:var(--et-blue);color:#fff}.et-btn-soft{background:var(--et-card);color:var(--et-ink)}
 .et-pill{display:inline-flex;align-items:center;border-radius:999px;padding:.25rem .55rem;font-size:.7rem;font-weight:800;background:#eff6ff;color:#1d4ed8}.et-editor{min-height:360px;resize:vertical;line-height:1.65}.et-suggestion{border-left:4px solid #2563eb;background:rgba(37,99,235,.07)}.et-snippet{border:1px solid var(--et-border);border-radius:.75rem;padding:.7rem;background:var(--et-card)}
 </style>
+  <!-- EASYFILE_FAVICONS -->
+  <link rel="icon" href="logo-b.png" type="image/png">
+  <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
+  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="logo-b.png">
 </head>
 <body class="easyfile-app min-h-screen">
+<!-- NAV_SYNC -->
+<div class="easyfile-nav no-print">
+  <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
+</div>
 <div class="easyfile-nav no-print"></div>
 <main class="container mx-auto px-4 py-6 md:py-8 max-w-7xl">
 <section class="et-card p-5 md:p-7 mb-6"><div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
