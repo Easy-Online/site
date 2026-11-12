@@ -9,7 +9,7 @@
 
   function xmlText(value) {
     return String(value == null ? "" : value)
-      .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\uD800-\uDFFF]/g, "")
+      .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, "")
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;").replace(/'/g, "&apos;");
   }
@@ -22,7 +22,7 @@
   }
   function tableXml(rows) {
     if (!Array.isArray(rows) || !rows.length) return "";
-    const columns = Math.max(1, ...rows.map((r) => Array.isArray(r) ? r.length : 0));
+    const columns = rows.reduce((max, row) => Math.max(max, Array.isArray(row) ? row.length : 0), 1);
     const grid = Array.from({ length: columns }, () => '<w:gridCol w:w="1800"/>').join("");
     const content = rows.map((row) => {
       const cells = Array.isArray(row) ? row : [row];
@@ -72,6 +72,7 @@
       l.setUint32(0, 0x04034b50, true);
       l.setUint16(4, 20, true);
       l.setUint16(6, 0x0800, true); // UTF-8 filenames
+      l.setUint16(12, 33, true); // 1 January 1980 (valid DOS ZIP date)
       l.setUint32(14, checksum, true);
       l.setUint32(18, bytes.length, true);
       l.setUint32(22, bytes.length, true);
@@ -85,6 +86,7 @@
       c.setUint16(4, 20, true);
       c.setUint16(6, 20, true);
       c.setUint16(8, 0x0800, true);
+      c.setUint16(14, 33, true);
       c.setUint32(16, checksum, true);
       c.setUint32(20, bytes.length, true);
       c.setUint32(24, bytes.length, true);
