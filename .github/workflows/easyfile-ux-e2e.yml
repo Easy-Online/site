@@ -24,7 +24,7 @@ jobs:
           node-version: 24
 
       - name: Install UX dependencies
-        run: npm install --prefix tests/ux --no-audit --no-fund
+        run: npm ci --prefix tests/ux --no-audit --no-fund
 
       - name: Install Chromium
         run: cd tests/ux && npx playwright install --with-deps chromium
@@ -40,7 +40,7 @@ jobs:
           exit 1
 
       - name: Simulate desktop and mobile user journeys
-        run: npm --prefix tests/ux test
+        run: npm --prefix tests/ux test -- --workers=2
 
       - name: Upload E2E evidence on failure
         if: failure()

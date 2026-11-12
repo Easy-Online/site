@@ -11,3 +11,7 @@ referral-api/.funcignore
 .env
 .env.*
 !.env.example
+
+# Browser verification artifacts
+tests/ux/test-results/
+tests/ux/playwright-report/

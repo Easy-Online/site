@@ -30,7 +30,7 @@
   <link rel="stylesheet" href="assets/css/easyfile-footer.css">
   <link rel="stylesheet" href="assets/css/easyfile-referrals.css">
   <link rel="stylesheet" href="assets/css/easyfile-navigation.css">
-  <link rel="stylesheet" href="assets/css/easy-converter-enterprise.css">
+  <link rel="stylesheet" href="assets/css/easy-converter-enterprise.css?v=20261113">
   <style>
     .converter-source-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}.converter-health{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.converter-health span{border:1px solid var(--easyfile-border,#e2e8f0);border-radius:999px;padding:5px 9px;font-size:.78rem}.converter-health .ok{color:#166534;background:#dcfce7;border-color:#bbf7d0}.converter-health .warn{display:inline-block;margin:0;color:#92400e;background:#fffbeb;border-color:#fde68a}.converter-health .bad{color:#991b1b;background:#fee2e2;border-color:#fecaca}.converter-editor{width:100%;min-height:420px;resize:vertical;border:1px solid var(--easyfile-border,#dbe3ee);border-radius:14px;padding:14px;background:var(--easyfile-surface,#fff);color:var(--easyfile-text,#0f172a);font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.converter-editor:focus{outline:3px solid rgba(37,99,235,.18);border-color:#60a5fa}.converter-capability{overflow:auto}.converter-capability table{width:100%;border-collapse:collapse;font-size:.88rem}.converter-capability th,.converter-capability td{padding:10px;border-bottom:1px solid var(--easyfile-border,#e2e8f0);text-align:left;white-space:nowrap}.converter-format.disabled-note{opacity:.72}.converter-inline-alert{padding:12px 14px;border-radius:12px;border:1px solid #fde68a;background:#fffbeb;color:#854d0e;margin-top:12px;display:none}.converter-inline-alert.show{display:block}.converter-settings.compact{grid-template-columns:repeat(4,minmax(0,1fr))}@media(max-width:900px){.converter-settings.compact{grid-template-columns:1fr 1fr}.converter-source-grid{grid-template-columns:1fr}}@media(max-width:560px){.converter-settings.compact{grid-template-columns:1fr}}
   </style>
@@ -97,7 +97,7 @@
       <div id="dropzone" class="converter-dropzone" tabindex="0" role="button" aria-label="Upload a file by drag and drop or click">
         <div class="converter-drop-icon"><i class="fa-solid fa-file-arrow-up"></i></div>
         <h3>Drag and drop a supported file here</h3>
-        <p>Recommended maximum file size: 100 MB. OCR-heavy documents should be smaller for browser reliability.</p>
+        <p>Maximum file size: 100 MB; up to 250 PDF pages. OCR-heavy documents should be smaller for browser reliability.</p>
         <p id="fileMeta" class="converter-file-meta">No file selected yet.</p>
       </div>
 
@@ -115,13 +115,14 @@
       </div>
 
       <div class="converter-progress" aria-live="polite">
-        <div class="converter-progress-track"><div id="progressBar" class="converter-progress-bar"></div></div>
+        <div class="converter-progress-track" role="progressbar" aria-label="Conversion progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progressBar" class="converter-progress-bar"></div></div>
         <div class="converter-status"><span id="statusText">Awaiting file upload</span><span id="statusMeta">Idle</span></div>
       </div>
       <div id="warningBox" class="converter-inline-alert" role="alert"></div>
 
       <details class="converter-log" open>
-        <summary><span><i class="fa-solid fa-terminal"></i> Processing log</span><button id="clearLogBtn" class="converter-log-clear no-print" type="button">Clear</button></summary>
+        <summary><span><i class="fa-solid fa-terminal"></i> Processing log</span></summary>
+        <div class="converter-log-toolbar"><button id="clearLogBtn" class="converter-log-clear no-print" type="button">Clear</button></div>
         <div id="logBody" class="converter-log-body" aria-live="polite">System ready. Upload a file to begin.</div>
       </details>
 
@@ -130,7 +131,7 @@
 
     <section class="card converter-panel" aria-labelledby="review-title">
       <div class="converter-panel-heading">
-        <div><span class="converter-step">Step 2</span><h2 id="review-title">Review and correct extracted text</h2><p>The text area is editable. Text-based exports use your corrected version; spreadsheet exports retain structured tables where available.</p></div>
+        <div><span class="converter-step">Step 2</span><h2 id="review-title">Review and correct extracted text</h2><p>The text area is editable. Text-based exports use your corrected version; structured exports retain detected tables until you edit the text. After edits, exports use corrected text to avoid stale table values.</p></div>
         <button id="copyBtn" class="converter-btn converter-btn-secondary no-print" type="button" disabled><i class="fa-solid fa-copy"></i> Copy</button>
       </div>
       <textarea id="editor" class="converter-editor" spellcheck="false" aria-label="Extracted text editor" placeholder="Extracted or parsed content will appear here."></textarea>
@@ -159,12 +160,12 @@
     </div>
   </section>
 
-  <section class="card converter-panel converter-capability">
+  <section class="card converter-panel converter-capability" tabindex="0" aria-label="Conversion capabilities">
     <h2>Conversion capability and fidelity</h2>
     <table>
       <thead><tr><th>Input</th><th>Parser</th><th>What is preserved</th><th>Known limitation</th></tr></thead>
       <tbody>
-        <tr><td>PDF</td><td>PDF.js + Tesseract OCR fallback</td><td>Page text, page boundaries, OCR confidence; original PDF retained</td><td>Complex visual layout is not reconstructed into Word/Excel</td></tr>
+        <tr><td>PDF</td><td>PDF.js + Tesseract OCR fallback</td><td>Page text, page boundaries, aligned table candidates, OCR confidence; original PDF retained</td><td>Complex visual layout is not reconstructed into Word/Excel</td></tr>
         <tr><td>DOCX</td><td>Mammoth</td><td>Readable document text and paragraphs</td><td>Exact Word styling, floating objects and advanced fields are not reproduced</td></tr>
         <tr><td>XLSX/XLS</td><td>SheetJS</td><td>Sheet names and tabular cell values</td><td>Macros, charts and some formatting are not carried into text exports</td></tr>
         <tr><td>CSV/TSV</td><td>Papa Parse</td><td>Rows, columns, quoting and delimiters</td><td>No workbook styling exists in source data</td></tr>
@@ -176,7 +177,7 @@
 </main>
 
 <footer class="easyfile-footer no-print" aria-label="EasyFile site footer"><div class="converter-footer-copy">Easy Converter · EasyFile</div></footer>
-<script type="module" src="assets/js/easy-converter.js"></script>
+<script type="module" src="assets/js/easy-converter.js?v=20261113"></script>
 <script defer src="scripts/sync-nav.js"></script>
 </body>
 </html>

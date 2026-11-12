@@ -10,7 +10,7 @@ export default defineConfig({
     baseURL: process.env.EASYFILE_TEST_BASE_URL || 'http://127.0.0.1:8765',
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    video: 'off',
     ignoreHTTPSErrors: false
   },
   projects: [

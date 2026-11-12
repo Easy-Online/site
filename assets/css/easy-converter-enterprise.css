@@ -126,6 +126,12 @@
   font-weight: 900;
 }
 .converter-format-summary p { font-size: .88rem; line-height: 1.6; }
+.converter-format-summary p, .converter-panel .converter-dropzone p { color: var(--easyfile-text); }
+.converter-format-pills span, .converter-state-badge, .converter-step { color: #1e40af; background: #eff6ff; }
+html[data-theme="dark"] .converter-format-pills span,
+html[data-theme="dark"] .converter-state-badge,
+html[data-theme="dark"] .converter-step { color: #dbeafe; background: #172554; }
+.converter-log-toolbar { display: flex; justify-content: flex-end; padding: .5rem 1rem 0; }
 
 .converter-btn {
   display: inline-flex;
