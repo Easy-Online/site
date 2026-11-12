@@ -366,4 +366,4 @@ app.http("easyFormResponseDelete", {
   }
 });
 
-module.exports = { hashToken, normalizeForm, validateResponse, publicForm };
+module.exports = { hashToken, normalizeForm, validateResponse, publicForm, readBoundedJson };
