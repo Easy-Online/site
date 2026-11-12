@@ -17,6 +17,7 @@ concurrency:
 jobs:
   enforce-navigation:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: read
 
@@ -30,6 +31,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
+
+      - name: Validate source integrity
+        run: node tools/validate-source-integrity.js
 
       - name: Generate canonical navigation in build workspace
         run: node tools/inject-nav.js
@@ -52,6 +56,9 @@ jobs:
       - name: Verify platform conformance
         run: node scripts/verify-platform-conformance.js
 
+      - name: Verify DOCX converters and offline fallback
+        run: node scripts/validate-converter-docx.mjs
+
       - name: Configure GitHub Pages
         if: github.event_name != 'pull_request'
         uses: actions/configure-pages@v5
@@ -64,6 +71,7 @@ jobs:
 
   deploy:
     needs: enforce-navigation
+    timeout-minutes: 15
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
