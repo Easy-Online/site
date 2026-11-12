@@ -143,7 +143,19 @@ function makeModel({sourceType, text="", units=[], tables=[], ocrCount=0, warnin
   };
 }
 function currentText(){ return editor.value ?? state.model?.text ?? ""; }
-function modelForExport(){ return {...state.model, text:currentText(), correctedAt:new Date().toISOString()}; }
+function modelForExport(){
+  const edited = currentText() !== state.model.text;
+  return {
+    ...state.model,
+    text: currentText(),
+    // Structured tables and page units describe the original extraction. Never export
+    // outdated numerical cells as if they reflected user corrections.
+    tables: edited ? [] : state.model.tables,
+    units: edited ? [] : state.model.units,
+    warnings: edited ? [...state.model.warnings, "Content was edited; original structured tables and units were omitted to avoid exporting stale values."] : state.model.warnings,
+    correctedAt: new Date().toISOString()
+  };
+}
 
 async function setFile(file){
   if(state.busy || !file) return;
@@ -345,10 +357,11 @@ async function exportDocx(){
   const blob=await Packer.toBlob(new Document({sections:[{properties:{},children}]})); downloadBlob(blob,`${baseName()}.docx`);
 }
 function exportPdf(){
-  if(state.sourceKind==="pdf" && state.file){downloadBlob(state.file,state.file.name); log("Downloaded the original PDF to preserve exact PDF fidelity.","success"); return;}
+  // Rebuild from corrected text when a PDF input has been edited; original PDF would lose edits.
+  if(state.sourceKind==="pdf" && state.file && currentText()===state.model.text){downloadBlob(state.file,state.file.name); log("Downloaded the unchanged original PDF.","success"); return;}
   if(!window.jspdf?.jsPDF) throw new Error("jsPDF is unavailable.");
   const {jsPDF}=window.jspdf; const doc=new jsPDF({unit:"pt",format:"a4",compress:true}); const margin=48, pageWidth=doc.internal.pageSize.getWidth(), pageHeight=doc.internal.pageSize.getHeight(), width=pageWidth-margin*2; doc.setFont("helvetica","normal"); doc.setFontSize(10);
-  const lines=doc.splitTextToSize(currentText()||" ",width); let y=margin; lines.forEach((line)=>{if(y>pageHeight-margin){doc.addPage();y=margin;}doc.text(line,margin,y);y+=14;}); doc.save(`${baseName()}.pdf`);
+  const lines=doc.splitTextToSize(currentText()||" ",width); let y=margin; lines.forEach((line)=>{if(y>pageHeight-margin){doc.addPage();y=margin;}doc.text(line,margin,y);y+=14;}); doc.save(`${baseName()}${state.sourceKind==="pdf"?"-edited":""}.pdf`);
 }
 async function runExport(format){
   if(!state.model) return;
