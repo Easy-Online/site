@@ -2,7 +2,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 
-const { hashToken, normalizeForm, validateResponse, publicForm } = require("../src/functions/forms");
+const { hashToken, normalizeForm, validateResponse, publicForm, readBoundedJson } = require("../src/functions/forms");
 
 test("owner tokens hash deterministically", () => {
   assert.equal(hashToken("owner-token-123"), hashToken("owner-token-123"));
@@ -69,4 +69,29 @@ test("requires email for published forms configured to collect it", () => {
   const form = normalizeForm({ fields: [], settings: { collectEmail: true } }, "form-4");
   assert.equal(validateResponse(form, { answers: {} }).error, "respondent_email_required");
   assert.equal(validateResponse(form, { answers: { _respondentEmail: "person@example.org" } }).ok, true);
+});
+
+test("rejects oversized form bodies using actual UTF-8 bytes", async () => {
+  const request = {
+    headers: new Map(),
+    text: async () => JSON.stringify({ text: "é".repeat(40) })
+  };
+  await assert.rejects(readBoundedJson(request, 40), (error) => error.statusCode === 413);
+});
+
+test("rejects non-object or malformed JSON requests", async () => {
+  for (const raw of ["{", "[]", "null"]) {
+    await assert.rejects(
+      readBoundedJson({ headers: new Map(), text: async () => raw }, 1024),
+      (error) => error.statusCode === 400
+    );
+  }
+});
+
+test("rejects oversized content-length before reading a body", async () => {
+  const request = {
+    headers: new Map([["content-length", "1200"]]),
+    text: async () => { throw new Error("must not read oversized request"); }
+  };
+  await assert.rejects(readBoundedJson(request, 1024), (error) => error.statusCode === 413);
 });
