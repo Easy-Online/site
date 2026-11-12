@@ -36,7 +36,7 @@ for (const pageUrl of ['/easy-converter-enterprise.html', '/easy-converter.html'
     await expect(menu).toBeHidden();
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
     await toggle.click();
-    await page.locator('main').click({ position: { x: 5, y: 5 } });
-    await expect(menu).toBeHidden();
+    await menu.getByRole('link', { name: 'Home', exact: true }).click();
+    await expect(page).toHaveURL(/\/index\.html$/);
   });
 }
