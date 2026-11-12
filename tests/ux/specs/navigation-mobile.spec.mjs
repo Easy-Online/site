@@ -13,7 +13,7 @@ for (const pageUrl of ['/easy-converter-enterprise.html', '/easy-converter.html'
     await theme.click();
     await expect(page.locator('html')).toHaveAttribute('data-theme', initialTheme === 'dark' ? 'light' : 'dark');
 
-    const toggle = page.getByRole('button', { name: 'Open navigation menu' });
+    const toggle = page.locator('[data-menu-toggle]');
     const menu = page.getByRole('navigation', { name: 'Mobile navigation' });
     await expect(toggle).toBeVisible();
     await expect(menu).toBeHidden();
