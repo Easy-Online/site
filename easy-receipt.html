@@ -14,8 +14,8 @@
   <meta property="og:url" content="https://www.easyfile.co.za/easy-receipt.html">
   <meta property="og:image" content="https://www.easyfile.co.za/logo-b.png">
   <meta name="twitter:card" content="summary_large_image">
-  
-  
+  <link rel="icon" href="logo-b.png" type="image/png">
+  <link rel="apple-touch-icon" href="logo-b.png">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="assets/css/easy-print.css">
@@ -45,17 +45,13 @@
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"SoftwareApplication","name":"Easy Receipt","applicationCategory":"BusinessApplication","operatingSystem":"Web","url":"https://www.easyfile.co.za/easy-receipt.html","description":"Mobile-friendly receipt generator and receipt capture workflow for creating, scanning, organising and exporting payment receipts.","offers":{"@type":"Offer","price":"0","priceCurrency":"ZAR"}}
   </script>
-  <!-- EASYFILE_FAVICONS -->
-  <link rel="icon" href="logo-b.png" type="image/png">
-  <link rel="icon" href="logo-b.png" type="image/png" media="(prefers-color-scheme: light)">
-  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
-  <link rel="apple-touch-icon" href="logo-b.png">
 </head>
 <body class="min-h-screen">
 <!-- NAV_SYNC -->
 <div class="easyfile-nav no-print">
   <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
 </div>
+
 <header class="bg-white border-b border-gray-200 no-print">
   <div class="container mx-auto px-4 py-4 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
     <div class="flex items-center gap-3">
@@ -166,7 +162,6 @@
   </div>
 </div>
 
-<script src="assets/js/easy-ar.js"></script>
 <script>
 "use strict";
 const STORE_KEY="easy.receipt.v2";
@@ -232,36 +227,12 @@ function applyCaptureHandoff(){
   const p=loadJson(HANDOFF_KEY,null);if(!p)return;localStorage.removeItem(HANDOFF_KEY);
   const total=Number(p.amountIncl||0);activeId=null;writeForm({number:p.number||nextNumber(),date:p.date||new Date().toISOString().slice(0,10),receivedFrom:p.supplier||"",paymentMethod:p.paymentMethod||"Card",reference:p.reference||"",currency:p.currency||"ZAR",vatNumber:p.supplierVat||"",category:p.category||"",notes:[p.notes,p.captureId?"Captured via Easy Capture "+p.captureId:""].filter(Boolean).join(" · "),source:"capture",items:(p.lineItems?.length?p.lineItems.map(x=>({description:x.description||"Captured item",amount:Number(x.total??(Number(x.qty||0)*Number(x.unit||0)))})):[{description:"Captured receipt",amount:total}])});$("receiptStatus").textContent="Imported from Easy Capture — review and save";toast("Receipt data imported from Easy Capture.");track("receipt_capture_import",{confidence:p.confidence||0});
 }
-function applyArPaymentHandoff(){
-  if(!window.EasyAR) return;
-  const x=EasyAR.consumeTransfer("receipt");
-  if(!x) return;
-  const inv=x.invoice||{}, p=x.payment||{};
-  activeId=null;
-  writeForm({
-    number:nextNumber(),
-    date:p.date||new Date().toISOString().slice(0,10),
-    receivedFrom:inv.client?.name||"",
-    paymentMethod:["Cash","Card","EFT","Bank Transfer","Debit Order","Other"].includes(p.method)?p.method:"EFT",
-    reference:p.reference||inv.number||"",
-    currency:inv.currency||"ZAR",
-    vatNumber:inv.client?.vat||"",
-    category:"Invoice Payment",
-    notes:"Payment received for "+(inv.number||"invoice"),
-    source:"manual",
-    items:[{description:"Payment received for "+(inv.number||"invoice"),amount:Number(p.amount||0)}]
-  });
-  $("receiptStatus").textContent="Imported from EasyAR — review and save";
-  toast("Payment imported from EasyAR.");
-  track("receipt_ar_import",{invoice:inv.number||"",amount:Number(p.amount||0)});
-}
-
 function bind(){
   $("btnScanCapture").onclick=()=>{track("receipt_scan_started");location.href="easy-capture.html?return=receipt"};
   $("btnManualFocus").onclick=()=>{$("receiptNumber").focus();track("receipt_manual_started")};
   $("btnNewReceipt").onclick=newReceipt;$("btnAddLine").onclick=()=>addItem();$("btnSave").onclick=saveReceipt;$("btnPrint").onclick=()=>{track("receipt_print");window.print()};$("btnClear").onclick=newReceipt;$("btnDuplicate").onclick=()=>{const r=readForm();activeId=null;r.id=null;r.number=nextNumber();r.date=new Date().toISOString().slice(0,10);writeForm(r);$("receiptStatus").textContent="Duplicated — unsaved";track("receipt_duplicated")};$("btnExportCsv").onclick=exportCsv;$("receiptSearch").addEventListener("input",renderHistory);$("currency").addEventListener("change",calculateTotal);
 }
-document.addEventListener("DOMContentLoaded",()=>{bind();initAnalytics();renderHistory();renderKpis();newReceipt();applyCaptureHandoff();applyArPaymentHandoff()});
+document.addEventListener("DOMContentLoaded",()=>{bind();initAnalytics();renderHistory();renderKpis();newReceipt();applyCaptureHandoff()});
 </script>
 <script defer src="scripts/sync-nav.js"></script>
 </body>
