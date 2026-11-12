@@ -24,6 +24,7 @@ The product is designed for small businesses, independent professionals and oper
 | Sales orders | CRM |
 | Receipts | Asset management |
 | Statements | Site inspections |
+| Easy Register | Access, attendance, training & visitor registers |
 | PDF bank statement converter | Referral access dashboard |
 
 ## Easy Bank Statement Converter

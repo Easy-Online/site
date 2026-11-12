@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Easy Media | EasyFile</title>
+  <meta name="description" content="Import, preview, download and convert supported media from your device or authorised direct links.">
+  <meta name="theme-color" content="#061a4d">
+  <meta name="color-scheme" content="light dark">
+  <link rel="canonical" href="https://www.easyfile.co.za/easy-media.html">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/easyfile-brand-tokens.css">
+  <link rel="stylesheet" href="assets/css/easyfile-site.css">
+  <link rel="stylesheet" href="assets/css/easyfile-footer.css">
+  <link rel="stylesheet" href="assets/css/easyfile-navigation.css">
+  <link rel="icon" href="logo-b.png" type="image/png">
+  <link rel="apple-touch-icon" href="logo-b.png">
+  <style>
+    :root{--m-bg:#edf4ff;--m-card:#fff;--m-border:#dbe6f5;--m-text:#0f172a;--m-muted:#64748b;--m-blue:#2563eb;--m-shadow:0 18px 45px rgba(15,23,42,.08)}
+    html[data-theme="dark"]{--m-bg:#07101f;--m-card:#0f172a;--m-border:#26354d;--m-text:#e5e7eb;--m-muted:#9fb0c8;--m-blue:#60a5fa;--m-shadow:0 20px 50px rgba(0,0,0,.28)}
+    *{box-sizing:border-box}body{margin:0;background:var(--m-bg);color:var(--m-text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    .m-shell{width:min(100% - 2rem,92rem);margin:auto;padding:1.4rem 0 4rem}.m-card{background:var(--m-card);border:1px solid var(--m-border);border-radius:1.15rem;box-shadow:var(--m-shadow)}
+    .m-hero{padding:clamp(1.25rem,3vw,2.3rem);display:grid;grid-template-columns:1.25fr .75fr;gap:1.5rem;background:linear-gradient(135deg,#061a4d,#0b3ba8 58%,#2563eb);color:#fff;border:0}.m-eye{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;font-weight:900;color:#7dd3fc}.m-title{font-size:clamp(2.2rem,5vw,4.25rem);line-height:.95;letter-spacing:-.055em;margin:.45rem 0 .65rem;font-weight:950}.m-lead{margin:0;line-height:1.65;color:rgba(255,255,255,.82);max-width:54rem}
+    .m-steps{display:grid;gap:.65rem;align-content:center}.m-step{display:flex;gap:.7rem;align-items:center;padding:.75rem;border:1px solid rgba(255,255,255,.18);border-radius:.8rem;background:rgba(255,255,255,.08)}.m-step b{width:2rem;height:2rem;display:grid;place-items:center;border-radius:.6rem;background:#fff;color:#0b3ba8}
+    .m-tabs{margin-top:1rem;padding:.6rem;display:flex;gap:.5rem;flex-wrap:wrap}.m-tab,.m-btn{border:1px solid var(--m-border);border-radius:.75rem;min-height:2.8rem;padding:.65rem .9rem;background:var(--m-card);color:var(--m-text);font-weight:850;cursor:pointer;text-decoration:none;display:inline-flex;gap:.45rem;align-items:center;justify-content:center}.m-tab[aria-selected="true"],.m-primary{background:#2563eb;border-color:#2563eb;color:#fff}.m-btn:disabled{opacity:.5;cursor:not-allowed}.m-panel{display:none;margin-top:1rem;padding:1rem}.m-panel.active{display:block}
+    .m-field{display:grid;gap:.4rem}.m-field label{font-size:.78rem;font-weight:900;color:var(--m-muted)}.m-input,.m-select{width:100%;min-height:3rem;border:1px solid var(--m-border);border-radius:.75rem;padding:.7rem .8rem;background:var(--m-card);color:var(--m-text);font:inherit}.m-input:focus,.m-select:focus{outline:3px solid rgba(37,99,235,.16);border-color:#60a5fa}.m-row{display:flex;gap:.65rem;flex-wrap:wrap}.m-row .m-input{flex:1 1 18rem}
+    .m-note{margin-top:.75rem;padding:.8rem .9rem;border-radius:.8rem;border:1px solid #bfdbfe;background:#eff6ff;color:#1e3a8a;font-size:.82rem;line-height:1.55}.m-note.warn{border-color:#fde68a;background:#fffbeb;color:#854d0e}html[data-theme="dark"] .m-note{background:#102342;color:#bfdbfe;border-color:#1d4ed8}html[data-theme="dark"] .m-note.warn{background:#2b1c05;color:#fde68a;border-color:#92400e}
+    .m-drop{min-height:12rem;border:2px dashed #94a3b8;border-radius:1rem;display:grid;place-items:center;text-align:center;padding:1.2rem;cursor:pointer}.m-drop.drag{border-color:#2563eb;background:rgba(37,99,235,.07)}.m-drop i{font-size:2.4rem;color:#2563eb}.m-drop strong{display:block;margin-top:.6rem}.m-drop small{display:block;margin-top:.35rem;color:var(--m-muted)}
+    .m-providers{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.75rem;margin-top:1rem}.m-provider{padding:1rem;display:flex;flex-direction:column;gap:.55rem}.m-provider i{font-size:1.3rem;color:#2563eb}.m-provider p{margin:0;color:var(--m-muted);font-size:.8rem;line-height:1.45}.m-provider .m-btn{margin-top:auto}
+    .m-preview{margin-top:1rem;padding:1rem}.m-preview-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:1rem}.m-stage{min-height:22rem;border:1px solid var(--m-border);border-radius:1rem;display:grid;place-items:center;overflow:hidden;background:rgba(148,163,184,.05)}.m-stage img,.m-stage video{max-width:100%;max-height:32rem}.m-stage audio{width:min(100%,36rem)}.m-stage iframe{width:100%;height:30rem;border:0;background:#fff}.m-empty{text-align:center;color:var(--m-muted);padding:2rem}.m-empty i{font-size:3rem;color:#94a3b8}.m-meta{display:grid;gap:.5rem}.m-meta-row{display:flex;justify-content:space-between;gap:1rem;border-bottom:1px solid var(--m-border);padding-bottom:.5rem;font-size:.82rem}.m-meta-row span{color:var(--m-muted)}.m-meta-row strong{text-align:right;overflow-wrap:anywhere}
+    .m-actions{margin-top:1rem;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.65rem}.m-action{min-height:5rem;display:flex;flex-direction:column;align-items:flex-start}.m-action i{color:#2563eb;font-size:1.2rem}.m-action small{color:var(--m-muted);font-weight:600;text-align:left}
+    .m-convert{margin-top:1rem;padding:1rem;display:none}.m-convert.active{display:block}.m-convert-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.75rem}.m-progress{height:.55rem;border-radius:999px;background:rgba(148,163,184,.25);overflow:hidden;margin-top:.7rem}.m-progress span{display:block;width:0;height:100%;background:#2563eb;transition:width .2s}.m-status{margin-top:.7rem;font-size:.82rem;color:var(--m-muted)}
+    .m-history{margin-top:1rem;padding:1rem}.m-history-list{display:grid;gap:.55rem;margin-top:.75rem}.m-history-item{display:grid;grid-template-columns:1fr auto;gap:.6rem;align-items:center;padding:.7rem;border:1px solid var(--m-border);border-radius:.75rem}.m-history-item small{display:block;color:var(--m-muted);margin-top:.15rem}.m-toast{position:fixed;right:1rem;bottom:1rem;z-index:9999;max-width:24rem;padding:.85rem 1rem;border-radius:.8rem;background:#0f172a;color:#fff;box-shadow:0 18px 42px rgba(0,0,0,.3);font-size:.84rem;font-weight:700}.hidden{display:none!important}
+    @media(max-width:960px){.m-hero,.m-preview-grid{grid-template-columns:1fr}.m-providers,.m-actions,.m-convert-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:620px){.m-shell{width:min(100% - 1rem,92rem);padding-top:.7rem}.m-tabs,.m-row{display:grid;grid-template-columns:1fr}.m-tab,.m-btn,.m-row .m-input{width:100%}.m-providers,.m-actions,.m-convert-grid{grid-template-columns:1fr}.m-stage{min-height:16rem}.m-panel,.m-preview,.m-history{padding:.8rem}}
+  </style>
+</head>
+<body class="easyfile-app">
+<div class="easyfile-nav no-print"><a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a></div>
+<main class="m-shell">
+  <section class="m-card m-hero">
+    <div><div class="m-eye"><i class="fa-solid fa-photo-film"></i> EasyFile media workspace</div><h1 class="m-title">Easy Media</h1><p class="m-lead">Paste an authorised direct link, upload a file, or search trusted media sources. Easy Media detects the file, previews it, downloads originals, converts supported formats locally, and hands editable files to Easy Edit.</p></div>
+    <div class="m-steps"><div class="m-step"><b>1</b><span>Add a link, file or search</span></div><div class="m-step"><b>2</b><span>Choose what you want to do</span></div><div class="m-step"><b>3</b><span>Download or continue in EasyFile</span></div></div>
+  </section>
+
+  <nav class="m-card m-tabs" role="tablist" aria-label="Media sources">
+    <button class="m-tab" data-tab="link" aria-selected="true"><i class="fa-solid fa-link"></i> Paste a link</button>
+    <button class="m-tab" data-tab="upload" aria-selected="false"><i class="fa-solid fa-upload"></i> Upload a file</button>
+    <button class="m-tab" data-tab="search" aria-selected="false"><i class="fa-solid fa-magnifying-glass"></i> Search free media</button>
+    <button class="m-tab" id="demoBtn"><i class="fa-solid fa-wand-magic-sparkles"></i> Try a demo</button>
+  </nav>
+
+  <section class="m-card m-panel active" data-panel="link">
+    <div class="m-field"><label for="urlInput">Paste a direct file or supported media URL</label><div class="m-row"><input id="urlInput" class="m-input" inputmode="url" placeholder="https://example.com/media/photo.jpg"><button id="analyseUrlBtn" class="m-btn m-primary"><i class="fa-solid fa-wand-magic-sparkles"></i> Analyse</button></div></div>
+    <div id="sourcePolicy" class="m-note">Direct HTTPS files work best. Provider pages may require their official API or only allow preview/playback. Easy Media does not bypass access controls or platform restrictions.</div>
+  </section>
+
+  <section class="m-card m-panel" data-panel="upload">
+    <div id="dropZone" class="m-drop" tabindex="0" role="button"><div><i class="fa-solid fa-cloud-arrow-up"></i><strong>Drop a file here</strong><small>or tap to choose from your device · images, audio, video, PDFs and documents</small></div></div>
+    <input id="fileInput" class="hidden" type="file" accept="image/*,audio/*,video/*,.pdf,.txt,.csv,.json,.md,.html,.docx,.xlsx">
+  </section>
+
+  <section class="m-card m-panel" data-panel="search">
+    <div class="m-field"><label for="mediaSearch">What are you looking for?</label><div class="m-row"><input id="mediaSearch" class="m-input" placeholder="e.g. Johannesburg skyline, business meeting, ambient music"><button id="searchAllBtn" class="m-btn m-primary"><i class="fa-solid fa-magnifying-glass"></i> Show sources</button></div></div>
+    <div id="providerGrid" class="m-providers"></div>
+  </section>
+
+  <section id="previewCard" class="m-card m-preview hidden" aria-live="polite">
+    <div class="m-preview-grid">
+      <div id="previewStage" class="m-stage"></div>
+      <aside><h2 style="margin-top:0">We found</h2><div id="metaList" class="m-meta"></div><div class="m-note" style="margin-top:1rem"><label style="display:flex;gap:.55rem;align-items:flex-start"><input id="rightsConfirm" type="checkbox"><span>I own this media or have permission to download/process it.</span></label></div></aside>
+    </div>
+    <div class="m-actions">
+      <button id="downloadBtn" class="m-btn m-action m-primary" disabled><i class="fa-solid fa-download"></i><strong>Download original</strong><small>Save the source file</small></button>
+      <button id="convertBtn" class="m-btn m-action" disabled><i class="fa-solid fa-arrows-rotate"></i><strong>Convert / compress</strong><small>Images, audio and video</small></button>
+      <button id="editBtn" class="m-btn m-action" disabled><i class="fa-solid fa-pen-ruler"></i><strong>Edit in Easy Edit</strong><small>Hand supported files to the editor</small></button>
+      <button id="clearBtn" class="m-btn m-action"><i class="fa-solid fa-trash"></i><strong>Start over</strong><small>Clear this item</small></button>
+    </div>
+  </section>
+
+  <section id="convertCard" class="m-card m-convert">
+    <h2 style="margin-top:0">Convert or compress</h2>
+    <div class="m-convert-grid">
+      <div class="m-field"><label for="formatSelect">Output format</label><select id="formatSelect" class="m-select"></select></div>
+      <div class="m-field"><label for="qualityRange">Quality <span id="qualityLabel">85%</span></label><input id="qualityRange" type="range" min="35" max="100" value="85"></div>
+      <div class="m-field"><label for="widthInput">Max image width</label><input id="widthInput" class="m-input" type="number" min="64" placeholder="Keep original"></div>
+      <div class="m-field"><label>&nbsp;</label><button id="runConvertBtn" class="m-btn m-primary"><i class="fa-solid fa-gears"></i> Create file</button></div>
+    </div>
+    <div id="convertStatus" class="m-status">Images convert with browser Canvas. Audio/video conversion loads FFmpeg WebAssembly only when required.</div>
+    <div class="m-progress"><span id="progressBar"></span></div>
+  </section>
+
+  <section class="m-card m-history">
+    <div class="m-row" style="justify-content:space-between;align-items:center"><div><h2 style="margin:0">Recent activity</h2><small style="color:var(--m-muted)">Stored only in this browser.</small></div><button id="clearHistoryBtn" class="m-btn"><i class="fa-solid fa-broom"></i> Clear history</button></div>
+    <div id="historyList" class="m-history-list"></div>
+  </section>
+</main>
+<footer class="easyfile-footer no-print" aria-label="EasyFile site footer"></footer>
+<script src="assets/js/easyfile-document-bus.js"></script>
+<script src="assets/js/easy-media.js"></script>
+<script defer src="scripts/sync-nav.js"></script>
+</body>
+</html>

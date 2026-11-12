@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Easy Connect | Shopify + Microsoft Dynamics 365 Integration Hub</title>
+  <meta name="description" content="Connect Shopify and Microsoft Dynamics 365 to EasyFile. Map customers, products, orders, inventory, invoices and payments through a controlled synchronization hub.">
+  <meta name="theme-color" content="#061a4d">
+  <link rel="icon" href="logo-b.png" type="image/png">
+  <link rel="icon" href="logo-w.png" type="image/png" media="(prefers-color-scheme: dark)">
+  <link rel="apple-touch-icon" href="logo-b.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/easyfile-brand-tokens.css">
+  <link rel="stylesheet" href="assets/css/easyfile-site.css">
+  <link rel="stylesheet" href="assets/css/easyfile-navigation.css">
+  <link rel="stylesheet" href="assets/css/easyfile-footer.css">
+  <style>
+    :root {
+      --ec-bg:#edf4ff; --ec-card:#fff; --ec-text:#0f172a; --ec-muted:#64748b;
+      --ec-border:#dbe6f5; --ec-blue:#2563eb; --ec-navy:#061a4d; --ec-green:#16a34a;
+      --ec-amber:#d97706; --ec-red:#dc2626;
+    }
+    html[data-theme="dark"] {
+      --ec-bg:#07101f; --ec-card:#0f172a; --ec-text:#e5e7eb; --ec-muted:#9fb0c8; --ec-border:rgba(148,163,184,.22);
+    }
+    * { box-sizing:border-box; }
+    body { background:var(--ec-bg); color:var(--ec-text); font-family:Inter,system-ui,sans-serif; }
+    .ec-shell { width:min(100% - 2rem, 92rem); margin:0 auto; padding:2rem 0 4rem; }
+    .ec-hero { border-radius:1.5rem; padding:clamp(1.4rem,4vw,3rem); color:#fff; background:linear-gradient(135deg,#061a4d,#0b3ba8 60%,#2563eb); box-shadow:0 26px 70px rgba(2,12,45,.18); }
+    .ec-kicker { font-size:.75rem; letter-spacing:.1em; text-transform:uppercase; font-weight:900; color:#7dd3fc; }
+    .ec-title { margin:.35rem 0 0; font-size:clamp(2rem,5vw,3.75rem); line-height:1; font-weight:900; letter-spacing:-.045em; }
+    .ec-lead { max-width:58rem; margin:.9rem 0 0; color:rgba(255,255,255,.82); line-height:1.7; }
+    .ec-flow { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:.7rem; margin-top:1.4rem; }
+    .ec-flow-step { min-height:6.2rem; border:1px solid rgba(255,255,255,.16); border-radius:1rem; padding:.9rem; background:rgba(255,255,255,.08); }
+    .ec-flow-step i { color:#7dd3fc; }
+    .ec-flow-step strong { display:block; margin-top:.55rem; font-size:.85rem; }
+    .ec-flow-step span { display:block; margin-top:.25rem; color:rgba(255,255,255,.66); font-size:.72rem; line-height:1.4; }
+    .ec-grid { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:1rem; margin-top:1rem; }
+    .ec-card { border:1px solid var(--ec-border); border-radius:1.1rem; padding:1.1rem; background:var(--ec-card); box-shadow:0 12px 34px rgba(15,23,42,.06); }
+    .ec-card h2,.ec-card h3 { color:var(--ec-text); font-weight:900; }
+    .ec-card p { color:var(--ec-muted); }
+    .span-4 { grid-column:span 4; } .span-6 { grid-column:span 6; } .span-8 { grid-column:span 8; } .span-12 { grid-column:span 12; }
+    .ec-status { display:inline-flex; align-items:center; gap:.4rem; border-radius:999px; padding:.3rem .65rem; font-size:.72rem; font-weight:900; }
+    .status-off { background:#f1f5f9; color:#475569; } .status-on { background:#dcfce7; color:#166534; }
+    .status-warn { background:#ffedd5; color:#9a3412; } .status-error { background:#fee2e2; color:#991b1b; }
+    .ec-field label { display:block; margin-bottom:.35rem; color:var(--ec-muted); font-size:.72rem; font-weight:900; text-transform:uppercase; letter-spacing:.04em; }
+    .ec-field input,.ec-field select { width:100%; min-height:2.75rem; border:1px solid var(--ec-border); border-radius:.75rem; padding:.65rem .8rem; background:var(--ec-card); color:var(--ec-text); }
+    .ec-btn { display:inline-flex; align-items:center; justify-content:center; gap:.45rem; min-height:2.6rem; border-radius:.75rem; padding:.65rem .9rem; font-size:.82rem; font-weight:900; }
+    .ec-btn-primary { background:var(--ec-blue); color:#fff; } .ec-btn-outline { border:1px solid var(--ec-border); background:var(--ec-card); color:var(--ec-text); }
+    .ec-btn-danger { background:var(--ec-red); color:#fff; }
+    .ec-switch { display:flex; align-items:flex-start; gap:.7rem; padding:.75rem 0; border-top:1px solid var(--ec-border); }
+    .ec-switch:first-child { border-top:0; }
+    .ec-switch input { margin-top:.15rem; width:1rem; height:1rem; }
+    .ec-switch strong { display:block; font-size:.84rem; } .ec-switch span { display:block; margin-top:.16rem; color:var(--ec-muted); font-size:.72rem; line-height:1.4; }
+    .ec-table-wrap { overflow-x:auto; }
+    .ec-table { width:100%; min-width:760px; border-collapse:collapse; font-size:.8rem; }
+    .ec-table th { background:rgba(37,99,235,.06); color:var(--ec-muted); text-align:left; padding:.7rem; font-size:.68rem; text-transform:uppercase; letter-spacing:.05em; }
+    .ec-table td { border-top:1px solid var(--ec-border); padding:.75rem .7rem; vertical-align:top; }
+    .ec-code { border-radius:.8rem; padding:.8rem; background:#07101f; color:#dbeafe; font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace; overflow:auto; }
+    .ec-log { max-height:18rem; overflow:auto; }
+    .ec-log-row { display:grid; grid-template-columns:9rem 6rem 1fr; gap:.6rem; border-top:1px solid var(--ec-border); padding:.65rem 0; font-size:.75rem; }
+    .ec-log-row:first-child { border-top:0; }
+    .ec-note { border:1px solid #f6cf70; border-radius:.9rem; padding:.85rem 1rem; background:#fff8df; color:#713f12; font-size:.8rem; line-height:1.5; }
+    html[data-theme="dark"] .ec-note { border-color:rgba(245,158,11,.4); background:#2b1c05; color:#fde68a; }
+    @media(max-width:980px){ .span-4,.span-6,.span-8{grid-column:span 12}.ec-flow{grid-template-columns:1fr 1fr}.ec-flow-step:last-child{grid-column:1/-1} }
+    @media(max-width:620px){ .ec-flow{grid-template-columns:1fr}.ec-flow-step:last-child{grid-column:auto}.ec-shell{width:min(100% - 1rem,92rem)}.ec-log-row{grid-template-columns:1fr}.ec-actions{display:grid!important}.ec-actions .ec-btn{width:100%} }
+  </style>
+</head>
+<body class="easyfile-app">
+  <div class="easyfile-nav no-print">
+    <a class="easyfile-nav-brand" href="index.html"><img src="logo-w.png" alt="" width="41" height="41"><span class="easyfile-nav-brand-copy"><strong>EasyFile</strong><small>Business workspace</small></span></a>
+  </div>
+
+  <main class="ec-shell">
+    <section class="ec-hero">
+      <p class="ec-kicker">Integration & orchestration</p>
+      <h1 class="ec-title">Easy Connect</h1>
+      <p class="ec-lead">Connect Shopify commerce to EasyFile operational workflows and Microsoft Dynamics 365 / Business Central. Easy Connect normalises records, controls ownership, prevents duplicates and keeps an auditable synchronisation trail.</p>
+      <div class="ec-flow" aria-label="Integration architecture">
+        <div class="ec-flow-step"><i class="fa-brands fa-shopify"></i><strong>Shopify</strong><span>Storefront, checkout, online orders and fulfilment events.</span></div>
+        <div class="ec-flow-step"><i class="fa-solid fa-arrows-rotate"></i><strong>Easy Connect</strong><span>Webhooks, mappings, idempotency, queueing and retries.</span></div>
+        <div class="ec-flow-step"><i class="fa-solid fa-folder-tree"></i><strong>EasyFile</strong><span>CRM, sales orders, inventory, invoices and receipts.</span></div>
+        <div class="ec-flow-step"><i class="fa-brands fa-microsoft"></i><strong>Dynamics 365</strong><span>Dataverse CRM and enterprise customer / opportunity records.</span></div>
+        <div class="ec-flow-step"><i class="fa-solid fa-building-columns"></i><strong>Business Central</strong><span>Financial ledger, VAT, purchasing, AR and formal inventory valuation.</span></div>
+      </div>
+    </section>
+
+    <section class="ec-grid">
+      <article class="ec-card span-4">
+        <div class="flex items-start justify-between gap-3">
+          <div><h2 class="text-lg">Shopify connection</h2><p class="text-sm mt-1">Commerce channel</p></div>
+          <span id="shopifyStatus" class="ec-status status-off">Not configured</span>
+        </div>
+        <div class="space-y-3 mt-4">
+          <div class="ec-field"><label for="shopDomain">Store domain</label><input id="shopDomain" placeholder="store.example.com or shop.myshopify.com"></div>
+          <div class="ec-field"><label for="shopifyApiBase">Secure adapter endpoint</label><input id="shopifyApiBase" placeholder="https://api.example.com/easy-connect"></div>
+          <div class="ec-note"><strong>Security:</strong> never place Shopify Admin access tokens in this browser page. OAuth and Admin API calls must be handled by a server-side adapter.</div>
+          <div class="ec-actions flex flex-wrap gap-2">
+            <button class="ec-btn ec-btn-primary" id="btnTestShopify"><i class="fa-solid fa-plug"></i>Test connection</button>
+            <button class="ec-btn ec-btn-outline" id="btnOpenShopify"><i class="fa-solid fa-arrow-up-right-from-square"></i>Open store</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="ec-card span-4">
+        <div class="flex items-start justify-between gap-3">
+          <div><h2 class="text-lg">Dynamics 365</h2><p class="text-sm mt-1">CRM / Dataverse</p></div>
+          <span id="d365Status" class="ec-status status-off">Not configured</span>
+        </div>
+        <div class="space-y-3 mt-4">
+          <div class="ec-field"><label for="d365Environment">Environment URL</label><input id="d365Environment" placeholder="https://org.crm.dynamics.com"></div>
+          <div class="ec-field"><label for="d365Tenant">Microsoft Entra tenant ID</label><input id="d365Tenant" placeholder="00000000-0000-0000-0000-000000000000"></div>
+          <div class="ec-field"><label for="d365ApiBase">Secure adapter endpoint</label><input id="d365ApiBase" placeholder="https://api.example.com/easy-connect"></div>
+          <div class="ec-actions flex flex-wrap gap-2">
+            <button class="ec-btn ec-btn-primary" id="btnTestD365"><i class="fa-solid fa-plug"></i>Test connection</button>
+            <button class="ec-btn ec-btn-outline" id="btnOpenD365"><i class="fa-solid fa-arrow-up-right-from-square"></i>Open environment</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="ec-card span-4">
+        <div class="flex items-start justify-between gap-3">
+          <div><h2 class="text-lg">Business Central</h2><p class="text-sm mt-1">ERP / finance authority</p></div>
+          <span id="bcStatus" class="ec-status status-off">Not configured</span>
+        </div>
+        <div class="space-y-3 mt-4">
+          <div class="ec-field"><label for="bcEnvironment">Environment</label><input id="bcEnvironment" placeholder="Production"></div>
+          <div class="ec-field"><label for="bcCompany">Company</label><input id="bcCompany" placeholder="Company name or company ID"></div>
+          <div class="ec-field"><label for="bcApiBase">Secure adapter endpoint</label><input id="bcApiBase" placeholder="https://api.example.com/easy-connect"></div>
+          <div class="ec-actions flex flex-wrap gap-2">
+            <button class="ec-btn ec-btn-primary" id="btnTestBC"><i class="fa-solid fa-plug"></i>Test connection</button>
+            <button class="ec-btn ec-btn-outline" id="btnOpenBC"><i class="fa-solid fa-arrow-up-right-from-square"></i>Open Business Central</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="ec-card span-6">
+        <div class="flex items-start justify-between gap-3">
+          <div><h2 class="text-lg">System-of-record rules</h2><p class="text-sm mt-1">Prevent conflicting edits by assigning one authoritative owner to each data class.</p></div>
+          <button class="ec-btn ec-btn-outline" id="btnResetRules">Reset defaults</button>
+        </div>
+        <div class="ec-table-wrap mt-4">
+          <table class="ec-table">
+            <thead><tr><th>Data</th><th>Authoritative owner</th><th>EasyFile use</th></tr></thead>
+            <tbody id="ownershipRows"></tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="ec-card span-6">
+        <div class="flex items-start justify-between gap-3">
+          <div><h2 class="text-lg">Sync rules</h2><p class="text-sm mt-1">Choose which business events Easy Connect is allowed to orchestrate.</p></div>
+          <span id="ruleCount" class="ec-status status-on">0 enabled</span>
+        </div>
+        <div id="syncRules" class="mt-3"></div>
+      </article>
+
+      <article class="ec-card span-8">
+        <div class="flex flex-wrap items-start justify-between gap-3">
+          <div><h2 class="text-lg">Synchronisation monitor</h2><p class="text-sm mt-1">Queue state, last result and retry visibility.</p></div>
+          <div class="ec-actions flex flex-wrap gap-2">
+            <button class="ec-btn ec-btn-outline" id="btnSeed"><i class="fa-solid fa-flask"></i>Seed demo</button>
+            <button class="ec-btn ec-btn-primary" id="btnSync"><i class="fa-solid fa-arrows-rotate"></i>Sync now</button>
+            <button class="ec-btn ec-btn-outline" id="btnExport"><i class="fa-solid fa-download"></i>Export config</button>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+          <div class="ec-card"><p class="text-xs font-black uppercase">Successful</p><div id="kpiSuccess" class="text-2xl font-black text-green-600 mt-1">0</div></div>
+          <div class="ec-card"><p class="text-xs font-black uppercase">Pending</p><div id="kpiPending" class="text-2xl font-black text-yellow-600 mt-1">0</div></div>
+          <div class="ec-card"><p class="text-xs font-black uppercase">Failed</p><div id="kpiFailed" class="text-2xl font-black text-red-600 mt-1">0</div></div>
+          <div class="ec-card"><p class="text-xs font-black uppercase">Last sync</p><div id="kpiLast" class="text-sm font-black mt-2">Never</div></div>
+        </div>
+        <div class="ec-table-wrap mt-4">
+          <table class="ec-table">
+            <thead><tr><th>External ID</th><th>Entity</th><th>Route</th><th>Status</th><th>Updated</th></tr></thead>
+            <tbody id="queueRows"><tr><td colspan="5" class="text-center text-gray-500">No synchronisation records yet.</td></tr></tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="ec-card span-4">
+        <h2 class="text-lg">Adapter contract</h2>
+        <p class="text-sm mt-1">The static EasyFile page talks only to your secure integration backend.</p>
+        <pre class="ec-code mt-4">GET  /health?provider=shopify
+GET  /health?provider=d365
+GET  /health?provider=business-central
+POST /sync
+POST /webhooks/shopify/orders-create
+POST /webhooks/shopify/orders-updated
+POST /webhooks/shopify/fulfillments-create
+GET  /sync/status</pre>
+        <div class="ec-note mt-3">The adapter should verify Shopify webhook HMAC signatures, obtain Microsoft tokens server-side, enforce idempotency keys and keep a durable retry/dead-letter queue.</div>
+      </article>
+
+      <article class="ec-card span-12">
+        <div class="flex flex-wrap items-start justify-between gap-3">
+          <div><h2 class="text-lg">Audit log</h2><p class="text-sm mt-1">Local UI events are retained in this browser. Production integration events should also be retained server-side.</p></div>
+          <button class="ec-btn ec-btn-danger" id="btnClearLog"><i class="fa-solid fa-trash"></i>Clear log</button>
+        </div>
+        <div id="auditLog" class="ec-log mt-3"></div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="easyfile-footer border-t border-adaptive">
+    <div class="container mx-auto px-4 py-7 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+      <p class="muted-adaptive text-sm font-bold">EasyFile · Easy Connect</p>
+      <p class="muted-adaptive text-sm">Shopify commerce · EasyFile operations · Microsoft Dynamics 365 / Business Central</p>
+    </div>
+  </footer>
+
+<script>
+"use strict";
+const STORE_KEY = "easyfile.easyconnect.v1";
+const LOG_KEY = "easyfile.easyconnect.log.v1";
+const DEFAULT_OWNERSHIP = [
+  ["Storefront content","Shopify","Reference / product mapping"],
+  ["Online order capture","Shopify","Creates Easy Sales Order workflow"],
+  ["Customer workflow status","EasyFile","CRM and operational follow-up"],
+  ["Operational documents","EasyFile","Sales orders, invoices, receipts"],
+  ["General ledger","Business Central","Read-only financial status in EasyFile"],
+  ["VAT / tax accounting","Business Central","Read-only tax status in EasyFile"],
+  ["Formal inventory valuation","Business Central","Operational stock view in Easy Inventory"],
+  ["Opportunities / enterprise CRM","Dynamics 365","Linked account / opportunity context"]
+];
+const DEFAULT_RULES = [
+  {id:"orders",label:"Shopify orders → Easy Sales Order",detail:"Create or update an EasyFile sales-order record from Shopify orders.",enabled:true},
+  {id:"customers",label:"Shopify customers → Easy CRM",detail:"Map customer identity and contact data into Easy CRM.",enabled:true},
+  {id:"products",label:"Shopify products ↔ Easy Inventory mapping",detail:"Maintain SKU mapping; do not let browser storage overwrite ERP valuation.",enabled:true},
+  {id:"invoices",label:"Easy Invoice → Business Central",detail:"Post approved invoice data to the finance adapter.",enabled:true},
+  {id:"payments",label:"Payments → Easy Receipt",detail:"Create receipt evidence after a confirmed payment event.",enabled:true},
+  {id:"d365",label:"Easy CRM → Dynamics 365",detail:"Synchronise selected customer and opportunity context to Dataverse.",enabled:false},
+  {id:"fulfilment",label:"Business Central fulfilment → Shopify",detail:"Return fulfilment / shipment status through the adapter.",enabled:true}
+];
+
+let state = loadState();
+let logItems = loadLog();
+
+function $(id){ return document.getElementById(id); }
+function loadState(){
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {ownership:DEFAULT_OWNERSHIP,rules:DEFAULT_RULES,queue:[],lastSync:null}; }
+  catch { return {ownership:DEFAULT_OWNERSHIP,rules:DEFAULT_RULES,queue:[],lastSync:null}; }
+}
+function loadLog(){ try { return JSON.parse(localStorage.getItem(LOG_KEY)) || []; } catch { return []; } }
+function persist(){
+  state.shopDomain=$("shopDomain").value.trim();
+  state.shopifyApiBase=$("shopifyApiBase").value.trim();
+  state.d365Environment=$("d365Environment").value.trim();
+  state.d365Tenant=$("d365Tenant").value.trim();
+  state.d365ApiBase=$("d365ApiBase").value.trim();
+  state.bcEnvironment=$("bcEnvironment").value.trim();
+  state.bcCompany=$("bcCompany").value.trim();
+  state.bcApiBase=$("bcApiBase").value.trim();
+  localStorage.setItem(STORE_KEY,JSON.stringify(state));
+}
+function addLog(level,message){
+  logItems.unshift({ts:new Date().toISOString(),level,message});
+  logItems=logItems.slice(0,100);
+  localStorage.setItem(LOG_KEY,JSON.stringify(logItems));
+  renderLog();
+}
+function escapeHtml(v){ return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m])); }
+function safeUrl(v){ try { const u=new URL(v); return ["http:","https:"].includes(u.protocol)?u.toString():""; } catch { return ""; } }
+function normalizeBase(v){ return String(v||"").trim().replace(/\/+$/,""); }
+function setStatus(id,type,text){ const e=$(id); e.className="ec-status "+type; e.textContent=text; }
+
+function hydrate(){
+  ["shopDomain","shopifyApiBase","d365Environment","d365Tenant","d365ApiBase","bcEnvironment","bcCompany","bcApiBase"].forEach(id=>{ $(id).value=state[id]||""; });
+  renderOwnership(); renderRules(); renderQueue(); renderLog(); updateConnectionLabels();
+}
+function renderOwnership(){
+  $("ownershipRows").innerHTML=state.ownership.map((r,i)=>`<tr><td>${escapeHtml(r[0])}</td><td><select data-owner="${i}" class="border rounded px-2 py-1 bg-transparent"><option ${r[1]==="Shopify"?"selected":""}>Shopify</option><option ${r[1]==="EasyFile"?"selected":""}>EasyFile</option><option ${r[1]==="Dynamics 365"?"selected":""}>Dynamics 365</option><option ${r[1]==="Business Central"?"selected":""}>Business Central</option></select></td><td>${escapeHtml(r[2])}</td></tr>`).join("");
+  document.querySelectorAll("[data-owner]").forEach(s=>s.addEventListener("change",()=>{state.ownership[Number(s.dataset.owner)][1]=s.value;persist();addLog("INFO","Ownership rule updated: "+state.ownership[Number(s.dataset.owner)][0]+" → "+s.value);}));
+}
+function renderRules(){
+  $("syncRules").innerHTML=state.rules.map((r,i)=>`<label class="ec-switch"><input type="checkbox" data-rule="${i}" ${r.enabled?"checked":""}><span><strong>${escapeHtml(r.label)}</strong><span>${escapeHtml(r.detail)}</span></span></label>`).join("");
+  document.querySelectorAll("[data-rule]").forEach(c=>c.addEventListener("change",()=>{state.rules[Number(c.dataset.rule)].enabled=c.checked;persist();renderRuleCount();}));
+  renderRuleCount();
+}
+function renderRuleCount(){ const n=state.rules.filter(r=>r.enabled).length; $("ruleCount").textContent=n+" enabled"; }
+function renderQueue(){
+  const q=state.queue||[];
+  $("kpiSuccess").textContent=q.filter(x=>x.status==="success").length;
+  $("kpiPending").textContent=q.filter(x=>x.status==="pending").length;
+  $("kpiFailed").textContent=q.filter(x=>x.status==="failed").length;
+  $("kpiLast").textContent=state.lastSync?new Date(state.lastSync).toLocaleString():"Never";
+  $("queueRows").innerHTML=q.length?q.map(x=>`<tr><td>${escapeHtml(x.id)}</td><td>${escapeHtml(x.entity)}</td><td>${escapeHtml(x.route)}</td><td><span class="ec-status ${x.status==="success"?"status-on":x.status==="failed"?"status-error":"status-warn"}">${escapeHtml(x.status)}</span></td><td>${escapeHtml(new Date(x.updated).toLocaleString())}</td></tr>`).join(""):'<tr><td colspan="5" class="text-center text-gray-500">No synchronisation records yet.</td></tr>';
+}
+function renderLog(){
+  $("auditLog").innerHTML=logItems.length?logItems.map(x=>`<div class="ec-log-row"><span>${escapeHtml(new Date(x.ts).toLocaleString())}</span><strong>${escapeHtml(x.level)}</strong><span>${escapeHtml(x.message)}</span></div>`).join(""):'<p class="text-sm text-gray-500">No audit events yet.</p>';
+}
+function updateConnectionLabels(){
+  setStatus("shopifyStatus",state.shopDomain&&state.shopifyApiBase?"status-warn":"status-off",state.shopDomain&&state.shopifyApiBase?"Configured":"Not configured");
+  setStatus("d365Status",state.d365Environment&&state.d365ApiBase?"status-warn":"status-off",state.d365Environment&&state.d365ApiBase?"Configured":"Not configured");
+  setStatus("bcStatus",state.bcCompany&&state.bcApiBase?"status-warn":"status-off",state.bcCompany&&state.bcApiBase?"Configured":"Not configured");
+}
+async function testProvider(provider,base,statusId){
+  persist(); updateConnectionLabels();
+  const root=normalizeBase(base);
+  if(!root){ setStatus(statusId,"status-error","Endpoint required"); addLog("ERROR",provider+": adapter endpoint is missing."); return; }
+  setStatus(statusId,"status-warn","Testing...");
+  try{
+    const r=await fetch(root+"/health?provider="+encodeURIComponent(provider),{headers:{"Accept":"application/json"}});
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    const body=await r.json().catch(()=>({}));
+    setStatus(statusId,"status-on","Connected");
+    addLog("OK",provider+": connection test successful"+(body.message?" — "+body.message:"")+".");
+  }catch(err){
+    setStatus(statusId,"status-error","Unavailable");
+    addLog("ERROR",provider+": "+err.message+". Use Seed demo to exercise the UI without a backend.");
+  }
+}
+async function runSync(){
+  persist();
+  const bases=[state.shopifyApiBase,state.d365ApiBase,state.bcApiBase].map(normalizeBase).filter(Boolean);
+  const base=bases[0]||"";
+  if(!base){ addLog("WARN","No adapter endpoint configured. Running local demo synchronisation instead."); seedDemo(true); return; }
+  $("btnSync").disabled=true;
+  try{
+    const payload={rules:state.rules.filter(r=>r.enabled).map(r=>r.id),ownership:state.ownership,requestedAt:new Date().toISOString()};
+    const r=await fetch(base+"/sync",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify(payload)});
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    const body=await r.json();
+    state.queue=Array.isArray(body.records)?body.records:state.queue;
+    state.lastSync=new Date().toISOString(); persist(); renderQueue();
+    addLog("OK","Synchronisation request completed.");
+  }catch(err){ addLog("ERROR","Synchronisation failed: "+err.message); }
+  finally{ $("btnSync").disabled=false; }
+}
+function seedDemo(fromSync=false){
+  const now=new Date().toISOString();
+  state.queue=[
+    {id:"SHOP-10562",entity:"Order",route:"Shopify → Easy Sales Order",status:"success",updated:now},
+    {id:"CUS-2048",entity:"Customer",route:"Shopify → Easy CRM",status:"success",updated:now},
+    {id:"SKU-DEMO-01",entity:"Inventory",route:"Shopify ↔ Easy Inventory",status:"pending",updated:now},
+    {id:"INV-10562",entity:"Invoice",route:"Easy Invoice → Business Central",status:"success",updated:now},
+    {id:"PAY-10562",entity:"Payment",route:"Payment → Easy Receipt",status:"failed",updated:now}
+  ];
+  state.lastSync=now; persist(); renderQueue();
+  addLog(fromSync?"WARN":"INFO",fromSync?"Demo synchronisation used because no secure adapter endpoint is configured.":"Demo integration queue loaded.");
+}
+function exportConfig(){
+  persist();
+  const safe={...state};
+  delete safe.shopifyApiBase; delete safe.d365ApiBase; delete safe.bcApiBase;
+  const blob=new Blob([JSON.stringify(safe,null,2)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="easy-connect-config.json"; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),0);
+  addLog("INFO","Configuration exported without adapter endpoint values.");
+}
+["shopDomain","shopifyApiBase","d365Environment","d365Tenant","d365ApiBase","bcEnvironment","bcCompany","bcApiBase"].forEach(id=>$(id).addEventListener("change",()=>{persist();updateConnectionLabels();}));
+$("btnTestShopify").addEventListener("click",()=>testProvider("shopify",$("shopifyApiBase").value,"shopifyStatus"));
+$("btnTestD365").addEventListener("click",()=>testProvider("d365",$("d365ApiBase").value,"d365Status"));
+$("btnTestBC").addEventListener("click",()=>testProvider("business-central",$("bcApiBase").value,"bcStatus"));
+$("btnOpenShopify").addEventListener("click",()=>{let v=$("shopDomain").value.trim(); if(v&&!/^https?:\/\//i.test(v))v="https://"+v; const u=safeUrl(v); if(u)window.open(u,"_blank","noopener"); else addLog("WARN","Enter a valid Shopify store domain first.");});
+$("btnOpenD365").addEventListener("click",()=>{const u=safeUrl($("d365Environment").value); if(u)window.open(u,"_blank","noopener"); else addLog("WARN","Enter a valid Dynamics 365 environment URL first.");});
+$("btnOpenBC").addEventListener("click",()=>window.open("https://businesscentral.dynamics.com/","_blank","noopener"));
+$("btnResetRules").addEventListener("click",()=>{state.ownership=JSON.parse(JSON.stringify(DEFAULT_OWNERSHIP));renderOwnership();persist();addLog("INFO","System-of-record rules reset to recommended defaults.");});
+$("btnSeed").addEventListener("click",()=>seedDemo(false));
+$("btnSync").addEventListener("click",runSync);
+$("btnExport").addEventListener("click",exportConfig);
+$("btnClearLog").addEventListener("click",()=>{logItems=[];localStorage.removeItem(LOG_KEY);renderLog();});
+hydrate();
+</script>
+<script defer src="scripts/sync-nav.js"></script>
+</body>
+</html>

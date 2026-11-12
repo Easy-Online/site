@@ -110,6 +110,12 @@ function removeLegacyNavigation(content) {
     /<nav\b[^>]*class=(["'])[^"']*\beasyfile-nav\b[^"']*\1[^>]*>[\s\S]*?<\/nav>\s*/gi,
     ""
   );
+  // Remove unmarked legacy EasyFile nav placeholders before inserting the canonical partial.
+  // Generated NAV_SYNC blocks are removed above; this catches older single-container mounts.
+  output = output.replace(
+    /<div\b[^>]*class=(["'])[^"']*\beasyfile-nav\b[^"']*\1[^>]*>[\s\S]*?<\/div>\s*/gi,
+    ""
+  );
   output = output.replace(
     /<nav\b[^>]*class=(["'])[^"']*\bbg-blue-600\b[^"']*\1[^>]*>[\s\S]*?<\/nav>\s*/gi,
     ""
