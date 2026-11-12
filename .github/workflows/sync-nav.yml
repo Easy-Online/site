@@ -74,6 +74,14 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
+      - name: Checkout deployment smoke test
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
       - name: Deploy validated artifact to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Verify live converter and DOCX fallback deployment
+        run: node scripts/verify-live-converter.mjs
