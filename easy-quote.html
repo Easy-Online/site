@@ -648,10 +648,14 @@
 (function () {
   "use strict";
 
-  const DRAFT_KEY = "easy.quote.v2";
-  const LEGACY_DRAFT_KEY = "easyQuoteDraft";
-  const LOGO_KEY = "easy.quote.logo.v1";
-  const $ = (id) => document.getElementById(id);
+    <p class="mt-2 font-semibold">Currency:</p>
+    <select id="currency" onchange="calculate()" class="border px-2 py-1 rounded">
+      <option value="R">ZAR (R)</option>
+      <option value="$">USD ($)</option>
+      <option value="€">EUR (€)</option>
+    </select>
+  </div>
+</div>
 
   function todayISO() {
     const date = new Date();
@@ -785,9 +789,14 @@
     };
   }
 
-  function validateState(state) {
-    return state && state.schema === "easy.quote" && state.version === 2 && Array.isArray(state.items);
-  }
+    <button id="btnConvertInvoice" type="button" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+      Convert to Invoice
+    </button>
+    <button onclick="window.print()" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
+      Print / Save PDF
+    </button>
+  </div>
+</div>
 
   function saveDraft() {
     const state = collectState();
@@ -798,49 +807,46 @@
     toast("Quote draft saved");
   }
 
-  function restoreDraft() {
-    const raw = localStorage.getItem(DRAFT_KEY);
-    if (!raw) return false;
-    try {
-      const state = JSON.parse(raw);
-      if (!validateState(state)) return false;
+<script src="assets/js/easy-ar.js"></script>
+<script>
 
-      $("quoteNumber").textContent = state.quoteNumber || generateQuoteNumber();
-      $("quoteDate").value = state.quoteDate || todayISO();
-      $("currency").value = ["R", "$", "€"].includes(state.currency) ? state.currency : "R";
-      $("vatRate").value = clamp(safeNumber(state.vatRate, 15), 0, 100);
-      $("clientName").value = state.client?.name || "";
-      $("clientCompany").value = state.client?.company || "";
-      $("clientEmail").value = state.client?.email || "";
-      $("clientPhone").value = state.client?.phone || "";
-      $("terms").value = state.terms || "";
-      $("itemsBody").innerHTML = "";
-      (state.items.length ? state.items : [{}]).forEach(createRow);
-      calculate();
+function generateQuoteNumber() {
+  const now = new Date();
+  return "Q-" + now.getFullYear() +
+         String(now.getMonth()+1).padStart(2,'0') +
+         String(now.getDate()).padStart(2,'0') +
+         "-" + Math.floor(Math.random()*1000);
+}
 
-      const savedAt = state.savedAt ? new Date(state.savedAt) : null;
-      setSaveStatus(savedAt && !Number.isNaN(savedAt.getTime()) ? `Draft restored · last saved ${savedAt.toLocaleString()}` : "Draft restored");
-      return true;
-    } catch {
-      return false;
-    }
-  }
+document.getElementById("quoteNumber").textContent = generateQuoteNumber();
+document.getElementById("quoteDate").valueAsDate = new Date();
 
-  function resetQuote() {
-    if (!confirm("Clear this quote and its saved draft?")) return;
-    localStorage.removeItem(DRAFT_KEY);
-    localStorage.removeItem(LEGACY_DRAFT_KEY);
-    $("quoteNumber").textContent = generateQuoteNumber();
-    $("quoteDate").value = todayISO();
-    $("currency").value = "R";
-    $("vatRate").value = "15";
-    ["clientName", "clientCompany", "clientEmail", "clientPhone", "terms"].forEach((id) => { $(id).value = ""; });
-    $("itemsBody").innerHTML = "";
-    createRow();
-    calculate();
-    setSaveStatus("New quote");
-    toast("Quote reset");
-  }
+function addRow(description="", qty=1, unit=0, disc=0) {
+  const tbody = document.getElementById("itemsBody");
+  const row = document.createElement("tr");
+
+  row.innerHTML = `
+    <td class="border p-1">
+      <input type="text" value="${description}" class="w-full p-1 border rounded desc">
+    </td>
+    <td class="border p-1">
+      <input type="number" value="${qty}" class="w-full p-1 border rounded qty" oninput="calculate()">
+    </td>
+    <td class="border p-1">
+      <input type="number" value="${unit}" class="w-full p-1 border rounded unit" oninput="calculate()">
+    </td>
+    <td class="border p-1">
+      <input type="number" value="${disc}" class="w-full p-1 border rounded disc" oninput="calculate()">
+    </td>
+    <td class="border p-1 text-right total">0.00</td>
+    <td class="border p-1 text-center no-print">
+      <button onclick="this.closest('tr').remove(); calculate();" class="text-red-600 font-bold">×</button>
+    </td>
+  `;
+
+  tbody.appendChild(row);
+  calculate();
+}
 
   function setLogo(dataUrl) {
     const image = $("companyLogo");
@@ -923,8 +929,39 @@
     createRow();
     setSaveStatus(localStorage.getItem(LEGACY_DRAFT_KEY) ? "A legacy draft was found. Save this quote to migrate to the new mobile-safe format." : "New quote");
   }
-  calculate();
-})();
+  reader.readAsDataURL(e.target.files[0]);
+});
+
+const storedLogo = localStorage.getItem("logo");
+if(storedLogo) document.getElementById("companyLogo").src = storedLogo;
+
+function convertQuoteToInvoice(){
+  if(!window.EasyAR) return alert("EasyAR integration is unavailable.");
+  const currencyMap = {"R":"ZAR","$":"USD","€":"EUR","€":"EUR"};
+  const lines = Array.from(document.querySelectorAll("#itemsBody tr")).map(row => ({
+    description: row.querySelector(".desc")?.value || "",
+    qty: Number(row.querySelector(".qty")?.value || 0),
+    unit: Number(row.querySelector(".unit")?.value || 0),
+    disc: Number(row.querySelector(".disc")?.value || 0),
+    vat: Number(document.getElementById("vatRate")?.value || 15)
+  })).filter(x => x.description || x.unit);
+  EasyAR.createTransfer("quote-to-invoice",{
+    quoteNumber: document.getElementById("quoteNumber")?.textContent || "",
+    quoteDate: document.getElementById("quoteDate")?.value || "",
+    currency: currencyMap[document.getElementById("currency")?.value] || "ZAR",
+    client:{
+      name: document.getElementById("clientCompany")?.value || document.getElementById("clientName")?.value || "",
+      contact: document.getElementById("clientName")?.value || "",
+      email: document.getElementById("clientEmail")?.value || "",
+      phone: document.getElementById("clientPhone")?.value || ""
+    },
+    lines,
+    notes: document.getElementById("terms")?.value || ""
+  });
+  window.location.href="easy-invoice.html";
+}
+document.getElementById("btnConvertInvoice")?.addEventListener("click",convertQuoteToInvoice);
+
 </script>
 
 <script defer src="assets/js/easy-suite-core.js"></script>
