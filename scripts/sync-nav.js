@@ -140,10 +140,20 @@
     });
   }
 
+  let sessionThemePreference = null;
+
+  function savedTheme() {
+    if (sessionThemePreference) return sessionThemePreference;
+    try {
+      const stored = localStorage.getItem(THEME_KEY) || localStorage.getItem("easySuite.theme");
+      return stored === "dark" || stored === "light" ? stored : null;
+    } catch {
+      return null; // Theme controls must continue working when storage is blocked.
+    }
+  }
+
   function initialTheme() {
-    const stored = localStorage.getItem(THEME_KEY) || localStorage.getItem("easySuite.theme");
-    if (stored === "dark" || stored === "light") return stored;
-    return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    return savedTheme() || (window.matchMedia?.("(prefers-color-scheme: dark)")?.matches ? "dark" : "light");
   }
 
   function groupMarkup(group) {
@@ -232,8 +242,11 @@
     topbar.querySelectorAll("[data-theme-toggle]").forEach((button) => {
       button.addEventListener("click", () => {
         const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-        localStorage.setItem(THEME_KEY, next);
-        localStorage.setItem("easySuite.theme", next);
+        sessionThemePreference = next;
+        try {
+          localStorage.setItem(THEME_KEY, next);
+          localStorage.setItem("easySuite.theme", next);
+        } catch { /* Private browsing may block persistence. */ }
         applyTheme(next);
       });
     });
@@ -375,6 +388,10 @@
   function boot() {
     ensureSharedStyles();
     applyTheme(initialTheme());
+    const systemTheme = window.matchMedia?.("(prefers-color-scheme: dark)");
+    systemTheme?.addEventListener?.("change", (event) => {
+      if (!savedTheme()) applyTheme(event.matches ? "dark" : "light");
+    });
     applyLayoutHooks();
     installNavigation();
     installPolicyLinks();

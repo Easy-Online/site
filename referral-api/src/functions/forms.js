@@ -103,7 +103,7 @@ function normalizeForm(body, id) {
 const MAX_FORM_BODY_BYTES = 64 * 1024;
 const MAX_RESPONSE_BODY_BYTES = 32 * 1024;
 const MAX_ANSWER_BYTES = 16 * 1024;
-const EMAIL_RE = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 async function readBoundedJson(request, maxBytes) {
   const declared = Number(request.headers.get("content-length"));
@@ -168,7 +168,7 @@ function validateResponse(form, body) {
     if ((type === "number" || type === "rating") && v && (!Number.isFinite(Number(v)) || (type === "rating" && (!Number.isInteger(Number(v)) || Number(v) < 1 || Number(v) > 5)))) {
       return { ok: false, error: "invalid_number", field: field.id };
     }
-    if (type === "date" && v && (!/^\\d{4}-\\d{2}-\\d{2}$/.test(v) || Number.isNaN(Date.parse(v)))) {
+    if (type === "date" && v && (!/^\d{4}-\d{2}-\d{2}$/.test(v) || Number.isNaN(Date.parse(v)))) {
       return { ok: false, error: "invalid_date", field: field.id };
     }
     if (type === "consent" && v !== "Yes" && v !== "No") return { ok: false, error: "invalid_consent", field: field.id };
@@ -216,7 +216,7 @@ app.http("easyFormPreflight", {
   methods: ["OPTIONS"],
   authLevel: "anonymous",
   route: "easy-form/{*rest}",
-  handler: async (request) => ({ status: 204, headers: cors(request) })
+  handler: async (request) => { const origin = request.headers.get("origin"); return origin && !configuredOrigins().includes(origin) ? json(request, 403, { ok: false, error: "origin_not_allowed" }) : { status: 204, headers: cors(request) }; }
 });
 
 app.http("easyFormCreate", {
@@ -366,4 +366,4 @@ app.http("easyFormResponseDelete", {
   }
 });
 
-module.exports = { hashToken, normalizeForm, validateResponse, publicForm };
+module.exports = { hashToken, normalizeForm, validateResponse, publicForm, readBoundedJson };

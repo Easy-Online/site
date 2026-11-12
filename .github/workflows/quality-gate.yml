@@ -5,6 +5,7 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -42,6 +43,18 @@ jobs:
           find tools scripts assets/js referral-api/src referral-api/test -type f \
             \( -name '*.js' -o -name '*.mjs' -o -name '*.cjs' \) -print0 \
             | xargs -0 -r -n1 node --check
+
+      - name: Validate accessible light and dark theme contracts
+        run: node scripts/validate-theme-contrast.mjs
+
+      - name: Validate both DOCX converters and export data consistency
+        run: node scripts/validate-converter-docx.mjs
+
+      - name: Install API dependencies
+        run: npm --prefix referral-api ci --ignore-scripts
+
+      - name: Run Azure Functions regression tests
+        run: npm --prefix referral-api run check
 
       - name: Verify platform conformance
         run: node scripts/verify-platform-conformance.js

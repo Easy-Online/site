@@ -5,32 +5,33 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
-  contents: write
-  pages: write
-  id-token: write
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   enforce-navigation:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
-      - name: Checkout repository
+      - name: Checkout exact revision
         uses: actions/checkout@v4
         with:
-          # Pull requests are validation-only and use the immutable head SHA.
-          # Push events must check out the actual branch so generated changes
-          # can be committed and pushed without a detached-HEAD failure.
-          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'main' }}
-          fetch-depth: 0
+          persist-credentials: false
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 24
 
-      - name: Inject canonical navigation
+      - name: Generate canonical navigation in build workspace
         run: node tools/inject-nav.js
 
       - name: Validate document structure and inline scripts
@@ -45,47 +46,34 @@ jobs:
       - name: Verify global module menu coverage
         run: node scripts/verify-module-registry.js
 
+      - name: Validate accessible light and dark theme contracts
+        run: node scripts/validate-theme-contrast.mjs
+
       - name: Verify platform conformance
         run: node scripts/verify-platform-conformance.js
 
-      - name: Commit generated navigation updates
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          if git diff --quiet; then
-            echo "Navigation is already synchronized."
-            exit 0
-          fi
+      - name: Configure GitHub Pages
+        if: github.event_name != 'pull_request'
+        uses: actions/configure-pages@v5
 
-          git config user.name "easyfile-bot"
-          git config user.email "bot@easyfile.local"
-          git add -- '*.html'
-          git commit -m "chore: synchronize EasyFile navigation"
-
-          # Use an explicit destination ref as an additional safeguard.
-          git push origin HEAD:main
+      - name: Upload the exact validated site
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: .
 
   deploy:
     needs: enforce-navigation
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Checkout synchronized site
-        uses: actions/checkout@v4
-        with:
-          ref: main
-
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: .
-
-      - name: Deploy to GitHub Pages
+      - name: Deploy validated artifact to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
