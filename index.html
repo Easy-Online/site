@@ -248,10 +248,19 @@
       background: var(--landing-surface);
       color: var(--landing-ink);
       box-shadow: 0 12px 34px rgba(15,23,42,.06);
+      text-decoration: none;
+      cursor: pointer;
+      touch-action: manipulation;
       transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
     }
     .module-card:hover,
-    .module-card:focus-within { transform: translateY(-3px); border-color: rgba(37,99,235,.5); box-shadow: 0 22px 46px rgba(15,23,42,.12); }
+    .module-card:focus-visible {
+      transform: translateY(-3px);
+      border-color: rgba(37,99,235,.65);
+      box-shadow: 0 22px 46px rgba(15,23,42,.12);
+      outline: 3px solid rgba(37,99,235,.20);
+      outline-offset: 2px;
+    }
     .module-card-icon { width: 3rem; height: 3rem; display: grid; place-items: center; border-radius: .9rem; background: #eff6ff; color: #2563eb; font-size: 1.2rem; }
     .module-card h3 { margin: 1rem 0 .45rem; font-size: 1.08rem; font-weight: 900; }
     .module-card p { flex: 1; margin: 0; color: var(--landing-muted); font-size: .88rem; line-height: 1.55; }
@@ -535,23 +544,43 @@
     const grid = document.getElementById("moduleGrid");
     const search = document.getElementById("moduleSearch");
     const resultCount = document.getElementById("moduleResultCount");
+    let modules = [];
 
     function escapeHtml(value) {
       return String(value || "").replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[character]));
     }
 
+    function normaliseModules(items) {
+      return Array.from(items || [])
+        .filter((module) => /^easy-[a-z0-9-]+\.html$/i.test(module.href || ""))
+        .map((module) => ({
+          name: module.name.startsWith("Easy ") ? module.name : `Easy ${module.name}`,
+          href: module.href,
+          icon: module.icon || "fa-table-cells-large",
+          group: module.group || "General",
+          tags: [module.group || "general"],
+          description: module.description || "EasyFile business module"
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+    }
+
     function renderModules(query = "") {
       const normalized = String(query).trim().toLowerCase();
-      const matches = MODULES.filter((module) => `${module.name} ${module.description} ${module.tags.join(" ")}`.toLowerCase().includes(normalized));
+      const matches = modules.filter((module) => `${module.name} ${module.description} ${module.group} ${module.tags.join(" ")}`.toLowerCase().includes(normalized));
       grid.innerHTML = matches.map((module) => `
-        <article class="module-card">
+        <a class="module-card" href="${module.href}" aria-label="Open ${escapeHtml(module.name)}">
           <div class="module-card-icon"><i class="fa-solid ${module.icon}" aria-hidden="true"></i></div>
           <h3>${escapeHtml(module.name)}</h3>
           <p>${escapeHtml(module.description)}</p>
-          <div class="module-tags">${module.tags.map((tag) => `<span class="module-tag">${escapeHtml(tag)}</span>`).join("")}</div>
-          <a class="module-card-link" href="${module.href}">Open module <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
-        </article>`).join("");
-      resultCount.textContent = `${matches.length} of ${MODULES.length} modules`;
+          <div class="module-tags"><span class="module-tag">${escapeHtml(module.group.toLowerCase())}</span></div>
+          <span class="module-card-link" aria-hidden="true">Open module <i class="fa-solid fa-arrow-right"></i></span>
+        </a>`).join("");
+      resultCount.textContent = `${matches.length} of ${modules.length} modules`;
+    }
+
+    function useCanonicalModules(items) {
+      modules = normaliseModules(items);
+      renderModules(search.value);
     }
 
     search.addEventListener("input", () => renderModules(search.value));
@@ -561,7 +590,10 @@
       renderModules(query);
       if (query) document.getElementById("modules")?.scrollIntoView({ block: "start" });
     });
-    renderModules();
+    window.addEventListener("easyfile:modules-ready", (event) => useCanonicalModules(event.detail?.modules || []));
+    window.addEventListener("DOMContentLoaded", () => {
+      if (window.EasyFileModules) useCanonicalModules(window.EasyFileModules);
+    }, { once: true });
   </script>
   <script defer src="scripts/sync-nav.js"></script>
 </body>

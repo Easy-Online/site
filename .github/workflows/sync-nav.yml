@@ -45,6 +45,9 @@ jobs:
       - name: Verify global module menu coverage
         run: node scripts/verify-module-registry.js
 
+      - name: Verify platform conformance
+        run: node scripts/verify-platform-conformance.js
+
       - name: Commit generated navigation updates
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |

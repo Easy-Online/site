@@ -11,6 +11,8 @@
 
   const MODULES = Object.freeze([
     { name: "Home", href: "index.html", icon: "fa-house", group: "General", description: "EasyFile landing page" },
+    { name: "Add-ons", href: "easy-addons.html", icon: "fa-puzzle-piece", group: "General", description: "Browse optional and extended EasyFile business modules" },
+    { name: "Landing Page", href: "easy-landing-page.html", icon: "fa-window-maximize", group: "General", description: "Build and export responsive business landing pages" },
     { name: "Company Profile", href: "easy-company-profile.html", icon: "fa-building", group: "General", description: "Manage shared company identity, branding and document defaults", landing: true },
     { name: "Partners", href: "partners.html", icon: "fa-handshake", group: "General", description: "Apply as an EasyFile affiliate, reseller or solution partner and manage channel opportunities", landing: true },
     { name: "Quote", href: "easy-quote.html", icon: "fa-file-lines", group: "Documents", description: "Create customer quotations" },
@@ -20,6 +22,7 @@
     { name: "Purchase Order", href: "easy-purchase-order.html", icon: "fa-cart-shopping", group: "Documents", description: "Create supplier purchase orders" },
     { name: "Sales Order", href: "easy-sales-order.html", icon: "fa-bag-shopping", group: "Documents", description: "Record customer sales orders" },
     { name: "Receipt", href: "easy-receipt.html", icon: "fa-receipt", group: "Documents", description: "Issue payment receipts" },
+    { name: "Save", href: "easy-save.html", icon: "fa-cloud-arrow-up", group: "Documents", description: "Save files to browser, cloud and connected storage providers" },
     { name: "Capture", href: "easy-capture.html", icon: "fa-camera-retro", group: "Documents", description: "Capture receipts and supplier invoices, extract VAT details and post reviewed expenses", landing: true },
     { name: "Edit", href: "easy-edit.html", icon: "fa-pen-ruler", group: "Documents", description: "Edit PDFs, images, HTML, text, data and convertible Office files", landing: true },
     { name: "Statement", href: "easy-statement.html", icon: "fa-file-contract", group: "Documents", description: "Generate account statements" },
@@ -38,6 +41,7 @@
     { name: "Form", href: "easy-form.html", icon: "fa-list-check", group: "Documents", description: "AI-assisted form builder with response collection, review, analytics and export", landing: true },
     { name: "Tender", href: "easy-tender.html", icon: "fa-file-circle-check", group: "Documents", description: "Analyse tenders, RFQs and RFPs into compliance matrices, evidence packs, action plans and submission checklists", landing: true },
 
+    { name: "Bill", href: "easy-bill.html", icon: "fa-file-invoice", group: "Finance", description: "Manage recurring bills and billing schedules" },
     { name: "Expenses", href: "easy-expenses.html", icon: "fa-wallet", group: "Finance", description: "Capture, categorise and review business expenses", landing: true },
     { name: "Fuel Logbook", href: "easy-fuel-logbook.html", icon: "fa-gas-pump", group: "Operations", description: "Track fuel, mileage, business travel, vehicle efficiency and running cost", landing: true },
     { name: "Cash Flow", href: "easy-cashflow.html", icon: "fa-chart-line", group: "Finance", description: "Track cash inflows, outflows and running balances", landing: true },
@@ -70,6 +74,12 @@
     { name: "Insights", href: "easy-insights.html", icon: "fa-chart-column", group: "Insights", description: "Review business performance insights and operational signals", landing: true },
     { name: "Rewards", href: "referrals.html", icon: "fa-gift", group: "General", description: "View legacy referral rewards" }
   ]);
+
+  // Canonical module catalog consumed by navigation, homepage discovery and conformance checks.
+  window.EasyFileModules = Object.freeze(
+    MODULES.filter((item) => /^easy-[a-z0-9-]+\.html$/i.test(item.href)).map((item) => Object.freeze({ ...item }))
+  );
+  window.dispatchEvent(new CustomEvent("easyfile:modules-ready", { detail: { modules: window.EasyFileModules } }));
 
   const MENU_GROUP_ORDER = Object.freeze(["General", "Documents", "Finance", "Operations", "Compliance", "Insights"]);
   const MODULE_FILES = new Set(MODULES.filter((item) => !["index.html", "referrals.html"].includes(item.href)).map((item) => item.href));
@@ -299,16 +309,18 @@
         const haystack = `${item.name} ${item.group} ${item.description}`.toLowerCase();
         if (query && !haystack.includes(query)) return;
         if (grid.querySelector(`a[href="${item.href}"]`)) return;
-        const article = document.createElement("article");
-        article.className = "module-card";
-        article.dataset.easyfileDynamicModule = item.href;
-        article.innerHTML = `
+        const card = document.createElement("a");
+        card.className = "module-card";
+        card.href = item.href;
+        card.setAttribute("aria-label", `Open Easy ${item.name}`);
+        card.dataset.easyfileDynamicModule = item.href;
+        card.innerHTML = `
           <div class="module-card-icon"><i class="fa-solid ${item.icon}" aria-hidden="true"></i></div>
           <h3>Easy ${escapeHtml(item.name)}</h3>
           <p>${escapeHtml(item.description)}</p>
           <div class="module-tags"><span class="module-tag">documents</span><span class="module-tag">shared</span></div>
-          <a class="module-card-link" href="${item.href}">Open module <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>`;
-        grid.appendChild(article);
+          <span class="module-card-link" aria-hidden="true">Open module <i class="fa-solid fa-arrow-right"></i></span>`;
+        grid.appendChild(card);
       });
       const count = document.getElementById("moduleResultCount");
       if (count) count.textContent = `${grid.children.length} modules`;
