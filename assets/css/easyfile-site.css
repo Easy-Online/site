@@ -42,7 +42,7 @@ body.easyfile-app {
   position: sticky;
   top: 0;
   z-index: 1000;
-  background: linear-gradient(110deg, var(--easyfile-blue-strong), var(--easyfile-blue));
+  background: #061a4d;
   color: #fff;
   border-bottom: 1px solid rgba(255, 255, 255, .16);
   box-shadow: 0 10px 28px rgba(30, 64, 175, .20);
@@ -69,7 +69,7 @@ body.easyfile-app {
 
 .easyfile-nav a[aria-current="page"] {
   background: #fff;
-  color: var(--easyfile-blue-strong);
+  color: #1e40af;
   text-decoration: none;
 }
 
