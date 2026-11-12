@@ -75,7 +75,7 @@ function formatBytes(bytes){
 function downloadBlob(blob, filename){
   const url=URL.createObjectURL(blob); const a=document.createElement("a");
   a.href=url; a.download=filename; a.style.display="none"; document.body.appendChild(a); a.click();
-  setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},0);
+  setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},30000);
 }
 function setStatus(message, meta="Idle", progress=null){
   $("statusText").textContent=message; $("statusMeta").textContent=meta;
@@ -118,7 +118,7 @@ function libraryHealth(){
   const checks=[
     ["PDF.js", Boolean(pdfjsLib?.getDocument)],
     ["SheetJS", Boolean(window.XLSX)],
-    ["docx.js", Boolean(window.docx)],
+    ["DOCX export", Boolean(window.docx?.Packer || window.EasyFileDocxFallback?.createDocument)],
     ["Mammoth", Boolean(window.mammoth)],
     ["Papa Parse", Boolean(window.Papa)],
     ["jsPDF", Boolean(window.jspdf?.jsPDF)]
@@ -143,7 +143,19 @@ function makeModel({sourceType, text="", units=[], tables=[], ocrCount=0, warnin
   };
 }
 function currentText(){ return editor.value ?? state.model?.text ?? ""; }
-function modelForExport(){ return {...state.model, text:currentText(), correctedAt:new Date().toISOString()}; }
+function modelForExport(){
+  const edited = currentText() !== state.model.text;
+  return {
+    ...state.model,
+    text: currentText(),
+    // Structured tables and page units describe the original extraction. Never export
+    // outdated numerical cells as if they reflected user corrections.
+    tables: edited ? [] : state.model.tables,
+    units: edited ? [] : state.model.units,
+    warnings: edited ? [...state.model.warnings, "Content was edited; original structured tables and units were omitted to avoid exporting stale values."] : state.model.warnings,
+    correctedAt: new Date().toISOString()
+  };
+}
 
 async function setFile(file){
   if(state.busy || !file) return;
@@ -333,7 +345,25 @@ function exportXlsx(){
   window.XLSX.writeFile(wb,`${baseName()}.xlsx`,{compression:true});
 }
 async function exportDocx(){
-  if(!window.docx) throw new Error("docx.js is unavailable.");
+  if(!window.docx?.Document || !window.docx?.Packer){
+    if(!window.EasyFileDocxFallback?.createDocument) throw new Error("DOCX export engines are unavailable. Reload the page.");
+    const m=modelForExport();
+    const blocks=[
+      {type:"paragraph",style:"title",text:baseName()},
+      {type:"paragraph",text:"Converted from "+m.sourceFile+" ("+m.sourceType.toUpperCase()+") with EasyFile."}
+    ];
+    currentText().split(/\n/).forEach((line)=>blocks.push({type:"paragraph",text:line}));
+    if(m.tables.length){
+      blocks.push({type:"paragraph",style:"heading1",text:"Structured tables"});
+      m.tables.forEach((table,index)=>{
+        blocks.push({type:"paragraph",style:"heading2",text:table.name||"Table "+(index+1)});
+        if(table.rows.length) blocks.push({type:"table",rows:table.rows.slice(0,2000).map(row=>row.slice(0,50))});
+      });
+    }
+    downloadBlob(window.EasyFileDocxFallback.createDocument({blocks}),baseName()+".docx");
+    log("DOCX created with the browser-local export engine.","success");
+    return;
+  }
   const {Document,Packer,Paragraph,HeadingLevel,TextRun,Table,TableRow,TableCell}=window.docx; const m=modelForExport(); const children=[];
   children.push(new Paragraph({heading:HeadingLevel.TITLE,children:[new TextRun(baseName())]}));
   children.push(new Paragraph({text:`Converted from ${m.sourceFile} (${m.sourceType.toUpperCase()}) with EasyFile.`}));
@@ -345,10 +375,11 @@ async function exportDocx(){
   const blob=await Packer.toBlob(new Document({sections:[{properties:{},children}]})); downloadBlob(blob,`${baseName()}.docx`);
 }
 function exportPdf(){
-  if(state.sourceKind==="pdf" && state.file){downloadBlob(state.file,state.file.name); log("Downloaded the original PDF to preserve exact PDF fidelity.","success"); return;}
+  // Rebuild from corrected text when a PDF input has been edited; original PDF would lose edits.
+  if(state.sourceKind==="pdf" && state.file && currentText()===state.model.text){downloadBlob(state.file,state.file.name); log("Downloaded the unchanged original PDF.","success"); return;}
   if(!window.jspdf?.jsPDF) throw new Error("jsPDF is unavailable.");
   const {jsPDF}=window.jspdf; const doc=new jsPDF({unit:"pt",format:"a4",compress:true}); const margin=48, pageWidth=doc.internal.pageSize.getWidth(), pageHeight=doc.internal.pageSize.getHeight(), width=pageWidth-margin*2; doc.setFont("helvetica","normal"); doc.setFontSize(10);
-  const lines=doc.splitTextToSize(currentText()||" ",width); let y=margin; lines.forEach((line)=>{if(y>pageHeight-margin){doc.addPage();y=margin;}doc.text(line,margin,y);y+=14;}); doc.save(`${baseName()}.pdf`);
+  const lines=doc.splitTextToSize(currentText()||" ",width); let y=margin; lines.forEach((line)=>{if(y>pageHeight-margin){doc.addPage();y=margin;}doc.text(line,margin,y);y+=14;}); doc.save(`${baseName()}${state.sourceKind==="pdf"?"-edited":""}.pdf`);
 }
 async function runExport(format){
   if(!state.model) return;

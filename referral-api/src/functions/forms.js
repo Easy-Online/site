@@ -100,19 +100,89 @@ function normalizeForm(body, id) {
   };
 }
 
+const MAX_FORM_BODY_BYTES = 64 * 1024;
+const MAX_RESPONSE_BODY_BYTES = 32 * 1024;
+const MAX_ANSWER_BYTES = 16 * 1024;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+async function readBoundedJson(request, maxBytes) {
+  const declared = Number(request.headers.get("content-length"));
+  if (Number.isFinite(declared) && declared > maxBytes) {
+    const error = new Error("request_too_large"); error.statusCode = 413; throw error;
+  }
+  const raw = await request.text();
+  if (Buffer.byteLength(raw, "utf8") > maxBytes) {
+    const error = new Error("request_too_large"); error.statusCode = 413; throw error;
+  }
+  try {
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error("invalid_body");
+    return parsed;
+  } catch {
+    const error = new Error("invalid_json_body"); error.statusCode = 400; throw error;
+  }
+}
+
+function requestFailure(request, error, fallback) {
+  if (error.statusCode === 400 || error.statusCode === 413) {
+    return json(request, error.statusCode, { ok: false, error: error.message });
+  }
+  return json(request, 500, { ok: false, error: fallback });
+}
+
 function validateResponse(form, body) {
-  const answers = body?.answers && typeof body.answers === "object" ? body.answers : {};
+  const answers = body?.answers;
+  if (!answers || typeof answers !== "object" || Array.isArray(answers)) {
+    return { ok: false, error: "invalid_answers" };
+  }
   const fields = parseJson(form.fieldsJson, []);
-  const missing = fields
-    .filter((field) => field.required)
-    .filter((field) => {
-      const value = answers[field.id];
-      if (Array.isArray(value)) return value.length === 0;
-      return value === undefined || value === null || value === "" || value === false || value === "No";
-    })
-    .map((field) => field.id);
+  const missing = fields.filter((field) => field.required).filter((field) => {
+    const value = answers[field.id];
+    if (Array.isArray(value)) return value.length === 0;
+    return value === undefined || value === null || value === "" || value === false || value === "No";
+  }).map((field) => field.id);
   if (missing.length) return { ok: false, missing };
-  return { ok: true, answers };
+  const allowed = new Set([...fields.map((f) => f.id), "_respondentEmail"]);
+  if (Object.keys(answers).some((key) => !allowed.has(key))) return { ok: false, error: "unknown_answer_field" };
+  const normalized = {};
+  for (const field of fields) {
+    const value = answers[field.id];
+    if (value === undefined || value === null || value === "") continue;
+    const type = field.type;
+    if (type === "checkbox") {
+      if (!Array.isArray(value) || value.length > 100 || value.some((option) => typeof option !== "string" || !field.options.includes(option))) {
+        return { ok: false, error: "invalid_option", field: field.id };
+      }
+      normalized[field.id] = value;
+      continue;
+    }
+    if (typeof value !== "string" && typeof value !== "number") {
+      return { ok: false, error: "invalid_answer_type", field: field.id };
+    }
+    const v = String(value);
+    if (v.length > (type === "textarea" ? 10000 : 4000)) return { ok: false, error: "answer_too_long", field: field.id };
+    if ((type === "radio" || type === "select") && !field.options.includes(v)) {
+      return { ok: false, error: "invalid_option", field: field.id };
+    }
+    if (type === "email" && v && !EMAIL_RE.test(v)) return { ok: false, error: "invalid_email", field: field.id };
+    if ((type === "number" || type === "rating") && v && (!Number.isFinite(Number(v)) || (type === "rating" && (!Number.isInteger(Number(v)) || Number(v) < 1 || Number(v) > 5)))) {
+      return { ok: false, error: "invalid_number", field: field.id };
+    }
+    if (type === "date" && v && (!/^\d{4}-\d{2}-\d{2}$/.test(v) || Number.isNaN(Date.parse(v)))) {
+      return { ok: false, error: "invalid_date", field: field.id };
+    }
+    if (type === "consent" && v !== "Yes" && v !== "No") return { ok: false, error: "invalid_consent", field: field.id };
+    normalized[field.id] = v;
+  }
+  const email = answers._respondentEmail ?? body.respondentEmail ?? "";
+  if (email !== "" && (typeof email !== "string" || email.length > 254 || !EMAIL_RE.test(email))) {
+    return { ok: false, error: "invalid_email", field: "_respondentEmail" };
+  }
+  const settings = parseJson(form.settingsJson, {});
+  if (settings.collectEmail && !email) return { ok: false, error: "respondent_email_required" };
+  if (answers._respondentEmail) normalized._respondentEmail = email;
+  if (Buffer.byteLength(JSON.stringify(normalized), "utf8") > MAX_ANSWER_BYTES) return { ok: false, error: "answers_too_large" };
+  return { ok: true, answers: normalized };
 }
 
 async function table(name, cacheName) {
@@ -146,7 +216,7 @@ app.http("easyFormPreflight", {
   methods: ["OPTIONS"],
   authLevel: "anonymous",
   route: "easy-form/{*rest}",
-  handler: async (request) => ({ status: 204, headers: cors(request) })
+  handler: async (request) => { const origin = request.headers.get("origin"); return origin && !configuredOrigins().includes(origin) ? json(request, 403, { ok: false, error: "origin_not_allowed" }) : { status: 204, headers: cors(request) }; }
 });
 
 app.http("easyFormCreate", {
@@ -155,7 +225,7 @@ app.http("easyFormCreate", {
   route: "easy-form/forms",
   handler: async (request) => {
     try {
-      const body = await request.json();
+      const body = await readBoundedJson(request, MAX_FORM_BODY_BYTES);
       const ownerToken = text(body.ownerToken, 256);
       if (ownerToken.length < 24) return json(request, 400, { ok: false, error: "owner_token_required" });
       const entity = normalizeForm(body, body.id);
@@ -168,7 +238,7 @@ app.http("easyFormCreate", {
       await (await formsTable()).upsertEntity(entity, "Merge");
       return json(request, existing ? 200 : 201, { ok: true, form: publicForm(entity) });
     } catch (error) {
-      return json(request, 500, { ok: false, error: "form_save_failed", message: text(error.message, 300) });
+      return requestFailure(request, error, "form_save_failed");
     }
   }
 });
@@ -197,9 +267,9 @@ app.http("easyFormSubmit", {
       const formId = text(request.params.formId, 120);
       const form = await getFormEntity(formId);
       if (!form) return json(request, 404, { ok: false, error: "form_not_found" });
-      const body = await request.json();
+      const body = await readBoundedJson(request, MAX_RESPONSE_BODY_BYTES);
       const validation = validateResponse(form, body);
-      if (!validation.ok) return json(request, 400, { ok: false, error: "required_fields_missing", missing: validation.missing });
+      if (!validation.ok) return json(request, 400, { ok: false, error: validation.error || "required_fields_missing", ...(validation.missing ? { missing: validation.missing } : {}), ...(validation.field ? { field: validation.field } : {}) });
       const response = {
         partitionKey: formId,
         rowKey: uid("resp"),
@@ -214,7 +284,7 @@ app.http("easyFormSubmit", {
       await (await responsesTable()).createEntity(response);
       return json(request, 201, { ok: true, responseId: response.rowKey, submittedAt: response.submittedAt });
     } catch (error) {
-      return json(request, 500, { ok: false, error: "response_submit_failed", message: text(error.message, 300) });
+      return requestFailure(request, error, "response_submit_failed");
     }
   }
 });
@@ -261,7 +331,7 @@ app.http("easyFormResponseUpdate", {
       const form = await getFormEntity(formId);
       if (!form) return json(request, 404, { ok: false, error: "form_not_found" });
       if (!authorised(form, request)) return json(request, 403, { ok: false, error: "forbidden" });
-      const body = await request.json();
+      const body = await readBoundedJson(request, MAX_RESPONSE_BODY_BYTES);
       const entity = {
         partitionKey: formId,
         rowKey: responseId,
@@ -272,7 +342,7 @@ app.http("easyFormResponseUpdate", {
       await (await responsesTable()).updateEntity(entity, "Merge");
       return json(request, 200, { ok: true });
     } catch (error) {
-      return json(request, error.statusCode === 404 ? 404 : 500, { ok: false, error: "response_update_failed", message: text(error.message, 300) });
+      return error.statusCode === 404 ? json(request, 404, { ok: false, error: "response_not_found" }) : requestFailure(request, error, "response_update_failed");
     }
   }
 });
@@ -296,4 +366,4 @@ app.http("easyFormResponseDelete", {
   }
 });
 
-module.exports = { hashToken, normalizeForm, validateResponse, publicForm };
+module.exports = { hashToken, normalizeForm, validateResponse, publicForm, readBoundedJson };

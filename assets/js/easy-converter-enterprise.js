@@ -98,7 +98,7 @@ function downloadBlob(blob, filename) {
   setTimeout(() => {
     URL.revokeObjectURL(url);
     anchor.remove();
-  }, 0);
+  }, 30000);
 }
 
 function log(message, tone = "info") {
@@ -629,6 +629,31 @@ function requireDocx() {
 }
 
 async function exportDocx() {
+  if (!window.docx?.Document || !window.docx?.Packer) {
+    if (!window.EasyFileDocxFallback?.createDocument) {
+      throw new Error("DOCX export engines are unavailable. Reload the page and try again.");
+    }
+    // Offline path: preserve page boundaries, extracted text and detected tables.
+    const blocks = [
+      { type: "paragraph", style: "title", text: "Converted from " + state.parsed.sourceFile },
+      { type: "paragraph", text: "Pages: " + state.parsed.pageCount },
+      { type: "paragraph", text: "Detected tables: " + state.parsed.tableCount },
+      { type: "paragraph", text: "OCR pages: " + state.parsed.ocrPageCount },
+      { type: "paragraph", text: "Extracted at: " + new Date(state.parsed.extractedAt).toLocaleString("en-ZA") }
+    ];
+    state.parsed.pages.forEach((page) => {
+      blocks.push({ type: "paragraph", style: "heading1", text: "Page " + page.pageNumber + " (" + page.source + ")" });
+      blocks.push({ type: "paragraph", text: "Confidence: " + Math.round((page.confidence || 0) * 100) + "%" });
+      page.lines.forEach((line) => blocks.push({ type: "paragraph", text: line }));
+      page.tables.forEach((table) => {
+        blocks.push({ type: "paragraph", style: "heading2", text: table.title });
+        blocks.push({ type: "table", rows: [table.headers.map((h) => h || "Column"), ...table.rows] });
+      });
+    });
+    downloadBlob(window.EasyFileDocxFallback.createDocument({ blocks }), baseName() + ".docx");
+    log("DOCX created with the browser-local export engine.", "success");
+    return;
+  }
   const { Document, Packer, Paragraph, HeadingLevel, TextRun, Table, TableRow, TableCell, WidthType } = requireDocx();
   const children = [
     new Paragraph({ heading: HeadingLevel.TITLE, children: [new TextRun(`Converted from ${state.parsed.sourceFile}`)] }),
