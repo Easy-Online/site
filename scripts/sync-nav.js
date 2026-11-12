@@ -184,7 +184,7 @@
           <button class="easyfile-nav-icon-button easyfile-menu-toggle" type="button" data-menu-toggle aria-label="Open navigation menu" aria-expanded="false" aria-controls="easyfileMobileMenu"><i class="fa-solid fa-bars" aria-hidden="true"></i></button>
         </div>
       </div>
-      <div id="easyfileMobileMenu" class="easyfile-mobile-menu" data-mobile-menu>
+      <nav id="easyfileMobileMenu" class="easyfile-mobile-menu" data-mobile-menu aria-label="Mobile navigation">
         <div class="easyfile-mobile-menu-panel">
           <div class="easyfile-mobile-search">
             <div class="easyfile-nav-search-wrap" data-search-wrap>
@@ -195,7 +195,7 @@
           </div>
           <div class="easyfile-mobile-groups">${MENU_GROUP_ORDER.map(groupMarkup).join("")}</div>
         </div>
-      </div>`;
+      </nav>`;
   }
 
   function installNavigation() {
@@ -229,12 +229,25 @@
 
     const menu = topbar.querySelector("[data-mobile-menu]");
     const toggle = topbar.querySelector("[data-menu-toggle]");
-    toggle?.addEventListener("click", () => {
-      const open = !menu.classList.contains("is-open");
+    const setMenuOpen = (open) => {
+      if (!menu || !toggle) return;
       menu.classList.toggle("is-open", open);
       toggle.setAttribute("aria-expanded", String(open));
       toggle.setAttribute("aria-label", open ? "Close navigation menu" : "Open navigation menu");
       toggle.innerHTML = `<i class="fa-solid ${open ? "fa-xmark" : "fa-bars"}" aria-hidden="true"></i>`;
+    };
+    toggle?.addEventListener("click", () => setMenuOpen(!menu.classList.contains("is-open")));
+    topbar.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && menu?.classList.contains("is-open")) {
+        setMenuOpen(false);
+        toggle.focus();
+      }
+    });
+    document.addEventListener("click", (event) => {
+      if (menu?.classList.contains("is-open") && !topbar.contains(event.target)) setMenuOpen(false);
+    });
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 1160 && menu?.classList.contains("is-open")) setMenuOpen(false);
     });
 
     topbar.querySelectorAll("[data-theme-toggle]").forEach((button) => {
@@ -392,6 +405,9 @@
     });
     applyLayoutHooks();
     installNavigation();
+    // The theme buttons are injected by installNavigation(), after the initial theme pass.
+    // Paint their icons and accessible labels immediately, before the first interaction.
+    applyTheme(document.documentElement.dataset.theme);
     installPolicyLinks();
     installFavicons();
     installHomeModuleCards();
