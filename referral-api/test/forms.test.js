@@ -39,3 +39,34 @@ test("required response fields are enforced", () => {
   });
   assert.equal(validateResponse(form, { answers: { name: "Raydo" } }).ok, true);
 });
+
+test("rejects unknown answers and non-scalar field injections", () => {
+  const form = normalizeForm({ fields: [{ id: "name", type: "text", required: true }] }, "form-1");
+  assert.equal(validateResponse(form, { answers: { name: { injected: true } } }).error, "invalid_answer_type");
+  assert.equal(validateResponse(form, { answers: { name: "Alice", admin: "true" } }).error, "unknown_answer_field");
+});
+
+test("enforces answer length and allowed options", () => {
+  const form = normalizeForm({ fields: [{ id: "plan", type: "select", options: ["Basic", "Pro"] }, { id: "notes", type: "textarea" }] }, "form-2");
+  assert.equal(validateResponse(form, { answers: { plan: "Admin" } }).error, "invalid_option");
+  assert.equal(validateResponse(form, { answers: { notes: "x".repeat(10001) } }).error, "answer_too_long");
+  assert.equal(validateResponse(form, { answers: { plan: "Pro" } }).ok, true);
+});
+
+test("validates email, numeric, date and consent values", () => {
+  const form = normalizeForm({ fields: [
+    { id: "email", type: "email" }, { id: "attendees", type: "number" },
+    { id: "when", type: "date" }, { id: "agreement", type: "consent" }
+  ] }, "form-3");
+  assert.equal(validateResponse(form, { answers: { email: "invalid" } }).error, "invalid_email");
+  assert.equal(validateResponse(form, { answers: { attendees: "twelve" } }).error, "invalid_number");
+  assert.equal(validateResponse(form, { answers: { when: "next week" } }).error, "invalid_date");
+  assert.equal(validateResponse(form, { answers: { agreement: "perhaps" } }).error, "invalid_consent");
+  assert.equal(validateResponse(form, { answers: { email: "person@example.org", attendees: "12", when: "2026-11-12", agreement: "Yes" } }).ok, true);
+});
+
+test("requires email for published forms configured to collect it", () => {
+  const form = normalizeForm({ fields: [], settings: { collectEmail: true } }, "form-4");
+  assert.equal(validateResponse(form, { answers: {} }).error, "respondent_email_required");
+  assert.equal(validateResponse(form, { answers: { _respondentEmail: "person@example.org" } }).ok, true);
+});
