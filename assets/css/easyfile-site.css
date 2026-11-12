@@ -48,11 +48,6 @@ body.easyfile-app {
   box-shadow: 0 10px 28px rgba(30, 64, 175, .20);
 }
 
-.easyfile-nav > div {
-  width: min(100%, 80rem);
-  margin-inline: auto;
-}
-
 .easyfile-nav a {
   border-radius: .5rem;
   padding: .45rem .55rem;
@@ -275,12 +270,6 @@ body.easyfile-app thead {
 }
 
 @media (max-width: 640px) {
-  .easyfile-nav > div {
-    gap: .35rem;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-
   .easyfile-action-card { padding: .75rem; }
   .easyfile-action-row,
   .easyfile-action-group { align-items: stretch; }
