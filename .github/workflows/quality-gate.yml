@@ -44,6 +44,9 @@ jobs:
             \( -name '*.js' -o -name '*.mjs' -o -name '*.cjs' \) -print0 \
             | xargs -0 -r -n1 node --check
 
+      - name: Validate accessible light and dark theme contracts
+        run: node scripts/validate-theme-contrast.mjs
+
       - name: Validate both DOCX converters and export data consistency
         run: node scripts/validate-converter-docx.mjs
 
