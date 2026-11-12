@@ -1,5 +1,12 @@
-import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.3.136/pdf.min.mjs";
-pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.3.136/pdf.worker.min.mjs";
+import { groupPdfRows, linesFromPdfRows, tablesFromPdfRows } from "./easy-converter-pdf.mjs";
+let pdfjsLib;
+async function loadPdf() {
+  if (!pdfjsLib) {
+    pdfjsLib = await import("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.3.136/pdf.min.mjs");
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.3.136/pdf.worker.min.mjs";
+  }
+  return pdfjsLib;
+}
 
 const MAX_BYTES = 100 * 1024 * 1024;
 const MAX_PDF_PAGES = 250;
@@ -11,7 +18,12 @@ const state = {
   busy: false,
   cancelRequested: false,
   Tesseract: null,
-  ocrLoaded: false
+  ocrLoaded: false,
+  readVersion: 0,
+  loadingTask: null,
+  renderTask: null,
+  ocrWorker: null,
+  rejectCancel: null
 };
 
 const $ = (id) => document.getElementById(id);
@@ -46,7 +58,7 @@ function escapeHtml(value){
   return String(value ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
 }
 function xmlEscape(value){
-  return String(value ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&apos;");
+  return String(value ?? "").replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&apos;");
 }
 function safeCell(value){
   const text = String(value ?? "");
@@ -79,7 +91,11 @@ function downloadBlob(blob, filename){
 }
 function setStatus(message, meta="Idle", progress=null){
   $("statusText").textContent=message; $("statusMeta").textContent=meta;
-  if(progress!==null) $("progressBar").style.width=`${Math.max(0,Math.min(100,Number(progress)||0))}%`;
+  if(progress!==null) {
+    const pct=Math.max(0,Math.min(100,Number(progress)||0));
+    $("progressBar").style.width=`${pct}%`;
+    $("progressBar").parentElement.setAttribute("aria-valuenow",String(pct));
+  }
 }
 function log(message, tone="info"){
   const line=document.createElement("div"); line.className="converter-log-line";
@@ -93,6 +109,9 @@ function showWarning(message=""){
 function setBusy(value){
   state.busy=value; analyzeBtn.disabled=value || !state.buffer; cancelBtn.disabled=!value; resetBtn.disabled=value;
   fileInput.disabled=value; dropzone.setAttribute("aria-disabled",String(value)); dropzone.tabIndex=value?-1:0;
+  editor.readOnly=value;
+  ["ocrMode","ocrScale","ocrLanguage","minWords"].forEach(id=>$(id).disabled=value);
+  copyBtn.disabled=value || !editor.value;
   if(value) exportButtons.forEach((button)=>button.disabled=true);
 }
 function updateMetrics(model){
@@ -111,8 +130,15 @@ function updateSummaries(){
   $("structureSummary").textContent=m.tables.length?`${m.tables.length} structured table(s) available for XLSX/CSV/JSON/XML exports.`:"No structured tables detected; spreadsheet exports will use line-based content.";
 }
 function enableExports(){
-  exportButtons.forEach((button)=>button.disabled=false); copyBtn.disabled=!editor.value;
-  $("exportHint").textContent="Exports enabled";
+  const available = {docx: Boolean(window.docx?.Packer || window.EasyFileDocxFallback?.createDocument), xlsx: Boolean(window.XLSX), csv: true,
+    pdf: Boolean((state.sourceKind==="pdf" && currentText()===state.model?.text) || window.jspdf?.jsPDF)};
+  exportButtons.forEach(button=>{
+    const ready = available[button.dataset.format] !== false;
+    button.disabled=state.busy || !state.model || !ready;
+    button.title=ready ? "" : "Export library unavailable. Reload the page to retry.";
+  });
+  copyBtn.disabled=state.busy || !editor.value;
+  $("exportHint").textContent=Object.values(available).every(Boolean)?"Exports enabled":"Some export libraries are unavailable; reload to retry";
 }
 function libraryHealth(){
   const checks=[
@@ -159,12 +185,19 @@ function modelForExport(){
 
 async function setFile(file){
   if(state.busy || !file) return;
+  const version=++state.readVersion;
+  state.file=null; state.buffer=null; state.model=null; state.sourceKind=null;
+  editor.value=""; updateMetrics(null); updateSummaries(); analyzeBtn.disabled=true; copyBtn.disabled=true;
+  exportButtons.forEach(b=>b.disabled=true); $("exportHint").textContent="Analyse a file to enable export";
+  $("fileMeta").textContent="No file selected yet."; setStatus("Reading selected file","Preparing",0);
   const kind=kindOf(file);
   if(!kind){showWarning("Unsupported source format. Use PDF, DOCX, XLSX/XLS, CSV/TSV, TXT/Markdown, JSON, XML, HTML or a common image format."); return;}
   if(!file.size){showWarning("The selected file is empty."); return;}
   if(file.size>MAX_BYTES){showWarning(`The selected file is ${formatBytes(file.size)}. The browser safety limit is 100 MB.`); return;}
   try{
-    state.file=file; state.sourceKind=kind; state.buffer=await file.arrayBuffer(); state.model=null; state.cancelRequested=false;
+    const buffer=await file.arrayBuffer();
+    if(version!==state.readVersion) return;
+    state.file=file; state.sourceKind=kind; state.buffer=buffer; state.model=null; state.cancelRequested=false;
     $("fileMeta").textContent=`${file.name} · ${formatBytes(file.size)} · detected as ${kind.toUpperCase()}`;
     editor.value=""; showWarning(""); updateMetrics(null); updateSummaries();
     exportButtons.forEach((b)=>b.disabled=true); copyBtn.disabled=true; analyzeBtn.disabled=false;
@@ -172,78 +205,99 @@ async function setFile(file){
   }catch(error){ console.error(error); showWarning("The file could not be read by this browser."); log(`Read error: ${error?.message||error}`,"error"); }
 }
 
-function groupPdfRows(items,tolerance=4){
-  const rows=[];
-  const ordered=[...items].filter((item)=>String(item.str||"").trim()).map((item)=>({str:String(item.str||"").trim(),x:Number(item.transform?.[4]||0),y:Number(item.transform?.[5]||0),width:Number(item.width||0)})).sort((a,b)=>Math.abs(a.y-b.y)<=tolerance?a.x-b.x:b.y-a.y);
-  ordered.forEach((item)=>{let row=rows.find((r)=>Math.abs(r.y-item.y)<=tolerance); if(!row){row={y:item.y,items:[]};rows.push(row);} row.items.push(item);});
-  rows.sort((a,b)=>b.y-a.y); rows.forEach((row)=>row.items.sort((a,b)=>a.x-b.x)); return rows;
-}
-function linesFromPdfRows(rows){
-  return rows.map((row)=>{
-    let out="", prev=null;
-    for(const item of row.items){ if(prev && item.x-(prev.x+prev.width)>1 && out && !/\s$/.test(out)) out+=" "; out+=item.str; prev=item; }
-    return out.replace(/\s+/g," ").trim();
-  }).filter(Boolean);
-}
 async function renderPdfPage(page,scale){
-  const viewport=page.getViewport({scale}); const canvas=document.createElement("canvas"); const ctx=canvas.getContext("2d",{willReadFrequently:true});
+  let viewport=page.getViewport({scale});
+  if(viewport.width*viewport.height>16000000) viewport=page.getViewport({scale:scale*Math.sqrt(16000000/(viewport.width*viewport.height))});
+  const canvas=document.createElement("canvas"); const ctx=canvas.getContext("2d",{willReadFrequently:true});
   if(!ctx) throw new Error("Canvas rendering is unavailable in this browser.");
-  canvas.width=Math.ceil(viewport.width); canvas.height=Math.ceil(viewport.height); await page.render({canvasContext:ctx,viewport}).promise; return canvas;
+  canvas.width=Math.ceil(viewport.width); canvas.height=Math.ceil(viewport.height);
+  try { state.renderTask=page.render({canvasContext:ctx,viewport}); await state.renderTask.promise; return canvas; }
+  catch(error) { canvas.width=canvas.height=1; throw error; }
+  finally { state.renderTask=null; }
 }
 async function loadOcr(){
   if(state.ocrLoaded && state.Tesseract) return state.Tesseract;
   await new Promise((resolve,reject)=>{
     const existing=document.querySelector('script[data-easy-ocr="true"]');
     if(existing && window.Tesseract) return resolve();
-    if(existing){existing.addEventListener("load",resolve,{once:true});existing.addEventListener("error",()=>reject(new Error("OCR library failed to load.")),{once:true});return;}
+    if(existing) existing.remove();
     const script=document.createElement("script"); script.src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"; script.async=true; script.dataset.easyOcr="true";
-    script.addEventListener("load",resolve,{once:true}); script.addEventListener("error",()=>reject(new Error("OCR library failed to load from the CDN.")),{once:true}); document.head.appendChild(script);
+    const timer=setTimeout(()=>{script.remove();reject(new Error("OCR library timed out. Check your connection and retry."));},30000);
+    script.addEventListener("load",()=>{clearTimeout(timer);resolve();},{once:true}); script.addEventListener("error",()=>{clearTimeout(timer);script.remove();reject(new Error("OCR library failed to load from the CDN."));},{once:true}); document.head.appendChild(script);
   });
   if(!window.Tesseract) throw new Error("OCR runtime loaded without exposing Tesseract.");
   state.Tesseract=window.Tesseract; state.ocrLoaded=true; libraryHealth(); return state.Tesseract;
 }
 async function ocrImageSource(source,label,progressBase=0,progressSpan=100){
   const Tesseract=await loadOcr(); const lang=$("ocrLanguage").value || "eng";
-  const result=await Tesseract.recognize(source,lang,{logger:(event)=>{
+  if(state.cancelRequested) throw new DOMException("Conversion cancelled by user.","AbortError");
+  if(!state.ocrWorker) state.ocrWorker=await Tesseract.createWorker(lang,1,{logger:(event)=>{
     if(!event?.status) return; const pct=typeof event.progress==="number"?Math.round(event.progress*100):0;
     setStatus(`OCR: ${label}`,`${event.status} · ${pct}%`,progressBase+Math.round(progressSpan*pct/100));
   }});
+  if(state.cancelRequested) throw new DOMException("Conversion cancelled by user.","AbortError");
+  const result=await Promise.race([state.ocrWorker.recognize(source),new Promise((resolve,reject)=>{state.rejectCancel=reject;})]);
+  state.rejectCancel=null;
   return {text:String(result?.data?.text||"").trim(), confidence:Number(result?.data?.confidence||0)/100};
 }
 
 async function parsePdf(){
+  const pdfjsLib=await loadPdf(); libraryHealth();
   const bytes=new Uint8Array(state.buffer.slice(0));
   if(String.fromCharCode(...bytes.slice(0,5))!=="%PDF-") log("PDF signature was not canonical; PDF.js will perform the authoritative parse.","warn");
-  const pdf=await pdfjsLib.getDocument({data:bytes}).promise;
+  state.loadingTask=pdfjsLib.getDocument({data:bytes});
+  let pdf;
+  try {
+  pdf=await Promise.race([state.loadingTask.promise,new Promise((resolve,reject)=>{
+    state.loadingTask.onPassword=()=>reject(new Error("This PDF is password protected. Save an unlocked copy in your PDF reader and try again."));
+  })]);
   if(pdf.numPages>MAX_PDF_PAGES) throw new Error(`PDF has ${pdf.numPages} pages. This browser workflow is limited to ${MAX_PDF_PAGES} pages per conversion for reliability.`);
-  const pages=[]; let ocrCount=0; const threshold=Number($("minWords").value)||24; const mode=$("ocrMode").value; const scale=Number($("ocrScale").value)||2;
+  const pages=[], tables=[], warnings=[]; let ocrCount=0; const threshold=Math.max(5,Math.min(400,Number($("minWords").value)||24)); const mode=$("ocrMode").value; const scale=Number($("ocrScale").value)||2;
   for(let n=1;n<=pdf.numPages;n++){
     if(state.cancelRequested) throw new DOMException("Conversion cancelled by user.","AbortError");
     setStatus(`Reading PDF page ${n} of ${pdf.numPages}`,"Embedded text",Math.round((n-1)/pdf.numPages*100));
-    const page=await pdf.getPage(n); const content=await page.getTextContent(); const rows=groupPdfRows(content.items); const embedded=linesFromPdfRows(rows);
+    const page=await pdf.getPage(n); const content=await page.getTextContent();
+    const viewport=page.getViewport({scale:1});
+    const items=content.items.filter(item=>typeof item.str==="string").map(item=>{
+      const transform=pdfjsLib.Util.transform(viewport.transform,item.transform);
+      return {...item,transform:[...transform.slice(0,4),transform[4],-transform[5]]};
+    });
+    const rows=groupPdfRows(items); const embedded=linesFromPdfRows(rows);
     const wordCount=embedded.join(" ").split(/\s+/).filter(Boolean).length; const useOcr=mode==="always" || (mode==="auto" && wordCount<threshold);
     let text=embedded.join("\n"), source="embedded-text", confidence=embedded.length?0.98:0.7;
     if(useOcr){
       log(`Page ${n}: ${wordCount} embedded words; OCR ${mode==="always"?"forced":"fallback"}.`);
-      const canvas=await renderPdfPage(page,scale); const result=await ocrImageSource(canvas,`page ${n} of ${pdf.numPages}`,Math.round((n-1)/pdf.numPages*100),Math.ceil(100/pdf.numPages));
+      let canvas;
+      try {
+      canvas=await renderPdfPage(page,scale); const result=await ocrImageSource(canvas,`page ${n} of ${pdf.numPages}`,Math.round((n-1)/pdf.numPages*100),Math.ceil(100/pdf.numPages));
       if(result.text){text=result.text;source="ocr";confidence=result.confidence;ocrCount++;}
       else if(embedded.length){log(`Page ${n}: OCR returned no text; retained embedded text.`,"warn");}
-      canvas.width=1;canvas.height=1;
+      } catch(error) {
+        if(state.cancelRequested || !embedded.length) throw error;
+        warnings.push(`Page ${n}: OCR unavailable; embedded text was retained. Review the original for missing content.`);
+      } finally { if(canvas) canvas.width=canvas.height=1; }
     }
+    if(!text.trim()) warnings.push(`Page ${n}: no readable text found${mode==="never"?"; enable OCR for scanned pages":"; the page may be blank or unreadable"}.`);
+    if(source==="embedded-text") tables.push(...tablesFromPdfRows(rows,n));
     const lines=text.split(/\n+/).map((line)=>line.replace(/\s+/g," ").trim()).filter(Boolean);
     pages.push({index:n,label:`Page ${n}`,source,confidence,text:lines.join("\n"),lines});
     page.cleanup?.();
   }
-  pdf.cleanup?.();
+  if(!pages.some(page=>page.text.trim())) throw new Error(mode==="never"?"No readable PDF text found. Enable OCR for scanned pages and analyse again.":"No readable PDF text found. Try a clearer scan or another OCR language.");
   const text=pages.map((p)=>`--- Page ${p.index} ---\n${p.text}`).join("\n\n");
-  const warnings=[]; if(ocrCount) warnings.push(`${ocrCount} page(s) required OCR. Review names, numbers and tables before relying on the result.`);
-  return makeModel({sourceType:"pdf",text,units:pages,tables:[],ocrCount,warnings});
+  if(ocrCount) warnings.push(`${ocrCount} page(s) required OCR. Review names, numbers and tables before relying on the result.`);
+  if(tables.length) warnings.push("PDF tables are candidates based on aligned columns. Compare every row with the original; complex layouts and merged cells may need correction.");
+  return makeModel({sourceType:"pdf",text,units:pages,tables,ocrCount,warnings});
+  } finally {
+    await state.loadingTask?.destroy().catch(()=>{}); state.loadingTask=null;
+  }
 }
 
 async function parseImage(){
   const blob=new Blob([state.buffer],{type:state.file.type||"image/png"}); const url=URL.createObjectURL(blob);
   try{
     const result=await ocrImageSource(url,state.file.name,0,100); const lines=result.text.split(/\n+/).map((l)=>l.trim()).filter(Boolean);
+    if(!result.text.trim()) throw new Error("No readable image text found. Try a clearer image or another OCR language.");
     return makeModel({sourceType:"image",text:result.text,units:[{index:1,label:"Image OCR",source:"ocr",confidence:result.confidence,text:result.text,lines}],tables:[],ocrCount:1,warnings:["Image OCR is probabilistic. Review names, dates, amounts and identifiers before using the output."]});
   } finally { URL.revokeObjectURL(url); }
 }
@@ -294,7 +348,7 @@ async function parseTextLike(kind){
 
 async function analyze(){
   if(!state.buffer || state.busy) return;
-  state.cancelRequested=false; setBusy(true); showWarning(""); editor.value=""; setStatus("Starting analysis…",state.sourceKind.toUpperCase(),1); log(`Starting ${state.sourceKind.toUpperCase()} analysis.`);
+  state.cancelRequested=false; state.model=null; setBusy(true); showWarning(""); editor.value=""; updateMetrics(null); updateSummaries(); $("exportHint").textContent="Analysis in progress"; setStatus("Starting analysis…",state.sourceKind.toUpperCase(),1); log(`Starting ${state.sourceKind.toUpperCase()} analysis.`);
   try{
     let model;
     if(state.sourceKind==="pdf") model=await parsePdf();
@@ -309,9 +363,9 @@ async function analyze(){
     if(model.warnings.length){showWarning(model.warnings.join(" ")); model.warnings.forEach((w)=>log(w,"warn"));}
   }catch(error){
     console.error(error);
-    const cancelled=error?.name==="AbortError"; setStatus(cancelled?"Conversion cancelled":"Conversion failed",cancelled?"Cancelled":"Error",0); log(cancelled?"Conversion cancelled by user.":`Conversion failed: ${error?.message||error}`,cancelled?"warn":"error");
+    const cancelled=state.cancelRequested || error?.name==="AbortError"; setStatus(cancelled?"Conversion cancelled":"Conversion failed",cancelled?"Cancelled":"Error",0); $("exportHint").textContent="Analyse a file to enable export"; log(cancelled?"Conversion cancelled by user.":`Conversion failed: ${error?.message||error}`,cancelled?"warn":"error");
     if(!cancelled) showWarning(error?.message||"The conversion failed.");
-  }finally{ setBusy(false); if(state.model) enableExports(); }
+  }finally{ state.rejectCancel=null; await state.ocrWorker?.terminate().catch(()=>{}); state.ocrWorker=null; setBusy(false); if(state.model) enableExports(); }
 }
 
 function exportTxt(){downloadBlob(new Blob([currentText()],{type:"text/plain;charset=utf-8"}),`${baseName()}.txt`);}
@@ -331,17 +385,23 @@ function exportXml(){
   downloadBlob(new Blob([xml],{type:"application/xml;charset=utf-8"}),`${baseName()}.xml`);
 }
 function exportCsv(){
-  if(!window.Papa) throw new Error("Papa Parse is unavailable."); const m=modelForExport(); let rows;
+  const m=modelForExport(); let rows;
   if(m.tables.length){rows=[]; m.tables.forEach((table)=>{rows.push([`# ${table.name||table.id}`]); table.rows.forEach((row)=>rows.push(row.map(safeCell))); rows.push([]);});}
   else rows=[["line_number","text"],...currentText().split(/\n/).map((line,i)=>[i+1,safeCell(line)])];
-  downloadBlob(new Blob([window.Papa.unparse(rows,{quotes:true,newline:"\r\n"})],{type:"text/csv;charset=utf-8"}),`${baseName()}.csv`);
+  const csv=rows.map(row=>row.map(cell=>`"${String(cell??"").replaceAll('"','""')}"`).join(",")).join("\r\n");
+  downloadBlob(new Blob([csv],{type:"text/csv;charset=utf-8"}),`${baseName()}.csv`);
 }
 function exportXlsx(){
   if(!window.XLSX) throw new Error("SheetJS is unavailable."); const m=modelForExport(); const wb=window.XLSX.utils.book_new();
   const summary=[{source_file:m.sourceFile,source_type:m.sourceType,units:m.unitCount,tables:m.tables.length,ocr_count:m.ocrCount,characters:currentText().length,converted_at:m.convertedAt}];
   window.XLSX.utils.book_append_sheet(wb,window.XLSX.utils.json_to_sheet(summary),"Summary");
   window.XLSX.utils.book_append_sheet(wb,window.XLSX.utils.aoa_to_sheet([["line_number","text"],...currentText().split(/\n/).map((line,i)=>[i+1,safeCell(line)])]),"Content");
-  m.tables.forEach((table,index)=>{const name=String(table.name||`Table ${index+1}`).replace(/[\\/?*\[\]:]/g," ").slice(0,31)||`Table ${index+1}`; window.XLSX.utils.book_append_sheet(wb,window.XLSX.utils.aoa_to_sheet(table.rows.map((r)=>r.map(safeCell))),name);});
+  m.tables.forEach((table,index)=>{
+    const base=String(table.name||`Table ${index+1}`).replace(/[\\/?*\[\]:]/g," ").replace(/^'+|'+$/g,"").slice(0,31)||`Table ${index+1}`;
+    let name=base, suffix=1;
+    while(wb.SheetNames.some(existing=>existing.toLowerCase()===name.toLowerCase())){const tail=` (${suffix++})`;name=base.slice(0,31-tail.length)+tail;}
+    window.XLSX.utils.book_append_sheet(wb,window.XLSX.utils.aoa_to_sheet(table.rows.map(r=>r.map(safeCell))),name);
+  });
   window.XLSX.writeFile(wb,`${baseName()}.xlsx`,{compression:true});
 }
 async function exportDocx(){
@@ -357,7 +417,7 @@ async function exportDocx(){
       blocks.push({type:"paragraph",style:"heading1",text:"Structured tables"});
       m.tables.forEach((table,index)=>{
         blocks.push({type:"paragraph",style:"heading2",text:table.name||"Table "+(index+1)});
-        if(table.rows.length) blocks.push({type:"table",rows:table.rows.slice(0,2000).map(row=>row.slice(0,50))});
+        if(table.rows.length) blocks.push({type:"table",rows:table.rows});
       });
     }
     downloadBlob(window.EasyFileDocxFallback.createDocument({blocks}),baseName()+".docx");
@@ -370,7 +430,7 @@ async function exportDocx(){
   currentText().split(/\n/).forEach((line)=>children.push(new Paragraph({text:line||" "})));
   if(m.tables.length){
     children.push(new Paragraph({heading:HeadingLevel.HEADING_1,text:"Structured tables"}));
-    m.tables.forEach((table,index)=>{children.push(new Paragraph({heading:HeadingLevel.HEADING_2,text:table.name||`Table ${index+1}`})); const rows=table.rows.slice(0,2000).map((row)=>new TableRow({children:row.slice(0,50).map((cell)=>new TableCell({children:[new Paragraph({text:String(cell??"")})]}))})); if(rows.length)children.push(new Table({rows}));});
+    m.tables.forEach((table,index)=>{children.push(new Paragraph({heading:HeadingLevel.HEADING_2,text:table.name||`Table ${index+1}`})); const rows=table.rows.map((row)=>new TableRow({children:row.map((cell)=>new TableCell({children:[new Paragraph({text:String(cell??"")})]}))})); if(rows.length)children.push(new Table({rows}));});
   }
   const blob=await Packer.toBlob(new Document({sections:[{properties:{},children}]})); downloadBlob(blob,`${baseName()}.docx`);
 }
@@ -382,11 +442,13 @@ function exportPdf(){
   const lines=doc.splitTextToSize(currentText()||" ",width); let y=margin; lines.forEach((line)=>{if(y>pageHeight-margin){doc.addPage();y=margin;}doc.text(line,margin,y);y+=14;}); doc.save(`${baseName()}${state.sourceKind==="pdf"?"-edited":""}.pdf`);
 }
 async function runExport(format){
-  if(!state.model) return;
+  if(!state.model || state.busy) return;
+  setBusy(true); cancelBtn.disabled=true; showWarning(""); $("exportHint").textContent=`Preparing ${format.toUpperCase()}…`;
   try{
     if(format==="txt") exportTxt(); else if(format==="md") exportMarkdown(); else if(format==="html") exportHtml(); else if(format==="json") exportJson(); else if(format==="xml") exportXml(); else if(format==="csv") exportCsv(); else if(format==="xlsx") exportXlsx(); else if(format==="docx") await exportDocx(); else if(format==="pdf") exportPdf();
     log(`${format.toUpperCase()} export started.`,"success");
   }catch(error){console.error(error); showWarning(error?.message||"Export failed."); log(`Export failed: ${error?.message||error}`,"error");}
+  finally{setBusy(false); enableExports();}
 }
 async function copyText(){
   const text=currentText(); if(!text)return;
@@ -394,6 +456,7 @@ async function copyText(){
   catch{const ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();}
 }
 function resetAll(){
+  ++state.readVersion;
   state.file=null;state.buffer=null;state.sourceKind=null;state.model=null;state.cancelRequested=false;fileInput.value="";$("fileMeta").textContent="No file selected yet.";editor.value="";showWarning("");updateMetrics(null);updateSummaries();analyzeBtn.disabled=true;copyBtn.disabled=true;exportButtons.forEach((b)=>b.disabled=true);$("exportHint").textContent="Analyse a file to enable export";setStatus("Awaiting file upload","Idle",0);setBusy(false);log("State reset. Ready for another file.");
 }
 
@@ -404,12 +467,13 @@ dropzone.addEventListener("keydown",(event)=>{if((event.key==="Enter"||event.key
 ["dragleave","drop"].forEach((name)=>dropzone.addEventListener(name,(event)=>{event.preventDefault();dropzone.classList.remove("dragover");}));
 dropzone.addEventListener("drop",(event)=>{if(!state.busy)setFile(event.dataTransfer?.files?.[0]);});
 analyzeBtn.addEventListener("click",analyze);
-cancelBtn.addEventListener("click",()=>{state.cancelRequested=true;cancelBtn.disabled=true;setStatus("Cancellation requested…","Finishing current operation",null);log("Cancellation requested. OCR may finish the current page before stopping.","warn");});
+cancelBtn.addEventListener("click",()=>{state.cancelRequested=true;cancelBtn.disabled=true;state.rejectCancel?.(new DOMException("Conversion cancelled by user.","AbortError"));state.renderTask?.cancel();state.loadingTask?.destroy().catch(()=>{});state.ocrWorker?.terminate().catch(()=>{});setStatus("Cancellation requested…","Stopping conversion",null);log("Cancellation requested.","warn");});
 resetBtn.addEventListener("click",resetAll);
 copyBtn.addEventListener("click",copyText);
 $("clearLogBtn").addEventListener("click",(event)=>{event.preventDefault();event.stopPropagation();$("logBody").textContent="";});
-editor.addEventListener("input",()=>{copyBtn.disabled=!editor.value;if(state.model)$("exportHint").textContent="Exports enabled · corrected text will be used";});
+editor.addEventListener("input",()=>{copyBtn.disabled=!editor.value;if(state.model){enableExports();updateMetrics({...state.model,text:editor.value});$("exportHint").textContent="Exports enabled · corrected text will be used";}});
 exportButtons.forEach((button)=>button.addEventListener("click",()=>runExport(button.dataset.format)));
 window.addEventListener("load",libraryHealth,{once:true});
+loadPdf().then(libraryHealth).catch(libraryHealth);
 setTimeout(libraryHealth,1200);
 resetAll();

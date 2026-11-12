@@ -59,11 +59,41 @@ jobs:
       - name: Verify DOCX converters and offline fallback
         run: node scripts/validate-converter-docx.mjs
 
+      - name: Install converter browser tests
+        run: |
+          npm ci --prefix tests/ux --no-audit --no-fund
+          cd tests/ux && npx playwright install --with-deps chromium
+
+      - name: Test converter analysis, all exports, accessibility and load
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/easyfile-converter-http.log 2>&1 &
+          pid=$!
+          trap 'kill "$pid"' EXIT
+          for attempt in 1 2 3 4 5; do
+            if curl --fail --silent http://127.0.0.1:8765/easy-converter.html >/dev/null; then break; fi
+            sleep 1
+          done
+          npm --prefix tests/ux test -- --workers=2
+
+      - name: Retain converter test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: converter-pre-deployment-tests
+          path: |
+            tests/ux/playwright-report
+            tests/ux/test-results
+          if-no-files-found: ignore
+
+      - name: Stage static site without development dependencies
+        if: github.event_name != 'pull_request'
+        run: rsync -a --exclude='.git/' --exclude='.github/' --exclude='node_modules/' --exclude='tests/' --exclude='referral-api/' --exclude='_site/' ./ _site/
+
       - name: Upload the exact validated site
         if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v4
         with:
-          path: .
+          path: _site
 
   deploy:
     needs: enforce-navigation
@@ -92,3 +122,28 @@ jobs:
 
       - name: Verify live converter and DOCX fallback deployment
         run: node scripts/verify-live-converter.mjs
+
+      - name: Install live converter tests
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Prepare live browser verification
+        run: |
+          npm ci --prefix tests/ux --no-audit --no-fund
+          cd tests/ux && npx playwright install --with-deps chromium
+
+      - name: Verify every export and user journey on the deployed site
+        env:
+          EASYFILE_TEST_BASE_URL: https://www.easyfile.co.za
+        run: npm --prefix tests/ux test -- --workers=2
+
+      - name: Retain live converter test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: converter-live-tests
+          path: |
+            tests/ux/playwright-report
+            tests/ux/test-results
+          if-no-files-found: ignore
