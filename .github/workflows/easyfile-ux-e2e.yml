@@ -27,7 +27,7 @@ jobs:
         run: npm install --prefix tests/ux --no-audit --no-fund
 
       - name: Install Chromium
-        run: npx --prefix tests/ux playwright install --with-deps chromium
+        run: cd tests/ux && npx playwright install --with-deps chromium
 
       - name: Launch local site
         run: |
