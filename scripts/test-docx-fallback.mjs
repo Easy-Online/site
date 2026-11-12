@@ -15,7 +15,7 @@ assert.equal(typeof createDocument, "function", "local DOCX writer should regist
 const headers = ["Name", "Amount", "Comment"];
 const rows = Array.from({ length: 48 }, (_, i) => ["Row " + (i + 1), String(i * 125), 'Ampersand & <xml> "quote"']);
 const blocks = [
-  { type: "paragraph", style: "title", text: "EasyFile – café & <finance>" },
+  { type: "paragraph", style: "title", text: "EasyFile – café 📄 & <finance>" },
   { type: "paragraph", style: "heading1", text: "Page 1" },
   { type: "paragraph", text: "Unicode: č € 漢字; special characters & < >" },
   { type: "table", rows: [headers, ...rows] },
@@ -42,7 +42,7 @@ assert.deepEqual([...zipEntries.keys()].sort(), ["[Content_Types].xml", "_rels/.
 assert.match(zipEntries.get("[Content_Types].xml"), /wordprocessingml\.document\.main\+xml/);
 assert.match(zipEntries.get("_rels/.rels"), /Target="word\/document\.xml"/);
 const word = zipEntries.get("word/document.xml");
-assert.match(word, /EasyFile – café &amp; &lt;finance&gt;/);
+assert.match(word, /EasyFile – café 📄 &amp; &lt;finance&gt;/);
 assert.match(word, /Unicode: č € 漢字; special characters &amp; &lt; &gt;/);
 assert.match(word, /Ampersand &amp; &lt;xml&gt; &quot;quote&quot;/);
 assert.match(word, /Row 48/);
