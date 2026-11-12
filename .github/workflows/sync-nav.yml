@@ -46,6 +46,9 @@ jobs:
       - name: Verify global module menu coverage
         run: node scripts/verify-module-registry.js
 
+      - name: Validate accessible light and dark theme contracts
+        run: node scripts/validate-theme-contrast.mjs
+
       - name: Verify platform conformance
         run: node scripts/verify-platform-conformance.js
 
