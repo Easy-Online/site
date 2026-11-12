@@ -11,25 +11,41 @@
 
   const MODULES = Object.freeze([
     { name: "Home", href: "index.html", icon: "fa-house", group: "General", description: "EasyFile landing page" },
+    { name: "Add-ons", href: "easy-addons.html", icon: "fa-puzzle-piece", group: "General", description: "Browse optional and extended EasyFile business modules" },
+    { name: "Landing Page", href: "easy-landing-page.html", icon: "fa-window-maximize", group: "General", description: "Build and export responsive business landing pages" },
     { name: "Company Profile", href: "easy-company-profile.html", icon: "fa-building", group: "General", description: "Manage shared company identity, branding and document defaults", landing: true },
+    { name: "Partners", href: "partners.html", icon: "fa-handshake", group: "General", description: "Apply as an EasyFile affiliate, reseller or solution partner and manage channel opportunities", landing: true },
     { name: "Quote", href: "easy-quote.html", icon: "fa-file-lines", group: "Documents", description: "Create customer quotations" },
     { name: "Invoice", href: "easy-invoice.html", icon: "fa-file-invoice-dollar", group: "Documents", description: "Create and manage invoices" },
+    { name: "Invoice View", href: "easy-invoice-view.html", icon: "fa-file-invoice", group: "Documents", description: "Read-only shared invoice view" },
+    { name: "Accounts Receivable", href: "easy-accounts-receivable.html", icon: "fa-chart-line", group: "Finance", description: "Manage invoice register, payments, aging, reminders and recurring billing", landing: true },
     { name: "Purchase Order", href: "easy-purchase-order.html", icon: "fa-cart-shopping", group: "Documents", description: "Create supplier purchase orders" },
     { name: "Sales Order", href: "easy-sales-order.html", icon: "fa-bag-shopping", group: "Documents", description: "Record customer sales orders" },
     { name: "Receipt", href: "easy-receipt.html", icon: "fa-receipt", group: "Documents", description: "Issue payment receipts" },
+    { name: "Save", href: "easy-save.html", icon: "fa-cloud-arrow-up", group: "Documents", description: "Save files to browser, cloud and connected storage providers" },
     { name: "Capture", href: "easy-capture.html", icon: "fa-camera-retro", group: "Documents", description: "Capture receipts and supplier invoices, extract VAT details and post reviewed expenses", landing: true },
     { name: "Edit", href: "easy-edit.html", icon: "fa-pen-ruler", group: "Documents", description: "Edit PDFs, images, HTML, text, data and convertible Office files", landing: true },
     { name: "Statement", href: "easy-statement.html", icon: "fa-file-contract", group: "Documents", description: "Generate account statements" },
     { name: "Letterhead", href: "easy-letterhead.html", icon: "fa-file-signature", group: "Documents", description: "Create branded business letters, correspondence and reusable templates", landing: true },
     { name: "Bank Converter", href: "easy-bank-statement-converter.html", icon: "fa-building-columns", group: "Documents", description: "Convert PDF bank statements to Sage CSV or Excel" },
     { name: "Converter", href: "easy-converter.html", icon: "fa-arrows-rotate", group: "Documents", description: "Convert business files and structured data between supported formats", landing: true },
+    { name: "Media", href: "easy-media.html", icon: "fa-photo-film", group: "Documents", description: "Import, preview, download and convert authorised media from links or local files", landing: true },
     { name: "Enterprise Converter", href: "easy-converter-enterprise.html", icon: "fa-right-left", group: "Documents", description: "Advanced file conversion workflows for larger business datasets", landing: true },
     { name: "Contracts", href: "easy-contracts.html", icon: "fa-file-contract", group: "Documents", description: "Create and manage business contracts and agreements", landing: true },
+    { name: "NDA & Non-Circumvention", href: "easy-nda-non-circumvention.html", icon: "fa-user-shield", group: "Documents", description: "Create NDAs, non-circumvention agreements and combined NCNDAs with guided clauses and print-ready output", landing: true },
+    { name: "Affidavit & POA", href: "easy-affidavit.html", icon: "fa-scale-balanced", group: "Documents", description: "Create affidavits, general powers of attorney and special powers of attorney", landing: true },
+    { name: "SOW", href: "easy-sow.html", icon: "fa-file-signature", group: "Documents", description: "Create structured statements of work with scope, deliverables, milestones, commercials, acceptance and sign-off", landing: true },
     { name: "Landing Page", href: "easy-landing-page.html", icon: "fa-window-maximize", group: "Documents", description: "Build branded landing pages for campaigns and business offers", landing: true },
+    { name: "Type", href: "easy-type.html", icon: "fa-wand-magic-sparkles", group: "Documents", description: "AI-assisted writing, grammar checking, reusable snippets and smart form completion", landing: true },
+    { name: "Minutes", href: "easy-minutes.html", icon: "fa-microphone-lines", group: "Documents", description: "Capture transcripts and generate structured meeting minutes, decisions and action items", landing: true },
+    { name: "Form", href: "easy-form.html", icon: "fa-list-check", group: "Documents", description: "AI-assisted form builder with response collection, review, analytics and export", landing: true },
+    { name: "Tender", href: "easy-tender.html", icon: "fa-file-circle-check", group: "Documents", description: "Analyse tenders, RFQs and RFPs into compliance matrices, evidence packs, action plans and submission checklists", landing: true },
 
+    { name: "Bill", href: "easy-bill.html", icon: "fa-file-invoice", group: "Finance", description: "Manage recurring bills and billing schedules" },
     { name: "Expenses", href: "easy-expenses.html", icon: "fa-wallet", group: "Finance", description: "Capture, categorise and review business expenses", landing: true },
+    { name: "Fuel Logbook", href: "easy-fuel-logbook.html", icon: "fa-gas-pump", group: "Operations", description: "Track fuel, mileage, business travel, vehicle efficiency and running cost", landing: true },
     { name: "Cash Flow", href: "easy-cashflow.html", icon: "fa-chart-line", group: "Finance", description: "Track cash inflows, outflows and running balances", landing: true },
-    { name: "VAT", href: "easy-vat.html", icon: "fa-calculator", group: "Finance", description: "Prepare and review VAT calculations", landing: true },
+    { name: "VAT", href: "easy-vat.html", icon: "fa-calculator", group: "Finance", description: "Prepare VAT201 working papers with evidence checks, reconciliation and audit-ready exports", landing: true },
     { name: "Budgets", href: "easy-budgets.html", icon: "fa-chart-pie", group: "Finance", description: "Build and monitor business budgets", landing: true },
     { name: "Credit Control", href: "easy-credit-control.html", icon: "fa-hand-holding-dollar", group: "Finance", description: "Track outstanding accounts and credit-control follow-up", landing: true },
     { name: "Audit", href: "easy-audit.html", icon: "fa-magnifying-glass-chart", group: "Finance", description: "Review financial and operational records for audit readiness", landing: true },
@@ -37,12 +53,17 @@
 
     { name: "Job Card", href: "easy-job-card.html", icon: "fa-briefcase", group: "Operations", description: "Track service and repair work" },
     { name: "Payroll", href: "easy-payroll.html", icon: "fa-money-bill-wave", group: "Operations", description: "Prepare payroll summaries" },
-    { name: "Inventory", href: "easy-inventory.html", icon: "fa-boxes-stacked", group: "Operations", description: "Track stock and movements" },
+    { name: "Inventory", href: "easy-inventory.html", icon: "fa-boxes-stacked", group: "Operations", description: "Track stock and movements" },\n    { name: "Logistics", href: "easy-logistics.html", icon: "fa-truck-fast", group: "Operations", description: "Manage logistics bookings, distribution and proof of delivery", landing: true },
     { name: "CRM", href: "easy-crm.html", icon: "fa-users", group: "Operations", description: "Manage customer relationships" },
+    { name: "Connect", href: "easy-connect.html", icon: "fa-arrow-right-arrow-left", group: "Operations", description: "Connect Shopify commerce to EasyFile and Microsoft Dynamics 365 / Business Central", landing: true },
+    { name: "Agent", href: "easy-agent.html", icon: "fa-user-tie", group: "Operations", description: "Onboard and manage sales agents, assignments, targets, compliance and commission readiness", landing: true },
+    { name: "SLA", href: "easy-sla.html", icon: "fa-stopwatch", group: "Operations", description: "Define service commitments, track response and resolution targets, and monitor SLA performance", landing: true },
     { name: "POS", href: "easy-pos.html", icon: "fa-cash-register", group: "Operations", description: "Record point-of-sale transactions and daily sales", landing: true },
     { name: "Projects", href: "easy-projects.html", icon: "fa-diagram-project", group: "Operations", description: "Plan and track projects, tasks and delivery", landing: true },
+    { name: "Lease", href: "easy-lease.html", icon: "fa-key", group: "Operations", description: "Create and manage property and asset lease agreements", landing: true },
     { name: "Assets", href: "easy-asset-management.html", icon: "fa-screwdriver-wrench", group: "Operations", description: "Maintain the asset register" },
     { name: "Asset Register", href: "easy-assets-register.html", icon: "fa-list-check", group: "Operations", description: "Maintain a structured business asset register", landing: true },
+    { name: "Register", href: "easy-register.html", icon: "fa-clipboard-user", group: "Operations", description: "Run access, attendance, training, course, event and compliance registers with check-in/out, signatures, QR tokens and emergency roll call", landing: true },
     { name: "Inspections", href: "easy-site-inspection.html", icon: "fa-clipboard-check", group: "Operations", description: "Capture site inspection records" },
     { name: "Approvals", href: "easy-approvals.html", icon: "fa-circle-check", group: "Operations", description: "Route and track internal business approvals", landing: true },
     { name: "Leave", href: "easy-leave.html", icon: "fa-calendar-check", group: "Operations", description: "Track employee leave requests and balances", landing: true },
@@ -53,6 +74,12 @@
     { name: "Insights", href: "easy-insights.html", icon: "fa-chart-column", group: "Insights", description: "Review business performance insights and operational signals", landing: true },
     { name: "Rewards", href: "referrals.html", icon: "fa-gift", group: "General", description: "View legacy referral rewards" }
   ]);
+
+  // Canonical module catalog consumed by navigation, homepage discovery and conformance checks.
+  window.EasyFileModules = Object.freeze(
+    MODULES.filter((item) => /^easy-[a-z0-9-]+\.html$/i.test(item.href)).map((item) => Object.freeze({ ...item }))
+  );
+  window.dispatchEvent(new CustomEvent("easyfile:modules-ready", { detail: { modules: window.EasyFileModules } }));
 
   const MENU_GROUP_ORDER = Object.freeze(["General", "Documents", "Finance", "Operations", "Compliance", "Insights"]);
   const MODULE_FILES = new Set(MODULES.filter((item) => !["index.html", "referrals.html"].includes(item.href)).map((item) => item.href));
@@ -113,10 +140,20 @@
     });
   }
 
+  let sessionThemePreference = null;
+
+  function savedTheme() {
+    if (sessionThemePreference) return sessionThemePreference;
+    try {
+      const stored = localStorage.getItem(THEME_KEY) || localStorage.getItem("easySuite.theme");
+      return stored === "dark" || stored === "light" ? stored : null;
+    } catch {
+      return null; // Theme controls must continue working when storage is blocked.
+    }
+  }
+
   function initialTheme() {
-    const stored = localStorage.getItem(THEME_KEY) || localStorage.getItem("easySuite.theme");
-    if (stored === "dark" || stored === "light") return stored;
-    return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    return savedTheme() || (window.matchMedia?.("(prefers-color-scheme: dark)")?.matches ? "dark" : "light");
   }
 
   function groupMarkup(group) {
@@ -135,6 +172,7 @@
           <a class="easyfile-nav-link" href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i>Home</a>
           <a class="easyfile-nav-link" href="index.html#modules"><i class="fa-solid fa-table-cells-large" aria-hidden="true"></i>Modules</a>
           <a class="easyfile-nav-link" href="easy-bank-statement-converter.html"><i class="fa-solid fa-building-columns" aria-hidden="true"></i>Bank converter</a>
+          <a class="easyfile-nav-link" href="partners.html"><i class="fa-solid fa-handshake" aria-hidden="true"></i>Partners</a>
           <a class="easyfile-nav-link" href="about.html"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>About</a>
         </div>
         <div class="easyfile-nav-tools">
@@ -204,8 +242,11 @@
     topbar.querySelectorAll("[data-theme-toggle]").forEach((button) => {
       button.addEventListener("click", () => {
         const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-        localStorage.setItem(THEME_KEY, next);
-        localStorage.setItem("easySuite.theme", next);
+        sessionThemePreference = next;
+        try {
+          localStorage.setItem(THEME_KEY, next);
+          localStorage.setItem("easySuite.theme", next);
+        } catch { /* Private browsing may block persistence. */ }
         applyTheme(next);
       });
     });
@@ -281,16 +322,18 @@
         const haystack = `${item.name} ${item.group} ${item.description}`.toLowerCase();
         if (query && !haystack.includes(query)) return;
         if (grid.querySelector(`a[href="${item.href}"]`)) return;
-        const article = document.createElement("article");
-        article.className = "module-card";
-        article.dataset.easyfileDynamicModule = item.href;
-        article.innerHTML = `
+        const card = document.createElement("a");
+        card.className = "module-card";
+        card.href = item.href;
+        card.setAttribute("aria-label", `Open Easy ${item.name}`);
+        card.dataset.easyfileDynamicModule = item.href;
+        card.innerHTML = `
           <div class="module-card-icon"><i class="fa-solid ${item.icon}" aria-hidden="true"></i></div>
           <h3>Easy ${escapeHtml(item.name)}</h3>
           <p>${escapeHtml(item.description)}</p>
           <div class="module-tags"><span class="module-tag">documents</span><span class="module-tag">shared</span></div>
-          <a class="module-card-link" href="${item.href}">Open module <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>`;
-        grid.appendChild(article);
+          <span class="module-card-link" aria-hidden="true">Open module <i class="fa-solid fa-arrow-right"></i></span>`;
+        grid.appendChild(card);
       });
       const count = document.getElementById("moduleResultCount");
       if (count) count.textContent = `${grid.children.length} modules`;
@@ -345,11 +388,19 @@
   function boot() {
     ensureSharedStyles();
     applyTheme(initialTheme());
+    const systemTheme = window.matchMedia?.("(prefers-color-scheme: dark)");
+    systemTheme?.addEventListener?.("change", (event) => {
+      if (!savedTheme()) applyTheme(event.matches ? "dark" : "light");
+    });
     applyLayoutHooks();
     installNavigation();
     installPolicyLinks();
     installFavicons();
     installHomeModuleCards();
+
+    if (current === "easy-capture.html" || current === "easy-save.html") {
+      ensureScript("assets/js/easyfile-capture-workflow.js", "easyfileCaptureWorkflow");
+    }
 
     if (MODULE_FILES.has(current)) {
       ensureScript("assets/js/easyfile-module-actions.js", "easyfileModuleActions");

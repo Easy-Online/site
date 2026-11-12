@@ -5,13 +5,19 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: easyfile-quality-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   quality-gate:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
@@ -43,19 +49,42 @@ jobs:
             \( -name '*.js' -o -name '*.mjs' -o -name '*.cjs' \) -print0 \
             | xargs -0 -r -n1 node --check
 
+      - name: Validate accessible light and dark theme contracts
+        run: node scripts/validate-theme-contrast.mjs
+
+      - name: Validate both DOCX converters and export data consistency
+        run: node scripts/validate-converter-docx.mjs
+
+      - name: Install API dependencies
+        run: npm --prefix referral-api ci --ignore-scripts
+
+      - name: Run Azure Functions regression tests
+        run: npm --prefix referral-api run check
+
+      - name: Verify platform conformance
+        run: node scripts/verify-platform-conformance.js
+
       - name: Start static-site smoke test
         run: |
           python3 -m http.server 8080 > /tmp/easyfile-http.log 2>&1 &
           SERVER_PID=$!
           trap 'kill "$SERVER_PID"' EXIT
+
           for attempt in 1 2 3 4 5; do
             if curl --fail --silent --show-error http://127.0.0.1:8080/index.html > /dev/null; then
-              exit 0
+              break
+            fi
+            if [ "$attempt" = "5" ]; then
+              cat /tmp/easyfile-http.log
+              exit 1
             fi
             sleep 1
           done
-          cat /tmp/easyfile-http.log
-          exit 1
+
+          for page in index.html easy-*.html; do
+            echo "Smoke testing $page"
+            curl --fail --silent --show-error "http://127.0.0.1:8080/$page" > /dev/null
+          done
 
       - name: Upload validated site
         uses: actions/upload-artifact@v4
@@ -66,5 +95,8 @@ jobs:
             ./assets
             ./scripts
             ./partials
-            ./icon.png
+            ./*.png
+            ./*.svg
+            ./sitemap.xml
+            ./robots.txt
           if-no-files-found: error
