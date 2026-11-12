@@ -35,7 +35,7 @@ test('file input, editable extraction, and DOCX download work with the local fal
   await expect(page.locator('#analyzeBtn')).toBeEnabled();
   await page.locator('#analyzeBtn').click();
   await expect(page.locator('#statusText')).toContainText('Analysis complete');
-  await expect(page.locator('#editor')).toContainText('Invoice total: 1250.00 ZAR');
+  await expect(page.locator('#editor')).toHaveValue(/Invoice total: 1250\.00 ZAR/);
   await expect(page.locator('[data-format="docx"]')).toBeEnabled();
   await page.locator('#editor').fill('Corrected invoice amount: 1300 ZAR\nClient: Example Pty Ltd');
   const promise = page.waitForEvent('download');
