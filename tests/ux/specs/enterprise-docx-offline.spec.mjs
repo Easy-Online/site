@@ -17,25 +17,25 @@ function twoPagePdf() {
     '<< /Type /Pages /Kids [4 0 R 6 0 R] /Count 2 >>',
     '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',
     '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>',
-    (() => { const s = contents(1); return '<< /Length ' + Buffer.byteLength(s) + ' >>\\nstream\\n' + s + '\\nendstream'; })(),
+    (() => { const s = contents(1); return '<< /Length ' + Buffer.byteLength(s) + ' >>\nstream\n' + s + '\nendstream'; })(),
     '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 7 0 R >>',
-    (() => { const s = contents(2); return '<< /Length ' + Buffer.byteLength(s) + ' >>\\nstream\\n' + s + '\\nendstream'; })()
+    (() => { const s = contents(2); return '<< /Length ' + Buffer.byteLength(s) + ' >>\nstream\n' + s + '\nendstream'; })()
   ];
-  let pdf = '%PDF-1.4\\n';
+  let pdf = '%PDF-1.4\n';
   const offsets = [0];
   objects.forEach((object, i) => {
     offsets.push(Buffer.byteLength(pdf));
-    pdf += (i + 1) + ' 0 obj\\n' + object + '\\nendobj\\n';
+    pdf += (i + 1) + ' 0 obj\n' + object + '\nendobj\n';
   });
   const xrefOffset = Buffer.byteLength(pdf);
-  pdf += 'xref\\n0 ' + (objects.length + 1) + '\\n0000000000 65535 f \\n';
-  offsets.slice(1).forEach(offset => { pdf += String(offset).padStart(10, '0') + ' 00000 n \\n'; });
-  pdf += 'trailer\\n<< /Root 1 0 R /Size ' + (objects.length + 1) + ' >>\\nstartxref\\n' + xrefOffset + '\\n%%EOF';
+  pdf += 'xref\n0 ' + (objects.length + 1) + '\n0000000000 65535 f \n';
+  offsets.slice(1).forEach(offset => { pdf += String(offset).padStart(10, '0') + ' 00000 n \n'; });
+  pdf += 'trailer\n<< /Root 1 0 R /Size ' + (objects.length + 1) + ' >>\nstartxref\n' + xrefOffset + '\n%%EOF';
   return Buffer.from(pdf, 'ascii');
 }
 
 test('enterprise DOCX exports locally with a blocked remote library', async ({ page }) => {
-  await page.route(/cdn\\.jsdelivr\\.net\\/npm\\/docx@/, route => route.abort());
+  await page.route(/cdn\.jsdelivr\.net\/npm\/docx@/, route => route.abort());
   await page.goto('/easy-converter-enterprise.html');
   await expect(page.locator('#fileInput')).toBeAttached();
   await page.locator('#fileInput').setInputFiles({
