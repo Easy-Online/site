@@ -47,7 +47,7 @@ async function analyze(page, file) {
 }
 
 async function download(page, format) {
-  const pending = page.waitForEvent('download');
+  const pending = page.waitForEvent('download', { timeout: 20000 });
   await page.locator(`[data-format="${format}"]`).click();
   const file = await pending;
   expect(await file.failure()).toBeNull();
@@ -190,7 +190,11 @@ test('DOCX, XLSX/XLS, CSV/TSV and text/JSON/XML/HTML/Markdown input routes all e
     await analyze(page, { name: `fixture.${ext}`, mimeType: 'application/octet-stream', buffer: Buffer.isBuffer(data) ? data : Buffer.from(data) });
     await expect(page.locator('#editor')).toHaveValue(new RegExp(marker));
     expect(await page.evaluate(() => window.BAD)).toBeUndefined();
-    for (const format of formats) await verify(page, format, await download(page, format), marker);
+    for (const format of formats) {
+      await test.step(`Input ${ext} to ${format}`, async () => {
+        await verify(page, format, await download(page, format), marker);
+      });
+    }
   }
 });
 
