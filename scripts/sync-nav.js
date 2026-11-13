@@ -236,7 +236,14 @@
       toggle.setAttribute("aria-label", open ? "Close navigation menu" : "Open navigation menu");
       toggle.innerHTML = `<i class="fa-solid ${open ? "fa-xmark" : "fa-bars"}" aria-hidden="true"></i>`;
     };
-    toggle?.addEventListener("click", () => setMenuOpen(!menu.classList.contains("is-open")));
+    // Keep the opening click from reaching document-level dismissal handlers.
+    // Delegate from the stable header root so injected button content cannot lose the listener.
+    topbar.addEventListener("click", (event) => {
+      if (!event.target.closest?.("[data-menu-toggle]")) return;
+      event.preventDefault();
+      event.stopPropagation();
+      setMenuOpen(!menu.classList.contains("is-open"));
+    });
     topbar.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && menu?.classList.contains("is-open")) {
         setMenuOpen(false);
