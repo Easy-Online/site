@@ -623,62 +623,32 @@ function exportXlsx() {
   XLSX.writeFile(workbook, `${baseName()}.xlsx`, { compression: true });
 }
 
-function requireDocx() {
-  if (!window.docx?.Document || !window.docx?.Packer) throw new Error("Word export library is unavailable. Check your connection and retry.");
-  return window.docx;
-}
-
-async function exportDocx() {
-  if (!window.docx?.Document || !window.docx?.Packer) {
-    if (!window.EasyFileDocxFallback?.createDocument) {
-      throw new Error("DOCX export engines are unavailable. Reload the page and try again.");
-    }
-    // Offline path: preserve page boundaries, extracted text and detected tables.
-    const blocks = [
-      { type: "paragraph", style: "title", text: "Converted from " + state.parsed.sourceFile },
-      { type: "paragraph", text: "Pages: " + state.parsed.pageCount },
-      { type: "paragraph", text: "Detected tables: " + state.parsed.tableCount },
-      { type: "paragraph", text: "OCR pages: " + state.parsed.ocrPageCount },
-      { type: "paragraph", text: "Extracted at: " + new Date(state.parsed.extractedAt).toLocaleString("en-ZA") }
-    ];
-    state.parsed.pages.forEach((page) => {
-      blocks.push({ type: "paragraph", style: "heading1", text: "Page " + page.pageNumber + " (" + page.source + ")" });
-      blocks.push({ type: "paragraph", text: "Confidence: " + Math.round((page.confidence || 0) * 100) + "%" });
-      page.lines.forEach((line) => blocks.push({ type: "paragraph", text: line }));
-      page.tables.forEach((table) => {
-        blocks.push({ type: "paragraph", style: "heading2", text: table.title });
-        blocks.push({ type: "table", rows: [table.headers.map((h) => h || "Column"), ...table.rows] });
-      });
-    });
-    downloadBlob(window.EasyFileDocxFallback.createDocument({ blocks }), baseName() + ".docx");
-    log("DOCX created with the browser-local export engine.", "success");
-    return;
+function exportDocx() {
+  // Enterprise Word export is local-first: never require a remote CDN at download time.
+  // The bundled writer produces a standards-compliant Open XML ZIP with page text
+  // and reconstructed tables, including when the browser is offline.
+  const createDocument = window.EasyFileDocxFallback?.createDocument;
+  if (typeof createDocument !== "function") {
+    throw new Error("The local Word export engine did not load. Reload the page, then retry.");
   }
-  const { Document, Packer, Paragraph, HeadingLevel, TextRun, Table, TableRow, TableCell, WidthType } = requireDocx();
-  const children = [
-    new Paragraph({ heading: HeadingLevel.TITLE, children: [new TextRun(`Converted from ${state.parsed.sourceFile}`)] }),
-    new Paragraph({ text: `Pages: ${state.parsed.pageCount}` }),
-    new Paragraph({ text: `Detected tables: ${state.parsed.tableCount}` }),
-    new Paragraph({ text: `OCR pages: ${state.parsed.ocrPageCount}` }),
-    new Paragraph({ text: `Extracted at: ${new Date(state.parsed.extractedAt).toLocaleString("en-ZA")}` })
+  const blocks = [
+    { type: "paragraph", style: "title", text: "Converted from " + state.parsed.sourceFile },
+    { type: "paragraph", text: "Pages: " + state.parsed.pageCount },
+    { type: "paragraph", text: "Detected tables: " + state.parsed.tableCount },
+    { type: "paragraph", text: "OCR pages: " + state.parsed.ocrPageCount },
+    { type: "paragraph", text: "Extracted at: " + new Date(state.parsed.extractedAt).toLocaleString("en-ZA") }
   ];
-
   state.parsed.pages.forEach((page) => {
-    children.push(new Paragraph({ heading: HeadingLevel.HEADING_1, text: `Page ${page.pageNumber} (${page.source})` }));
-    children.push(new Paragraph({ text: `Confidence: ${Math.round((page.confidence || 0) * 100)}%` }));
-    page.lines.forEach((line) => children.push(new Paragraph({ text: line })));
+    blocks.push({ type: "paragraph", style: "heading1", text: "Page " + page.pageNumber + " (" + page.source + ")" });
+    blocks.push({ type: "paragraph", text: "Confidence: " + Math.round((page.confidence || 0) * 100) + "%" });
+    page.lines.forEach((line) => blocks.push({ type: "paragraph", text: line }));
     page.tables.forEach((table) => {
-      children.push(new Paragraph({ heading: HeadingLevel.HEADING_2, text: table.title }));
-      const rows = [
-        new TableRow({ children: table.headers.map((header) => new TableCell({ children: [new Paragraph({ text: header || "Column" })] })) }),
-        ...table.rows.map((row) => new TableRow({ children: row.map((cell) => new TableCell({ children: [new Paragraph({ text: cell || "" })] })) }))
-      ];
-      children.push(new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows }));
+      blocks.push({ type: "paragraph", style: "heading2", text: table.title });
+      blocks.push({ type: "table", rows: [table.headers.map((header) => header || "Column"), ...table.rows] });
     });
   });
-
-  const documentFile = new Document({ sections: [{ children }] });
-  downloadBlob(await Packer.toBlob(documentFile), `${baseName()}.docx`);
+  downloadBlob(createDocument({ blocks }), baseName() + ".docx");
+  log("DOCX created with the browser-local export engine (no CDN required).", "success");
 }
 
 function exportPdf() {
