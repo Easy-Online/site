@@ -29,8 +29,17 @@ async function assertDeployment() {
     const html = await fetchText(page.path);
     assert.match(html, /easyfile-docx-fallback\.js/, `${page.path}: fallback script missing from public HTML`);
     const javascript = await fetchText(page.js);
-    assert.match(javascript, /EasyFileDocxFallback\?\.createDocument/, `${page.js}: old exporter still published`);
-    assert.match(javascript, /EasyFileDocxFallback\.createDocument\(/, `${page.js}: fallback generation absent`);
+    if (page.path === "/easy-converter-enterprise.html") {
+      assert.match(html, /easyfile-docx-fallback\.js\?v=20261113-local/, "Enterprise page must load versioned local DOCX engine");
+      assert.match(html, /easy-converter-enterprise\.js\?v=20261113-local/, "Enterprise page must load versioned export logic");
+      assert.doesNotMatch(html, /cdn\.jsdelivr\.net\/npm\/docx@/, "Enterprise must not rely on remote Word generation");
+      assert.match(javascript, /EasyFileDocxFallback\?\.createDocument/, "Enterprise local writer unavailable");
+      assert.match(javascript, /downloadBlob\(createDocument\(\{ blocks \}\)/, "Enterprise local Word export missing");
+      assert.doesNotMatch(javascript, /Word export library is unavailable/, "Outdated Word export error is still deployed");
+    } else {
+      assert.match(javascript, /EasyFileDocxFallback\?\.createDocument/, "Classic converter fallback missing");
+      assert.match(javascript, /EasyFileDocxFallback\.createDocument\(/, "Classic converter fallback generation absent");
+    }
   }
   console.log("Production converter HTML, JS and offline DOCX engine are published");
 }
